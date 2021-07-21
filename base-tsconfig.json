@@ -1,0 +1,22 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "skipLibCheck": true,
+        "strict": true,                          
+        "sourceMap": true,
+        "strictPropertyInitialization": false,
+        "noUnusedLocals": true,
+        "declaration": true,                     
+        "declarationMap": true,
+        "downlevelIteration": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "jsx": "react",                         
+        "lib": [
+            "es6",
+            "dom"
+        ]
+    }
+}  

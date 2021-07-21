@@ -1,0 +1,20 @@
+{   
+    "version": "0.2.0",
+    "configurations": [
+        
+        {
+            "name": "ER Diagram Extension",
+            "type": "extensionHost",
+            "request": "launch",
+            "runtimeExecutable": "${execPath}",
+            "args": [
+                "${workspaceFolder}/workspace",
+                "--extensionDevelopmentPath=${workspaceFolder}/extension"
+            ],
+            "outFiles": [
+                "${workspaceFolder}/extension/pack/*.js"
+            ],
+            "sourceMaps": true
+        }
+    ]
+}

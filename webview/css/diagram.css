@@ -1,0 +1,162 @@
+.svg {
+    stroke-width: 2;
+}
+
+.sprotty-infoBlock {
+    color: black; 
+}
+
+.sprotty-node {
+    stroke-width: 1;
+    fill: rgb(219,218,235);
+    stroke: rgb(27, 27, 27);
+}
+
+.sprotty-edge.inheritance {
+    stroke-width: 3;
+    stroke:rgb(255, 255, 255);
+}
+
+.comp-separator {
+    stroke-width: 1;
+    stroke: black;
+}
+
+.relationship > .sprotty-node {
+    fill: white;
+}
+
+.relationship {
+    font-size: 16px;
+}
+
+.weak > .sprotty-node {
+    border-style: double;
+    stroke: black;
+    stroke-width: 6;
+}
+
+.weak-relationship > .sprotty-node {
+    fill: white;
+    stroke: black;
+    border-style: double;
+    stroke-width: 6;
+}
+
+.sprotty-node.diamond-node {
+    fill: rgb(255, 255, 255);
+}
+
+.right.sprotty-label {
+    fill: white;
+}
+
+.top.sprotty-label {
+    fill: white;
+}
+
+.sprotty-node.selected {
+    stroke-width: 5;
+    stroke: yellow;
+}
+
+.sprotty-node.mouseover:not(.selected) {
+    stroke-width: 3;
+    stroke: orange;
+}
+
+.header {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.sprotty-comp {
+    line-height: 3px;
+    font-weight: normal;
+    text-align: left;
+}
+
+.text-key {
+    stroke-width: 0;
+    stroke: #000;
+    fill: #000;
+    font-family: sans-serif;
+    font-size: 8pt;
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.text-null {
+    stroke-width: 0;
+    stroke: rgb(124, 124, 124);;
+    fill: rgb(124, 124, 124);
+    font-family: sans-serif;
+    font-size: 8pt;
+}
+
+.text-pk {
+    stroke-width: 0;
+    fill: #000;
+    text-decoration: underline;
+}
+
+.text-fk {
+    stroke-width: 0;
+    fill: #000;
+    text-decoration: underline;
+}
+
+text {
+    stroke-width: 0;
+    stroke: #000;
+    fill: #000;
+    font-family: sans-serif;
+    font-size: 8pt;
+}
+
+.sprotty-edge {
+    fill: none;
+    stroke: #488;
+    stroke-width: 3;
+}
+
+.sprotty-edge.selected {
+    stroke: yellow;
+    stroke-width: 6;
+}
+
+.sprotty-edge.mouseover:not(.selected) {
+    stroke: orange;
+    stroke-width: 5;
+}
+
+.sprotty-edge > .sprotty-routing-handle {
+    fill: #884;
+    stroke: none;
+    z-index: 1000;
+}
+
+.sprotty-edge > .sprotty-routing-handle[data-kind='line'] {
+    opacity: 0.35;
+}
+
+.sprotty-edge > .sprotty-routing-handle.selected {
+    fill: #66a;
+}
+
+.sprotty-edge > .sprotty-routing-handle.mouseover {
+    stroke: #112;
+    stroke-width: 1;
+}
+
+.sprotty-missing {
+    display: none;
+}
+
+.palette-button {
+    color: black;
+}
+
+
+
+

@@ -1,0 +1,154 @@
+{
+    "name": "erdiagram",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.50.0"
+    },
+    "license": "ISC",
+    "displayName": "bigER Modeling Tool",
+    "description": "Entity Relationship Diagrams with a textual editor",
+    "categories": [
+        "Programming Languages", "Visualization"
+    ],
+    "keywords": [
+        "Entity Relationship", "Data Modeling", "Diagram", "Language Server", "ERD"
+    ],
+    "main": "./pack/main",
+    "activationEvents": [
+        "onLanguage:erdiagram",
+        "onCommand:erdiagram.diagram.open"
+    ],
+    "contributes": {
+        "languages": [
+            {
+                "id": "erdiagram",
+                "aliases": [
+                    "erdiagram",
+                    "erd"
+                ],
+                "extensions": [
+                    ".erd"
+                ],
+                "configuration": "./language-configuration.json"
+            }
+        ],
+        "grammars": [
+            {
+                "language": "erdiagram",
+                "scopeName": "source.erd",
+                "path": "./syntaxes/erdiagram.tmLanguage.json"
+            }
+        ],
+        "commands": [
+            {
+                "command": "erdiagram.diagram.open",
+                "title": "Open Diagram View",
+                "icon": "$(type-hierarchy-super)", 
+                "category": "ER-Diagram"
+            },
+            {
+                "command": "erdiagram.diagram.fit",
+                "title": "Fit to Screen",
+                "category": "ER-Diagram"
+            },
+            {
+                "command": "erdiagram.diagram.center",
+                "title": "Center selection",
+                "category": "ER-Diagram"
+            },
+            {
+                "command": "erdiagram.diagram.delete",
+                "title": "Delete selected element",
+                "category": "ER-Diagram"
+            },
+            {
+                "command": "erdiagram.diagram.export",
+                "title": "Export diagram to SVG",
+                "category": "ER-Diagram"
+            }
+        ],
+        "menus": {
+            "commandPalette": [
+                {
+                    "command": "erdiagram.diagram.open",
+                    "when": "editorLangId == 'erdiagram'"
+                },
+                {
+                    "command": "erdiagram.diagram.fit",
+                    "when": "erdiagram-diagram-focused"
+                },
+                {
+                    "command": "erdiagram.diagram.center",
+                    "when": "erdiagram-diagram-focused"
+                },
+                {
+                    "command": "erdiagram.diagram.delete",
+                    "when": "erdiagram-diagram-focused"
+                },
+                {
+                    "command": "erdiagram.diagram.export",
+                    "when": "erdiagram-diagram-focused"
+                }
+            ],
+            "editor/context": [
+                {
+                    "command": "erdiagram.diagram.open",
+                    "when": "editorLangId == 'erdiagram'",
+                    "group": "navigation"
+                }
+            ],
+            "editor/title": [
+                {
+                    "command": "erdiagram.diagram.open",
+                    "when": "editorLangId == 'erdiagram'",
+                    "group": "navigation"
+                }
+            ],
+            "explorer/context": [
+                {
+                    "command": "erdiagram.diagram.open",
+                    "when": "resourceExtname == '.erd'",
+                    "group": "navigation"
+                }
+            ]
+        },
+        "keybindings": [
+            {
+              "command": "erdiagram.diagram.open",
+              "key": "ctrl+o",
+              "mac": "cmd+o",
+              "when": "resourceExtname == '.erd'"
+            }
+          ]
+    },
+    "files": [
+        "lib",
+        "extension",
+        "server",
+        "syntaxes",
+        "webview"
+    ],
+    "dependencies": {
+        "sprotty-vscode": "^0.1.3"
+    },
+    "devDependencies": {
+        "@types/node": "8.10.66",
+        "@types/vscode": "^1.50.0",
+        "rimraf": "2.6.3",
+        "source-map-loader": "1.0.2",
+        "ts-loader": "^8.2.0",
+        "tslint": "^6.1.3",
+        "typescript": "^3.9.9",
+        "vscode-languageclient": "^5.2.1",
+        "vscode-languageserver": "^5.2.1",
+        "webpack": "^4.44.1",
+        "webpack-cli": "^3.3.12"
+    },
+    "scripts": {
+        "prepare": "yarn run clean && yarn run build",
+        "clean": "rimraf extension/lib extension/pack",
+        "build": "tsc && webpack --mode=development",
+        "watch": "tsc -w",
+        "watch:webpack": "webpack --mode=development --watch"
+    }
+}

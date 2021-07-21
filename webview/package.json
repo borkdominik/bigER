@@ -1,0 +1,39 @@
+{
+  "name": "erdiagram-sprotty-webview",
+  "version": "0.0.3",
+  "author": {
+    "name": "Philipp Glaser"
+  },
+  "description": "Webview package for the ER Diagram",
+  "scripts": {
+    "prepare": "yarn run clean && yarn run build",
+    "clean": "rimraf lib pack",
+    "build": "tsc && webpack --mode=development",
+    "watch:": "tsc -w",
+    "watch:webpack": "webpack --mode=development --watch"
+  },
+  "files": [
+    "lib",
+    "src",
+    "css"
+  ],
+  "dependencies": {
+    "sprotty": "0.9.0",
+    "sprotty-vscode-webview": "0.1.2"
+  },
+  "devDependencies": {
+    "css-loader": "^4.2.1",
+    "rimraf": "latest",
+    "source-map-loader": "^1.0.2",
+    "style-loader": "^1.2.1",
+    "ts-loader": "^8.2.0",
+    "typescript": "3.8.3",
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12"
+  },
+  "resolutions": {
+    "vscode-jsonrpc": "5.0.1",
+    "vscode-languageserver-protocol": "3.15.3"
+  }
+  
+}

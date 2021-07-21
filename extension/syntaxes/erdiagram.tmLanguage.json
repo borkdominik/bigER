@@ -1,0 +1,70 @@
+{
+	"name": "ER Diagram",
+	"scopeName": "source.erd",
+	"fileTypes": [
+        "erd"
+    ],
+	"patterns": [
+		{
+            "include": "#comments"
+        }, {
+			"name": "entity.name.type.erdiagram",
+			"match": "\\b(entity|relationship|entities|relationships)\\b"
+		}, {
+            "name": "entity.name.tag.erdiagram",
+			"match": "\\b(extends|weak)\\b"
+        }, {
+			"name": "keyword.operator.erdiagram",
+			"match": "(\\-\\>)"
+		}, {
+			"name": "entity.other.attribute-name.erdiagram",
+			"match": "\\b(key|derived|multivalued|foreign-key|optional|partial-key)\\b"
+		}, {
+			"name": "keyword.datatype.erdiagram",
+			"match": "\\b(int|double|string|boolean|datetime)\\b"
+		}, {
+			"name": "entity.name.section.erdiagram",
+			"match": "\\b(erdiagram)\\b"
+		}, {
+            "name": "string.quoted.double.states",
+            "begin": "\"",
+            "end": "\""
+        },
+        {
+            "name": "string.quoted.single.states",
+            "begin": "'",
+            "end": "'"
+        }
+	],
+	"repository": 
+        {
+            "comments": {
+                "patterns": [
+                    {
+                        "name": "comment.block.states",
+                        "begin": "/\\*",
+                        "beginCaptures": {
+                            "0": {
+                                "name": "punctuation.definition.comment.states"
+                            }
+                        },
+                        "end": "\\*/",
+                        "endCaptures": {
+                            "0": {
+                                "name": "punctuation.definition.comment.states"
+                            }
+                        }
+                    }, {
+                        "begin": "(^\\s+)?(?=//)",
+                        "beginCaptures": {
+                            "1": {
+                                "name": "punctuation.whitespace.comment.leading.cs"
+                            }
+                        },
+                        "end": "(?=$)",
+                        "name":"comment.line.states"
+                    }
+                ]
+            }
+        }
+}

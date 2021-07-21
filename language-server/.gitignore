@@ -1,0 +1,10 @@
+build/
+bin/
+xtext-gen/
+xtend-gen/
+.gradle/
+generated/
+.project
+org.eclipse.buildship.core.prefs
+.classpath
+/.metadata/

@@ -1,0 +1,8 @@
+node_modules
+lib
+bin
+package-lock.json
+/.metadata/
+pack
+src-gen/
+.DS_Store
