@@ -1,11 +1,11 @@
 import { postConstruct, inject, injectable } from 'inversify';
-import {  SprottyDiagramIdentifier, VscodeDiagramWidget } from 'sprotty-vscode-webview/lib';
+import {  SprottyDiagramIdentifier, VscodeDiagramWidget } from 'sprotty-vscode-webview';
 import {  Action, CollapseExpandAllAction, Command, CommandExecutionContext, CommandReturn, FitToScreenAction,  IActionDispatcher, ILogger, ModelSource, TYPES} from 'sprotty';
 import { WorkspaceEditAction } from 'sprotty-vscode-protocol/lib/lsp/editing';
 import {  CodeActionProvider } from 'sprotty-vscode-webview/lib/lsp/editing';
 import { CodeAction } from 'vscode-languageserver-protocol';
 import { getRange } from 'sprotty-vscode-webview/lib/lsp/editing/traceable';
-;
+
 
 @injectable()
 export class ERDiagramWidget extends VscodeDiagramWidget {
@@ -38,20 +38,35 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
             const icon = document.createElement("div");
             icon.classList.add("fa")
             icon.classList.add("fa-palette")            
-            menuicon.appendChild(icon)
-            menubar.appendChild(menuicon)
+            menuicon.appendChild(icon);
+            menubar.appendChild(menuicon);
             
+            const dropDown = document.createElement("div");
+            dropDown.id = "dropdown-button"
+            dropDown.classList.add("menu-bar-item");
+            dropDown.innerText = "Add  "
+
+            const dropdownIcon = document.createElement("div");
+            dropdownIcon.classList.add("fa");
+            dropdownIcon.classList.add("fa-caret-down");
+            dropDown.appendChild(dropdownIcon);
+
+            const dropdownContent = document.createElement("div");
+            dropdownContent.id = "add-dropdown"
+            dropdownContent.classList.add("dropdown-content");
+
             const entityButton = document.createElement("div");
             entityButton.id = "entity-button"
-            entityButton.classList.add("menu-bar-item")
             entityButton.innerText = "New Entity"
-            menubar.appendChild(entityButton)
+            dropdownContent.appendChild(entityButton)
 
             const relationshipButton = document.createElement("div");
             relationshipButton.id = "relationship-button"
-            relationshipButton.classList.add("menu-bar-item")
             relationshipButton.innerText = "New Relationship"
-            menubar.appendChild(relationshipButton)
+            dropdownContent.appendChild(relationshipButton)
+
+            dropDown.appendChild(dropdownContent)
+            menubar.appendChild(dropDown);
             
             const expandAll = document.createElement("div");
             expandAll.id = "expand-button"
@@ -88,11 +103,24 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
                 kind: AddRelationshipWithWorkspaceEditAction.KIND
             });
         });
+        document.getElementById('dropdown-button')!.addEventListener('click', async () => {
+            document.getElementById("add-dropdown")!.classList.toggle("show");
+        });
+        window.addEventListener('click', function(event) {
+            const target = event.target as HTMLElement;
+            if (!target.matches('#dropdown-button')) {
+                var dropdown = document.getElementById("add-dropdown");
+                if (dropdown?.classList.contains('show')) {
+                    dropdown.classList.remove('show');
+                }
+            }  
+        });
     }
 }
 
 /**
- * Action for adding new elements (so far only entities)
+ * Action for adding new elements (WIP)
+ * TODO: Merge both actions into one (load codeactions once add dropdown is clicked)
  */
 export interface AddWithWorkspaceEditAction extends Action { }
 

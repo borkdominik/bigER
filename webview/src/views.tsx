@@ -3,9 +3,8 @@ import { svg } from 'snabbdom-jsx';
 
 import { VNode } from "snabbdom/vnode";
 import { RenderingContext, RectangularNodeView, SNode, SEdge, Point, PolylineEdgeView, toDegrees, ExpandButtonView, findParentByFeature, isExpandable } from 'sprotty';
-//import { RelationshipNode } from './model'; DiamondNodeView, Diamond, Point, DiamondNode,
 import { injectable } from 'inversify';
-import { SButton } from 'sprotty/lib';
+import { SButton } from 'sprotty';
 
 export class EntityView extends RectangularNodeView {
     render(node: Readonly<SNode>, context: RenderingContext): VNode | undefined {
@@ -50,7 +49,7 @@ export class ExpandEntityView extends ExpandButtonView {
             : 'M6 9l6 6 6-6';
         return <g class-sprotty-button="{true}" class-enabled="{button.enabled}">
                 <rect x={0} y={0} width={16} height={16} opacity={0}></rect>
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000000" strokeWidth="2.5" strokeLinecap="butt" strokeLinejoin="bevel"><path d={path}/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" stroke="#000000" strokeWidth="2.5" strokeLinecap="butt" strokeLinejoin="bevel"><path d={path}/></svg>
             </g>;
     }
 }

@@ -8,7 +8,7 @@
             "request": "launch",
             "runtimeExecutable": "${execPath}",
             "args": [
-                "${workspaceFolder}/workspace",
+                "${workspaceFolder}/examples",
                 "--extensionDevelopmentPath=${workspaceFolder}/extension"
             ],
             "outFiles": [

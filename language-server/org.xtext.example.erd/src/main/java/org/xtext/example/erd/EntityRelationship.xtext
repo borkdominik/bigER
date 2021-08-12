@@ -8,15 +8,10 @@ Model:
 	// option to automatically generate SQL code
 	(generateSql='generateSql')?
 
-	// Support for structured and unstructured syntax
-	((
-		(('entity' entities += Entity) | 
-		('relationship' relationships += Relationship))*
-	) | 
-	(
-		('entities' '{') entities+=Entity ('}')?
-		('relationships' '{') relationships+=Relationship* ('}')?
-	));
+
+	(('entity' entities += Entity) | 
+	('relationship' relationships += Relationship))*;
+
 	
 Entity:
 	(weak?='weak')? name = ID ('extends' extends=[Entity])? ('{'

@@ -1,5 +1,3 @@
-//import 'sprotty-vscode-webview/css/sprotty-vscode.css';
-//import 'sprotty/css/edit-label.css';
 import 'sprotty/css/sprotty.css';
 import 'sprotty/css/command-palette.css';
 import '../css/diagram.css';

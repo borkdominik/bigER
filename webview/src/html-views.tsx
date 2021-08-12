@@ -1,7 +1,7 @@
 /** @jsx html */
 
 import { html } from "snabbdom-jsx";
-import { RenderingContext, IView, SButton, SLabel} from "sprotty/lib";
+import { RenderingContext, IView, SButton, SLabel} from "sprotty";
 import { VNode } from "snabbdom/vnode";
 import { injectable } from "inversify";
 

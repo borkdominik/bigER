@@ -1,0 +1,27 @@
+erdiagram Webshop
+generateSql
+
+entity Customer {
+    id: int key
+    name: string
+    email: string
+    address: string optional
+}
+
+entity Order {
+    order_number: int key
+    date: datetime
+    price: double
+}
+
+entity Product {
+    id: int key
+    name: string
+    amount: int 
+}
+
+relationship makes {
+    Customer[1] -> Order[N]
+}
+
+

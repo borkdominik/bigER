@@ -3,7 +3,7 @@
 	"compilerOptions": {
         "rootDir": "src",
         "outDir": "lib",
-        //"experimentalDecorators": true
+        "experimentalDecorators": true
     },
     "include": [
         "src"

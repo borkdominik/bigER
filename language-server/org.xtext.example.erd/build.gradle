@@ -6,6 +6,7 @@ dependencies {
 	compile "org.eclipse.xtext:org.eclipse.xtext:${xtextVersion}"
 	compile "org.eclipse.xtext:org.eclipse.xtext.xbase:${xtextVersion}"
 }
+
 configurations {
 	mwe2 {
 		extendsFrom compile
