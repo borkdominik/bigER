@@ -155,7 +155,7 @@ CREATE TABLE publishes (
 
 ## SQL Code Generation
 
-The bigER Tool allows to generate SQL Code out of the specified ER model. To enable code generation use the `generateSql` option in the textual model, this also adds additional [constraints and validation](###Constraints and Validation) to the model. Once the option is set a new folder `src-gen` is created, including the file with the generated SQL tables. 
+The bigER Tool allows to generate SQL Code out of the specified ER model. To enable code generation use the `generateSql` option in the textual model, this also adds additional constraints and validation (see below) to the model. Once the option is set a new folder `src-gen` is created, including the file with the generated SQL tables. 
 
 ### Constraints and Validation
 
