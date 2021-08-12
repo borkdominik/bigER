@@ -35,6 +35,7 @@ class EntityRelationshipValidator extends AbstractEntityRelationshipValidator {
 	// Check if (non-weak) entities contain primary key and no partial key
 	@Check
 	def containsKey(Model model) {
+
 		val entities = model.entities?.filter[e | !e.weak]
         entities.forEach [ e |
 
@@ -63,5 +64,4 @@ class EntityRelationshipValidator extends AbstractEntityRelationshipValidator {
 				info('''Weak Entity '«e.name»'«» is not allowed to have a primary key''', e, EntityRelationshipPackage.Literals.ENTITY__NAME)
 		]
     }
-
 }

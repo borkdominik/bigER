@@ -23,8 +23,6 @@ import java.util.List
  */
 class EntityRelationshipGenerator extends AbstractGenerator {
 
-	//List<Relationship> weakRelationships;
-
 	override void doGenerate(Resource resource, IFileSystemAccess2 fsa, IGeneratorContext context) {
 		val diagram = resource.contents.get(0) as Model
 		
@@ -33,17 +31,34 @@ class EntityRelationshipGenerator extends AbstractGenerator {
 			return
 		}
 
-		// TODO: Weak entities, ternary relationships
-
 		val name = (diagram.name ?: 'output') + '.sql'
-		//this.weakRelationships = diagram.relationships.reject[it.weak !== null].toList;
 		
+		// TODO: Fix Weak entites (weak -> weak and strong -> weak)
+
 		fsa.generateFile(name, '''
+			«var Attribute primaryKey»
 			«FOR entity : diagram.entities.reject[it.isWeak]»
 				CREATE TABLE «entity.name» (
 					«FOR attribute : entity.allAttributes.reject[it.type === AttributeType.DERIVED] SEPARATOR ', '»
-						«attribute.name» «attribute.datatype.transformType» «IF attribute.type === AttributeType.KEY»PRIMARY KEY«ENDIF» «IF attribute.type !== AttributeType.NULLABLE»NOT NULL«ENDIF»		
+						«attribute.name» «attribute.datatype.transformType»«IF attribute.type === AttributeType.KEY»«{primaryKey = attribute; null}»«ENDIF» «IF attribute.type !== AttributeType.NULLABLE»NOT NULL«ENDIF»		
 					«ENDFOR»
+					«IF entity.extends !== null»«entity.extends.key.name» «entity.extends.key.datatype.transformType»«ENDIF»
+					«'\n'»
+					PRIMARY KEY («primaryKey.name»)
+					«IF entity.extends !== null»FOREIGN KEY («entity.extends.key.name») REFERENCES «entity.extends.name»(«entity.extends.key.name»)«ENDIF»
+				);«'\n'»«'\n'»
+			«ENDFOR»
+			«var Attribute partialKey»		
+			«FOR relationship : diagram.relationships.reject[!it.isWeak || it.left === null || it.right === null]»
+				CREATE TABLE «relationship.weakEntity.name» ( 
+					«FOR attribute : relationship.weakEntity.allAttributes.reject[it.type === AttributeType.DERIVED] SEPARATOR ', '»
+						«attribute.name» «attribute.datatype.transformType»«IF attribute.type === AttributeType.PARTIAL_KEY»«{partialKey = attribute; null}»«ENDIF» «IF attribute.type !== AttributeType.NULLABLE»NOT NULL«ENDIF»		
+					«ENDFOR»
+					«relationship.strongEntity.key.name» «relationship.strongEntity.key.datatype.transformType» NOT NULL
+					«'\n'»
+					PRIMARY KEY («partialKey.name», «relationship.strongEntity.key.name»)
+					FOREIGN KEY («relationship.strongEntity.key.name») REFERENCES «relationship.strongEntity.name»(«relationship.strongEntity.key.name») 
+						ON DELETE CASCADE
 				);«'\n'»«'\n'»
 			«ENDFOR»
 			«FOR relationship : diagram.relationships.reject[it.isWeak || it.left === null]»
@@ -54,11 +69,15 @@ class EntityRelationshipGenerator extends AbstractGenerator {
 					«relationship.rightKey.name» «relationship.rightKey.datatype.transformType»,
 					CONSTRAINT fk_«relationship.rightKey.name» FOREIGN KEY («relationship.rightKey.name»)
 						REFERENCES «relationship.right.target.name»(«relationship.rightKey.name»)
+					«IF relationship.third !== null»
+					«relationship.thirdKey.name» «relationship.thirdKey.datatype.transformType»,
+					CONSTRAINT fk_«relationship.thirdKey.name» FOREIGN KEY («relationship.thirdKey.name»)
+						REFERENCES «relationship.third.target.name»(«relationship.thirdKey.name»)
+					«ENDIF»
 				);«'\n'»«'\n'»
 			«ENDFOR»
 			'''
 			)
-			
 		}
 
 		private def transformType(DataType type) {
@@ -85,33 +104,47 @@ class EntityRelationshipGenerator extends AbstractGenerator {
 		}
 	}
 
-	// Useful for extended and weak entities
+	private def getStrongEntity(Relationship r) {
+		if (r.left.target.isWeak) {
+			return r.right.target
+		} else {
+			return r.left.target
+		}
+	}
+
+	private def getWeakEntity(Relationship r) {
+		if (r.left.target.isWeak) {
+			return r.left.target
+		} else {
+			return r.right.target
+		}
+	}
+
 	private def Set<Attribute> getAllAttributes(Entity entity) {
 		val attributes = newHashSet
 		attributes += entity.attributes
-		if(entity.extends !== null) {
-			attributes += entity.extends.allAttributes
-		}
-
 		return attributes
 	}
 
-	/*
-	private def Entity getStrongEntity(Entity entity) {
-		val relationships = weakRelationships.reject[it.right.target !== entity]
-		for(Relationship r : relationships) {
-			if(r.left.target !== null) {
-				return r.left.target
+	private def getStrongEntityName(Entity entity, Model m) {
+		val weakRelationships = m.relationships.reject[!it.isWeak]
+		for (Relationship r : weakRelationships) {
+			if (r.left.target === entity) {
+				return r.right.target.name
+			}
+			if (r.right.target === entity) {
+				return r.left.target.name
 			}
 		}
 	}
-	
-	private def getStrongKey(Entity entity) {
-		val relationships = weakRelationships.reject[it.right.target !== entity]
-		for(Relationship r : relationships) {
-			return r.leftKey
+
+	private def getKey(Entity entity) {
+		for(Attribute a : entity.attributes) {
+			if (a.type === AttributeType.KEY) {
+				return a
+			}
 		}
-	}*/
+	}
 
 	private def getLeftKey(Relationship relationship) {
 		val entity = relationship.left.target
@@ -130,31 +163,13 @@ class EntityRelationshipGenerator extends AbstractGenerator {
 			}
 		}
 	}
-		
-		/*
-		TODO: reimplement Generator
 
-		val diagram = resource.contents.get(0) as Model
-		fsa.generateFile('test.sql', '''
-			«FOR entity : diagram.entities»
-				CREATE TABLE «entity.name» (
-«««					Only non-transient attributes are serialized
-					«FOR attribute : entity.attributes»
-						«attribute.name» «attribute.datatype.transformType» «IF attribute.type === AttributeType.KEY»PRIMARY KEY«ENDIF»
-					«ENDFOR»
-				);
-			«ENDFOR»
-			«FOR relationship : diagram.relationships»
-				CREATE TABLE «relationship.name» (
-					«relationship.leftKey.name» «relationship.leftKey.datatype.transformType»,
-					CONSTRAINT fk_«relationship.leftKey.name» FOREIGN KEY («relationship.leftKey.name»)
-						REFERENCES «relationship.left.target.name»(«relationship.leftKey.name»),
-					«relationship.rightKey.name» «relationship.rightKey.datatype.transformType»,
-					CONSTRAINT fk_«relationship.rightKey.name» FOREIGN KEY («relationship.rightKey.name»)
-						REFERENCES «relationship.right.target.name»(«relationship.rightKey.name»)
-				);
-			«ENDFOR»
-		'''
-		)*/
-
+	private def getThirdKey(Relationship relationship) {
+		val entity = relationship.third.target
+		for(Attribute a : entity.attributes) {
+			if (a.type === AttributeType.KEY) {
+				return a
+			}
+		}
+	}
 }

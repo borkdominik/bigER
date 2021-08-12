@@ -16,7 +16,6 @@ import org.eclipse.sprotty.SButton
 import org.eclipse.sprotty.LayoutOptions
 import org.eclipse.sprotty.SLabel
 import org.eclipse.sprotty.SNode
-import org.eclipse.sprotty.SPort
 import java.util.ArrayList
 import java.util.List
 import org.eclipse.sprotty.xtext.IDiagramGenerator

@@ -1,27 +1,45 @@
-erdiagram Webshop
+erdiagram University
 generateSql
 
-entity Customer {
-    id: int key
-    name: string
-    email: string
-    address: string optional
+entity Person {
+    full_name: string key
+    birthday: datetime
+    age: int derived
 }
 
-entity Order {
-    order_number: int key
-    date: datetime
-    price: double
+entity Student extends Person {
+    matr_nr: int key
+    undergraduate: boolean
 }
 
-entity Product {
-    id: int key
-    name: string
-    amount: int 
+entity Course {
+    course_id: int key
+    title: string
 }
 
-relationship makes {
-    Customer[1] -> Order[N]
+weak entity Lecture {
+    lect_nr: int partial-key
 }
 
+weak relationship contains {
+    Course[1] -> Lecture[N]
+}
 
+entity Professor extends Person {
+    pers_nr: int key
+}
+
+entity Publication {
+    pub_id: int key
+    title: string
+    research_area: string optional
+}
+
+relationship takes_exam {
+    Course[N] -> Professor[1] -> Student[N]
+    points: double
+}
+
+relationship publishes {
+    Publication[N] -> Professor[N]
+}

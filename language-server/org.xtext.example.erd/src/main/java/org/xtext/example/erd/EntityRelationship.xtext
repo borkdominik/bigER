@@ -4,34 +4,30 @@ generate entityRelationship "http://www.xtext.org/example/erd/EntityRelationship
 
 Model:
 	'erdiagram' name=ID
-
 	// option to automatically generate SQL code
 	(generateSql='generateSql')?
 
+	((entities+=Entity) | (relationships+=Relationship))*;
 
-	(('entity' entities += Entity) | 
-	('relationship' relationships += Relationship))*;
-
-	
 Entity:
-	(weak?='weak')? name = ID ('extends' extends=[Entity])? ('{'
+	(weak?='weak')? 'entity' name=ID ('extends' extends=[Entity])? ('{'
 		(attributes += Attribute)*
 	'}')?;
 
 Relationship:
-	(weak?='weak')? name = ID ('{'
-		(left = RelationEntity '->' right = RelationEntity)
-		('->' third = RelationEntity)?
+	(weak?='weak')? 'relationship' name=ID ('{'
+		(left=RelationEntity '->' right=RelationEntity)
+		('->' third=RelationEntity)?
 		(attributes += Attribute)*
 	'}')?;
 
 RelationEntity:
 	target=[Entity] ('['
-		((multiplicity = MultiplicityType) | (customMultiplicity = STRING))
+		((multiplicity=MultiplicityType) | (customMultiplicity=STRING))
 	']')?;
 
 Attribute:
-	name = ID (':' datatype=DataType)? (type = AttributeType)?;
+	name=ID (':' datatype=DataType)? (type=AttributeType)?;
 
 enum DataType:
 	NONE = 'none' | INT = 'int' | DOUBLE = 'double' | STRING = 'string' | BOOLEAN = 'boolean' | DATETIME = 'datetime';
@@ -42,6 +38,3 @@ enum AttributeType:
 
 enum MultiplicityType:
 	One = '1' | Many = 'N';
-
-enum Direction:
-	DOWN = 'down' | UP = 'up' | RIGHT = 'right' | LEFT = 'left';
