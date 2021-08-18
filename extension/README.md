@@ -1,3 +1,20 @@
+# bigER
+
+Modeling Tool to display ER Diagrams together with a textual editor.
+
+
+![example](./media/example.png)
+
+
+## Features
+
+- Textual Syntax
+- Diagram View
+- SQL Code Generation
+
+## Example
+
+```
 erdiagram University
 generateSql
 
@@ -43,3 +60,5 @@ relationship takes_exam {
 relationship publishes {
     Publication[N] -> Professor[N]
 }
+```
+

@@ -20,6 +20,18 @@ To start running the extension press `F5` or `Run -> Start Debugging` inside VS 
 
 \-
 
+### Language Features
+
+#### Declarative language features
+
+- Syntax highlighting
+- Comment toggling
+- Bracket matching
+
+
+
+#### Programmatic language features
+
 
 
 ## Example 

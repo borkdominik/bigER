@@ -4,7 +4,7 @@
     "engines": {
         "vscode": "^1.50.0"
     },
-    "publisher": "Philipp-Lorenz Glaser",
+    "publisher": "BIGModelingTools",
     "license": "MIT",
     "displayName": "bigER Modeling Tool",
     "description": "Entity Relationship Diagrams with a textual editor",
@@ -14,7 +14,7 @@
     "keywords": [
         "Entity Relationship", "Data Modeling", "Diagram", "Language Server", "ERD"
     ],
-    "icon": "./media/logo.png",
+    "icon": "media/logo.png",
     "main": "./pack/main",
     "activationEvents": [
         "onLanguage:erdiagram",
@@ -124,7 +124,13 @@
               "key": "ctrl+o",
               "mac": "cmd+o",
               "when": "resourceExtname == '.erd'"
+            }, {
+                "command": "erdiagram.diagram.delete",
+                "key": "backspace",
+                "mac": "backspace",
+                "when": "erdiagram-diagram-focused"
             }
+            
           ]
     },
     "files": [

@@ -8,6 +8,7 @@
     </listAttribute>
     <booleanAttribute key="org.eclipse.jdt.launching.ATTR_EXCLUDE_TEST_CODE" value="true"/>
     <booleanAttribute key="org.eclipse.jdt.launching.ATTR_USE_START_ON_FIRST_THREAD" value="true"/>
+    <stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="org.eclipse.buildship.core.classpathprovider"/>
     <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="org.xtext.example.erd.ide.launch.ERDiagramSocketServer"/>
     <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="org.xtext.example.erd.ide"/>
 </launchConfiguration>

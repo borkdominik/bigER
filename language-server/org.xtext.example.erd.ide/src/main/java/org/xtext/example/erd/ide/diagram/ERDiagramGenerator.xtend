@@ -130,7 +130,7 @@ class ERDiagramGenerator implements IDiagramGenerator {
 			children =  new ArrayList<SModelElement>
 		]
 		val label = new SLabel [
-			id = idCache.uniqueId(relationship + 'label:right')
+			id = idCache.uniqueId(relationship + 'label:third')
 			text = relationship.third.customMultiplicity ?: relationship.third.multiplicity.toString()
 			type = 'label:top'
 		]

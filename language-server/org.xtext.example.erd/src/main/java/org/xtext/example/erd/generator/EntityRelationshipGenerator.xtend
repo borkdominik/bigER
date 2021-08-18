@@ -15,6 +15,7 @@ import org.xtext.example.erd.entityRelationship.AttributeType
 import org.xtext.example.erd.entityRelationship.Relationship
 import java.util.Set
 import java.util.List
+import org.eclipse.xtext.util.RuntimeIOException
 
 /**
  * Generates code from your model files on save.
@@ -35,7 +36,9 @@ class EntityRelationshipGenerator extends AbstractGenerator {
 		
 		// TODO: Fix Weak entites (weak -> weak and strong -> weak)
 
-		fsa.generateFile(name, '''
+		try {
+
+			fsa.generateFile(name, '''
 			«var Attribute primaryKey»
 			«FOR entity : diagram.entities.reject[it.isWeak]»
 				CREATE TABLE «entity.name» (
@@ -78,7 +81,10 @@ class EntityRelationshipGenerator extends AbstractGenerator {
 			«ENDFOR»
 			'''
 			)
+		} catch (RuntimeIOException e) {
+			throw new Error("Could not generate file. Did you open a folder?")
 		}
+	}
 
 		private def transformType(DataType type) {
 		switch (type) {

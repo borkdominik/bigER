@@ -7,7 +7,7 @@ Model:
 	// option to automatically generate SQL code
 	(generateSql='generateSql')?
 
-	((entities+=Entity) | (relationships+=Relationship))*;
+	(entities+=Entity | relationships+=Relationship)*;
 
 Entity:
 	(weak?='weak')? 'entity' name=ID ('extends' extends=[Entity])? ('{'
