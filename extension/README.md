@@ -9,7 +9,7 @@ Modeling Tool to display ER Diagrams together with a textual editor.
 
 [All Contributors](https://github.com/borkdominik/bigER/graphs/contributors)
 
-![example](https://raw.githubusercontent.com/borkdominik/bigER/main/extension/media/example.png)
+![example](https://raw.githubusercontent.com/borkdominik/bigER/main/extension/media/exampleComplete.png)
 
 
 ## Features
