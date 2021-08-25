@@ -126,8 +126,8 @@
               "when": "resourceExtname == '.erd'"
             }, {
                 "command": "erdiagram.diagram.delete",
-                "key": "backspace",
-                "mac": "backspace",
+                "key": "ctrl+backspace",
+                "mac": "cmd+backspace",
                 "when": "erdiagram-diagram-focused"
             }
             
@@ -138,7 +138,8 @@
         "extension",
         "server",
         "syntaxes",
-        "webview"
+        "webview",
+        "media"
     ],
     "dependencies": {
         "sprotty-vscode": "^0.1.3"
