@@ -3,8 +3,10 @@
 Tool to conceptualize Entity-Relationship (ER) models and create diagrams in VS Code with a textual language. 
 
 <!-- GIF OF DEMO -->
+<img src="https://raw.githubusercontent.com/borkdominik/bigER/main/extension/media/exampleComplete.png" />
 
-## Features
+
+**Features**
 
 - 📝 **Textual Language** to specify model elements and apply ER concepts 
 - 🧠 **Smart Editing** features for the language such as Syntax Highlighting or Auto Complete
@@ -14,33 +16,30 @@ Tool to conceptualize Entity-Relationship (ER) models and create diagrams in VS 
 
 [Download the extension from the VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=BIGModelingTools.erdiagram)
 
----
 
-## Details
+**Details**
 
 The tool is built based on web technologies and is realized in a client-server architecture. The server
 side is implemented with [Xtext](https://www.eclipse.org/Xtext/), providing a language server that communicates with VS Code through the [Language Server Protocol (LSP)](https://microsoft.github.io/language-server-protocol/). The client side contains the webview with a [Sprotty](https://github.com/eclipse/sprotty) diagram and the extension code based on [Sprotty for VS Code](https://github.com/eclipse/sprotty-vscode).
 
 **Repository Structure**
 
-[Example](##example)  
-[Getting started](##getting-started)  
-[Build Instructions](#build-instrudctions)    
-[Known Issues](#build-instrudctions)   
+[Example](#example)  
+[Getting started](#getting-started)  
+[Build Instructions](#build-instructions)    
+[Known Issues](#known-issues)   
 [Planned Features](#planned-features)      
-[Contributers](#contributers) 
+[Contributers](#contributors) 
 
 
 **Wiki**
 
-- [🏷️ Feature Overview](https://github.com/borkdominik/bigER/wiki/%F0%9F%8F%B7%EF%B8%8F-Feature-Overview)
-- [📖 Language Documentation](https://github.com/borkdominik/bigER/wiki/%F0%9F%93%96-Language-Documentation) 
-
-
-
+[🏷️ Feature Overview](https://github.com/borkdominik/bigER/wiki/%F0%9F%8F%B7%EF%B8%8F-Feature-Overview)  
+[📖 Language Documentation](https://github.com/borkdominik/bigER/wiki/%F0%9F%93%96-Language-Documentation) 
 
 
 ----
+
 
 ## Example 
 
