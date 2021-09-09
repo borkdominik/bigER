@@ -1,49 +1,49 @@
-# bigER - VS Code Extension
+# bigER Modeling Tool
 
-Tool to conceptualize Entity-Relationship (ER) models and create diagrams in VS Code with a textual language. 
+<!-- add gif of demo -->
+<img src="https://raw.githubusercontent.com/borkdominik/bigER/main/extension/media/exampleComplete.png" width="80%"/>
 
-<!-- GIF OF DEMO -->
-<img src="https://raw.githubusercontent.com/borkdominik/bigER/main/extension/media/exampleComplete.png" />
+>### *VS Code Extension to create Entity-Relationship (ER) diagrams and generate SQL code with a textual language*
 
+### Features
 
-**Features**
+📝 **Textual Language** to specify model elements and apply ER concepts  
+🧠 **Smart Editing** features for the language such as Syntax Highlighting or Auto Complete  
+📊 **Diagram View** synchronized with textual changes and elements are laid out automatically  
+🎨 **Graphical Interactions** to customize the diagram or modify the underlying model  
+🖨️ **Code Generation** to generate SQL statements  
 
-- 📝 **Textual Language** to specify model elements and apply ER concepts 
-- 🧠 **Smart Editing** features for the language such as Syntax Highlighting or Auto Complete
-- 📊 **Diagram View** synchronized with textual changes and elements are laid out automatically
-- 🎨 **Graphical Interactions** to customize the diagram or modify the underlying model
-- 🖨️ **Code Generation** to generate SQL statements
+The tool is built based on web technologies and language features are communicated with the [Language Server Protocol (LSP)](https://microsoft.github.io/language-server-protocol/). This makes bigER highly reusable and simplifies implementation for other editors that also use LSP.   
+The language and editor features are realized as a language server with [Xtext](https://www.eclipse.org/Xtext/). [Sprotty](https://github.com/eclipse/sprotty) and [Sprotty Server](https://github.com/eclipse/sprotty-server) is used to create the diagrams and both connect to VS Code by using [Sprotty VS Code](https://github.com/eclipse/sprotty-vscode). 
 
-[Download the extension from the VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=BIGModelingTools.erdiagram)
+[**Download the extension from the VS Code Marketplace**](https://marketplace.visualstudio.com/items?itemName=BIGModelingTools.erdiagram)
 
+---
 
-**Details**
+### Sections
 
-The tool is built based on web technologies and is realized in a client-server architecture. The server
-side is implemented with [Xtext](https://www.eclipse.org/Xtext/), providing a language server that communicates with VS Code through the [Language Server Protocol (LSP)](https://microsoft.github.io/language-server-protocol/). The client side contains the webview with a [Sprotty](https://github.com/eclipse/sprotty) diagram and the extension code based on [Sprotty for VS Code](https://github.com/eclipse/sprotty-vscode).
+➜ [Quick Example](#quick-example)  
+➜ [Getting Started](#getting-started)  
+➜ [Build Instructions](#build-instructions)    
+➜ [Known Issues](#known-issues)      
+➜ [Contributers](#contributors) 
 
-**Repository Structure**
-
-[Example](#example)  
-[Getting started](#getting-started)  
-[Build Instructions](#build-instructions)    
-[Known Issues](#known-issues)   
-[Planned Features](#planned-features)      
-[Contributers](#contributors) 
-
-
-**Wiki**
+### Wiki
 
 [🏷️ Feature Overview](https://github.com/borkdominik/bigER/wiki/%F0%9F%8F%B7%EF%B8%8F-Feature-Overview)  
 [📖 Language Documentation](https://github.com/borkdominik/bigER/wiki/%F0%9F%93%96-Language-Documentation) 
 
+> ⚠️ The wiki pages are still in progress
 
-----
+</br>   
 
 
-## Example 
+## Quick Example 
 
-### Textual
+**Textual**
+
+<details>
+	<summary><i>university.erd</i> (click to expand)</summary>
 
 ```
 erdiagram University
@@ -92,12 +92,18 @@ relationship publishes {
     Publication[N] -> Professor[N]
 }
 ```
+</details>
 
-### Diagram
+**Diagram**
 
-<img src="https://user-images.githubusercontent.com/39776671/129263384-6f14718f-efc2-40d8-a398-d9586f033b64.png" style="zoom:450%;" />
+<p align="left">
+	<img src="https://user-images.githubusercontent.com/39776671/129263384-6f14718f-efc2-40d8-a398-d9586f033b64.png" width="70%" height="100%"/>
+</p>
 
-### Generated SQL Code
+**Generated SQL Code**
+
+<details>
+	<summary><i>university.sql</i> (click to expand)</summary>
 
 ```sql
 CREATE TABLE Person (
@@ -169,12 +175,13 @@ CREATE TABLE publishes (
 		REFERENCES Professor(pers_nr)
 );
 ```
+</details>
 
 ## Getting Started
 
-To start using the tool, download the extension from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=BIGModelingTools.erdiagram) or clone this repository, see [Build Instructions](#build-locally). 
+To start using the tool, download the extension from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=BIGModelingTools.erdiagram) or clone this repository (see [Build Instructions](#build-instructions)). 
 
-Open a file ending in `.erd` and refer to the basic example below to specify a new ER model. The diagram view can then be opened with the button in the editor or from the context menu of the file. 
+Open a file ending in `.erd` and refer to the minimal example below to specify a new ER model. The diagram view can then be opened with the button in the editor or from the context menu of the file. 
 
 *example.erd*
 ```
@@ -200,7 +207,6 @@ relationship Places {
 
 The `generateSql` keyword in line 2 is optional and can be used to generate SQL statements. The ER model has to be valid and a *src-gen* folder will be created containing the generated code. 
 
-A more complete example can be found [here](https://github.com/borkdominik/bigER/blob/main/examples/university.erd).
 <!-- GIF opening file, pasting example and opening diagram -->
 
 ## Build Instructions
@@ -217,15 +223,16 @@ This builds the code for the language server, the webview and the extension. To 
 
 ## Known Issues
 
-- generateSql sometimes crashes the language server
-- Weak Entity Code Generation contains bugs
+**Fix**
+- Code Generator can cause the language server to crash (e.g. weak entities)
 
-## Planned Features
+**Next steps**
 
-- [ ] Support Partial/Full Participation
-- [ ] Improved Layout
-- [ ] Delete Entities/Relationships in Diagram
-- [ ] Rename Attributes in Diagram
+- [ ] New ER concepts - partial/full participation, min-max Notation
+- [ ] New Diagram Features - Delete button, Support also renaming attributes and multiplicity
+- [ ] Improve Code Generator - Include all ER concepts, button in Diagram, multiple SQL dialects, fix crashes/bugs
+- [ ] Improve Layout and Styling (Light/Dark Theme)
+- [ ] Improve LSP features
 
 ## Contributors
 
