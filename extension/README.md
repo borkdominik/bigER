@@ -1,70 +1,55 @@
-# bigER
+# bigER - VS Code Extension
 
-Modeling Tool to display ER Diagrams together with a textual editor.
+Tool to conceptualize Entity-Relationship (ER) models and create diagrams in VS Code with a textual language. 
 
-## Contributors
-[@Philip-Lorenz Glaser](https://github.com/plglaser) -- Main developer
-
-[@Dominik Bork](https://github.com/borkdominik)
-
-[All Contributors](https://github.com/borkdominik/bigER/graphs/contributors)
-
-![example](https://raw.githubusercontent.com/borkdominik/bigER/main/extension/media/exampleComplete.png)
+<!-- DEMO GIF -->
 
 
 ## Features
 
-- Textual Syntax
-- Diagram View
-- SQL Code Generation
+- 📝 **Textual Language** to specify model elements and apply ER concepts 
+- 🧠 **Smart Editing** features for the language such as Syntax Highlighting or Auto Complete
+- 📊 **Diagram View** synchronized with textual changes and elements are laid out automatically
+- 🎨 **Graphical Interactions** to customize the diagram or modify the underlying model
+- 🖨️ **Code Generation** to generate SQL statements
 
-## Example
 
+## Getting Started
+
+Open a file ending in `.erd` and refer to the basic example below to specify a new ER model. The diagram view can then be opened with the button in the editor or from the context menu of the file. 
+
+*example.erd*
 ```
-erdiagram University
+erdiagram Example
 generateSql
 
-entity Person {
-    full_name: string key
-    birthday: datetime
-    age: int derived
+entity Customer {
+    id: int key
+    name: string
 }
 
-entity Student extends Person {
-    matr_nr: int key
-    undergraduate: boolean
+entity Order {
+    order_number: int key
+    price: double
 }
 
-entity Course {
-    course_id: int key
-    title: string
-}
-
-weak entity Lecture {
-    lect_nr: int partial-key
-}
-
-weak relationship contains {
-    Course[1] -> Lecture[N]
-}
-
-entity Professor extends Person {
-    pers_nr: int key
-}
-
-entity Publication {
-    pub_id: int key
-    title: string
-    research_area: string optional
-}
-
-relationship takes_exam {
-    Course[N] -> Professor[1] -> Student[N]
-    points: double
-}
-
-relationship publishes {
-    Publication[N] -> Professor[N]
+relationship Places {
+    Customer[1] -> Order[N]
 }
 ```
 
+> The first line always has to include the `erdiagram` keyword followed by a name.
+
+The `generateSql` keyword in line 2 is optional and can be used to generate SQL statements. The ER model has to be valid and a *src-gen* folder will be created containing the generated code. 
+
+A more complete example can be found [here](https://github.com/borkdominik/bigER/blob/main/examples/university.erd).
+
+## Learn more
+
+See the [GitHub repository](https://github.com/borkdominik/bigER) for more information.
+
+
+The [Wiki](https://github.com/borkdominik/bigER/wiki) includes the following topics:
+
+- [🏷️ Feature Overview](https://github.com/borkdominik/bigER/wiki/%F0%9F%8F%B7%EF%B8%8F-Feature-Overview)
+- [📖 Language Documentation](https://github.com/borkdominik/bigER/wiki/%F0%9F%93%96-Language-Documentation) 

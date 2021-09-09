@@ -1,38 +1,46 @@
-# bigER Tool
+# bigER - VS Code Extension
 
-The bigER Tool is an extension for VS Code to display ER Diagrams with the help of a textual syntax. The textual syntax supports entities, relationships and attributes, together with additional concepts. The corresponding diagram is laid out automatically and includes various user interactions. There is also an option to generate SQL Code out of a textual model.
+Tool to conceptualize Entity-Relationship (ER) models and create diagrams in VS Code with a textual language. 
 
-## Build locally
-
-Download or clone the repository and in the root folder of the project execute the following commands:
-
-```bash
-language-server/gradlew -p language-server/ build   
-yarn --cwd webview  
-yarn --cwd extension
-```
-
-To start running the extension press `F5` or `Run -> Start Debugging` inside VS Code.
-
-
+<!-- GIF OF DEMO -->
 
 ## Features
 
-\-
+- 📝 **Textual Language** to specify model elements and apply ER concepts 
+- 🧠 **Smart Editing** features for the language such as Syntax Highlighting or Auto Complete
+- 📊 **Diagram View** synchronized with textual changes and elements are laid out automatically
+- 🎨 **Graphical Interactions** to customize the diagram or modify the underlying model
+- 🖨️ **Code Generation** to generate SQL statements
 
-### Language Features
+[Download the extension from the VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=BIGModelingTools.erdiagram)
 
-#### Declarative language features
+---
 
-- Syntax highlighting
-- Comment toggling
-- Bracket matching
+## Details
+
+The tool is built based on web technologies and is realized in a client-server architecture. The server
+side is implemented with [Xtext](https://www.eclipse.org/Xtext/), providing a language server that communicates with VS Code through the [Language Server Protocol (LSP)](https://microsoft.github.io/language-server-protocol/). The client side contains the webview with a [Sprotty](https://github.com/eclipse/sprotty) diagram and the extension code based on [Sprotty for VS Code](https://github.com/eclipse/sprotty-vscode).
+
+**Repository Structure**
+
+[Example](##example)  
+[Getting started](##getting-started)  
+[Build Instructions](#build-instrudctions)    
+[Known Issues](#build-instrudctions)   
+[Planned Features](#planned-features)      
+[Contributers](#contributers) 
+
+
+**Wiki**
+
+- [🏷️ Feature Overview](https://github.com/borkdominik/bigER/wiki/%F0%9F%8F%B7%EF%B8%8F-Feature-Overview)
+- [📖 Language Documentation](https://github.com/borkdominik/bigER/wiki/%F0%9F%93%96-Language-Documentation) 
 
 
 
-#### Programmatic language features
 
 
+----
 
 ## Example 
 
@@ -163,18 +171,55 @@ CREATE TABLE publishes (
 );
 ```
 
+## Getting Started
 
+To start using the tool, download the extension from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=BIGModelingTools.erdiagram) or clone this repository, see [Build Instructions](#build-locally). 
 
-## SQL Code Generation
+Open a file ending in `.erd` and refer to the basic example below to specify a new ER model. The diagram view can then be opened with the button in the editor or from the context menu of the file. 
 
-The bigER Tool allows to generate SQL Code out of the specified ER model. To enable code generation use the `generateSql` option in the textual model, this also adds additional constraints and validation (see below) to the model. Once the option is set a new folder `src-gen` is created, including the file with the generated SQL tables. 
+*example.erd*
+```
+erdiagram Example
+generateSql
 
-### Constraints and Validation
+entity Customer {
+    id: int key
+    name: string
+}
 
-- Strong entities require a primary key attribute 
-- Weak entities require a partial key attribute and the relationship to the strong entity also has to be specified as a `weak relationship`
-- Derived attributes are not included in the created tables
-- If no datatype is set for an attribute, `varchar(255)` is being used as the default datatype. 
+entity Order {
+    order_number: int key
+    price: double
+}
+
+relationship Places {
+    Customer[1] -> Order[N]
+}
+```
+
+> The first line always has to include the `erdiagram` keyword followed by a name.
+
+The `generateSql` keyword in line 2 is optional and can be used to generate SQL statements. The ER model has to be valid and a *src-gen* folder will be created containing the generated code. 
+
+A more complete example can be found [here](https://github.com/borkdominik/bigER/blob/main/examples/university.erd).
+<!-- GIF opening file, pasting example and opening diagram -->
+
+## Build Instructions
+
+Download or clone the repository and in the root folder of the project execute the following commands:
+
+```bash
+language-server/gradlew -p language-server/ build   
+yarn --cwd webview  
+yarn --cwd extension
+```
+
+This builds the code for the language server, the webview and the extension. To run the extension press `F5` or click on `Run -> Start Debugging` within VS Code.
+
+## Known Issues
+
+- generateSql sometimes crashes the language server
+- Weak Entity Code Generation contains bugs
 
 ## Planned Features
 
@@ -183,6 +228,9 @@ The bigER Tool allows to generate SQL Code out of the specified ER model. To ena
 - [ ] Delete Entities/Relationships in Diagram
 - [ ] Rename Attributes in Diagram
 
-## Known Issues
+## Contributors
 
-- Weak Entity Code Generation contains bugs
+[Philipp-Lorenz Glaser](https://github.com/plglaser) (Main developer),   
+[Dominik Bork](https://github.com/borkdominik)
+
+[All Contributors](https://github.com/borkdominik/bigER/graphs/contributors)
