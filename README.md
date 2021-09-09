@@ -1,7 +1,7 @@
 # bigER Modeling Tool
 
 <!-- add gif of demo -->
-<img src="https://raw.githubusercontent.com/borkdominik/bigER/main/extension/media/exampleComplete.png" width="80%"/>
+<img src="https://raw.githubusercontent.com/borkdominik/bigER/main/extension/media/exampleComplete.png" width="100%"/>
 
 >### *VS Code Extension to create Entity-Relationship (ER) diagrams and generate SQL code with a textual language*
 
@@ -13,7 +13,7 @@
 🎨 **Graphical Interactions** to customize the diagram or modify the underlying model  
 🖨️ **Code Generation** to generate SQL statements  
 
-The tool is built based on web technologies and language features are communicated with the [Language Server Protocol (LSP)](https://microsoft.github.io/language-server-protocol/). This makes bigER highly reusable and simplifies implementation for other editors that also use the LSP. The language and editor features are realized as a language server with [Xtext](https://www.eclipse.org/Xtext/). [Sprotty](https://github.com/eclipse/sprotty) and [Sprotty Server](https://github.com/eclipse/sprotty-server) is used to create the diagrams and both connect to VS Code by using [Sprotty VS Code](https://github.com/eclipse/sprotty-vscode). 
+The tool is built based on web technologies and language features are communicated with the [Language Server Protocol (LSP)](https://microsoft.github.io/language-server-protocol/). This makes bigER highly reusable and simplifies implementation for other editors that also use the LSP. The language and editor features are realized as a language server with [Xtext](https://www.eclipse.org/Xtext/). [Sprotty](https://github.com/eclipse/sprotty) together with [Sprotty Server](https://github.com/eclipse/sprotty-server) is used to create the diagrams and both connect to VS Code by using [Sprotty VS Code](https://github.com/eclipse/sprotty-vscode). 
 
 [**Download the extension from the VS Code Marketplace**](https://marketplace.visualstudio.com/items?itemName=BIGModelingTools.erdiagram)
 
