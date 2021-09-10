@@ -3,6 +3,7 @@ const path = require('path');
 
 const outputPath = path.resolve(__dirname, '../extension/pack');
 
+/**@type {import('webpack').Configuration}*/
 const config = {
     target: 'web',
 
@@ -12,7 +13,6 @@ const config = {
         path: outputPath
     },
     devtool: 'eval-source-map',
-
     resolve: {
         extensions: ['.ts', '.tsx', '.js']
     },
@@ -34,7 +34,8 @@ const config = {
             }
         ]
     },
-    node : { fs: 'empty', net: 'empty' }
+    // @ts-ignore
+    node: { fs: 'empty', net: 'empty' }
 };
 
 module.exports = config;

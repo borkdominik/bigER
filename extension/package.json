@@ -1,35 +1,53 @@
 {
-    "name": "erdiagram",
-    "version": "0.0.1",
-    "engines": {
-        "vscode": "^1.50.0"
-    },
-    "publisher": "BIGModelingTools",
-    "license": "MIT",
+    "name": "biger",
     "displayName": "bigER Modeling Tool",
-    "description": "Entity Relationship Diagrams with a textual editor",
+    "description": "Entity Relationship Diagrams with a textual editor and SQL code generation.",
+    "version": "0.0.2",
+    "publisher": "BIGModelingTools",
     "categories": [
-        "Programming Languages", "Visualization"
+        "Programming Languages",
+        "Visualization"
     ],
     "keywords": [
-        "Entity Relationship", "Data Modeling", "Diagram", "Language Server", "ERD"
+        "Entity Relationship",
+        "Data Modeling",
+        "Diagram",
+        "Language Server",
+        "ERD"
     ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/borkdominik/bigER"
+    },
+    "license": "MIT",
+    "engines": {
+        "vscode": "^1.59.0"
+    },
     "icon": "media/logo.png",
+    "galleryBanner": {
+        "color": "#1d1d1d",
+        "theme": "dark"
+    },
     "main": "./pack/main",
     "activationEvents": [
         "onLanguage:erdiagram",
         "onCommand:erdiagram.diagram.open"
     ],
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/borkdominik/bigER.git"
-      },
+    "files": [
+        "extension",
+        "server",
+        "syntaxes",
+        "webview",
+        "media"
+    ],
     "contributes": {
         "languages": [
             {
                 "id": "erdiagram",
                 "aliases": [
+                    "ERDiagram",
                     "erdiagram",
+                    "ERD",
                     "erd"
                 ],
                 "extensions": [
@@ -48,32 +66,53 @@
         "commands": [
             {
                 "command": "erdiagram.diagram.open",
-                "title": "Open Diagram View",
-                "icon": "$(type-hierarchy-super)", 
-                "category": "ER-Diagram"
+                "title": "Open ER Diagram",
+                "icon": "$(type-hierarchy-super)",
+                "category": "ER Diagram"
             },
             {
                 "command": "erdiagram.diagram.fit",
                 "title": "Fit to Screen",
-                "category": "ER-Diagram"
+                "category": "ER Diagram"
             },
             {
                 "command": "erdiagram.diagram.center",
                 "title": "Center selection",
-                "category": "ER-Diagram"
-            },
-            {
-                "command": "erdiagram.diagram.delete",
-                "title": "Delete selected element",
-                "category": "ER-Diagram"
+                "category": "ER Diagram"
             },
             {
                 "command": "erdiagram.diagram.export",
                 "title": "Export diagram to SVG",
-                "category": "ER-Diagram"
+                "category": "ER Diagram"
+            },
+            {
+                "command": "erdiagram.diagram.delete",
+                "title": "Delete selected element",
+                "category": "ER Diagram"
             }
         ],
         "menus": {
+            "editor/title": [
+                {
+                    "command": "erdiagram.diagram.open",
+                    "when": "editorLangId == 'erdiagram'",
+                    "group": "navigation"
+                }
+            ],
+            "editor/context": [
+                {
+                    "command": "erdiagram.diagram.open",
+                    "when": "editorLangId == 'erdiagram'",
+                    "group": "navigation"
+                }
+            ],
+            "explorer/context": [
+                {
+                    "command": "erdiagram.diagram.open",
+                    "when": "resourceExtname == '.erd'",
+                    "group": "navigation"
+                }
+            ],
             "commandPalette": [
                 {
                     "command": "erdiagram.diagram.open",
@@ -95,58 +134,35 @@
                     "command": "erdiagram.diagram.export",
                     "when": "erdiagram-diagram-focused"
                 }
-            ],
-            "editor/context": [
-                {
-                    "command": "erdiagram.diagram.open",
-                    "when": "editorLangId == 'erdiagram'",
-                    "group": "navigation"
-                }
-            ],
-            "editor/title": [
-                {
-                    "command": "erdiagram.diagram.open",
-                    "when": "editorLangId == 'erdiagram'",
-                    "group": "navigation"
-                }
-            ],
-            "explorer/context": [
-                {
-                    "command": "erdiagram.diagram.open",
-                    "when": "resourceExtname == '.erd'",
-                    "group": "navigation"
-                }
             ]
         },
         "keybindings": [
             {
-              "command": "erdiagram.diagram.open",
-              "key": "ctrl+o",
-              "mac": "cmd+o",
-              "when": "resourceExtname == '.erd'"
-            }, {
+                "command": "erdiagram.diagram.open",
+                "key": "ctrl+o",
+                "mac": "cmd+o",
+                "when": "resourceExtname == '.erd'"
+            },
+            {
                 "command": "erdiagram.diagram.delete",
                 "key": "ctrl+backspace",
                 "mac": "cmd+backspace",
                 "when": "erdiagram-diagram-focused"
+            },
+            {
+                "command": "erdiagram.diagram.fit",
+                "key": "ctrl+f",
+                "mac": "cmd+f",
+                "when": "erdiagram-diagram-focused"
             }
-            
-          ]
+        ]
     },
-    "files": [
-        "lib",
-        "extension",
-        "server",
-        "syntaxes",
-        "webview",
-        "media"
-    ],
     "dependencies": {
         "sprotty-vscode": "^0.1.3"
     },
     "devDependencies": {
         "@types/node": "8.10.66",
-        "@types/vscode": "^1.50.0",
+        "@types/vscode": "^1.59.0",
         "rimraf": "2.6.3",
         "source-map-loader": "1.0.2",
         "ts-loader": "^8.2.0",
@@ -161,7 +177,6 @@
         "prepare": "yarn run clean && yarn run build",
         "clean": "rimraf extension/lib extension/pack",
         "build": "tsc && webpack --mode=development",
-        "watch": "tsc -w",
-        "watch:webpack": "webpack --mode=development --watch"
+        "watch": "tsc && webpack --mode=development --watch"
     }
 }

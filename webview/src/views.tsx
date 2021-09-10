@@ -1,6 +1,5 @@
 /** @jsx svg */
 import { svg } from 'snabbdom-jsx';
-
 import { VNode } from "snabbdom/vnode";
 import { RenderingContext, RectangularNodeView, SNode, SEdge, Point, PolylineEdgeView, toDegrees, ExpandButtonView, findParentByFeature, isExpandable } from 'sprotty';
 import { injectable } from 'inversify';

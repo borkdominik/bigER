@@ -1,13 +1,14 @@
 {   
-    "version": "0.2.0",
+    "version": "0.0.2",
     "configurations": [
         
         {
-            "name": "ER Diagram Extension",
+            "name": "Run bigER Extension",
             "type": "extensionHost",
             "request": "launch",
             "runtimeExecutable": "${execPath}",
             "args": [
+                "--disable-extensions",
                 "${workspaceFolder}/examples",
                 "--extensionDevelopmentPath=${workspaceFolder}/extension"
             ],

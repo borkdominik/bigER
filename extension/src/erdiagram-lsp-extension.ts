@@ -1,9 +1,7 @@
 import { LspLabelEditActionHandler, SprottyLspEditVscodeExtension, WorkspaceEditActionHandler } from "sprotty-vscode/lib/lsp/editing";
 import { LanguageClient, ServerOptions, LanguageClientOptions } from "vscode-languageclient";
-// import { SprottyDiagramIdentifier } from "../../webview/node_modules/sprotty-vscode-webview/lib";
 import { SprottyWebview } from "sprotty-vscode/lib/sprotty-webview";
 import { SprottyDiagramIdentifier, SprottyLspWebview } from "sprotty-vscode/lib/lsp";
-
 import * as path from 'path';
 import * as vscode from 'vscode';
 

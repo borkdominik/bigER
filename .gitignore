@@ -1,8 +1,26 @@
-node_modules
 lib
+out
 bin
-package-lock.json
-/.metadata/
 pack
-src-gen/
+target
+/.metadata/
+*.vsix
+
+/src-gen/*
+!./University.sql
+
+# macOS
 .DS_Store
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Modules
+node_modules/
+package-lock.json
+yarn.lock
+.yarn-integrity

@@ -2,7 +2,7 @@
   "extends": "../base-tsconfig.json",
 	"compilerOptions": {
         "rootDir": "src",
-        "outDir": "lib",
+        "outDir": "out",
         "experimentalDecorators": true
     },
     "include": [

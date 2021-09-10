@@ -5,8 +5,8 @@ import { ERDiagramLspVscodeExtension } from './erdiagram-lsp-extension';
 let extension: SprottyLspVscodeExtension;
 
 export function activate(context: vscode.ExtensionContext) {
-    vscode.window.showInformationMessage('ER Diagram Extension activated');
     extension = new ERDiagramLspVscodeExtension(context);
+    vscode.window.showInformationMessage('ER Extension is active.');
 }
 
 export function deactivate(): Thenable<void> {

@@ -5,7 +5,6 @@ import org.eclipse.sprotty.xtext.IDiagramGenerator
 
 class ERDiagramModule extends DefaultDiagramModule {
 
-	
 	def Class<? extends IDiagramGenerator> bindIDiagramGenerator() {
 		ERDiagramGenerator
 	} 

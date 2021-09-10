@@ -1,7 +1,6 @@
 import { injectable } from "inversify";
 import { EdgeLayoutable, EdgePlacement, ManhattanEdgeRouter, SEdge, SLabel } from 'sprotty';
 
-
 @injectable()
 export class MultiplicityLabel extends SLabel implements EdgeLayoutable {
     edgePlacement = <EdgePlacement> {
@@ -15,8 +14,4 @@ export class MultiplicityLabel extends SLabel implements EdgeLayoutable {
 export class InheritanceEdge extends SEdge {
     public readonly targetAnchorCorrection = Math.sqrt(5);
     public readonly routerKind = ManhattanEdgeRouter.KIND;
-}
-
-export class CodeActionButton {
-    
 }
