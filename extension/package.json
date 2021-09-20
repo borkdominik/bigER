@@ -1,5 +1,5 @@
 {
-    "name": "biger",
+    "name": "erdiagram",
     "displayName": "bigER Modeling Tool",
     "description": "Entity Relationship Diagrams with a textual editor and SQL code generation.",
     "version": "0.0.2",
@@ -21,7 +21,7 @@
     },
     "license": "MIT",
     "engines": {
-        "vscode": "^1.59.0"
+        "vscode": "^1.50.0"
     },
     "icon": "media/logo.png",
     "galleryBanner": {
@@ -45,9 +45,7 @@
             {
                 "id": "erdiagram",
                 "aliases": [
-                    "ERDiagram",
                     "erdiagram",
-                    "ERD",
                     "erd"
                 ],
                 "extensions": [
@@ -162,7 +160,7 @@
     },
     "devDependencies": {
         "@types/node": "8.10.66",
-        "@types/vscode": "^1.59.0",
+        "@types/vscode": "^1.50.0",
         "rimraf": "2.6.3",
         "source-map-loader": "1.0.2",
         "ts-loader": "^8.2.0",
