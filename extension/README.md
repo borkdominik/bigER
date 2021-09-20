@@ -3,7 +3,7 @@
 Tool to conceptualize Entity-Relationship (ER) models and create diagrams in VS Code with a textual language. 
 
 <!-- DEMO GIF -->
-
+<img src="https://raw.githubusercontent.com/borkdominik/bigER/main/extension/media/example.gif" width="100%"/>
 
 ## Features
 
