@@ -1,35 +1,3 @@
-Skip to content
-Search or jump to…
-Pull requests
-Issues
-Marketplace
-Explore
- 
-@borkdominik 
-citation-file-format
-/
-cff-converter-python
-Public
-5
-30
-11
-Code
-Issues
-19
-Pull requests
-1
-Actions
-Security
-Insights
-cff-converter-python/CITATION.cff
-@jspaaks
-jspaaks Update CITATION.cff
-Latest commit 53d2f89 14 hours ago
- History
- 4 contributors
-@jspaaks@wleoncio@Tommos0@sdruskat
-146 lines (146 sloc)  4.46 KB
-   
 # YAML 1.2
 ---
 abstract: "Command line program to validate and convert CITATION.cff files."
@@ -176,16 +144,3 @@ references:
     title: How to Cite Software in APA Style
     type: blog 
     url: https://blog.apastyle.org/apastyle/2015/01/how-to-cite-software-in-apa-style.html
-© 2021 GitHub, Inc.
-Terms
-Privacy
-Security
-Status
-Docs
-Contact GitHub
-Pricing
-API
-Training
-Blog
-About
-Loading complete
