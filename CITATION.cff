@@ -6,7 +6,7 @@ authors:
   - family-names: Bork
     given-names: Dominik
     orcid: "https://orcid.org/0000-0001-8259-2297"
-cff-version: "1.1.0"
+cff-version: "1.2.0"
 message: "If you use this software, please cite it using these metadata."
 title: "The bigER Tool -- Hybrid Textual and Graphical Modeling of Entity Relationships in VS Code"
 authors: 
