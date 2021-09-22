@@ -1,146 +1,24 @@
 # YAML 1.2
 ---
-abstract: "Command line program to validate and convert CITATION.cff files."
-authors:
-  -
-    affiliation: "Netherlands eScience Center"
-    family-names: Spaaks
-    given-names: Jurriaan H.
-    orcid: https://orcid.org/0000-0002-7064-4069
-  -
-    affiliation: "Netherlands eScience Center"
-    family-names: Klaver
-    given-names: Tom
-  -
-    affiliation: "Netherlands eScience Center"
-    family-names: Verhoeven
-    given-names: Stefan
-    orcid: https://orcid.org/0000-0002-5821-2060
-  -
-    affiliation: "Humboldt-Universität zu Berlin"
-    family-names: Druskat
-    given-names: Stephan
-    orcid: https://orcid.org/0000-0003-4925-7248
-  -
-    affiliation: "University of Oslo"
-    family-names: Leoncio
-    given-names: Waldir
-    name-suffix: Netto
 cff-version: 1.2.0
 date-released: 1900-01-01 #FIXME
 identifiers:
-  - type: doi
-    value: 10.5281/zenodo.1162057
-    description: "Persistent identifier for all versions of cffconvert"
   - type: url
-    value: https://github.com/citation-file-format/cff-converter-python
-    description: "URL to the GitHub repository for cffconvert"
-  - type: url
-    value: https://pypi.org/project/cffconvert
-    description: "cffconvert on PyPI"
-keywords:
-  - bibliography
-  - BibTeX
-  - cff
-  - citation
-  - CITATION.cff
-  - CodeMeta
-  - EndNote
-  - RIS
-  - "Citation File Format"
-license: Apache-2.0
+    value: https://github.com/borkdominik/bigER/
+    description: "ER Modeling tool for VS Code"
+license: MIT
 message: "If you use this software, please cite it using these metadata."
-repository-artifact: "https://pypi.org/project/cffconvert"
-repository-code: "https://github.com/citation-file-format/cff-converter-python"
-title: cffconvert
-version: "2.0.0-alpha.0"
-references:
-  - authors:
-      -
-        affiliation: "Netherlands eScience Center"
-        family-names: Zwaan
-        given-names: Janneke
-        name-particle: "van der"
-        orcid: "https://orcid.org/0000-0002-8329-7000"
-      -
-        affiliation: "Netherlands eScience Center"
-        family-names: Werkhoven
-        given-names: Ben
-        name-particle: van
-        orcid: "https://orcid.org/0000-0002-7508-3272"
-      -
-        affiliation: "Netherlands eScience Center"
-        family-names: Andela
-        given-names: Bouwe
-        orcid: "https://orcid.org/0000-0001-9005-8940"
-      -
-        affiliation: "Netherlands eScience Center"
-        family-names: Bos
-        given-names: Patrick
-        orcid: "https://orcid.org/0000-0002-6033-960X"
-      -
-        affiliation: "Netherlands eScience Center"
-        family-names: Attema
-        given-names: Jisk
-        orcid: "https://orcid.org/0000-0002-0948-1176"
-      -
-        affiliation: "Netherlands eScience Center"
-        family-names: Bakker
-        given-names: Tom
-      -
-        affiliation: "Netherlands eScience Center"
-        family-names: Spaaks
-        given-names: Jurriaan H.
-        orcid: "https://orcid.org/0000-0002-7064-4069"
-      -
-        affiliation: "Netherlands eScience Center"
-        family-names: Kuppevelt
-        given-names: Dafne
-        name-particle: van
-        orcid: "https://orcid.org/0000-0002-2662-1994"
-      -
-        affiliation: "Netherlands eScience Center"
-        family-names: Veen
-        given-names: Lourens
-        orcid: "https://orcid.org/0000-0002-6311-1168"
-      -
-        affiliation: "Netherlands eScience Center"
-        family-names: Rol
-        given-names: Evert
-        orcid: "https://orcid.org/0000-0001-8357-4453"
-      -
-        affiliation: "Netherlands eScience Center"
-        family-names: Verhoeven
-        given-names: Stefan
-        orcid: "https://orcid.org/0000-0002-5821-2060"
-      -
-        affiliation: "Netherlands eScience Center"
-        family-names: Diblen
-        given-names: Faruk
-        orcid: "https://orcid.org/0000-0002-0989-929X"
-      -
-        affiliation: "Netherlands eScience Center"
-        family-names: Tjong Kim Sang
-        given-names: Erik
-        orcid: "https://orcid.org/0000-0002-8431-081X"
-    date-released: 2018-07-17
-    identifiers:
-      -
-        description: "Concept DOI for Netherlands eScience Center Python Template"
-        type: doi
-        value: 10.5281/zenodo.1310751
-    keywords:
-      - cookiecutter
-      - template
-      - Python
-    license: Apache-2.0
-    repository-code: "https://github.com/NLeSC/python-template"
-    title: "Netherlands eScience Center Python Template"
-    type: software
-    version: "0.4.0"
-  - authors:
-      - family-names: McAdoo
-        given-names: Timothy
-    title: How to Cite Software in APA Style
-    type: blog 
-    url: https://blog.apastyle.org/apastyle/2015/01/how-to-cite-software-in-apa-style.html
+repository-code: "https://github.com/borkdominik/bigER/"
+title: "bigER Modeling Tool"
+url: "https://github.com/borkdominik/bigER/"
+preferred-citation:
+  type: inproceedings
+  authors:
+    - family-names: "Glaser"
+     given-names: "Philipp-Lorenz"
+    - family-names: "Bork"
+     given-names: "Dominik"
+  orcid: "https://orcid.org/0000-0001-8259-2297"
+  booktitle: "25th IEEE International Enterprise Distributed Object Computing Workshop, EDOC Workshops 2021"
+  title: "The bigER Tool -- Hybrid Textual and Graphical Modeling of Entity Relationships in VS Code"
+  year: 2021
