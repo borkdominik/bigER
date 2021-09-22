@@ -1,12 +1,22 @@
-cff-version: 1.2.0
-message: "If you use this software, please cite it as below."
-type: conference-paper
+cff-version: 1.0.2
+message: If you use this software, please cite the software and the paper.
 authors:
-- family-names: "Glaser"
-  given-names: "Philipp-Lorenz"
-- family-names: "Bork"
-  given-names: "Dominik"
-  orcid: "https://orcid.org/0000-0001-8259-2297"
-title: "The bigER Tool -- Hybrid Textual and Graphical Modeling of Entity Relationships in VS Code"
-collection-title: "25th IEEE International Enterprise Distributed Object Computing Workshop, EDOC Workshops 2021"
-url: "https://github.com/borkdominik/bigER/"
+- family-names: Druskat
+given-names: Stephan
+orcid: 0000-0003-4925-7248
+title: bigER Modeling Tool
+references:
+- type: conference-paper
+	  authors:
+		- family-names: "Glaser"
+		  given-names: "Philipp-Lorenz"
+		- family-names: "Bork"
+		  given-names: "Dominik"
+		  orcid: "https://orcid.org/0000-0001-8259-2297"
+	title: "The bigER Tool -- Hybrid Textual and Graphical Modeling of Entity Relationships in VS Code"
+	year: 2021
+	collection-title: "25th IEEE International Enterprise Distributed Object Computing Workshop, EDOC Workshops 2021"
+	conference:
+		name: 25th IEEE International Enterprise Distributed Object Computing
+	start: 
+	end: 
