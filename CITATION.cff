@@ -1,7 +1,21 @@
-@inproceedings{bigER.21,
-  pages = { in press },
-  booktitle = { 25th {IEEE} International Enterprise Distributed Object Computing Workshop, {EDOC} Workshops 2021 },
-  author = { Philipp-Lorenz Glaser and Dominik Bork },
-  title = { The bigER Tool -- Hybrid Textual and Graphical Modeling of Entity Relationships in VS Code },
-  year = { 2021 }
-}
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Glaser"
+  given-names: "Philipp-Lorenz"
+- family-names: "Bork"
+  given-names: "Dominik"
+  orcid: "https://orcid.org/0000-0001-8259-2297"
+title: "bigER Modeling Tool"
+url: "https://github.com/borkdominik/bigER/"
+preferred-citation:
+  type: inproceedings
+  authors:
+- family-names: "Glaser"
+  given-names: "Philipp-Lorenz"
+- family-names: "Bork"
+  given-names: "Dominik"
+  orcid: "https://orcid.org/0000-0001-8259-2297"
+  booktitle: "25th IEEE International Enterprise Distributed Object Computing Workshop, EDOC Workshops 2021"
+  title: "The bigER Tool -- Hybrid Textual and Graphical Modeling of Entity Relationships in VS Code"
+  year: 2021
