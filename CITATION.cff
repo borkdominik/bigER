@@ -1,11 +1,10 @@
 cff-version: 1.2.0
-date-released: 1900-01-01 #FIXME
+message: "If you use this software, please cite it using these metadata."
 identifiers:
   - type: url
     value: https://github.com/borkdominik/bigER/
     description: "ER Modeling tool for VS Code"
 license: MIT
-message: "If you use this software, please cite it using these metadata."
 repository-code: "https://github.com/borkdominik/bigER/"
 title: "bigER Modeling Tool"
 url: "https://github.com/borkdominik/bigER/"
