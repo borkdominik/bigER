@@ -1,14 +1,12 @@
 cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
 authors:
-- family-names: "Lisa"
-  given-names: "Mona"
-  orcid: "https://orcid.org/0000-0000-0000-0000"
-- family-names: "Bot"
-  given-names: "Hew"
-  orcid: "https://orcid.org/0000-0000-0000-0000"
-title: "My Research Software"
-version: 2.0.4
+- family-names: "Glaser"
+  given-names: "Philipp-Lorenz"
+- family-names: "Bork"
+  given-names: "Dominik"
+  orcid: "https://orcid.org/0000-0001-8259-2297"
+title: "The bigER Tool -- Hybrid Textual and Graphical Modeling of Entity Relationships in VS Code"
+booktitle: "25th IEEE International Enterprise Distributed Object Computing Workshop, EDOC Workshops 2021"
 doi: 10.5281/zenodo.1234
-date-released: 2017-12-18
-url: "https://github.com/github/linguist"
+url: "https://github.com/borkdominik/bigER/"
