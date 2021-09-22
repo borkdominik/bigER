@@ -2,9 +2,9 @@ cff-version: 1.2.0
 message: "If you use this software, please cite the software and the paper."
 authors:
 - family-names: Druskat
-given-names: Stephan
-orcid: 0000-0003-4925-7248
-title: bigER Modeling Tool
+  given-names: Stephan
+  orcid: 0000-0003-4925-7248
+title: "bigER Modeling Tool"
 references:
 - type: conference-paper
 	  authors:
@@ -17,4 +17,4 @@ references:
 	year: 2021
 	collection-title: "25th IEEE International Enterprise Distributed Object Computing Workshop, EDOC Workshops 2021"
 	conference:
-		name: 25th IEEE International Enterprise Distributed Object Computing
+		name: "25th IEEE International Enterprise Distributed Object Computing"
