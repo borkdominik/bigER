@@ -2,7 +2,7 @@ authors:
   - family-names: Glaser
     given-names: Philipp-Lorenz
   - family-names: Bork
-  given-names: Dominik
+    given-names: Dominik
 cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
 title: "bigER Modeling Tool"
