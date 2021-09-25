@@ -3,7 +3,6 @@ message: "If you use this software, please cite it as below."
 type: inproceedings
 title: "bigER Modeling Tool"
 url: "https://github.com/borkdominik/bigER/"
-year: 2021
 authors:
   - family-names: Glaser
     given-names: Philipp-Lorenz
@@ -14,11 +13,15 @@ preferred-citation:
     type: conference-paper
     title: "The bigER Tool -- Hybrid Textual and Graphical Modeling of Entity Relationships in VS Code"
     collection-title: "25th {IEEE} International Enterprise Distributed Object Computing Workshop, {EDOC} Workshops 2021"
-    collection-type: inproceedings
+    year: 2021
     authors:
     - family-names: Glaser
       given-names: Philipp-Lorenz
     - family-names: Bork
       given-names: Dominik
+      conference:
+      - name: IEEE International Enterprise Distributed Object Computing Conference (EDOC)
+        date-start: 2021-10-25
+        date-end: 2021-10-20
     pages: "in press"
 
