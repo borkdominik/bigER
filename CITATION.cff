@@ -1,5 +1,6 @@
 cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
+type: inproceedings
 title: "bigER Modeling Tool"
 url: "https://github.com/borkdominik/bigER/"
 authors:
@@ -9,7 +10,7 @@ authors:
     given-names: Dominik
 license: MIT
 preferred-citation:
-  type: proceedings
+  type: inproceedings
   authors:
   - family-names: Glaser
     given-names: Philipp-Lorenz
