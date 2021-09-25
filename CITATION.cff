@@ -10,14 +10,14 @@ authors:
     given-names: Dominik
 license: MIT
 preferred-citation:
-  type: inproceedings
+  type: conference-paper
+  title: "The bigER Tool -- Hybrid Textual and Graphical Modeling of Entity Relationships in VS Code"
+  collection-title: "25th {IEEE} International Enterprise Distributed Object Computing Workshop, {EDOC} Workshops 2021"
   authors:
   - family-names: Glaser
     given-names: Philipp-Lorenz
   - family-names: Bork
     given-names: Dominik
-  booktitle: "25th {IEEE} International Enterprise Distributed Object Computing Workshop, {EDOC} Workshops 2021"
-  title: "The bigER Tool -- Hybrid Textual and Graphical Modeling of Entity Relationships in VS Code"
   year: 2021
   
 
