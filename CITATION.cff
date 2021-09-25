@@ -3,6 +3,7 @@ message: "If you use this software, please cite it as below."
 type: inproceedings
 title: "bigER Modeling Tool"
 url: "https://github.com/borkdominik/bigER/"
+year: 2021
 authors:
   - family-names: Glaser
     given-names: Philipp-Lorenz
@@ -20,4 +21,4 @@ preferred-citation:
     - family-names: Bork
       given-names: Dominik
     pages: "in press"
-    year: 2021
+
