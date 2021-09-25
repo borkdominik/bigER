@@ -14,6 +14,7 @@ preferred-citation:
     title: "The bigER Tool -- Hybrid Textual and Graphical Modeling of Entity Relationships in VS Code"
     collection-title: "25th {IEEE} International Enterprise Distributed Object Computing Workshop, {EDOC} Workshops 2021"
     year: 2021
+    month: 10
     authors:
     - family-names: Glaser
       given-names: Philipp-Lorenz
