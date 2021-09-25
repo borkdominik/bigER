@@ -9,7 +9,7 @@ authors:
     given-names: Dominik
 license: MIT
 preferred-citation:
-  type: inproceedings
+  type: proceedings
   authors:
   - family-names: Glaser
     given-names: Philipp-Lorenz
