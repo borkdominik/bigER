@@ -5,6 +5,7 @@ package org.xtext.example.erd.ide
 
 import org.xtext.example.erd.ide.codeActions.ERDiagramCodeActionService
 import org.eclipse.xtext.ide.server.codeActions.ICodeActionService2
+import org.eclipse.xtext.ide.server.hover.HoverService
 /**
  * Use this class to register ide components.
  */
@@ -13,6 +14,10 @@ class EntityRelationshipIdeModule extends AbstractEntityRelationshipIdeModule {
 	
     def Class<? extends ICodeActionService2> bindICodeActionService2() {
 		ERDiagramCodeActionService
+	}
+
+	def Class<? extends HoverService> bindHoverService() {
+		ERDHoverService
 	}
 	
 }
