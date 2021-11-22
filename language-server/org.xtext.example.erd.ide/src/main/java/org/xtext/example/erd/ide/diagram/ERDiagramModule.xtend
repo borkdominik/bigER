@@ -24,4 +24,8 @@ class ERDiagramModule extends DefaultDiagramModule {
 	override bindIDiagramExpansionListener() {
 		ERDiagramExpansionListener
 	}
+
+	override bindIDiagramServer() {
+		ERDiagramServer
+	}	
 }

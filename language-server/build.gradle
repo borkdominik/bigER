@@ -8,26 +8,27 @@ buildscript {
 }
 
 subprojects {
+	group = 'org.xtext.example.erd'
+	//version = '0.1.0-SNAPSHOT'
+	ext.xtextVersion = '2.25.0'
+	ext.sprottyVersion = '0.9.1'
+	ext.elkVersion = '0.7.1'
 	
-	ext.xtextVersion = '2.24.0'
-	ext.sprottyVersion = '0.9.0'
-	ext.elkVersion = '0.7.0'
-
 	repositories {
 		mavenCentral()
 	}
 
-	apply plugin: 'java'
+	apply plugin: 'java' 
 	dependencies {
 		compile platform("org.eclipse.xtext:xtext-dev-bom:${xtextVersion}")
+		implementation group: 'com.google.inject', name: 'guice', version: '5.0.1'
 	}
 
 	apply plugin: 'org.xtext.xtend'
 	apply from: "${rootDir}/gradle/source-layout.gradle"
 	apply plugin: 'eclipse'
 	
-	group = 'org.xtext.example.erd'
-	//version = '1.0.0-SNAPSHOT'
+	
 	
 	sourceCompatibility = '11'
 	targetCompatibility = '11'

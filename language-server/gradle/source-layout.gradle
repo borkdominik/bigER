@@ -1,3 +1,5 @@
+sourceCompatibility = '11'
+
 sourceSets {
 	main {
 		java.srcDirs = ['src/main/java', 'src/main/xtext-gen']

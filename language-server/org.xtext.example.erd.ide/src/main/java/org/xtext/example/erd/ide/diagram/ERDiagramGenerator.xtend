@@ -19,7 +19,7 @@ import org.eclipse.sprotty.SNode
 import java.util.ArrayList
 import java.util.List
 import org.eclipse.sprotty.xtext.IDiagramGenerator
-import org.apache.log4j.Logger
+//import org.apache.log4j.Logger
 import org.eclipse.sprotty.IDiagramState
 import org.eclipse.sprotty.xtext.tracing.ITraceProvider
 import org.eclipse.sprotty.xtext.SIssueMarkerDecorator
@@ -29,7 +29,7 @@ import static org.xtext.example.erd.entityRelationship.EntityRelationshipPackage
 
 class ERDiagramGenerator implements IDiagramGenerator {
     
-    static val LOG = Logger.getLogger(ERDiagramGenerator)
+    //static val LOG = Logger.getLogger(ERDiagramGenerator)
     
 	@Inject extension ITraceProvider
 	@Inject extension SIssueMarkerDecorator

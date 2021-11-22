@@ -8,7 +8,7 @@ dependencies {
 	compile "org.eclipse.sprotty:org.eclipse.sprotty.layout:${sprottyVersion}"
 	
 	compile "org.eclipse.elk:org.eclipse.elk.alg.layered:${elkVersion}"
-	compile "org.eclipse.elk:org.eclipse.elk.alg.force:${elkVersion}"
+	
 }
 
 apply plugin: 'application'

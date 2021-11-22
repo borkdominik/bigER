@@ -11,7 +11,6 @@ import org.eclipse.sprotty.SIssueMarker
 import org.eclipse.sprotty.SModelElement
 import org.eclipse.sprotty.xtext.ILanguageAwareDiagramServer
 import org.eclipse.sprotty.xtext.tracing.ITraceProvider
-import org.eclipse.xtext.documentation.IEObjectDocumentationProvider
 import org.eclipse.xtext.naming.IQualifiedNameConverter
 import org.eclipse.xtext.naming.IQualifiedNameProvider
 import org.xtext.example.erd.entityRelationship.Entity
@@ -20,7 +19,7 @@ import org.xtext.example.erd.entityRelationship.Relationship
 class ERDiagramPopup implements IPopupModelFactory {
 
 	@Inject extension ITraceProvider
-	@Inject extension IEObjectDocumentationProvider
+	
 	@Inject extension IQualifiedNameProvider
 	@Inject IQualifiedNameConverter qualifiedNameConverter
 	

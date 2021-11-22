@@ -2,7 +2,6 @@ dependencies {
 	testCompile 'org.junit.jupiter:junit-jupiter-api'
 	testRuntime 'org.junit.jupiter:junit-jupiter-engine'
 	testCompile "org.eclipse.xtext:org.eclipse.xtext.testing:${xtextVersion}"
-	testCompile "org.eclipse.xtext:org.eclipse.xtext.xbase.testing:${xtextVersion}"
 	compile "org.eclipse.xtext:org.eclipse.xtext:${xtextVersion}"
 	compile "org.eclipse.xtext:org.eclipse.xtext.xbase:${xtextVersion}"
 }
@@ -29,6 +28,7 @@ task generateXtextLanguage(type: JavaExec) {
 	args += "-p"
 	args += "rootPath=/${projectDir}/.."
 }
+
 
 test {
 	useJUnitPlatform()

@@ -26,7 +26,7 @@ class ERDiagramLanguageServerSetup extends DiagramLanguageServerSetup {
 	override configureGson(GsonBuilder gsonBuilder) {
 		//factory.addActionKind(LayoutSelectionAction.KIND, LayoutSelectionAction.class);
 		gsonBuilder
-			.registerTypeAdapterFactory(new EditActionTypeAdapterFactory())
+			.registerTypeAdapterFactory(new EditActionTypeAdapterFactory)
 			.registerTypeAdapterFactory(new EnumTypeAdapter.Factory)
 	}
 	
