@@ -2,7 +2,6 @@
 *.vsix
 node_modules
 lib/**
-src/**
-media
+src/** 
 **/webpack.config.js
 **/tsconfig.json
