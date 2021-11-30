@@ -1,2 +1,8 @@
-tsconfig.json
+.vscode/**
+*.vsix
 node_modules
+lib/**
+src/**
+media
+**/webpack.config.js
+**/tsconfig.json

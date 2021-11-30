@@ -29,12 +29,12 @@
 			"name": "entity.name.section.erdiagram",
 			"match": "\\b(erdiagram)\\b"
 		}, {
-            "name": "string.quoted.double.states",
+            "name": "string.quoted.double.erdiagram",
             "begin": "\"",
             "end": "\""
         },
         {
-            "name": "string.quoted.single.states",
+            "name": "string.quoted.single.erdiagram",
             "begin": "'",
             "end": "'"
         }
@@ -44,17 +44,17 @@
             "comments": {
                 "patterns": [
                     {
-                        "name": "comment.block.states",
+                        "name": "comment.block.erdiagram",
                         "begin": "/\\*",
                         "beginCaptures": {
                             "0": {
-                                "name": "punctuation.definition.comment.states"
+                                "name": "punctuation.definition.comment.erdiagram"
                             }
                         },
                         "end": "\\*/",
                         "endCaptures": {
                             "0": {
-                                "name": "punctuation.definition.comment.states"
+                                "name": "punctuation.definition.comment.erdiagram"
                             }
                         }
                     }, {
@@ -65,7 +65,7 @@
                             }
                         },
                         "end": "(?=$)",
-                        "name":"comment.line.states"
+                        "name":"comment.line.erdiagram"
                     }
                 ]
             }
