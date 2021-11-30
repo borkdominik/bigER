@@ -33,6 +33,7 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
             menubar.id = "menu-bar";
             document.body.appendChild(menubar);
 
+            /*
             const menuicon = document.createElement("div");
             menuicon.classList.add("menu-bar-icon")
             const icon = document.createElement("div");
@@ -40,6 +41,7 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
             icon.classList.add("fa-palette")            
             menuicon.appendChild(icon);
             menubar.appendChild(menuicon);
+            */
             
             const dropDown = document.createElement("div");
             dropDown.id = "dropdown-button"
@@ -79,6 +81,16 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
             zoom.classList.add("menu-bar-item")
             zoom.innerText = "Restore View"
             menubar.appendChild(zoom)
+
+            const helpIcon = document.createElement("a");
+            helpIcon.classList.add("menu-bar-icon")
+            helpIcon.href = "https://github.com/borkdominik/bigER/wiki/%F0%9F%93%96-Language-Documentation"
+            const help = document.createElement("div");
+            help.classList.add("far");
+            help.classList.add("fa-question-circle");
+            helpIcon.appendChild(help);
+            menubar.appendChild(helpIcon);
+
 
             this.menubar = menubar;
             this.elementsExpanded = true;

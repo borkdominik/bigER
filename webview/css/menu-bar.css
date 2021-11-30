@@ -55,6 +55,12 @@
 
 .menu-bar-icon {
     line-height: 0;
-    color: white;
+	color: gray;
 	margin-left: 10px;
+	margin-right:10px;
+}
+
+.menu-bar-icon:hover {
+	cursor: pointer;
+	color: white;
 }
