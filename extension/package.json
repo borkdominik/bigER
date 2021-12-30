@@ -156,6 +156,7 @@
         ]
     },
     "dependencies": {
+        "@vscode/webview-ui-toolkit": "^0.8.4",
         "sprotty-vscode": "^0.1.3"
     },
     "devDependencies": {

@@ -1,9 +1,11 @@
 import { LspLabelEditActionHandler, SprottyLspEditVscodeExtension, WorkspaceEditActionHandler } from "sprotty-vscode/lib/lsp/editing";
 import { LanguageClient, ServerOptions, LanguageClientOptions } from "vscode-languageclient";
 import { SprottyWebview } from "sprotty-vscode/lib/sprotty-webview";
-import { SprottyDiagramIdentifier, SprottyLspWebview } from "sprotty-vscode/lib/lsp";
+//import { SprottyDiagramIdentifier, SprottyLspWebview } from "sprotty-vscode/lib/lsp";
+import { SprottyDiagramIdentifier } from "sprotty-vscode/lib/lsp";
 import * as path from 'path';
 import * as vscode from 'vscode';
+import { ERDiagramWebview } from './erdiagram-webview';
 
 export class ERDiagramLspVscodeExtension extends SprottyLspEditVscodeExtension {
 
@@ -23,11 +25,11 @@ export class ERDiagramLspVscodeExtension extends SprottyLspEditVscodeExtension {
     }
     
     createWebView(identifier: SprottyDiagramIdentifier): SprottyWebview {
-        const webview = new SprottyLspWebview({
+        const webview = new ERDiagramWebview({
             extension: this,
             identifier,
             // Root paths from which the webview can load local resources using URIs
-            localResourceRoots: [this.getExtensionFileUri('pack')],
+            localResourceRoots: [this.getExtensionFileUri('pack'), this.getExtensionFileUri('node_modules')],
             // Path to the bundled webview implementation
             scriptUri: this.getExtensionFileUri('pack', 'webview.js'),
             singleton: false // Change this to `true` to enable a singleton view
