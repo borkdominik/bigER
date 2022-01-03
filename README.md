@@ -1,9 +1,11 @@
 # bigER Modeling Tool
 
-<!-- add gif of demo -->
-<img src="https://raw.githubusercontent.com/borkdominik/bigER/main/extension/media/example.gif" width="75%"/>
-
 >### *VS Code Extension to create Entity-Relationship (ER) diagrams and generate SQL code with a textual language*
+
+<p align="center">
+ <img src="https://raw.githubusercontent.com/borkdominik/bigER/main/extension/media/example.gif" width="75%"/>
+</p>
+
 
 ### Features
 
