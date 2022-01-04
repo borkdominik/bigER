@@ -1,20 +1,39 @@
-#biger-toolbar {
+#toolbar-options {
+    display: none;
+	flex-direction: column;
+    width: fit-content;
+    height: fit-content;
+}
+
+#biger-toolbar{
     position: absolute;
     top: 0px;
+    right: 0px;
     display: flex;
-	flex-direction: row;
-    align-items: center;
-	justify-content: space-around;
-    background-color: rgba(51, 51, 51, 0.876);
-    width: 100%;
-    height: 50px;
+    flex-direction: row;
 }
 
-#add-relationship-button {
-	margin-right: 3em;
+#help-button,
+#toolbar-button,
+#dropDown-erNotations {
+    height: 32px;
 }
 
-#help-button {
-	margin-left: 1em;
+#toolbar-button span,
+#add-entity-button span,
+#add-relationship-button span{
+    margin-top: 5px;
 }
 
+#dropDown-erNotations{
+    width: 122px;
+    background: #3a3d41;
+}
+
+#dropDown-erNotations:hover{
+    background: #45494e;
+}
+
+.start {
+    display: unset !important;
+}
