@@ -31,40 +31,35 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
 
             const toolbar = document.createElement("div");
             toolbar.id = "biger-toolbar"
-            containerDiv.append(toolbar); 
-
-            const menuButton = document.createElement("vscode-button");
-            menuButton.id = "toolbar-button"
-            menuButton.setAttribute("appearance","primary");
-            menuButton.innerHTML = `<span class="fas fa-bars"/>`;
-            toolbar.append(menuButton); 
-
-            const toolbarOptions = document.createElement("div");
-            toolbarOptions.id = "toolbar-options";
-            toolbarOptions.innerHTML = `
-                <vscode-button id="add-entity-button" appearance="secondary">Entity
-                    <span slot="start" class="fas fa-plus"/>
+            toolbar.innerHTML = `
+                <vscode-button id="toolbar-button" appearance="primary">
+                    <span class="fas fa-bars"/>
                 </vscode-button>
-                <vscode-button id="add-relationship-button" appearance="secondary">Relationship
-                    <span slot="start" class="fas fa-plus"/>
-                </vscode-button>
-                <vscode-dropdown id="dropDown-erNotations" position="below">
-                    <vscode-option id="option-chen" style="text-align: center">Chen</vscode-option>
-                    <vscode-option id="option-ideflx">IDEFlX</vscode-option>
-                    <vscode-option id="option-bachman">Bachman</vscode-option>
-                    <vscode-option id="option-martin">Martin/IE/Crow's Foot</vscode-option>
-                    <vscode-option id="option-min-max">Min-Max</vscode-option>
-                    <vscode-option id="option-uml">UML</vscode-option>
-                </vscode-dropdown>
-                <vscode-button id="expand-button" appearance="secondary">Expand/Collapse</vscode-button>
-                <vscode-button id="center-diagram-button" appearance="secondary">Center</vscode-button>
-                <vscode-button id="help-button" appearance="secondary" aria-label="Help">
-                    <vscode-link href="https://github.com/borkdominik/bigER/wiki/%F0%9F%93%96-Language-Documentation">
-                        <span class="fas fa-question"/>
-                    </vscode-link>    
-                </vscode-button>`;
-                
-            toolbar.append(toolbarOptions);    
+                <div id = "toolbar-options">
+                    <vscode-button id="add-entity-button" appearance="secondary">Entity
+                        <span slot="start" class="fas fa-plus"/>
+                    </vscode-button>
+                    <vscode-button id="add-relationship-button" appearance="secondary">Relationship
+                        <span slot="start" class="fas fa-plus"/>
+                    </vscode-button>
+                    <vscode-dropdown id="dropDown-erNotations" position="below">
+                        <vscode-option id="option-chen" style="text-align: center">Chen</vscode-option>
+                        <vscode-option id="option-ideflx">IDEFlX</vscode-option>
+                        <vscode-option id="option-bachman">Bachman</vscode-option>
+                        <vscode-option id="option-martin">Martin/IE/Crow's Foot</vscode-option>
+                        <vscode-option id="option-min-max">Min-Max</vscode-option>
+                        <vscode-option id="option-uml">UML</vscode-option>
+                    </vscode-dropdown>
+                    <vscode-button id="expand-button" appearance="secondary">Expand/Collapse</vscode-button>
+                    <vscode-button id="center-diagram-button" appearance="secondary">Center</vscode-button>
+                    <vscode-button id="help-button" appearance="secondary" aria-label="Help">
+                        <vscode-link href="https://github.com/borkdominik/bigER/wiki/%F0%9F%93%96-Language-Documentation">
+                            <span class="fas fa-question"/>
+                        </vscode-link>    
+                    </vscode-button>
+                </div>`;
+
+            containerDiv.append(toolbar);   
             this.elementsExpanded = true;
         } 
     }
