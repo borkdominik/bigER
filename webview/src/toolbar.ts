@@ -32,31 +32,30 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
             const toolbar = document.createElement("div");
             toolbar.id = "biger-toolbar"
             toolbar.innerHTML = `
-                <vscode-button id="toolbar-button" appearance="primary">
+                <vscode-button id="toolbar-button">
                     <span class="fas fa-bars"/>
                 </vscode-button>
                 <div id = "toolbar-options">
-                    <vscode-button id="add-entity-button" appearance="secondary">Entity
-                        <span slot="start" class="fas fa-plus"/>
-                    </vscode-button>
-                    <vscode-button id="add-relationship-button" appearance="secondary">Relationship
-                        <span slot="start" class="fas fa-plus"/>
-                    </vscode-button>
+                    <vscode-option id="add-entity-button" class="button">Add Entity</vscode-option>
+                    <vscode-option id="add-relationship-button" class="button">Add Relationship</vscode-option>
+                    <vscode-divider class="divider" role="separator"></vscode-divider>
                     <vscode-dropdown id="dropDown-erNotations" position="below">
-                        <vscode-option id="option-chen" style="text-align: center">Chen</vscode-option>
-                        <vscode-option id="option-ideflx">IDEFlX</vscode-option>
-                        <vscode-option id="option-bachman">Bachman</vscode-option>
-                        <vscode-option id="option-martin">Martin/IE/Crow's Foot</vscode-option>
-                        <vscode-option id="option-min-max">Min-Max</vscode-option>
-                        <vscode-option id="option-uml">UML</vscode-option>
+                        <vscode-option id="option-chen" class="option">Chen</vscode-option>
+                        <vscode-option id="option-ideflx" class="option">IDEFlX</vscode-option>
+                        <vscode-option id="option-bachman" class="option">Bachman</vscode-option>
+                        <vscode-option id="option-martin" class="option">Martin/IE/Crow's Foot</vscode-option>
+                        <vscode-option id="option-min-max" class="option">Min-Max</vscode-option>
+                        <vscode-option id="option-uml" class="option">UML</vscode-option>
                     </vscode-dropdown>
-                    <vscode-button id="expand-button" appearance="secondary">Expand/Collapse</vscode-button>
-                    <vscode-button id="center-diagram-button" appearance="secondary">Center</vscode-button>
-                    <vscode-button id="help-button" appearance="secondary" aria-label="Help">
-                        <vscode-link href="https://github.com/borkdominik/bigER/wiki/%F0%9F%93%96-Language-Documentation">
-                            <span class="fas fa-question"/>
-                        </vscode-link>    
-                    </vscode-button>
+                    <vscode-divider class="divider" role="separator"></vscode-divider>
+                    <vscode-option id="expand-button" class="button">Expand/Collapse</vscode-option>
+                    <vscode-option id="center-diagram-button" class="button">Center</vscode-option>
+                    <vscode-divider class="divider" role="separator"/></vscode-divider>
+                    <vscode-link class="option" href="https://github.com/borkdominik/bigER/wiki/%F0%9F%93%96-Language-Documentation">
+                        <vscode-option id="help-button" class="button" style="width:140px">
+                            Help
+                        </vscode-option>
+                    </vscode-link>
                 </div>`;
 
             containerDiv.append(toolbar);   

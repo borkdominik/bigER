@@ -1,8 +1,10 @@
 #toolbar-options {
     display: none;
 	flex-direction: column;
-    width: fit-content;
-    height: fit-content;
+    width: 140px;
+    background: #252526;
+    padding-bottom: 5px;
+    box-shadow: 8px 1px 8px black;
 }
 
 #biger-toolbar{
@@ -13,27 +15,42 @@
     flex-direction: row;
 }
 
-#help-button,
-#toolbar-button,
-#dropDown-erNotations {
-    height: 35px;
+#toolbar-button {
+    background: #094771;
+    height: 27px;
+    --border-width: 0;
 }
 
-#toolbar-button span,
-#add-entity-button span,
-#add-relationship-button span{
+#toolbar-button span{
     margin-top: 5px;
 }
 
 #dropDown-erNotations{
-    width: 122px;
-    background: #3a3d41;
+    background: #252526;
+    --dropdown-border: none;
+    --dropdown-background: #252526;
+    padding-left: 10px;
 }
 
 #dropDown-erNotations:hover{
-    background: #45494e;
+    background: #094771;
 }
 
-.start {
-    display: unset !important;
+.divider{
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-left: 10px;
+    width: 120px;
+}
+
+.button {
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    --border-width: 0;
+}
+
+.option{
+    --border-width: 0;
 }
