@@ -36,24 +36,19 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
                     <span class="fas fa-bars"/>
                 </vscode-button>
                 <div id = "toolbar-options">
-                    <vscode-option id="add-entity-button" class="button">Add Entity</vscode-option>
-                    <vscode-option id="add-relationship-button" class="button">Add Relationship</vscode-option>
-                    <vscode-divider class="divider" role="separator"></vscode-divider>
-                    <vscode-dropdown id="dropDown-erNotations" position="below">
-                        <vscode-option id="option-chen" class="option">Chen</vscode-option>
-                        <vscode-option id="option-ideflx" class="option">IDEFlX</vscode-option>
-                        <vscode-option id="option-bachman" class="option">Bachman</vscode-option>
-                        <vscode-option id="option-martin" class="option">Martin/IE/Crow's Foot</vscode-option>
-                        <vscode-option id="option-min-max" class="option">Min-Max</vscode-option>
-                        <vscode-option id="option-uml" class="option">UML</vscode-option>
-                    </vscode-dropdown>
+                    <vscode-option id="add-entity-button" class="button">Entity
+                        <span id="test" slot="start" class="fas fa-plus"/>
+                    </vscode-option>
+                    <vscode-option id="add-relationship-button" class="button">Relationship
+                        <span id="test" slot="start" class="fas fa-plus"/>
+                    </vscode-option>
                     <vscode-divider class="divider" role="separator"></vscode-divider>
                     <vscode-option id="expand-button" class="button">Expand/Collapse</vscode-option>
                     <vscode-option id="center-diagram-button" class="button">Center</vscode-option>
                     <vscode-divider class="divider" role="separator"/></vscode-divider>
                     <vscode-link class="option" href="https://github.com/borkdominik/bigER/wiki/%F0%9F%93%96-Language-Documentation">
-                        <vscode-option id="help-button" class="button" style="width:140px">
-                            Help
+                        <vscode-option id="help-button" class="button">Help
+                            <span id="test" slot="start" class="fas fa-question"/>
                         </vscode-option>
                     </vscode-link>
                 </div>`;
@@ -67,48 +62,6 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
      * Adds event handlers to the buttons, by dispatching corresponding events
      */
     protected addEventHandlers(): void {
-
-        document.getElementById('option-chen')!.addEventListener('click', async () => {
-            const option = document.getElementById('option-chen');
-            if(option){
-                console.log(option.innerText);
-            }
-        });
-
-        document.getElementById('option-ideflx')!.addEventListener('click', async () => {
-            const option = document.getElementById('option-ideflx');
-            if(option){
-                console.log(option.innerText);
-            }
-        });
-
-        document.getElementById('option-bachman')!.addEventListener('click', async () => {
-            const option = document.getElementById('option-bachman');
-            if(option){
-                console.log(option.innerText);
-            }
-        });
-
-        document.getElementById('option-martin')!.addEventListener('click', async () => {
-            const option = document.getElementById('option-martin');
-            if(option){
-                console.log(option.innerText);
-            }
-        });
-
-        document.getElementById('option-min-max')!.addEventListener('click', async () => {
-            const option = document.getElementById('option-min-max');
-            if(option){
-                console.log(option.innerText);
-            }
-        });
-
-        document.getElementById('option-uml')!.addEventListener('click', async () => {
-            const option = document.getElementById('option-uml');
-            if(option){
-                console.log(option.innerText);
-            }
-        });
         
         document.getElementById('toolbar-button')!.addEventListener('click', async () => {
                 var options = document.getElementById("toolbar-options");

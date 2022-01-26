@@ -54,3 +54,12 @@
 .option{
     --border-width: 0;
 }
+
+#help-button{
+    width:140px;
+}
+
+#test{
+    padding-right: 5px;
+    margin-right: 5px;
+}
