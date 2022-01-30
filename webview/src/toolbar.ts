@@ -37,18 +37,23 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
                 </vscode-button>
                 <div id = "toolbar-options">
                     <vscode-option id="add-entity-button" class="button">Entity
-                        <span id="test" slot="start" class="fas fa-plus"/>
+                        <span id="button-icon" slot="start" class="fas fa-plus"/>
                     </vscode-option>
                     <vscode-option id="add-relationship-button" class="button">Relationship
-                        <span id="test" slot="start" class="fas fa-plus"/>
+                        <span id="button-icon" slot="start" class="fas fa-plus"/>
                     </vscode-option>
                     <vscode-divider class="divider" role="separator"></vscode-divider>
-                    <vscode-option id="expand-button" class="button">Expand/Collapse</vscode-option>
+                    <div id="expand-div" style="display:none">
+                        <vscode-option style="width:140px;" id="expand-button" class="button">Expand</vscode-option>
+                    </div>
+                    <div id="collapse-div">
+                        <vscode-option style="width:140px;" id="collapse-button" class="button">Collapse</vscode-option>
+                    </div>
                     <vscode-option id="center-diagram-button" class="button">Center</vscode-option>
                     <vscode-divider class="divider" role="separator"/></vscode-divider>
                     <vscode-link class="option" href="https://github.com/borkdominik/bigER/wiki/%F0%9F%93%96-Language-Documentation">
                         <vscode-option id="help-button" class="button">Help
-                            <span id="test" slot="start" class="fas fa-question"/>
+                            <span id="button-icon" slot="start" class="fas fa-question"/>
                         </vscode-option>
                     </vscode-link>
                 </div>`;
@@ -87,13 +92,32 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
         });
         
         document.getElementById('expand-button')!.addEventListener('click', async () => {
-            this.elementsExpanded = !this.elementsExpanded;
-            await this.actionDispatcher.dispatch(new CollapseExpandAllAction(this.elementsExpanded));
-               
+            await this.showAndHideExpandCollapse("none", "block")
         });
-        
+
+        document.getElementById('collapse-button')!.addEventListener('click', async () => {
+            await this.showAndHideExpandCollapse("block", "none")
+        });
+
         document.getElementById('center-diagram-button')!.addEventListener('click', async () => {
             await this.actionDispatcher.dispatch(new FitToScreenAction([]));
         });
+    }
+
+    async showAndHideExpandCollapse(expandStyle:string, collapseStyle:string) {
+        var expand = document.getElementById("expand-div");
+            if(expand){
+                expand.style.display = expandStyle;
+            }
+            var collapse = document.getElementById("collapse-div");
+            if(collapse){
+                collapse.style.display = collapseStyle;
+            }
+            if(expandStyle === "none"){
+                this.elementsExpanded = true;
+            }else{
+                this.elementsExpanded = false;
+            }
+            await this.actionDispatcher.dispatch(new CollapseExpandAllAction(this.elementsExpanded));
     }
 }

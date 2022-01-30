@@ -24,11 +24,4 @@ export class ERDiagramSprottyStarter extends SprottyLspEditStarter {
     }
 }
 
-
-
 new ERDiagramSprottyStarter();
-
-
-
-
-

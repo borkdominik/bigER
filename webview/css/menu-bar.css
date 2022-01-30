@@ -2,9 +2,9 @@
     display: none;
 	flex-direction: column;
     width: 140px;
-    background: #252526;
+    background: var(--vscode-menu-background);
     padding-bottom: 5px;
-    box-shadow: 8px 1px 8px black;
+    box-shadow: 6px -4px 8px 0px black;
 }
 
 #biger-toolbar{
@@ -16,7 +16,7 @@
 }
 
 #toolbar-button {
-    background: #094771;
+    background: var(--vscode-menu-selectionBackground);
     height: 27px;
     --border-width: 0;
 }
@@ -26,14 +26,14 @@
 }
 
 #dropDown-erNotations{
-    background: #252526;
+    background: var(--vscode-menu-background);
     --dropdown-border: none;
-    --dropdown-background: #252526;
+    --dropdown-background: var(--vscode-menu-background);
     padding-left: 10px;
 }
 
 #dropDown-erNotations:hover{
-    background: #094771;
+    background: var(--vscode-menu-selectionBackground);
 }
 
 .divider{
@@ -59,7 +59,6 @@
     width:140px;
 }
 
-#test{
-    padding-right: 5px;
+#button-icon{
     margin-right: 5px;
 }
