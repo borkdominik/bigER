@@ -17,7 +17,7 @@
 
 #toolbar-button {
     background: var(--vscode-menu-selectionBackground);
-    height: 27px;
+    height: 27.5px;
     --border-width: 0;
 }
 
