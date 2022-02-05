@@ -16,9 +16,8 @@ generated/
 org.eclipse.buildship.core.prefs
 .classpath
 /.metadata/
+src-gen/
 
-/src-gen/*
-!./University.sql
 
 # macOS
 .DS_Store
