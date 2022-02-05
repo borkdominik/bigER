@@ -1,2 +1,2 @@
-include 'org.xtext.example.erd'
-include 'org.xtext.example.erd.ide'
+include 'org.big.erd'
+include 'org.big.erd.ide'

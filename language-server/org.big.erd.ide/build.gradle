@@ -1,0 +1,26 @@
+dependencies {
+	compile project(':org.big.erd')
+	compile "org.eclipse.xtext:org.eclipse.xtext.ide:${xtextVersion}"
+	compile "org.eclipse.xtext:org.eclipse.xtext.xbase.ide:${xtextVersion}"
+
+	compile "org.eclipse.sprotty:org.eclipse.sprotty.server:${sprottyVersion}"
+	compile "org.eclipse.sprotty:org.eclipse.sprotty.xtext:${sprottyVersion}"
+	compile "org.eclipse.sprotty:org.eclipse.sprotty.layout:${sprottyVersion}"
+	
+	compile "org.eclipse.elk:org.eclipse.elk.alg.layered:${elkVersion}"
+	
+}
+
+apply plugin: 'application'
+mainClassName = "org.big.erd.ide.launch.ERDiagramServerLauncher"
+applicationName = 'erdiagram-language-server'
+
+task unzipServer(type: Copy, dependsOn: distZip) {
+	def zipFile = file("${buildDir}/distributions/erdiagram-language-server.zip")
+	def outputDir = file("${buildDir}/../../../extension/server")
+
+	from zipTree(zipFile)
+	into outputDir
+}
+
+build.dependsOn unzipServer

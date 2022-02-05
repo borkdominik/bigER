@@ -8,7 +8,7 @@ buildscript {
 }
 
 subprojects {
-	group = 'org.xtext.example.erd'
+	group = 'org.big.erd'
 	//version = '0.1.0-SNAPSHOT'
 	ext.xtextVersion = '2.26.0.M2'
 	ext.sprottyVersion = '0.9.1'
