@@ -212,6 +212,14 @@ The `generateSql` keyword in line 2 is optional and can be used to generate SQL 
 
 ## Build Instructions
 
+The minimum requirements to to build and run the project are:
+
+- [Node.js](https://nodejs.org/en/) runtime
+- [yarn](https://yarnpkg.com/) package manager
+- [Java](http://jdk.java.net/) (11+)
+- [VS Code](https://code.visualstudio.com/) (v1.50+)
+
+
 Download or clone the repository and in the root folder of the project execute the following commands:
 
 ```bash
@@ -220,7 +228,9 @@ yarn --cwd webview
 yarn --cwd extension
 ```
 
-This builds the code for the language server, the webview and the extension. To run the extension press `F5` or click on `Run -> Start Debugging` within VS Code.
+This builds the code for the language server, the webview and the extension. The fastest way to run the extension is to press <kbd>F5</kbd> (or in the menu: <kbd>Run -> Start Debugging</kbd>). This starts a new extension host with the launch configuration provided in `.vscode/launch.json`.
+
+The code is split into a **client side** (extension with webview) and a **server side** (language with LSP and diagram server). It is recommended to use  **VS Code** for the client code, written in *TypeScript* and **Eclipse** for the server side, based on *Java*. Eclipse must be compatible with Xtext and Xtend (e.g. [Eclipse IDE for Java and DSL Developers](https://www.eclipse.org/downloads/packages/release/juno/sr2/eclipse-ide-java-and-dsl-developers)) and create a new workspace to avoid configuration issues. Import the language server as a Gradle project (<kbd>File -> Import -> Existing Gradle Project</kbd>) and override the workspace settings.
 
 ## Known Issues
 
