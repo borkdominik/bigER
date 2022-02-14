@@ -1,4 +1,4 @@
-package org.big.erd.ide
+package org.big.erd.ide.hover
 
 import com.google.inject.Inject
 import org.eclipse.emf.ecore.EObject

@@ -7,16 +7,22 @@ import com.google.inject.Guice
 import org.eclipse.xtext.util.Modules2
 import org.big.erd.EntityRelationshipRuntimeModule
 import org.big.erd.EntityRelationshipStandaloneSetup
-import org.big.erd.ide.diagram.ERDiagramModule
+import org.big.erd.ide.diagram.DiagramModule
 
 /**
  * Initialization support for running Xtext languages as language servers.
+ * Adds the DiagramModule to the language server.
  */
 class EntityRelationshipIdeSetup extends EntityRelationshipStandaloneSetup {
 
 	override createInjector() {
-		Guice.createInjector(Modules2.mixin(new EntityRelationshipRuntimeModule, new EntityRelationshipIdeModule,
-		 new ERDiagramModule))
+		Guice.createInjector(
+			Modules2.mixin(
+				new EntityRelationshipRuntimeModule,
+				new EntityRelationshipIdeModule,
+				new DiagramModule
+			)
+		)
 	}
 	
 }

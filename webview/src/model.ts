@@ -11,6 +11,7 @@ export class MultiplicityLabel extends SLabel implements EdgeLayoutable {
     };
 }
 
+@injectable()
 export class InheritanceEdge extends SEdge {
     public readonly targetAnchorCorrection = Math.sqrt(5);
     public readonly routerKind = ManhattanEdgeRouter.KIND;

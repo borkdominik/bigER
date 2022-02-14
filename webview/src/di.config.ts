@@ -6,7 +6,7 @@ import {
     configureModelElement, HtmlRoot, HtmlRootView, overrideViewerOptions, PreRenderedElement, PreRenderedView, SEdge, SGraphView,
     SRoutingHandle, SRoutingHandleView, TYPES, loadDefaultModules, SGraph, ConsoleLogger, LogLevel, PolylineEdgeView, SCompartmentView,
     SCompartment, RectangularNode, editLabelFeature, labelEditUiModule, SModelRoot, SLabel, ExpandButtonHandler,
-    SButton, expandFeature, DiamondNodeView, DiamondNode, SLabelView 
+    SButton, expandFeature, DiamondNodeView, DiamondNode, SLabelView
 } from 'sprotty';
 import { EntityView, ExpandEntityView, InheritanceEdgeView } from './views';
 import { MultiplicityLabel} from './model';
@@ -33,7 +33,7 @@ const DiagramModule = new ContainerModule((bind, unbind, isBound, rebind) => {
     configureModelElement(context, 'label:header', SLabel, SLabelView, { enable: [editLabelFeature] });
     configureModelElement(context, 'label:relationship', SLabel, SLabelView, { enable: [editLabelFeature] });
     configureModelElement(context, 'label:top', MultiplicityLabel, SLabelView);
-    configureModelElement(context, 'label:text', SLabel, SLabelView);
+    configureModelElement(context, 'label:text', SLabel, SLabelView, { enable: [editLabelFeature] });
     configureModelElement(context, 'label:text-key', SLabel, SLabelView);
     configureModelElement(context, 'label:text-fk', SLabel, SLabelView);
     configureModelElement(context, 'label:text-pk', SLabel, SLabelView);

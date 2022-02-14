@@ -15,11 +15,10 @@ import org.eclipse.lsp4j.jsonrpc.messages.Either
 import org.eclipse.xtext.ide.server.Document
 import org.eclipse.xtext.ide.server.codeActions.ICodeActionService2
 
-class ERDiagramCodeActionService implements ICodeActionService2 {
+class ERDCodeActionService implements ICodeActionService2 {
     
-   static val CREATE_ENTITY_KIND = 'sprotty.create.entity'
-   static val CREATE_RELATIONSHIP_KIND = 'sprotty.create.relationship'
-	
+	static val CREATE_ENTITY_KIND = 'sprotty.create.entity'
+	static val CREATE_RELATIONSHIP_KIND = 'sprotty.create.relationship'
 	
 	override getCodeActions(Options options) {
 		var root = options.resource.contents.head

@@ -27,13 +27,14 @@ class EntityRelationshipGenerator extends AbstractGenerator {
 		val diagram = resource.contents.get(0) as Model
 		
 		// Do not generate if generateSql is not set
-		if (diagram.generateSql === null) {
+		if (!diagram.generateSql) {
 			return
 		}
 
 		val name = (diagram.name ?: 'output') + '.sql'
 		
 		// TODO: Fix Weak entites (weak -> weak and strong -> weak)
+		// TODO: Rewrite Generatot
 
 		try {
 
@@ -42,37 +43,37 @@ class EntityRelationshipGenerator extends AbstractGenerator {
 			«FOR entity : diagram.entities.reject[it.isWeak]»
 				CREATE TABLE «entity.name» (
 					«FOR attribute : entity.allAttributes.reject[it.type === AttributeType.DERIVED] SEPARATOR ', '»
-						«attribute.name» «attribute.datatype.transformType»«IF attribute.type === AttributeType.KEY»«{primaryKey = attribute; null}»«ENDIF» «IF attribute.type !== AttributeType.NULLABLE»NOT NULL«ENDIF»		
+						«attribute.name» «attribute.datatype.transformDataType» «IF attribute.type === AttributeType.KEY»«{primaryKey = attribute; null}»«ENDIF» «IF attribute.type !== AttributeType.OPTIONAL»NOT NULL«ENDIF»		
 					«ENDFOR»
-					«IF entity.extends !== null»«entity.extends.key.name» «entity.extends.key.datatype.transformType»«ENDIF»
+					«IF entity.extends !== null»«entity.extends.key.name» «entity.extends.key.datatype.transformDataType»«ENDIF»
 					«'\n'»
 					PRIMARY KEY («primaryKey.name»)
 					«IF entity.extends !== null»FOREIGN KEY («entity.extends.key.name») REFERENCES «entity.extends.name»(«entity.extends.key.name»)«ENDIF»
 				);«'\n'»«'\n'»
 			«ENDFOR»
 			«var Attribute partialKey»		
-			«FOR relationship : diagram.relationships.reject[!it.isWeak || it.left === null || it.right === null]»
+			«FOR relationship : diagram.relationships.reject[!it.isWeak || it.first === null || it.second === null]»
 				CREATE TABLE «relationship.weakEntity.name» ( 
 					«FOR attribute : relationship.weakEntity.allAttributes.reject[it.type === AttributeType.DERIVED] SEPARATOR ', '»
-						«attribute.name» «attribute.datatype.transformType»«IF attribute.type === AttributeType.PARTIAL_KEY»«{partialKey = attribute; null}»«ENDIF» «IF attribute.type !== AttributeType.NULLABLE»NOT NULL«ENDIF»		
+						«attribute.name» «attribute.datatype.transformDataType»«IF attribute.type === AttributeType.PARTIAL_KEY»«{partialKey = attribute; null}»«ENDIF» «IF attribute.type !== AttributeType.OPTIONAL»NOT NULL«ENDIF»		
 					«ENDFOR»
-					«relationship.strongEntity.key.name» «relationship.strongEntity.key.datatype.transformType» NOT NULL
+					«relationship.strongEntity.key.name» «relationship.strongEntity.key.datatype.transformDataType» NOT NULL
 					«'\n'»
 					PRIMARY KEY («partialKey.name», «relationship.strongEntity.key.name»)
 					FOREIGN KEY («relationship.strongEntity.key.name») REFERENCES «relationship.strongEntity.name»(«relationship.strongEntity.key.name») 
 						ON DELETE CASCADE
 				);«'\n'»«'\n'»
 			«ENDFOR»
-			«FOR relationship : diagram.relationships.reject[it.isWeak || it.left === null]»
+			«FOR relationship : diagram.relationships.reject[it.isWeak || it.first === null]»
 				CREATE TABLE «relationship.name» (
-					«relationship.leftKey.name» «relationship.leftKey.datatype.transformType»,
+					«relationship.leftKey.name» «relationship.leftKey.datatype.transformDataType»,
 					CONSTRAINT fk_«relationship.leftKey.name» FOREIGN KEY («relationship.leftKey.name»)
-						REFERENCES «relationship.left.target.name»(«relationship.leftKey.name»),
-					«relationship.rightKey.name» «relationship.rightKey.datatype.transformType»,
+						REFERENCES «relationship.first.target.name»(«relationship.leftKey.name»),
+					«relationship.rightKey.name» «relationship.rightKey.datatype.transformDataType»,
 					CONSTRAINT fk_«relationship.rightKey.name» FOREIGN KEY («relationship.rightKey.name»)
-						REFERENCES «relationship.right.target.name»(«relationship.rightKey.name»)
+						REFERENCES «relationship.second.target.name»(«relationship.rightKey.name»)
 					«IF relationship.third !== null»
-					«relationship.thirdKey.name» «relationship.thirdKey.datatype.transformType»,
+					«relationship.thirdKey.name» «relationship.thirdKey.datatype.transformDataType»,
 					CONSTRAINT fk_«relationship.thirdKey.name» FOREIGN KEY («relationship.thirdKey.name»)
 						REFERENCES «relationship.third.target.name»(«relationship.thirdKey.name»)
 					«ENDIF»
@@ -85,43 +86,34 @@ class EntityRelationshipGenerator extends AbstractGenerator {
 		}
 	}
 
-		private def transformType(DataType type) {
-		switch (type) {
-			// Default if no datatype is specified
-			case DataType.NONE: {
-				return 'varchar(255)'
+		private def transformDataType(DataType dataType) {
+			if(dataType === null) {
+				return ''
 			}
-			case DataType.BOOLEAN: {
-				return 'bit'
+			
+			val type = dataType.type
+			var size = dataType.size
+		
+			if (size != 0) {
+				return type +  "(" + size + ")";
 			}
-			case DataType.DATETIME: {
-				return 'datetime'
-			}
-			case DataType.DOUBLE: {
-				return 'real'
-			}
-			case DataType.INT: {
-				return 'int'
-			}
-			case DataType.STRING: {
-				return 'varchar(255)'
-			}
-		}
+		
+		return type
 	}
 
 	private def getStrongEntity(Relationship r) {
-		if (r.left.target.isWeak) {
-			return r.right.target
+		if (r.first.target.isWeak) {
+			return r.second.target
 		} else {
-			return r.left.target
+			return r.first.target
 		}
 	}
 
 	private def getWeakEntity(Relationship r) {
-		if (r.left.target.isWeak) {
-			return r.left.target
+		if (r.first.target.isWeak) {
+			return r.first.target
 		} else {
-			return r.right.target
+			return r.second.target
 		}
 	}
 
@@ -154,7 +146,7 @@ class EntityRelationshipGenerator extends AbstractGenerator {
 	}
 
 	private def getLeftKey(Relationship relationship) {
-		val entity = relationship.left.target
+		val entity = relationship.first.target
 		for(Attribute a : entity.attributes) {
 			if (a.type === AttributeType.KEY) {
 				return a
@@ -163,7 +155,7 @@ class EntityRelationshipGenerator extends AbstractGenerator {
 	}
 
 	private def getRightKey(Relationship relationship) {
-		val entity = relationship.right.target
+		val entity = relationship.second.target
 		for(Attribute a : entity.attributes) {
 			if (a.type === AttributeType.KEY) {
 				return a

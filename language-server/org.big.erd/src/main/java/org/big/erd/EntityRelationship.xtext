@@ -3,9 +3,13 @@ grammar org.big.erd.EntityRelationship with org.eclipse.xtext.common.Terminals
 generate entityRelationship "http://www.big.org/erd/EntityRelationship"
 
 Model:
-	'erdiagram' name=ID
-	// option to automatically generate SQL code
-	(generateSql='generateSql')?
+	'erdiagram' name=ID ('{'
+		('generate' '=' generateOption=GenerateOption)?
+		('notation' '=' notationOption=NotationOption)?
+	'}')?
+	
+	// keep old generate option until dependent code is fixed
+	(generateSql?='generateSql')?
 
 	(entities+=Entity | relationships+=Relationship)*;
 
@@ -14,27 +18,42 @@ Entity:
 		(attributes += Attribute)*
 	'}')?;
 
+/**
+ * TODO: allow more than ternary (more generic) - e.g. save all in targets[]
+ */
 Relationship:
 	(weak?='weak')? 'relationship' name=ID ('{'
-		(left=RelationEntity '->' right=RelationEntity)
-		('->' third=RelationEntity)?
+		(first=RelationEntity (('->' second=RelationEntity) ('->' third=RelationEntity)?)?)
 		(attributes += Attribute)*
 	'}')?;
 
+/**
+ * TODO: Support Min/Max Notation
+ * cardinality = max, multiplicity = min/max
+ */
 RelationEntity:
-	target=[Entity] ('['
-		((multiplicity=MultiplicityType) | (customMultiplicity=STRING))
-	']')?;
+	target=[Entity] ('[' 
+		(cardinality=CardinalityType | customMultiplicity=STRING)
+	']')? (partial?='partial')?;
 
+/**
+ * TODO: Remove old datatype (defaults, e.g. int, double, ...)
+ */
 Attribute:
 	name=ID (':' datatype=DataType)? (type=AttributeType)?;
 
-enum DataType:
-	NONE = 'none' | INT = 'int' | DOUBLE = 'double' | STRING = 'string' | BOOLEAN = 'boolean' | DATETIME = 'datetime';
-	
+DataType:
+	type=ID ('(' size=INT ')')?;
+
+enum GenerateOption:
+    OFF='off' | SQL='sql';
+
+enum NotationOption:
+    DEFAULT='default';   
+
 enum AttributeType:
-	NONE = 'none' | KEY = 'key' | FOREIGN_KEY = 'foreign-key' | PARTIAL_KEY = 'partial-key' | NULLABLE = 'optional' | 
+	NONE = 'none' | KEY = 'key' | FOREIGN_KEY = 'foreign-key' | PARTIAL_KEY = 'partial-key' | OPTIONAL = 'optional' | 
 	DERIVED = 'derived' | MULTIVALUED = 'multivalued';
 
-enum MultiplicityType:
-	One = '1' | Many = 'N';
+enum CardinalityType:
+	ONE = '1' | MANY = 'N';

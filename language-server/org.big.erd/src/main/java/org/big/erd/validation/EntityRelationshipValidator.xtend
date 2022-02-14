@@ -4,10 +4,10 @@
 package org.big.erd.validation
 
 import org.big.erd.entityRelationship.Model
-import org.big.erd.entityRelationship.AttributeType
 import org.big.erd.entityRelationship.EntityRelationshipPackage
 import com.google.common.collect.Multimaps
 import org.eclipse.xtext.validation.Check
+import org.big.erd.entityRelationship.AttributeType
 
 /**
  * This class contains custom validation rules. 
@@ -16,29 +16,38 @@ import org.eclipse.xtext.validation.Check
  */
 class EntityRelationshipValidator extends AbstractEntityRelationshipValidator {
 
-	// Check if entity names are unique
+	
+	
+	// Names are unique for entities and relationships
     @Check
-	def uniqueEntities(Model model) {
+	def uniqueNames(Model model) {
+        // Entities
         val entityNames = Multimaps.index(model.entities, [name ?: ''])
         entityNames.keySet.forEach [ name |
-			val entitesWithCommonName = entityNames.get(name)
-			if (entitesWithCommonName.size > 1) 
-				entitesWithCommonName.forEach [
-					error('''Multiple entites named '«name»'«»''', it, EntityRelationshipPackage.Literals.ENTITY__NAME)
+        	val commonName = entityNames.get(name)
+			if (commonName.size > 1) 
+				commonName.forEach [
+					error('''Multiple entites named '«name»'«».''', it, EntityRelationshipPackage.Literals.ENTITY__NAME)
+			]
+		]
+		// Relationships
+		val relNames = Multimaps.index(model.relationships, [name ?: ''])
+        relNames.keySet.forEach [ name |
+			val commonName = relNames.get(name)
+			if (commonName.size > 1) 
+				commonName.forEach [
+					error('''Multiple relationships named '«name»'«».''', it, EntityRelationshipPackage.Literals.RELATIONSHIP__NAME)
 			]
 		]
     }
-
-	// Check if (non-weak) entities contain primary key and no partial key
+    
+	// Check if strong entities contain primary key and no partial key
 	@Check
 	def containsKey(Model model) {
-
 		val entities = model.entities?.filter[e | !e.weak]
         entities.forEach [ e |
-
 			val attributes = e.attributes?.filter[a | a.type === AttributeType.KEY]
 			val keyAttributes = e.attributes?.filter[a | a.type == AttributeType.PARTIAL_KEY]
-
 			if (attributes.size < 1) 
 				info('''Strong Entity '«e.name»'«» does not contain a primary key''', e, EntityRelationshipPackage.Literals.ENTITY__NAME)
 			if (keyAttributes.size > 0) 
@@ -46,19 +55,18 @@ class EntityRelationshipValidator extends AbstractEntityRelationshipValidator {
 		]
     }
 
-	// Check if (weak) entities contain partial key and no primary key
+	// Check if weak entities contain partial key and no primary key
 	@Check
 	def containsPartialKey(Model model) {
 		val entities = model.entities?.filter[e | e.weak]
         entities.forEach [ e |
-			
 			val attributes = e.attributes?.filter[a | a.type == AttributeType.PARTIAL_KEY]
 			val keyAttributes = e.attributes?.filter[a | a.type == AttributeType.KEY]
-
 			if (attributes.size < 1) 
 				info('''Weak Entity '«e.name»'«» does not contain a partial key''', e, EntityRelationshipPackage.Literals.ENTITY__NAME)
 			if (keyAttributes.size > 0) 
 				info('''Weak Entity '«e.name»'«» is not allowed to have a primary key''', e, EntityRelationshipPackage.Literals.ENTITY__NAME)
 		]
     }
+    
 }

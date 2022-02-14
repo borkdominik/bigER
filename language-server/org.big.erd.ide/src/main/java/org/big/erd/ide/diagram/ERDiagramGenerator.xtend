@@ -3,9 +3,8 @@ package org.big.erd.ide.diagram
 import com.google.inject.Inject
 import org.big.erd.entityRelationship.Entity
 import org.big.erd.entityRelationship.Attribute
-import org.big.erd.entityRelationship.Relationship
-import org.big.erd.entityRelationship.DataType
 import org.big.erd.entityRelationship.AttributeType
+import org.big.erd.entityRelationship.Relationship
 import org.big.erd.entityRelationship.Model
 import org.big.erd.ide.diagram.EntityNode
 import org.eclipse.emf.ecore.EObject
@@ -19,29 +18,52 @@ import org.eclipse.sprotty.SNode
 import java.util.ArrayList
 import java.util.List
 import org.eclipse.sprotty.xtext.IDiagramGenerator
-//import org.apache.log4j.Logger
+import org.apache.log4j.Logger
 import org.eclipse.sprotty.IDiagramState
 import org.eclipse.sprotty.xtext.tracing.ITraceProvider
 import org.eclipse.sprotty.xtext.SIssueMarkerDecorator
 import org.eclipse.sprotty.SCompartment
 
 import static org.big.erd.entityRelationship.EntityRelationshipPackage.Literals.*
+import org.big.erd.entityRelationship.EntityRelationshipPackage
+import org.big.erd.entityRelationship.NotationOption
 
 class ERDiagramGenerator implements IDiagramGenerator {
     
-    //static val LOG = Logger.getLogger(ERDiagramGenerator)
+    static val LOG = Logger.getLogger(ERDiagramGenerator)
     
 	@Inject extension ITraceProvider
 	@Inject extension SIssueMarkerDecorator
+	
+	// Types for the elements
+	static val ENTITY = 'node'
+	static val ENTITY_WEAK = 'node:weak'
+	static val ENTITY_HEADER = 'comp:header'
+	static val ENTITY_LABEL = 'label:header'
+	static val ATTRIBUTES_TYPE = 'comp:comp'
+	static val BUTTON_EXPAND = 'button:expand'
 
-	List<Entity> inheritedEntities
-	List<Relationship> ternaryRelationships
 	IDiagramState state
-
+	Model model
+	
+	
+	List<Entity> extendedEntities
+	List<Relationship> ternaryRelationships
+	
+	// Starts the generating process
 	override generate(Context context) {
 		this.state = context.state
-		
-		return (context.resource.contents.head as Model).toSGraph(context)
+		val contentHead = context.resource.contents.head
+		if (contentHead instanceof Model) {
+			LOG.info("Starting diagram generator for '" + context.resource.URI.lastSegment + "'")
+			switch contentHead.notationOption {
+				case NotationOption.DEFAULT,
+				default: 
+					return (contentHead).toSGraph(context)
+			}
+			
+		}
+		return null;
 	}
 
     def toSGraph(Model m, extension Context context) {
@@ -50,8 +72,11 @@ class ERDiagramGenerator implements IDiagramGenerator {
 			id = idCache.uniqueId(m, 'root')
 			children = new ArrayList<SModelElement>
 		]
+		
+		
+		
 		// store all entitites that extend another one
-		this.inheritedEntities = new ArrayList<Entity>
+		this.extendedEntities = new ArrayList<Entity>
 		this.ternaryRelationships = new ArrayList<Relationship>
 
 		// Entity Nodes
@@ -61,10 +86,10 @@ class ERDiagramGenerator implements IDiagramGenerator {
 		for(Relationship r : m.relationships) {
 			// Relationship Diamond Nodes
 			graph.children.add(relationshipNodes(r, context))
-			if(r.left !== null) {
+			if(r.first !== null) {
 				graph.children.add(relationshipEdgesLeft(r,context))
 			}
-			if(r.right !== null) {
+			if(r.second !== null) {
 				graph.children.add(relationshipEdgesRight(r,context))
 			}
 		}
@@ -73,7 +98,7 @@ class ERDiagramGenerator implements IDiagramGenerator {
 			graph.children.add(ternaryEdges(re, context))
 		}
 
-		for(Entity e : this.inheritedEntities) {
+		for(Entity e : this.extendedEntities) {
 			graph.children.add(inheritanceEdges(e, context))
 		}
 		graph.traceAndMark(m, context)
@@ -85,7 +110,7 @@ class ERDiagramGenerator implements IDiagramGenerator {
 	def SEdge relationshipEdgesLeft(Relationship relationship, extension Context context) {
 		
 		val sourceEdge = new SEdge [
-			sourceId = idCache.getId(relationship.left.target)
+			sourceId = idCache.getId(relationship.first.target)
 			targetId = idCache.getId(relationship)
 			val theId = idCache.uniqueId(relationship + sourceId + ':' + relationship.name + ':' + targetId)
 			id = theId
@@ -93,7 +118,7 @@ class ERDiagramGenerator implements IDiagramGenerator {
 		]
 		val label = new SLabel [
 			id = idCache.uniqueId(relationship + 'label:left')
-			text = relationship.left.customMultiplicity ?: relationship.left.multiplicity.toString()
+			text = relationship.first.customMultiplicity ?: relationship.first.cardinality.toString()
 			type = 'label:top'
 		]
 
@@ -106,14 +131,14 @@ class ERDiagramGenerator implements IDiagramGenerator {
 		
 		val targetEdge = new SEdge [
 			sourceId = idCache.getId(relationship)
-			targetId = idCache.getId(relationship.right.target)
+			targetId = idCache.getId(relationship.second.target)
 			val theId = idCache.uniqueId(relationship + sourceId + ':' + relationship.name + ':' + targetId)
 			id = theId
 			children =  new ArrayList<SModelElement>
 		]
 		val label = new SLabel [
 			id = idCache.uniqueId(relationship + 'label:right')
-			text = relationship.right.customMultiplicity ?: relationship.right.multiplicity.toString()
+			text = relationship.second.customMultiplicity ?: relationship.second.cardinality.toString()
 			type = 'label:top'
 		]
 		targetEdge.children.add(label)
@@ -131,7 +156,7 @@ class ERDiagramGenerator implements IDiagramGenerator {
 		]
 		val label = new SLabel [
 			id = idCache.uniqueId(relationship + 'label:third')
-			text = relationship.third.customMultiplicity ?: relationship.third.multiplicity.toString()
+			text = relationship.third.customMultiplicity ?: relationship.third.cardinality.toString()
 			type = 'label:top'
 		]
 		targetEdge.children.add(label)
@@ -170,144 +195,126 @@ class ERDiagramGenerator implements IDiagramGenerator {
 	}
 	
 
-    def EntityNode toSNode(Entity entity, extension Context context) {
-		val entityId = idCache.uniqueId(entity, entity.name)
+    def EntityNode toSNode(Entity e, extension Context context) {
+		if(e.extends !== null) {
+			this.extendedEntities.add(e)
+		}
 		
-		val node = new EntityNode => [
+		val entityId = idCache.uniqueId(e, e.name)
+		val node = new EntityNode [
 			id = entityId
-			type = entity.weak? 'node:weak' : 'node'
+			type = e.weak ? ENTITY_WEAK : ENTITY
 			layout = 'vbox'
 			layoutOptions = new LayoutOptions [
 				VGap = 10.0
 			]
 			children = new ArrayList<SModelElement>
-			expanded = false
-		]
-
-		val headercomp = new SCompartment [
-			id = idCache.getId(entity) + '.header-comp'
-			type = 'comp:header'
+		].traceAndMark(e, context)
+		
+		val headerComp = new SCompartment [
+			id = idCache.uniqueId(entityId + '.header-comp')
+			type = ENTITY_HEADER
 			layout = 'hbox'
-			children = new ArrayList<SModelElement>
+			children = #[
+				(new SLabel [
+					id = idCache.uniqueId(entityId + '.label')
+					type = ENTITY_LABEL
+					text = e.name
+				]).trace(e, EntityRelationshipPackage.Literals.ENTITY__NAME, -1),
+				new SButton [
+					id = idCache.uniqueId(entityId + '.button')
+					type = BUTTON_EXPAND
+				]
+			] 
 		]
-		node.children.add(headercomp)
-	
-		val label = new SLabel [
-			id = idCache.uniqueId(entityId + '.label')
-			text = entity.name
-			type = 'label:header'
-		]
-		label.trace(entity, ENTITY__NAME, -1)
-		headercomp.children.add(label)
-
-		val expandButton = new SButton [
-			id = idCache.uniqueId(entityId + '.button')
-			type = 'button:expand'
-		]
-		headercomp.children.add(expandButton)
-
-		if(state.expandedElements.contains(entityId) || 
-			state.currentModel.type == 'NONE') {
-			val comp = createAttributes(entity, context)
+		node.children.add(headerComp)
+		
+		if (state.expandedElements.contains(entityId) || state.currentModel.type == 'NONE') {
+			val comp = new SCompartment [
+				id = entityId + '.attributes'
+				type = ATTRIBUTES_TYPE
+				layout = 'vbox'
+				layoutOptions = new LayoutOptions [
+					HAlign = 'left'
+					VGap = 1.0
+				]
+				children = new ArrayList<SModelElement>
+			] 
+			comp.children.addAll(e.attributes.map[createAttributeLabels(entityId, context)])
 			node.children.add(comp)
 			state.expandedElements.add(entityId)
 			node.expanded = true
-		} 
-
-		// entity extends another entity
-		if(entity.extends !== null) {
-			this.inheritedEntities.add(entity)
+		} else {
+			node.expanded = false
 		}
-		node.traceAndMark(entity, context)
-
+		
 		return node
 	}
-
-	def SCompartment createAttributes(Entity entity, extension Context context) {
+	
+	def SCompartment createAttributeLabels(Attribute a, String entityId, extension Context context) {
+		val attributeId = idCache.uniqueId(a, entityId + '.' + a.name)
 		val comp = new SCompartment [
-			id = idCache.getId(entity) + '.comp'
-			type = 'comp:comp'
-			layout = 'vbox'
+			id = attributeId
+			type = 'comp:attributes'
+			layout = 'hbox'
 			layoutOptions = new LayoutOptions [
-				HAlign = 'left'
-				VGap = 1.0
+				VAlign = 'left'
+				HGap = 5.0
 			]
 			children = new ArrayList<SModelElement>
 		]
-
-		for(Attribute a : entity.attributes) {		
-			val attributeId = idCache.uniqueId(a, entity.name + '.' + a.name)
-			val attributecomp = new SCompartment [
-				id = idCache.uniqueId(attributeId + '.comp')
-				type = 'comp:attributes'
-				layout = 'hbox'
-				children = new ArrayList<SModelElement>
-				layoutOptions = new LayoutOptions [
-					VAlign = 'left'
-					HGap = 5.0
-				]
-			]
-			attributecomp.children.addAll(attributeLabels(a, context));
-			attributecomp.traceAndMark(a, context)
-			comp.children.add(attributecomp)
-		}
-		return comp	
-	}
-
-	def List<SLabel> attributeLabels(Attribute a, extension Context context) {
-		
-		val labels = new ArrayList<SLabel>
-		val attributeId = idCache.getId(a)
-
-		val attributeType = new SLabel [ 
-			id = attributeId + ".key"
+		comp.traceAndMark(a, context)
+		// TODO: Too many lines of code
+		val type = new SLabel [ 
+			id = attributeId + '.type'
 			text = switch a.type {
-				case a.type == AttributeType.KEY : 'KEY'
-				case a.type == AttributeType.FOREIGN_KEY : 'FK'
-				case a.type == AttributeType.PARTIAL_KEY : 'PK'
-				case a.type == AttributeType.MULTIVALUED : '[ ]'
-				case a.type == AttributeType.DERIVED : '->'
-				case a.type == AttributeType.NULLABLE : 'NULL'
+				case AttributeType.KEY : 'KEY'
+				case AttributeType.FOREIGN_KEY : 'FK'
+				case AttributeType.PARTIAL_KEY : 'PK'
+				case AttributeType.MULTIVALUED : '[ ]'
+				case AttributeType.DERIVED : '->'
+				case AttributeType.OPTIONAL : 'NULL'
 				default: '-'
 			}
 			type = switch a.type {
-				case a.type == AttributeType.KEY : 'label:text-key'
-				case a.type == AttributeType.FOREIGN_KEY : 'label:text-fk'
-				case a.type == AttributeType.PARTIAL_KEY : 'label:text-pk'
-				case a.type == AttributeType.NULLABLE : 'label:text-null'
+				case AttributeType.KEY : 'label:text-key'
+				case AttributeType.FOREIGN_KEY : 'label:text-fk'
+				case AttributeType.PARTIAL_KEY : 'label:text-pk'
+				case AttributeType.OPTIONAL : 'label:text-null'
 				default: 'label:text'
 			}
 		]
-		
-		val attributeName = new SLabel [ 
-			id = attributeId + ".name"
+		val name = new SLabel [ 
+			id = attributeId + '.name'
 			text = a.name
 			type = switch a.type {
-				case a.type == AttributeType.KEY : 'label:text-key'
-				case a.type == AttributeType.FOREIGN_KEY : 'label:text-fk'
-				case a.type == AttributeType.PARTIAL_KEY : 'label:text-pk'
-				case a.type == AttributeType.NULLABLE : 'label:text-null'
+				case AttributeType.KEY : 'label:text-key'
+				case AttributeType.FOREIGN_KEY : 'label:text-fk'
+				case AttributeType.PARTIAL_KEY : 'label:text-pk'
+				case AttributeType.OPTIONAL : 'label:text-null'
 				default: 'label:text'
 			}
-		]
-
-		val attributeDataType = new SLabel [ 
-			id = attributeId + ".type"
-			text = a.datatype == DataType.NONE ? "" : a.datatype.toString()
+		].trace(a, ATTRIBUTE__NAME, -1)
+		
+		val dataType = new SLabel [ 
+			id = attributeId + ".datatype"
+			text = a.datatype?.type.toString
 			type = switch a.type {
 				case a.type == AttributeType.KEY : 'label:text-key'
 				case a.type == AttributeType.FOREIGN_KEY : 'label:text-fk'
 				case a.type == AttributeType.PARTIAL_KEY : 'label:text-pk'
-				case a.type == AttributeType.NULLABLE : 'label:text-null'
+				case a.type == AttributeType.OPTIONAL : 'label:text-null'
 				default: 'label:text'
 			}
 		]
-		labels.add(attributeType)
-		labels.add(attributeName)
-		labels.add(attributeDataType)
 		
-		return labels
 		
+		comp.children.add(type)
+		comp.children.add(name)
+		comp.children.add(dataType)
+		
+		
+		return comp
 	}
 	
 	def SEdge inheritanceEdges(Entity entity, extension Context context) {
@@ -322,8 +329,8 @@ class ERDiagramGenerator implements IDiagramGenerator {
 		return edge
 	}
 	
-	def <T extends SModelElement> T traceAndMark(T sElement, EObject element, Context context) {
-		sElement.trace(element).addIssueMarkers(element, context) 
+	def <T extends SModelElement> T traceAndMark(T sElement, EObject element, extension Context context) {
+		return sElement.trace(element).addIssueMarkers(element, context) 
 	}
 
 }

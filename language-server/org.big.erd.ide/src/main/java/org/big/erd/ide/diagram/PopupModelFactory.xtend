@@ -16,7 +16,8 @@ import org.eclipse.xtext.naming.IQualifiedNameProvider
 import org.big.erd.entityRelationship.Entity
 import org.big.erd.entityRelationship.Relationship
 
-class ERDiagramPopup implements IPopupModelFactory {
+
+class PopupModelFactory implements IPopupModelFactory {
 
 	@Inject extension ITraceProvider
 	
