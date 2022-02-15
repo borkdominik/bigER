@@ -1,6 +1,6 @@
 import { postConstruct, inject, injectable } from 'inversify';
-import {  SprottyDiagramIdentifier, VscodeDiagramWidget } from 'sprotty-vscode-webview';
-import {  CollapseExpandAllAction, FitToScreenAction,  IActionDispatcher, ILogger, ModelSource, TYPES} from 'sprotty';
+import { SprottyDiagramIdentifier, VscodeDiagramWidget } from 'sprotty-vscode-webview';
+import { CollapseExpandAllAction, FitToScreenAction, IActionDispatcher, ILogger, ModelSource, TYPES} from 'sprotty';
 import { AddEntityAction, AddRelationshipAction } from './actions';
 
 @injectable()
@@ -28,31 +28,37 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
         const containerDiv = document.getElementById(this.diagramIdentifier.clientId + '_container');
 
         if (containerDiv) {
+
             const toolbar = document.createElement("div");
-            toolbar.id = "biger-toolbar";
+            toolbar.id = "biger-toolbar"
             toolbar.innerHTML = `
-                <vscode-button id="add-entity-button">
-                    Entity
-                    <span slot="start" class="fas fa-plus"></span>
+                <vscode-button id="toolbar-button">
+                    <span class="fas fa-bars"/>
                 </vscode-button>
-                <vscode-button id="add-relationship-button">
-                    Relationship
-                    <span slot="start" class="fas fa-plus"></span>
-                </vscode-button>
-                <vscode-button id="expand-button">
-                    Expand/Collapse
-                </vscode-button>
-                <vscode-button id="center-diagram-button"">
-                    Center
-                </vscode-button>
-                <vscode-button id="help-button" appearance="icon" aria-label="Help">
-                    <vscode-link href="https://github.com/borkdominik/bigER/wiki/%F0%9F%93%96-Language-Documentation">
-                        <span class="fas fa-question"></span>
-                    </vscode-link>    
-                </vscode-button>
-                `;
-                
-            containerDiv.append(toolbar);    
+                <div id = "toolbar-options">
+                    <vscode-option id="add-entity-button" class="button">Entity
+                        <span id="button-icon" slot="start" class="fas fa-plus"/>
+                    </vscode-option>
+                    <vscode-option id="add-relationship-button" class="button">Relationship
+                        <span id="button-icon" slot="start" class="fas fa-plus"/>
+                    </vscode-option>
+                    <vscode-divider class="divider" role="separator"></vscode-divider>
+                    <div id="expand-div" style="display:none">
+                        <vscode-option style="width:140px;" id="expand-button" class="button">Expand</vscode-option>
+                    </div>
+                    <div id="collapse-div">
+                        <vscode-option style="width:140px;" id="collapse-button" class="button">Collapse</vscode-option>
+                    </div>
+                    <vscode-option id="center-diagram-button" class="button">Center</vscode-option>
+                    <vscode-divider class="divider" role="separator"/></vscode-divider>
+                    <vscode-link class="option" href="https://github.com/borkdominik/bigER/wiki/%F0%9F%93%96-Language-Documentation">
+                        <vscode-option id="help-button" class="button">Help
+                            <span id="button-icon" slot="start" class="fas fa-question"/>
+                        </vscode-option>
+                    </vscode-link>
+                </div>`;
+
+            containerDiv.append(toolbar);   
             this.elementsExpanded = true;
         } 
     }
@@ -62,6 +68,17 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
      */
     protected addEventHandlers(): void {
         
+        document.getElementById('toolbar-button')!.addEventListener('click', async () => {
+                var options = document.getElementById("toolbar-options");
+                if(options){
+                    if (options.style.display === "none") {
+                        options.style.display = "flex";
+                      } else {
+                        options.style.display = "none";
+                      }
+                }
+        });
+
         document.getElementById('add-entity-button')!.addEventListener('click', async () => {
             await this.actionDispatcher.dispatch({
                 kind: AddEntityAction.KIND
@@ -75,13 +92,32 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
         });
         
         document.getElementById('expand-button')!.addEventListener('click', async () => {
-            this.elementsExpanded = !this.elementsExpanded;
-            await this.actionDispatcher.dispatch(new CollapseExpandAllAction(this.elementsExpanded));
-               
+            await this.showAndHideExpandCollapse("none", "block")
         });
-        
+
+        document.getElementById('collapse-button')!.addEventListener('click', async () => {
+            await this.showAndHideExpandCollapse("block", "none")
+        });
+
         document.getElementById('center-diagram-button')!.addEventListener('click', async () => {
             await this.actionDispatcher.dispatch(new FitToScreenAction([]));
         });
+    }
+
+    async showAndHideExpandCollapse(expandStyle:string, collapseStyle:string) {
+        var expand = document.getElementById("expand-div");
+            if(expand){
+                expand.style.display = expandStyle;
+            }
+            var collapse = document.getElementById("collapse-div");
+            if(collapse){
+                collapse.style.display = collapseStyle;
+            }
+            if(expandStyle === "none"){
+                this.elementsExpanded = true;
+            }else{
+                this.elementsExpanded = false;
+            }
+            await this.actionDispatcher.dispatch(new CollapseExpandAllAction(this.elementsExpanded));
     }
 }
