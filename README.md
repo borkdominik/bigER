@@ -247,8 +247,8 @@ The code is split into a **client side** (extension with webview) and a **server
 
 ## Contributors
 
-[Philipp-Lorenz Glaser](https://github.com/plglaser) (Main developer),
-[Georg Hammerschmied](https://github.com/SchmiedHammer) 
+[Philipp-Lorenz Glaser](https://github.com/plglaser) (Main developer)   
+[Georg Hammerschmied](https://github.com/SchmiedHammer)  
 [Dominik Bork](https://github.com/borkdominik)
 
 [All Contributors](https://github.com/borkdominik/bigER/graphs/contributors)
