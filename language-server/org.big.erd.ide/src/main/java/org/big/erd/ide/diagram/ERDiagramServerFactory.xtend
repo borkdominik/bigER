@@ -5,7 +5,6 @@ import com.google.inject.Provider
 import java.util.List
 import org.eclipse.sprotty.xtext.DiagramServerFactory
 import org.eclipse.sprotty.IDiagramServer
-import org.eclipse.sprotty.xtext.LanguageAwareDiagramServer
 
 
 class ERDiagramServerFactory extends DiagramServerFactory {

@@ -69,4 +69,22 @@ class EntityRelationshipValidator extends AbstractEntityRelationshipValidator {
 		]
     }
     
+    /* TODO: Fix this? Scoping already handles available entities‚
+    @Check
+	def checkNoCycleInheritance(Entity entity) {
+		// dont check if entity does not extend
+		if (entity.extends === null)
+			return
+		
+		val visitedEntities = newHashSet(entity)
+		var current = entity.extends
+		while (current !== null) {
+			if (visitedEntities.contains(current)) {
+				error('''Cycle in the inheritance of entity '«current.name»' ''', current, EntityRelationshipPackage.Literals.ENTITY__EXTENDS)
+			}
+			visitedEntities.add(current)
+			current = current.extends
+		}
+	}
+	*/
 }
