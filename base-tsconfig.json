@@ -2,11 +2,7 @@
     "compilerOptions": {
         "declaration": true,                     
         "declarationMap": true,
-        "noImplicitAny": true,
-        "noEmitOnError": true,
-        "noImplicitThis": true,
         "noUnusedLocals": true,
-        "strictNullChecks": true,
         "strictPropertyInitialization": false,
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
@@ -14,11 +10,9 @@
         "moduleResolution": "node",
         "strict": true,                          
         "downlevelIteration": true,
-        "target": "es5",
-        "jsx": "react",   
+        "target": "es6",  
         "lib": [
-            "es6",
-            "dom"
+            "es6"
         ],
         "sourceMap": true,
         "skipLibCheck": true

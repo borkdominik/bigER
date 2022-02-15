@@ -11,10 +11,9 @@ const config = {
     output: { 
         path: path.resolve(__dirname, 'pack'),
         filename: 'main.js',
-        libraryTarget: "commonjs2",
-        devtoolModuleFilenameTemplate: "../[resource-path]",
+        libraryTarget: "commonjs2"
     },
-    devtool: 'source-map',
+    devtool: 'nosources-source-map',
     externals: {
         vscode: "commonjs vscode"
     },
@@ -26,19 +25,29 @@ const config = {
             {
                 test: /\.ts$/,
                 exclude: /node_modules/,
-                use: [{
-                    loader: 'ts-loader',
-                    options: {
-                        compilerOptions: {
-                            "module": "es6" // override `tsconfig.json` so that TypeScript emits native JavaScript modules.
-                        }
-                    }
-                }]
+                use: [
+                    {
+                        loader: "ts-loader",
+                        options: {
+                            onlyCompileBundledFiles: true,
+                            compilerOptions: {
+                                outDir: "dist",
+                                declaration: true,
+                                declarationMap: true,
+                            },
+                        },
+                    },
+                ],
             },
             {
-                test: /\.js$/,
-                enforce: 'pre',
-                use: ['source-map-loader'],
+                test: /\.(ttf)$/,
+                loader: 'file-loader',
+                options: {
+                    name: '[name].[ext]',
+                    outputPath: '',
+                    publicPath: '..',
+                    postTransformPublicPath: (p) => `__webpack_public_path__ + ${p}`,
+                }
             }
         ]
     },

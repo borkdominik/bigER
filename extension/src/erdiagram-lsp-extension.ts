@@ -1,10 +1,9 @@
-import { LspLabelEditActionHandler, SprottyLspEditVscodeExtension, WorkspaceEditActionHandler } from "sprotty-vscode/lib/lsp/editing";
-import { LanguageClient, ServerOptions, LanguageClientOptions } from "vscode-languageclient";
-import { SprottyWebview } from "sprotty-vscode/lib/sprotty-webview";
-//import { SprottyDiagramIdentifier, SprottyLspWebview } from "sprotty-vscode/lib/lsp";
-import { SprottyDiagramIdentifier } from "sprotty-vscode/lib/lsp";
 import * as path from 'path';
 import * as vscode from 'vscode';
+import { LspLabelEditActionHandler, SprottyLspEditVscodeExtension, WorkspaceEditActionHandler } from "sprotty-vscode/lib/lsp/editing";
+import { LanguageClient, ServerOptions, LanguageClientOptions } from "vscode-languageclient/node";
+import { SprottyWebview } from "sprotty-vscode/lib/sprotty-webview";
+import { SprottyDiagramIdentifier } from "sprotty-vscode/lib/lsp";
 import { ERDiagramWebview } from './erdiagram-webview';
 
 export class ERDiagramLspVscodeExtension extends SprottyLspEditVscodeExtension {
@@ -20,8 +19,6 @@ export class ERDiagramLspVscodeExtension extends SprottyLspEditVscodeExtension {
                 // Return a Sprotty diagram type (this info is passed to the Sprotty model source)
                 return 'erdiagram-diagram';
         }
-        
-       // return 'erdiagram-diagram'
     }
     
     createWebView(identifier: SprottyDiagramIdentifier): SprottyWebview {
@@ -61,8 +58,7 @@ export class ERDiagramLspVscodeExtension extends SprottyLspEditVscodeExtension {
         };
         
         const languageClient = new LanguageClient('erdiagramLanguageClient', 'ERDiagram Language Server', serverOptions, clientOptions);
-        languageClient.start();
-        
+        context.subscriptions.push(languageClient.start());
         return languageClient;
     }
     

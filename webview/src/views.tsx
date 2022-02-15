@@ -1,9 +1,8 @@
 /** @jsx svg */
-import { svg } from 'snabbdom-jsx';
-import { VNode } from "snabbdom/vnode";
-import { RenderingContext, RectangularNodeView, SNode, SEdge, Point, PolylineEdgeView, toDegrees, ExpandButtonView, findParentByFeature, isExpandable } from 'sprotty';
+import { VNode } from "snabbdom";
+import { RenderingContext, RectangularNodeView, SNode, SEdge, Point, PolylineEdgeView, toDegrees, ExpandButtonView, findParentByFeature, isExpandable,
+         svg, SButton } from 'sprotty';
 import { injectable } from 'inversify';
-import { SButton } from 'sprotty';
 
 export class EntityView extends RectangularNodeView {
     render(node: Readonly<SNode>, context: RenderingContext): VNode | undefined {

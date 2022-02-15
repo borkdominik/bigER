@@ -1,4 +1,5 @@
-import { Action, Command, CommandExecutionContext, CommandReturn, IActionDispatcher, TYPES } from "sprotty";
+import { Command, CommandExecutionContext, CommandReturn, IActionDispatcher, TYPES } from "sprotty";
+import { Action } from "sprotty-protocol"
 import { inject, injectable } from 'inversify';
 import { CodeActionProvider } from "sprotty-vscode-webview/lib/lsp/editing";
 import { CodeAction } from 'vscode-languageserver-protocol';

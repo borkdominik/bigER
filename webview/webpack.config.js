@@ -1,7 +1,7 @@
 //@ts-check
 const path = require('path');
 
-const outputPath = path.resolve(__dirname, '../extension/pack');
+const outputPath = path.resolve(__dirname, 'out');
 
 /**@type {import('webpack').Configuration}*/
 const config = {
@@ -12,7 +12,7 @@ const config = {
 		filename: 'webview.js',
         path: outputPath
     },
-    devtool: 'eval-source-map',
+    devtool: 'nosources-source-map',
     resolve: {
         extensions: ['.ts', '.tsx', '.js']
     },
@@ -20,22 +20,30 @@ const config = {
         rules: [
             {
                 test: /\.tsx?$/,
-                use: ['ts-loader']
-            },
-            {
-                test: /\.js$/,
-                use: ['source-map-loader'],
-                enforce: 'pre'
+                exclude: /node_modules/,
+                use: [
+                    {
+                        loader: "ts-loader",
+                    },
+                ]
             },
             {
                 test: /\.css$/,
                 exclude: /\.useable\.css$/,
                 use: ['style-loader', 'css-loader']
+            },
+            {
+                test: /\.(ttf)$/,
+                loader: 'file-loader',
+                options: {
+                    name: '[name].[ext]',
+                    outputPath: '',
+                    publicPath: '..',
+                    postTransformPublicPath: (p) => `__webpack_public_path__ + ${p}`,
+                }
             }
         ]
-    },
-    // @ts-ignore
-    node: { fs: 'empty', net: 'empty' }
+    }
 };
 
 module.exports = config;

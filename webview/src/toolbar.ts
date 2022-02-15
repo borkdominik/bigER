@@ -1,6 +1,7 @@
 import { postConstruct, inject, injectable } from 'inversify';
 import { SprottyDiagramIdentifier, VscodeDiagramWidget } from 'sprotty-vscode-webview';
-import { CollapseExpandAllAction, FitToScreenAction, IActionDispatcher, ILogger, ModelSource, TYPES} from 'sprotty';
+import { IActionDispatcher, ILogger, ModelSource, TYPES} from 'sprotty';
+import { CollapseExpandAllAction, FitToScreenAction } from 'sprotty-protocol';
 import { AddEntityAction, AddRelationshipAction } from './actions';
 
 @injectable()
@@ -100,7 +101,7 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
         });
 
         document.getElementById('center-diagram-button')!.addEventListener('click', async () => {
-            await this.actionDispatcher.dispatch(new FitToScreenAction([]));
+            await this.actionDispatcher.dispatch(FitToScreenAction.create([]));
         });
     }
 
@@ -118,6 +119,6 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
             }else{
                 this.elementsExpanded = false;
             }
-            await this.actionDispatcher.dispatch(new CollapseExpandAllAction(this.elementsExpanded));
+            await this.actionDispatcher.dispatch(CollapseExpandAllAction.create({expand: this.elementsExpanded}));
     }
 }

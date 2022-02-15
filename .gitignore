@@ -17,6 +17,8 @@ org.eclipse.buildship.core.prefs
 .classpath
 /.metadata/
 src-gen/
+lib
+dist
 
 
 # macOS

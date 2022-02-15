@@ -1,7 +1,7 @@
+import { Container, ContainerModule } from 'inversify';
 import 'sprotty/css/sprotty.css';
 import 'sprotty/css/command-palette.css';
 import '../css/diagram.css';
-import { Container, ContainerModule } from 'inversify';
 import {
     configureModelElement, HtmlRoot, HtmlRootView, overrideViewerOptions, PreRenderedElement, PreRenderedView, SEdge, SGraphView,
     SRoutingHandle, SRoutingHandleView, TYPES, loadDefaultModules, SGraph, ConsoleLogger, LogLevel, PolylineEdgeView, SCompartmentView,

@@ -1,7 +1,7 @@
-import { SprottyWebviewOptions } from "sprotty-vscode";
-import { SprottyLspWebview } from "sprotty-vscode/lib/lsp";
 import * as vscode from 'vscode';
 import { Uri, Webview } from "vscode";
+import { SprottyWebviewOptions } from "sprotty-vscode";
+import { SprottyLspWebview } from "sprotty-vscode/lib/lsp";
 
 
 export class ERDiagramWebview extends SprottyLspWebview {
@@ -9,7 +9,6 @@ export class ERDiagramWebview extends SprottyLspWebview {
     constructor(protected options: SprottyWebviewOptions) {
         super(options);
     }
-
 
     protected initializeWebview(webview: vscode.Webview, title?: string) {
         const extensionUri = this.extension.context.extensionUri;
@@ -19,9 +18,7 @@ export class ERDiagramWebview extends SprottyLspWebview {
             "webview-ui-toolkit",
             "dist",
             "toolkit.js",
-          ]);
-        
-          
+          ]); 
         webview.html = `
             <!DOCTYPE html>
             <html lang="en">
