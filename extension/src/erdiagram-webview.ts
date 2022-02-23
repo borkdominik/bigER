@@ -12,6 +12,7 @@ export class ERDiagramWebview extends SprottyLspWebview {
 
     protected initializeWebview(webview: vscode.Webview, title?: string) {
         const extensionUri = this.extension.context.extensionUri;
+        const codiconsUri = webview.asWebviewUri(vscode.Uri.joinPath(extensionUri, 'node_modules', '@vscode/codicons', 'dist', 'codicon.css'));
         const toolkitUri = getUri(webview, extensionUri, [
             "node_modules",
             "@vscode",
@@ -30,6 +31,7 @@ export class ERDiagramWebview extends SprottyLspWebview {
                         rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
                         integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
                         crossorigin="anonymous">
+                    <link href="${codiconsUri}" rel="stylesheet" />    
                     <script type="module" src="${webview.asWebviewUri(toolkitUri).toString()}"></script>
                 </head>
                 <body>

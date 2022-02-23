@@ -13,6 +13,7 @@ import org.eclipse.emf.ecore.EObject
 import org.eclipse.sprotty.SEdge
 import org.eclipse.sprotty.SModelElement
 import org.eclipse.sprotty.SGraph
+import org.eclipse.sprotty.SPort
 import org.eclipse.sprotty.SButton
 import org.eclipse.sprotty.LayoutOptions
 import org.eclipse.sprotty.SLabel
@@ -27,6 +28,7 @@ import org.eclipse.sprotty.xtext.SIssueMarkerDecorator
 import org.eclipse.sprotty.SCompartment
 
 import static org.big.erd.entityRelationship.EntityRelationshipPackage.Literals.*
+
 
 class ERDiagramGenerator implements IDiagramGenerator {
     
@@ -106,12 +108,16 @@ class ERDiagramGenerator implements IDiagramGenerator {
 					id = idCache.uniqueId(relationshipId + '.label')
 					text = relationship.name
 					type = 'label:relationship'
-				]).trace(relationship, RELATIONSHIP__NAME, -1)
+				]).trace(relationship, RELATIONSHIP__NAME, -1),
+				new SPort [
+					id = idCache.uniqueId(relationshipId + '.newRelation')
+				]
 			]
 		]
 		node.layoutOptions = new LayoutOptions [
 			paddingFactor = 2.0
 		]
+		
 		node.traceAndMark(relationship, context)
 		return node
 	}
@@ -202,7 +208,7 @@ class ERDiagramGenerator implements IDiagramGenerator {
 				]
 			] 
 		]
-		node.children.add(headerComp)
+		node.children.add(headerComp)	
 		
 		// Create attributes if element is expanded
 		if (state.expandedElements.contains(entityId) || state.currentModel.type == 'NONE') {
@@ -223,7 +229,6 @@ class ERDiagramGenerator implements IDiagramGenerator {
 		} else {
 			node.expanded = false
 		}
-		
 		node.traceAndMark(e, context)
 		return node
 	}

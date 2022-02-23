@@ -20,6 +20,9 @@ import org.eclipse.elk.alg.layered.options.NodeFlexibility
 // import org.eclipse.elk.core.options.EdgeRouting
 // import org.eclipse.elk.alg.force.options.ForceOptions;
 import org.eclipse.elk.alg.layered.options.NodePlacementStrategy
+import org.eclipse.elk.core.options.PortAlignment
+import org.eclipse.elk.core.options.PortConstraints
+import org.eclipse.elk.core.options.PortSide
 
 class ERDiagramLayoutEngine extends ElkLayoutEngine {
 
@@ -30,12 +33,9 @@ class ERDiagramLayoutEngine extends ElkLayoutEngine {
 		if (root instanceof SGraph) {
 			val configurator = new SprottyLayoutConfigurator
 			configurator.configureByType('graph')
-				.setProperty(LayeredOptions.NODE_PLACEMENT_STRATEGY, NodePlacementStrategy.NETWORK_SIMPLEX)
-				.setProperty(LayeredOptions.NODE_PLACEMENT_NETWORK_SIMPLEX_NODE_FLEXIBILITY, NodeFlexibility.PORT_POSITION)
 				.setProperty(CoreOptions.DIRECTION, Direction.RIGHT)
 				.setProperty(CoreOptions.SPACING_NODE_NODE, 40.0)
 				.setProperty(LayeredOptions.SPACING_NODE_NODE_BETWEEN_LAYERS, 40.0)
-				.setProperty(LayeredOptions.SPACING_EDGE_EDGE, 0.0)
 				/* 
 				.setProperty(CoreOptions.EDGE_ROUTING, EdgeRouting.SPLINES)
 				.setProperty(LayeredOptions.SPACING_NODE_SELF_LOOP, 20.0)
@@ -47,7 +47,15 @@ class ERDiagramLayoutEngine extends ElkLayoutEngine {
 				.setProperty(LayeredOptions.SPACING_EDGE_NODE_BETWEEN_LAYERS, 20.0)
 				*/
 			configurator.configureByType('node')
-				.setProperty(LayeredOptions.SPACING_BASE_VALUE, 40.0)
+			configurator.configureByType('node:relationship')
+				.setProperty(CoreOptions.PORT_ALIGNMENT_DEFAULT, PortAlignment.CENTER)
+				.setProperty(CoreOptions.PORT_CONSTRAINTS, PortConstraints.FIXED_SIDE)
+			configurator.configureByType('node:weak-relationship')
+				.setProperty(CoreOptions.PORT_ALIGNMENT_DEFAULT, PortAlignment.CENTER)
+				.setProperty(CoreOptions.PORT_CONSTRAINTS, PortConstraints.FIXED_SIDE)
+			configurator.configureByType('port')
+				.setProperty(CoreOptions.PORT_SIDE, PortSide.NORTH)
+				.setProperty(CoreOptions.PORT_BORDER_OFFSET, 5.0)
 			layout(root, configurator, cause)
 		}
 	}

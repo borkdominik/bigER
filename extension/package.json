@@ -21,7 +21,7 @@
     },
     "license": "MIT",
     "engines": {
-        "vscode": "^1.56.0"
+        "vscode": "^1.46.0"
     },
     "icon": "media/logo.png",
     "galleryBanner": {
@@ -164,7 +164,7 @@
     },
     "devDependencies": {
         "@types/node": "^12.11.7",
-        "@types/vscode": "^1.56.0",
+        "@types/vscode": "1.46.0",
         "@vscode/webview-ui-toolkit": "0.8.4",
         "rimraf": "latest",
         "ts-loader": "^8.0.14",
@@ -173,10 +173,9 @@
         "webpack-cli": "^4.9.2"
     },
     "scripts": {
-        "prepare": "yarn run clean && yarn run build && yarn run copy-webview",
+        "prepare": "yarn run clean && yarn run build",
         "clean": "rimraf extension/lib extension/pack",
         "build": "webpack --mode=development",
-        "watch": "webpack --mode=development --watch",
-        "copy-webview": "cp ../webview/out/* pack/"
+        "watch": "webpack --mode=development --watch"
     }
 }

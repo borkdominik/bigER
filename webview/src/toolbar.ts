@@ -38,10 +38,10 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
                 </vscode-button>
                 <div id = "toolbar-options">
                     <vscode-option id="add-entity-button" class="button">Entity
-                        <span id="button-icon" slot="start" class="fas fa-plus"/>
+                        <span id="button-icon" slot="start" class="codicon codicon-chrome-maximize"/>
                     </vscode-option>
                     <vscode-option id="add-relationship-button" class="button">Relationship
-                        <span id="button-icon" slot="start" class="fas fa-plus"/>
+                        <span id="button-icon" slot="start" class="codicon codicon-debug-breakpoint-log-unverified"/>
                     </vscode-option>
                     <vscode-divider class="divider" role="separator"></vscode-divider>
                     <div id="expand-div" style="display:none">

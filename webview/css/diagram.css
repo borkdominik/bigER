@@ -31,16 +31,16 @@
 }
 
 .weak > .sprotty-node {
-    border-style: double;
+    border-style: ridge;
     stroke: black;
-    stroke-width: 6;
+    stroke-width: 8;
 }
 
 .weak-relationship > .sprotty-node {
     fill: white;
     stroke: black;
-    border-style: double;
-    stroke-width: 6;
+    border-style: ridge;
+    stroke-width: 8;
 }
 
 .sprotty-node.diamond-node {
@@ -116,8 +116,12 @@ text {
 
 .sprotty-edge {
     fill: none;
-    stroke: #488;
-    stroke-width: 3;
+    stroke: var(--vscode-editorActiveLineNumber-foreground);
+    stroke-width: 4;
+}
+
+.sprotty-edge.mouseover:not(.selected) {
+    stroke-width: 7;
 }
 
 .sprotty-edge.selected {
@@ -125,13 +129,28 @@ text {
     stroke-width: 6;
 }
 
-.sprotty-edge.mouseover:not(.selected) {
-    stroke: orange;
+.sprotty-button {
+    fill: var(--vscode-editorActiveLineNumber-foreground);
+    cursor: pointer;
+}
+
+.sprotty-button.mouseover:not(.selected) {
+    fill: var(--vscode-editor-symbolHighlightBackground);
     stroke-width: 5;
 }
 
+
+.sprotty-edge-arrow {
+    fill:var(--vscode-editorActiveLineNumber-foreground);
+}
+
+.sprotty-edge > .sprotty-routing-handle.mouseover {
+    stroke: var(--vscode-editor-symbolHighlightBackground);
+    stroke-width: 3;
+}
+
 .sprotty-edge > .sprotty-routing-handle {
-    fill: #884;
+    fill: var(--vscode-editor-selectionBackground);
     stroke: none;
     z-index: 1000;
 }
@@ -141,16 +160,7 @@ text {
 }
 
 .sprotty-edge > .sprotty-routing-handle.selected {
-    fill: #66a;
-}
-
-.sprotty-edge > .sprotty-routing-handle.mouseover {
-    stroke: #112;
-    stroke-width: 1;
-}
-
-.sprotty-missing {
-    display: none;
+    fill: var(--vscode-editor-selectionHighlightBackground);
 }
 
 .palette-button {
@@ -191,6 +201,9 @@ text {
 	margin-left: 15px;
 }
 
-
+.sprotty-hidden {
+    width: 0px;
+    height: 0px;
+}
 
 

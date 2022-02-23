@@ -4,12 +4,13 @@ import 'sprotty/css/command-palette.css';
 import '../css/diagram.css';
 import {
     configureModelElement, HtmlRoot, HtmlRootView, overrideViewerOptions, PreRenderedElement, PreRenderedView, SEdge, SGraphView,
-    SRoutingHandle, SRoutingHandleView, TYPES, loadDefaultModules, SGraph, ConsoleLogger, LogLevel, PolylineEdgeView, SCompartmentView,
-    SCompartment, RectangularNode, editLabelFeature, labelEditUiModule, SModelRoot, SLabel, ExpandButtonHandler,
-    SButton, expandFeature, DiamondNodeView, DiamondNode, SLabelView
+    SRoutingHandle, SRoutingHandleView, TYPES, loadDefaultModules, SGraph, ConsoleLogger, LogLevel,  SCompartmentView,
+    SCompartment, editLabelFeature, labelEditUiModule, SModelRoot, SLabel, ExpandButtonHandler,
+    SButton, expandFeature, DiamondNodeView, DiamondNode, SLabelView, ManhattanEdgeRouter, popupFeature, creatingOnDragFeature, PolylineEdgeView, hoverFeedbackFeature
 } from 'sprotty';
-import { EntityView, ExpandEntityView, InheritanceEdgeView } from './views';
-import { MultiplicityLabel} from './model';
+import { EntityView, ExpandEntityView, InheritanceEdgeView, TriangleButtonView } from './views';
+import { CreateRelationPort, EntityNode, MultiplicityLabel, RelationEdge } from './model';
+import { CustomRouter } from './custom-router';
 
 /**
  * Sprotty Dependency Injection container 
@@ -18,17 +19,18 @@ const DiagramModule = new ContainerModule((bind, unbind, isBound, rebind) => {
 
     rebind(TYPES.ILogger).to(ConsoleLogger).inSingletonScope();
     rebind(TYPES.LogLevel).toConstantValue(LogLevel.warn);
-    
+    rebind(ManhattanEdgeRouter).to(CustomRouter).inSingletonScope();
+
     const context = { bind, unbind, isBound, rebind };
     configureModelElement(context, 'graph', SGraph, SGraphView);
-    configureModelElement(context, 'node', RectangularNode, EntityView, { enable: [expandFeature] });
-    configureModelElement(context, 'node:weak', RectangularNode, EntityView, { enable: [expandFeature] });
+    configureModelElement(context, 'node', EntityNode, EntityView, { enable: [expandFeature] });
+    configureModelElement(context, 'node:weak', EntityNode, EntityView, { enable: [expandFeature] });
     configureModelElement(context, 'node:relationship', DiamondNode, DiamondNodeView);
     configureModelElement(context, 'node:weak-relationship', DiamondNode, DiamondNodeView);
     configureModelElement(context, 'comp:header', SCompartment, SCompartmentView);
     configureModelElement(context, 'comp:comp', SCompartment, SCompartmentView);
     configureModelElement(context, 'comp:attributes', SCompartment, SCompartmentView);
-    configureModelElement(context, 'edge', SEdge, PolylineEdgeView);
+    configureModelElement(context, 'edge', RelationEdge, PolylineEdgeView);
     configureModelElement(context, 'edge:inheritance', SEdge, InheritanceEdgeView);
     configureModelElement(context, 'label:header', SLabel, SLabelView, { enable: [editLabelFeature] });
     configureModelElement(context, 'label:relationship', SLabel, SLabelView, { enable: [editLabelFeature] });
@@ -43,6 +45,9 @@ const DiagramModule = new ContainerModule((bind, unbind, isBound, rebind) => {
     configureModelElement(context, 'pre-rendered', PreRenderedElement, PreRenderedView);
     configureModelElement(context, 'routing-point', SRoutingHandle, SRoutingHandleView);
     configureModelElement(context, 'volatile-routing-point', SRoutingHandle, SRoutingHandleView);
+    configureModelElement(context, 'port', CreateRelationPort, TriangleButtonView, {
+        enable: [popupFeature, creatingOnDragFeature, hoverFeedbackFeature]
+    });
     configureModelElement(context, ExpandButtonHandler.TYPE, SButton, ExpandEntityView);
 });
 
@@ -61,8 +66,9 @@ export function createDiagramContainer(widgetId: string): Container {
         needsServerLayout: true,
         baseDiv: widgetId,
         hiddenDiv: widgetId + '_hidden',
-        popupOpenDelay: 500
+        popupOpenDelay: 0
     });
     return container;
 }
+
 
