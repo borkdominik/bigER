@@ -4,10 +4,17 @@
 package org.big.erd.validation
 
 import org.big.erd.entityRelationship.Model
+import org.big.erd.entityRelationship.NotationOption
 import org.big.erd.entityRelationship.EntityRelationshipPackage
 import com.google.common.collect.Multimaps
 import org.eclipse.xtext.validation.Check
 import org.big.erd.entityRelationship.AttributeType
+import org.apache.log4j.Logger
+import org.big.erd.entityRelationship.CardinalityType
+import org.big.erd.entityRelationship.RelationEntity
+import org.big.erd.entityRelationship.Relationship
+import org.eclipse.emf.ecore.EStructuralFeature
+import org.eclipse.emf.ecore.EObject
 
 /**
  * This class contains custom validation rules. 
@@ -15,8 +22,53 @@ import org.big.erd.entityRelationship.AttributeType
  * See https://www.eclipse.org/Xtext/documentation/303_runtime_concepts.html#validation
  */
 class EntityRelationshipValidator extends AbstractEntityRelationshipValidator {
-
 	
+	 static val LOG = Logger.getLogger(EntityRelationshipValidator)
+	
+    @Check
+	def checkCardinality(Model model) {
+     
+		model.relationships.forEach [ r |
+			val firstElement = r.first
+			val secondElement = r.second
+			val thirdElement = r.third
+			
+			if(model.notationOption.equals(NotationOption.MINMAX)){
+				checkMinMaxCardinality(firstElement, r, EntityRelationshipPackage.Literals.RELATIONSHIP__FIRST)
+				checkMinMaxCardinality(secondElement, r, EntityRelationshipPackage.Literals.RELATIONSHIP__SECOND)
+				checkMinMaxCardinality(thirdElement, r, EntityRelationshipPackage.Literals.RELATIONSHIP__THIRD)
+				
+			}else if(model.notationOption.equals(NotationOption.CHEN)){
+				checkChenCardinality(firstElement, r, EntityRelationshipPackage.Literals.RELATIONSHIP__FIRST)
+				checkChenCardinality(secondElement, r, EntityRelationshipPackage.Literals.RELATIONSHIP__SECOND)
+				checkChenCardinality(thirdElement, r, EntityRelationshipPackage.Literals.RELATIONSHIP__THIRD)
+				
+			} else if(model.notationOption.equals(NotationOption.BACHMAN)){
+				checkBachmanCardinality(firstElement, r, EntityRelationshipPackage.Literals.RELATIONSHIP__FIRST)
+				checkBachmanCardinality(secondElement, r, EntityRelationshipPackage.Literals.RELATIONSHIP__SECOND)
+				checkBachmanCardinality(thirdElement, r, EntityRelationshipPackage.Literals.RELATIONSHIP__THIRD)
+			}
+		]
+    }
+    
+    def checkMinMaxCardinality(RelationEntity relationEntity, Relationship relationship, EStructuralFeature feature){
+		if(relationEntity !== null && (relationEntity.minMax === null || relationEntity.minMax.length < 3)){
+			info('''Min max not correct. Usage: [num1, num2]''', relationship, feature)
+		}
+    }
+    
+    def checkChenCardinality(RelationEntity relationEntity, Relationship relationship, EStructuralFeature feature){
+    	if(relationEntity !== null && (relationEntity.cardinality === null || relationEntity.cardinality === CardinalityType.ZERO ||
+    		relationEntity.minMax !== null || relationEntity.customMultiplicity !== null)){
+			info('''Wrong cardinality. Usage: [1],[N] or [M]''', relationship, feature)
+		}
+    }
+    
+    def checkBachmanCardinality(RelationEntity relationEntity, Relationship relationship, EStructuralFeature feature){
+    	if(relationEntity !== null && (relationEntity.cardinality === null || relationEntity.customMultiplicity !== null || relationEntity.minMax !== null)){
+			info('''Wrong cardinality. Usage: [0],[1] or [N]''',relationship, feature)
+		}
+    }
 	
 	// Names are unique for entities and relationships
     @Check

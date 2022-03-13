@@ -1,5 +1,7 @@
 grammar org.big.erd.EntityRelationship with org.eclipse.xtext.common.Terminals
 
+
+
 generate entityRelationship "http://www.big.org/erd/EntityRelationship"
 
 Model:
@@ -33,7 +35,7 @@ Relationship:
  */
 RelationEntity:
 	target=[Entity] ('[' 
-		(cardinality=CardinalityType | customMultiplicity=STRING)
+		(cardinality=CardinalityType | customMultiplicity=STRING | minMax=MinMax)
 	']')? (partial?='partial')?;
 
 /**
@@ -44,16 +46,19 @@ Attribute:
 
 DataType:
 	type=ID ('(' size=INT ')')?;
+	
+terminal MinMax:
+	 ('0'..'9')*('*')?','('0'..'9')*('*')?;
 
 enum GenerateOption:
     OFF='off' | SQL='sql';
 
 enum NotationOption:
-    DEFAULT='default';   
+    DEFAULT='default' | CHEN='chen' | MINMAX='minmax' | BACHMAN='bachman';   
 
 enum AttributeType:
 	NONE = 'none' | KEY = 'key' | FOREIGN_KEY = 'foreign-key' | PARTIAL_KEY = 'partial-key' | OPTIONAL = 'optional' | 
 	DERIVED = 'derived' | MULTIVALUED = 'multivalued';
 
 enum CardinalityType:
-	ONE = '1' | MANY = 'N';
+	 ONE = '1' | MANY = 'N' | MANY_CHEN = 'M' | ZERO = '0';
