@@ -15,6 +15,11 @@ export class EntityNode extends RectangularNode {
     }
 }
 
+export class NotationEdge extends SEdge {
+    isSource: boolean
+    notation: String
+}
+
 /*
 export class RelationshipNode extends DiamondNode {
     canConnect(routable: SRoutableElement, role: string) {

@@ -1,6 +1,8 @@
 package org.big.erd.ide.diagram
 
 import org.eclipse.sprotty.SNode
+import org.eclipse.sprotty.SEdge
+import org.big.erd.entityRelationship.NotationOption
 import org.eclipse.xtend.lib.annotations.Accessors
 
 /*
@@ -13,6 +15,18 @@ class EntityNode extends SNode {
 	new() { }
 	
 	new((EntityNode) => void initializer) {
+		initializer.apply(this)
+	}
+}
+
+@Accessors
+class NotationEdge extends SEdge {
+	Boolean isSource;
+	String notation;
+	
+	new() { }
+	
+	new((NotationEdge) => void initializer) {
 		initializer.apply(this)
 	}
 }

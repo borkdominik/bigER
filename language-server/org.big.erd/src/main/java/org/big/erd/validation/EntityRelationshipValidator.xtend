@@ -51,11 +51,21 @@ class EntityRelationshipValidator extends AbstractEntityRelationshipValidator {
 		]
     }
     
-    def checkMinMaxCardinality(RelationEntity relationEntity, Relationship relationship, EStructuralFeature feature){
-		if(relationEntity !== null && (relationEntity.minMax === null || relationEntity.minMax.length < 3)){
-			info('''Wrong cardinality. Usage: [n1,n2], [n1,*] or [*,n1]''', relationship, feature)
+    def checkMinMaxCardinality(RelationEntity relationEntity, Relationship relationship, EStructuralFeature feature) {
+		if (relationEntity !== null) {
+			if (relationEntity.minMax === null || relationEntity.minMax.length < 3) {
+				info('''Wrong cardinality.Usage: [n1,n2], [n1,*] or [*,n1]''', relationship, feature)
+			}
+			if (relationEntity.minMax.toString.length === 3) {
+				var n1 = relationEntity.minMax.toString.substring(0, 1);
+				var n2 = relationEntity.minMax.toString.substring(2, 3);
+
+				if (n1.matches("\\d+") && n2.matches("\\d+") && Integer.parseInt(n1) > Integer.parseInt(n2)) {
+					info('''Wrong cardinality. Usage: [n1,n2] n1 <= n2''', relationship, feature)
+				}
+			}
 		}
-    }
+	}
     
     def checkChenCardinality(RelationEntity relationEntity, Relationship relationship, EStructuralFeature feature){
     	if(relationEntity !== null && (relationEntity.cardinality === null || relationEntity.cardinality === CardinalityType.ZERO ||

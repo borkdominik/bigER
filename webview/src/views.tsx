@@ -2,6 +2,7 @@
 import { VNode } from "snabbdom";
 import { RenderingContext, RectangularNodeView, SNode, SEdge, Point, PolylineEdgeView, toDegrees, ExpandButtonView, findParentByFeature, isExpandable,
          svg, SButton, SPort, IView, SLabel, IViewArgs } from 'sprotty';
+import {NotationEdge } from './model';
 
 import { injectable } from 'inversify';
 
@@ -63,6 +64,12 @@ export class PolylineArrowEdgeView extends PolylineEdgeView {
     isLeft:Boolean;
 
     render(edge: Readonly<SEdge>, context: RenderingContext, args?: IViewArgs): VNode | undefined {
+
+        if(edge instanceof NotationEdge){
+            console.log("isSource: "+edge.isSource)
+            console.log("notation: "+edge.notation)
+        }
+
         const route = this.edgeRouterRegistry.route(edge, args);
         if (route.length === 0) {
             return this.renderDanglingEdge("Cannot compute route", edge, context);
@@ -75,17 +82,12 @@ export class PolylineArrowEdgeView extends PolylineEdgeView {
             // so we need to render a group to ensure the children have a chance to be rendered.
             return <g>{context.renderChildren(edge, { route })}</g>;
         }
-
+        
         var showLabel = true;
 
-        edge.children.forEach((child) =>{
-            if(child instanceof SLabel){
-                if (child.text.includes('BACH:')){
-                    showLabel = false;
-                }
-            }
-        })
-
+        if(edge instanceof NotationEdge){
+            showLabel = edge.notation !== 'bachman'
+        }
         if(showLabel){
             return <g class-sprotty-edge={true} class-mouseover={edge.hoverFeedback}>
             {this.renderLine(edge, route, context, args)}
@@ -102,23 +104,18 @@ export class PolylineArrowEdgeView extends PolylineEdgeView {
 
     protected renderAdditionals(edge: SEdge, segments: Point[], context: RenderingContext): VNode[] {
 
+        var notation:String = 'default';
+        var isSource:boolean = false;
+        var cardinality:String = '';
+
+        if(edge instanceof NotationEdge){
+            notation = edge.notation
+            isSource = edge.isSource
+        }
 
         edge.children.forEach((child)=>{
             if(child instanceof SLabel){
-
-                if(child.text.includes('BACH:') || (child.text.length === 0 && this.notation === 'BACH')){
-                    this.cardinality = child.text.substring(7,child.text.length)
-                    this.notation = 'BACH';
-
-                    if(child.text.includes('F:')){
-                        this.isLeft = true;
-                    }else{
-                        this.isLeft = false;
-                    }
-                }else{
-                    this.notation = 'CHEN';
-                    this.cardinality = child.text
-                }
+                cardinality = child.text
             }
         })
 
@@ -130,7 +127,7 @@ export class PolylineArrowEdgeView extends PolylineEdgeView {
         var arrowSourceX = source.x;
         var arrowTargetX = target.x;
 
-        if(this.notation === 'BACH'){
+        if(notation === 'bachman'){
 
             if(!isNaN(arrowSourceX)){
                 arrowSourceX = arrowSourceX + 9;
@@ -138,9 +135,9 @@ export class PolylineArrowEdgeView extends PolylineEdgeView {
             if(!isNaN(arrowTargetX)){
                 arrowTargetX = arrowTargetX + 9;
             }
-            console.log('cardi: '+this.cardinality)
-            switch(this.cardinality){
-                case '0':  if(this.isLeft){
+            console.log('cardi: '+cardinality)
+            switch(cardinality){
+                case '0':  if(isSource){
                                 return [
                                     <svg>
                                         <circle cx={source.x} cy={source.y} r="7" stroke-width="1" fill="black" />
@@ -153,7 +150,7 @@ export class PolylineArrowEdgeView extends PolylineEdgeView {
                                     </svg>
                                 ];
                             }
-                case '0+':  if(this.isLeft){
+                case '0+':  if(isSource){
                                 return [
                                     <svg>
                                         <circle cx={source.x} cy={source.y} r="7" stroke-width="1" fill="black" />
@@ -170,7 +167,7 @@ export class PolylineArrowEdgeView extends PolylineEdgeView {
                                     </svg>
                                 ];
                             }
-                case '1':  if(this.isLeft){
+                case '1':  if(isSource){
                                 return [
                                     <svg>
                                         <circle cx={source.x} cy={source.y} r="7" stroke-width="1" fill="var(--vscode-editorActiveLineNumber-foreground)" />
@@ -183,7 +180,7 @@ export class PolylineArrowEdgeView extends PolylineEdgeView {
                                     </svg>
                                 ];
                             }
-                case '1+':  if(this.isLeft){
+                case '1+':  if(isSource){
                                 return [
                                     <svg>
                                         <circle cx={source.x} cy={source.y} r="7" stroke-width="1" fill="var(--vscode-editorActiveLineNumber-foreground)" />

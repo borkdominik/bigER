@@ -10,6 +10,7 @@ import org.big.erd.entityRelationship.Relationship
 import org.big.erd.entityRelationship.RelationEntity
 import org.big.erd.entityRelationship.Model
 import org.big.erd.ide.diagram.EntityNode
+import org.big.erd.ide.diagram.NotationEdge
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.sprotty.SEdge
 import org.eclipse.sprotty.SModelElement
@@ -71,16 +72,11 @@ class ERDiagramGenerator implements IDiagramGenerator {
 			// Call generators depending on the notation option
 			switch model.notationOption {
 				case NotationOption.MINMAX : toGraphforMinMax(model, context)
-				default :toSGraphWithLog(model, context)
+				default :toSGraph(model, context)
 			}
 		}
 		return graph
 	}
-	
-	 def void toSGraphWithLog(Model m, extension Context context){
-	 	LOG.info('New Notation Test ' + m.notationOption.getName)
-	 	toSGraph(m, context)
-	 }
 	 
 	 def void toGraphforMinMax(Model m, extension Context context){
 		m.relationships.forEach[ r |
@@ -94,7 +90,7 @@ class ERDiagramGenerator implements IDiagramGenerator {
 				r.third.minMax = "("+(r.third.minMax ?: "")+")"
 			}
 		]
-		toSGraphWithLog(m,context)
+		toSGraph(m,context)
 	 }
 	
 
@@ -117,7 +113,6 @@ class ERDiagramGenerator implements IDiagramGenerator {
 			addRelationEdges(r, context, model.notationOption)
 		]
 	}
-	
 
 	def SNode relationshipNodes(Relationship relationship, extension Context context) {
 		val relationshipId = idCache.uniqueId(relationship, relationship.name)
@@ -144,32 +139,22 @@ class ERDiagramGenerator implements IDiagramGenerator {
 		return node
 	}
 	
-	
 	def void addRelationEdges(Relationship relationship, extension Context context, NotationOption notationOption) { 
 		
 		if (relationship.first !== null) {
 			var cardinality = getCardinality(relationship.first)
-			if(notationOption === NotationOption.BACHMAN){
-				cardinality = "F:"+cardinality;
-			}
 			val source = idCache.getId(relationship.first.target)
 			val target = idCache.getId(relationship)
 			createEdgeAndAddToGraph(relationship,source,target,'label:first', cardinality, notationOption, context)
 		}
 		if (relationship.second !== null) {
 			var cardinality = getCardinality(relationship.second)
-			if(notationOption === NotationOption.BACHMAN){
-				cardinality = "S:"+cardinality;
-			}
 			val source = idCache.getId(relationship)
 			val target = idCache.getId(relationship.second.target)
 			createEdgeAndAddToGraph(relationship,source,target,'label:second', cardinality, notationOption, context)
 		}
 		if (relationship.third !== null) {
 			var cardinality = getCardinality(relationship.third)
-			if(notationOption === NotationOption.BACHMAN){
-				cardinality = "T:"+cardinality;
-			}
 			val source = idCache.getId(relationship)
 			val target = idCache.getId(relationship.third.target)
 			createEdgeAndAddToGraph(relationship,source,target,'label:third', cardinality, notationOption, context)
@@ -179,7 +164,7 @@ class ERDiagramGenerator implements IDiagramGenerator {
 	def String getCardinality(RelationEntity relationEntity){
 		switch model.notationOption {
 				case NotationOption.CHEN : return getChenCardinality(relationEntity.cardinality)
-				case NotationOption.BACHMAN : return 'BACH:'+relationEntity.cardinality.toString
+				case NotationOption.BACHMAN : return (relationEntity.minMax ?: relationEntity.cardinality.toString)
 				case NotationOption.MINMAX : return (relationEntity.minMax ?: '')
 				default: return relationEntity.customMultiplicity ?: relationEntity.cardinality.toString()
 			}
@@ -195,22 +180,22 @@ class ERDiagramGenerator implements IDiagramGenerator {
 	}
 	
 	def void createEdgeAndAddToGraph(Relationship relationship,
-						 String source, 
-						 String target,
-						 String label, 
-						 String cardinality,
-						 NotationOption notationOption, extension Context context){
+									 String source, 
+									 String target,
+									 String label, 
+									 String cardinality,
+									 NotationOption notationOption, extension Context context){
 		
-		graph.children.add(new SEdge [sourceId = source
-							  targetId = target
-							  id = idCache.uniqueId(relationship + sourceId + ':' + relationship.name + ':' + targetId)
-							  children =  #[new SLabel [
-											id = idCache.uniqueId(relationship + label)
-											text = cardinality
-											type = EDGE_LABEL]]])
-	}
-	
-	
+		graph.children.add(new NotationEdge [sourceId = source
+								  targetId = target
+								  notation = notationOption.toString
+								  isSource = label === "label:first"
+								  id = idCache.uniqueId(relationship + sourceId + ':' + relationship.name + ':' + targetId)
+								  children =  #[new SLabel [
+												id = idCache.uniqueId(relationship + label)
+												text = cardinality
+												type = EDGE_LABEL]]])
+		}
 	
 
     def EntityNode toSNode(Entity e, extension Context context) {
