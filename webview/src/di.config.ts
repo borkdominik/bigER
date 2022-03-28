@@ -6,9 +6,9 @@ import {
     configureModelElement, HtmlRoot, HtmlRootView, overrideViewerOptions, PreRenderedElement, PreRenderedView, SEdge, SGraphView,
     SRoutingHandle, SRoutingHandleView, TYPES, loadDefaultModules, SGraph, ConsoleLogger, LogLevel,  SCompartmentView,
     SCompartment, editLabelFeature, labelEditUiModule, SModelRoot, SLabel, ExpandButtonHandler,
-    SButton, expandFeature, DiamondNodeView, DiamondNode, SLabelView, ManhattanEdgeRouter, popupFeature, creatingOnDragFeature, PolylineEdgeView, hoverFeedbackFeature
+    SButton, expandFeature, DiamondNodeView, DiamondNode, SLabelView, ManhattanEdgeRouter, popupFeature, creatingOnDragFeature, hoverFeedbackFeature
 } from 'sprotty';
-import { EntityView, ExpandEntityView, InheritanceEdgeView, TriangleButtonView } from './views';
+import { EntityView, ExpandEntityView, InheritanceEdgeView, TriangleButtonView, PolylineArrowEdgeView } from './views';
 import { CreateRelationPort, EntityNode, MultiplicityLabel, RelationEdge } from './model';
 import { CustomRouter } from './custom-router';
 
@@ -30,7 +30,7 @@ const DiagramModule = new ContainerModule((bind, unbind, isBound, rebind) => {
     configureModelElement(context, 'comp:header', SCompartment, SCompartmentView);
     configureModelElement(context, 'comp:comp', SCompartment, SCompartmentView);
     configureModelElement(context, 'comp:attributes', SCompartment, SCompartmentView);
-    configureModelElement(context, 'edge', RelationEdge, PolylineEdgeView);
+    configureModelElement(context, 'edge', RelationEdge, PolylineArrowEdgeView);
     configureModelElement(context, 'edge:inheritance', SEdge, InheritanceEdgeView);
     configureModelElement(context, 'label:header', SLabel, SLabelView, { enable: [editLabelFeature] });
     configureModelElement(context, 'label:relationship', SLabel, SLabelView, { enable: [editLabelFeature] });

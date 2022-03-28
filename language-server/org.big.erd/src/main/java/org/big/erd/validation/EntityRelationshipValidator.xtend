@@ -53,20 +53,23 @@ class EntityRelationshipValidator extends AbstractEntityRelationshipValidator {
     
     def checkMinMaxCardinality(RelationEntity relationEntity, Relationship relationship, EStructuralFeature feature){
 		if(relationEntity !== null && (relationEntity.minMax === null || relationEntity.minMax.length < 3)){
-			info('''Min max not correct. Usage: [num1, num2]''', relationship, feature)
+			info('''Wrong cardinality. Usage: [n1,n2], [n1,*] or [*,n1]''', relationship, feature)
 		}
     }
     
     def checkChenCardinality(RelationEntity relationEntity, Relationship relationship, EStructuralFeature feature){
     	if(relationEntity !== null && (relationEntity.cardinality === null || relationEntity.cardinality === CardinalityType.ZERO ||
+    		relationEntity.cardinality === CardinalityType.ONE_OR_MORE || relationEntity.cardinality === CardinalityType.ZERO_OR_MORE ||
     		relationEntity.minMax !== null || relationEntity.customMultiplicity !== null)){
 			info('''Wrong cardinality. Usage: [1],[N] or [M]''', relationship, feature)
 		}
     }
     
     def checkBachmanCardinality(RelationEntity relationEntity, Relationship relationship, EStructuralFeature feature){
-    	if(relationEntity !== null && (relationEntity.cardinality === null || relationEntity.customMultiplicity !== null || relationEntity.minMax !== null)){
-			info('''Wrong cardinality. Usage: [0],[1] or [N]''',relationship, feature)
+    	if(relationEntity !== null && (relationEntity.cardinality === null || relationEntity.customMultiplicity !== null 
+    		|| relationEntity.minMax !== null || relationEntity.cardinality === CardinalityType.MANY || 
+    		relationEntity.cardinality === CardinalityType.MANY_CHEN)){
+			info('''Wrong cardinality. Usage: [0],[0+],[1] or [1+]''',relationship, feature)
 		}
     }
 	

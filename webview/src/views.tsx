@@ -1,7 +1,7 @@
 /** @jsx svg */
 import { VNode } from "snabbdom";
 import { RenderingContext, RectangularNodeView, SNode, SEdge, Point, PolylineEdgeView, toDegrees, ExpandButtonView, findParentByFeature, isExpandable,
-         svg, SButton, SPort, IView } from 'sprotty';
+         svg, SButton, SPort, IView, SLabel, IViewArgs } from 'sprotty';
 
 import { injectable } from 'inversify';
 
@@ -53,16 +53,158 @@ export class ExpandEntityView extends ExpandButtonView {
     }
 }
 
+
+
 @injectable()
 export class PolylineArrowEdgeView extends PolylineEdgeView {
 
+    notation:String;
+    cardinality:String;
+    isLeft:Boolean;
+
+    render(edge: Readonly<SEdge>, context: RenderingContext, args?: IViewArgs): VNode | undefined {
+        const route = this.edgeRouterRegistry.route(edge, args);
+        if (route.length === 0) {
+            return this.renderDanglingEdge("Cannot compute route", edge, context);
+        }
+        if (!this.isVisible(edge, route, context)) {
+            if (edge.children.length === 0) {
+                return undefined;
+            }
+            // The children of an edge are not necessarily inside the bounding box of the route,
+            // so we need to render a group to ensure the children have a chance to be rendered.
+            return <g>{context.renderChildren(edge, { route })}</g>;
+        }
+
+        var showLabel = true;
+
+        edge.children.forEach((child) =>{
+            if(child instanceof SLabel){
+                if (child.text.includes('BACH:')){
+                    showLabel = false;
+                }
+            }
+        })
+
+        if(showLabel){
+            return <g class-sprotty-edge={true} class-mouseover={edge.hoverFeedback}>
+            {this.renderLine(edge, route, context, args)}
+            {this.renderAdditionals(edge, route, context)}
+            {context.renderChildren(edge, { route })}
+        </g>;
+        }else{
+            return <g class-sprotty-edge={true} class-mouseover={edge.hoverFeedback}>
+            {this.renderLine(edge, route, context, args)}
+            {this.renderAdditionals(edge, route, context)}
+        </g>;
+        }
+    }
+
     protected renderAdditionals(edge: SEdge, segments: Point[], context: RenderingContext): VNode[] {
-        const p1 = segments[segments.length - 2];
-        const p2 = segments[segments.length - 1];
-        return [
-            <path class-sprotty-edge-arrow={true} d="M 6,-3 L 0,0 L 6,3 Z"
-                  transform={`rotate(${this.angle(p2, p1)} ${p2.x} ${p2.y}) translate(${p2.x} ${p2.y})`}/>
-        ];
+
+
+        edge.children.forEach((child)=>{
+            if(child instanceof SLabel){
+
+                if(child.text.includes('BACH:') || (child.text.length === 0 && this.notation === 'BACH')){
+                    this.cardinality = child.text.substring(7,child.text.length)
+                    this.notation = 'BACH';
+
+                    if(child.text.includes('F:')){
+                        this.isLeft = true;
+                    }else{
+                        this.isLeft = false;
+                    }
+                }else{
+                    this.notation = 'CHEN';
+                    this.cardinality = child.text
+                }
+            }
+        })
+
+        const source = segments[0];
+        const target = segments[segments.length - 1];
+        const nextToLast = segments[segments.length - 2];
+        const secondElem = segments[1];
+
+        var arrowSourceX = source.x;
+        var arrowTargetX = target.x;
+
+        if(this.notation === 'BACH'){
+
+            if(!isNaN(arrowSourceX)){
+                arrowSourceX = arrowSourceX + 9;
+            }
+            if(!isNaN(arrowTargetX)){
+                arrowTargetX = arrowTargetX + 9;
+            }
+            console.log('cardi: '+this.cardinality)
+            switch(this.cardinality){
+                case '0':  if(this.isLeft){
+                                return [
+                                    <svg>
+                                        <circle cx={source.x} cy={source.y} r="7" stroke-width="1" fill="black" />
+                                    </svg>
+                                ];
+                            }else{
+                                return [
+                                    <svg>
+                                        <circle cx={target.x} cy={target.y} r="7" stroke-width="1" fill="black" />
+                                    </svg>
+                                ];
+                            }
+                case '0+':  if(this.isLeft){
+                                return [
+                                    <svg>
+                                        <circle cx={source.x} cy={source.y} r="7" stroke-width="1" fill="black" />
+                                        <path class-sprotty-edge-arrow={true} d="M 7,-4 L 0,0 L 7,4 Z"
+                                            transform={`rotate(${this.angle(source, secondElem)} ${source.x} ${source.y}) translate(${arrowSourceX} ${source.y})`}/>
+                                    </svg>
+                                ];
+                            }else{
+                                return [
+                                    <svg>
+                                        <circle cx={target.x} cy={target.y} r="7" stroke-width="1" fill="black" />
+                                        <path class-sprotty-edge-arrow={true} d="M 7,-4 L 0,0 L 7,4 Z"
+                                            transform={`rotate(${this.angle(target, nextToLast)} ${target.x} ${target.y}) translate(${arrowTargetX} ${target.y})`}/>
+                                    </svg>
+                                ];
+                            }
+                case '1':  if(this.isLeft){
+                                return [
+                                    <svg>
+                                        <circle cx={source.x} cy={source.y} r="7" stroke-width="1" fill="var(--vscode-editorActiveLineNumber-foreground)" />
+                                    </svg>
+                                ];
+                            }else{
+                                return [
+                                    <svg>
+                                        <circle cx={target.x} cy={target.y} r="7" stroke-width="1" fill="var(--vscode-editorActiveLineNumber-foreground)" />
+                                    </svg>
+                                ];
+                            }
+                case '1+':  if(this.isLeft){
+                                return [
+                                    <svg>
+                                        <circle cx={source.x} cy={source.y} r="7" stroke-width="1" fill="var(--vscode-editorActiveLineNumber-foreground)" />
+                                        <path class-sprotty-edge-arrow={true} d="M 7,-4 L 0,0 L 7,4 Z"
+                                            transform={`rotate(${this.angle(source, secondElem)} ${source.x} ${source.y}) translate(${arrowSourceX} ${source.y})`}/>
+                                    </svg>
+                                ];
+                            }else{
+                                return [
+                                    <svg>
+                                        <circle cx={target.x} cy={target.y} r="7" stroke-width="1" fill="var(--vscode-editorActiveLineNumber-foreground)" />
+                                        <path class-sprotty-edge-arrow={true} d="M 7,-4 L 0,0 L 7,4 Z"
+                                            transform={`rotate(${this.angle(target, nextToLast)} ${target.x} ${target.y}) translate(${arrowTargetX} ${target.y})`}/>
+                                    </svg>
+                                ];
+                            }
+                default:  return [];
+            }
+        }else{
+            return [];
+        }
     }
 
     angle(x0: Point, x1: Point): number {

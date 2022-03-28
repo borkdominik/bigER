@@ -27,6 +27,7 @@ import org.eclipse.sprotty.IDiagramState
 import org.eclipse.sprotty.xtext.tracing.ITraceProvider
 import org.eclipse.sprotty.xtext.SIssueMarkerDecorator
 import org.eclipse.sprotty.SCompartment
+import org.big.erd.entityRelationship.CardinalityType
 
 import static org.big.erd.entityRelationship.EntityRelationshipPackage.Literals.*
 
@@ -147,39 +148,58 @@ class ERDiagramGenerator implements IDiagramGenerator {
 	def void addRelationEdges(Relationship relationship, extension Context context, NotationOption notationOption) { 
 		
 		if (relationship.first !== null) {
-			val cardinality = getCardinality(relationship.first, notationOption)
+			var cardinality = getCardinality(relationship.first)
+			if(notationOption === NotationOption.BACHMAN){
+				cardinality = "F:"+cardinality;
+			}
 			val source = idCache.getId(relationship.first.target)
 			val target = idCache.getId(relationship)
-			createEdgeAndAddToGraph(relationship,source,target,'label:first', cardinality, context)
+			createEdgeAndAddToGraph(relationship,source,target,'label:first', cardinality, notationOption, context)
 		}
 		if (relationship.second !== null) {
-			val cardinality = getCardinality(relationship.second, notationOption)
+			var cardinality = getCardinality(relationship.second)
+			if(notationOption === NotationOption.BACHMAN){
+				cardinality = "S:"+cardinality;
+			}
 			val source = idCache.getId(relationship)
 			val target = idCache.getId(relationship.second.target)
-			createEdgeAndAddToGraph(relationship,source,target,'label:second', cardinality, context)
+			createEdgeAndAddToGraph(relationship,source,target,'label:second', cardinality, notationOption, context)
 		}
 		if (relationship.third !== null) {
-			val cardinality =  getCardinality(relationship.third, notationOption)
+			var cardinality = getCardinality(relationship.third)
+			if(notationOption === NotationOption.BACHMAN){
+				cardinality = "T:"+cardinality;
+			}
 			val source = idCache.getId(relationship)
 			val target = idCache.getId(relationship.third.target)
-			createEdgeAndAddToGraph(relationship,source,target,'label:third', cardinality, context)
+			createEdgeAndAddToGraph(relationship,source,target,'label:third', cardinality, notationOption, context)
 		}
 	}
 	
-	def String getCardinality(RelationEntity relationEntity, NotationOption notationOption){
+	def String getCardinality(RelationEntity relationEntity){
 		switch model.notationOption {
-				case NotationOption.CHEN : return relationEntity.cardinality.toString
-				case NotationOption.BACHMAN : return relationEntity.cardinality.toString
-				case NotationOption.MINMAX : return relationEntity.minMax
+				case NotationOption.CHEN : return getChenCardinality(relationEntity.cardinality)
+				case NotationOption.BACHMAN : return 'BACH:'+relationEntity.cardinality.toString
+				case NotationOption.MINMAX : return (relationEntity.minMax ?: '')
 				default: return relationEntity.customMultiplicity ?: relationEntity.cardinality.toString()
 			}
+	}
+	
+	def String getChenCardinality(CardinalityType cardinality){
+		if(cardinality === null || cardinality === CardinalityType.ZERO || 
+		   cardinality === CardinalityType.ZERO_OR_MORE || cardinality === CardinalityType.ONE_OR_MORE){
+			return "";
+		}else{
+			return cardinality.toString;
+		}
 	}
 	
 	def void createEdgeAndAddToGraph(Relationship relationship,
 						 String source, 
 						 String target,
 						 String label, 
-						 String cardinality, extension Context context){
+						 String cardinality,
+						 NotationOption notationOption, extension Context context){
 		
 		graph.children.add(new SEdge [sourceId = source
 							  targetId = target
@@ -189,6 +209,8 @@ class ERDiagramGenerator implements IDiagramGenerator {
 											text = cardinality
 											type = EDGE_LABEL]]])
 	}
+	
+	
 	
 
     def EntityNode toSNode(Entity e, extension Context context) {

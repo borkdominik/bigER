@@ -61,4 +61,4 @@ enum AttributeType:
 	DERIVED = 'derived' | MULTIVALUED = 'multivalued';
 
 enum CardinalityType:
-	 ONE = '1' | MANY = 'N' | MANY_CHEN = 'M' | ZERO = '0';
+	 ONE = '1' | MANY = 'N' | MANY_CHEN = 'M' | ZERO = '0' | ONE_OR_MORE = '1+' | ZERO_OR_MORE = '0+';
