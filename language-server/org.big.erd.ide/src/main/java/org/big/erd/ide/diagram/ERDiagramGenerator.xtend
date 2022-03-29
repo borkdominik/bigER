@@ -195,7 +195,7 @@ class ERDiagramGenerator implements IDiagramGenerator {
 												id = idCache.uniqueId(relationship + label)
 												text = cardinality
 												type = EDGE_LABEL]]])
-		}
+	}
 	
 
     def EntityNode toSNode(Entity e, extension Context context) {

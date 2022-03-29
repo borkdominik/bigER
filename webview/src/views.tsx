@@ -57,18 +57,9 @@ export class ExpandEntityView extends ExpandButtonView {
 
 
 @injectable()
-export class PolylineArrowEdgeView extends PolylineEdgeView {
-
-    notation:String;
-    cardinality:String;
-    isLeft:Boolean;
+export class NotationEdgeView extends PolylineEdgeView {
 
     render(edge: Readonly<SEdge>, context: RenderingContext, args?: IViewArgs): VNode | undefined {
-
-        if(edge instanceof NotationEdge){
-            console.log("isSource: "+edge.isSource)
-            console.log("notation: "+edge.notation)
-        }
 
         const route = this.edgeRouterRegistry.route(edge, args);
         if (route.length === 0) {
@@ -112,96 +103,68 @@ export class PolylineArrowEdgeView extends PolylineEdgeView {
             notation = edge.notation
             isSource = edge.isSource
         }
-
         edge.children.forEach((child)=>{
             if(child instanceof SLabel){
                 cardinality = child.text
             }
         })
-
         const source = segments[0];
         const target = segments[segments.length - 1];
-        const nextToLast = segments[segments.length - 2];
+        const penultimateElem = segments[segments.length - 2];
         const secondElem = segments[1];
+
+        switch(notation){
+            case 'bachman' : return this.createBachmanEdge(source, target, secondElem, penultimateElem, cardinality, isSource);
+            default :  return [];
+        }
+    }
+
+    private createBachmanEdge(source:Point, target:Point, secondElem:Point, penultimateElem :Point, cardinality:String, isSource:boolean):VNode[]{
 
         var arrowSourceX = source.x;
         var arrowTargetX = target.x;
 
-        if(notation === 'bachman'){
+        if(!isNaN(arrowSourceX)){
+            arrowSourceX = arrowSourceX + 9;
+        }
+        if(!isNaN(arrowTargetX)){
+            arrowTargetX = arrowTargetX + 9;
+        }
+        if(cardinality === '0' || cardinality === '1'){
+            const color = cardinality === '0' ? "black" : "var(--vscode-editorActiveLineNumber-foreground)";
+            if(isSource){
+                return this.createEdgeWithCircle(color, source);
+            }
+            return this.createEdgeWithCircle(color, target);
 
-            if(!isNaN(arrowSourceX)){
-                arrowSourceX = arrowSourceX + 9;
+        } else if (cardinality === '0+' || cardinality === '1+'){
+            const color = cardinality === '0+' ? "black" : "var(--vscode-editorActiveLineNumber-foreground)";
+            if(isSource){
+                return this.createEdgeWithCircleAndArrow(color, source, secondElem, arrowSourceX);
             }
-            if(!isNaN(arrowTargetX)){
-                arrowTargetX = arrowTargetX + 9;
-            }
-            console.log('cardi: '+cardinality)
-            switch(cardinality){
-                case '0':  if(isSource){
-                                return [
-                                    <svg>
-                                        <circle cx={source.x} cy={source.y} r="7" stroke-width="1" fill="black" />
-                                    </svg>
-                                ];
-                            }else{
-                                return [
-                                    <svg>
-                                        <circle cx={target.x} cy={target.y} r="7" stroke-width="1" fill="black" />
-                                    </svg>
-                                ];
-                            }
-                case '0+':  if(isSource){
-                                return [
-                                    <svg>
-                                        <circle cx={source.x} cy={source.y} r="7" stroke-width="1" fill="black" />
-                                        <path class-sprotty-edge-arrow={true} d="M 7,-4 L 0,0 L 7,4 Z"
-                                            transform={`rotate(${this.angle(source, secondElem)} ${source.x} ${source.y}) translate(${arrowSourceX} ${source.y})`}/>
-                                    </svg>
-                                ];
-                            }else{
-                                return [
-                                    <svg>
-                                        <circle cx={target.x} cy={target.y} r="7" stroke-width="1" fill="black" />
-                                        <path class-sprotty-edge-arrow={true} d="M 7,-4 L 0,0 L 7,4 Z"
-                                            transform={`rotate(${this.angle(target, nextToLast)} ${target.x} ${target.y}) translate(${arrowTargetX} ${target.y})`}/>
-                                    </svg>
-                                ];
-                            }
-                case '1':  if(isSource){
-                                return [
-                                    <svg>
-                                        <circle cx={source.x} cy={source.y} r="7" stroke-width="1" fill="var(--vscode-editorActiveLineNumber-foreground)" />
-                                    </svg>
-                                ];
-                            }else{
-                                return [
-                                    <svg>
-                                        <circle cx={target.x} cy={target.y} r="7" stroke-width="1" fill="var(--vscode-editorActiveLineNumber-foreground)" />
-                                    </svg>
-                                ];
-                            }
-                case '1+':  if(isSource){
-                                return [
-                                    <svg>
-                                        <circle cx={source.x} cy={source.y} r="7" stroke-width="1" fill="var(--vscode-editorActiveLineNumber-foreground)" />
-                                        <path class-sprotty-edge-arrow={true} d="M 7,-4 L 0,0 L 7,4 Z"
-                                            transform={`rotate(${this.angle(source, secondElem)} ${source.x} ${source.y}) translate(${arrowSourceX} ${source.y})`}/>
-                                    </svg>
-                                ];
-                            }else{
-                                return [
-                                    <svg>
-                                        <circle cx={target.x} cy={target.y} r="7" stroke-width="1" fill="var(--vscode-editorActiveLineNumber-foreground)" />
-                                        <path class-sprotty-edge-arrow={true} d="M 7,-4 L 0,0 L 7,4 Z"
-                                            transform={`rotate(${this.angle(target, nextToLast)} ${target.x} ${target.y}) translate(${arrowTargetX} ${target.y})`}/>
-                                    </svg>
-                                ];
-                            }
-                default:  return [];
-            }
+            return this.createEdgeWithCircleAndArrow(color, target, penultimateElem, arrowTargetX);
+            
         }else{
             return [];
-        }
+        } 
+    }
+
+    private createEdgeWithCircle(color:String, point:Point):VNode[]{
+        return [
+            <svg>
+                <circle cx={point.x} cy={point.y} r="7" stroke-width="1" fill={color}/>
+            </svg>
+        ];
+    }
+
+    private createEdgeWithCircleAndArrow(color:String, point:Point, next:Point,targetX:Number):VNode[]{
+        return [
+            <svg>
+                <circle cx={point.x} cy={point.y} r="7" stroke-width="1" fill={color}/>
+                <path class-sprotty-edge-arrow={true} d="M 7,-4 L 0,0 L 7,4 Z"
+                    transform={`rotate(${this.angle(point, next)} ${point.x} ${point.y}) translate(${targetX} ${point.y})`}/>
+            </svg>
+        ];
     }
 
     angle(x0: Point, x1: Point): number {
