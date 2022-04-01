@@ -1,9 +1,30 @@
 /** @jsx svg */
 import { VNode } from "snabbdom";
 import { RenderingContext, RectangularNodeView, SNode, SEdge, Point, PolylineEdgeView, toDegrees, ExpandButtonView, findParentByFeature, isExpandable,
-         svg, SButton, SPort, IView } from 'sprotty';
+         svg, SButton, SPort, IView, SGraphView, EdgeRouterRegistry } from 'sprotty';
 
-import { injectable } from 'inversify';
+import { injectable, inject } from 'inversify';
+import { ERModel } from "./model";
+
+@injectable()
+export class ERModelView<IRenderingArgs> extends SGraphView<IRenderingArgs> {
+
+    @inject(EdgeRouterRegistry) edgeRouterRegistry: EdgeRouterRegistry;
+
+    render(model: Readonly<ERModel>, context: RenderingContext, args?: IRenderingArgs): VNode {
+        const menuModelName = document.getElementById('menubar-modelName');
+        if (menuModelName)
+            menuModelName.innerText = model.name
+        const edgeRouting = this.edgeRouterRegistry.routeAllChildren(model);
+        const transform = `scale(${model.zoom}) translate(${-model.scroll.x},${-model.scroll.y})`;
+        return <svg class-sprotty-graph={true}>
+            <g transform={transform}>
+                {context.renderChildren(model, { edgeRouting })}
+            </g>
+        </svg>;
+    }
+
+}
 
 export class EntityView extends RectangularNodeView {
     render(node: Readonly<SNode>, context: RenderingContext): VNode | undefined {

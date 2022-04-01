@@ -9,6 +9,7 @@ import org.big.erd.entityRelationship.NotationOption
 import org.big.erd.entityRelationship.Relationship
 import org.big.erd.entityRelationship.Model
 import org.big.erd.ide.diagram.EntityNode
+import org.big.erd.ide.diagram.ERModel
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.sprotty.SEdge
 import org.eclipse.sprotty.SModelElement
@@ -77,9 +78,10 @@ class ERDiagramGenerator implements IDiagramGenerator {
 	
 
     def void toSGraph(Model m, extension Context context) {
-		graph = new SGraph => [
+		graph = new ERModel => [
 			type = GRAPH
 			id = idCache.uniqueId(m, 'root')
+			name = m.name
 			children = new ArrayList<SModelElement>
 		]
 		graph.traceAndMark(m, context)

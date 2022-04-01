@@ -1,11 +1,21 @@
 package org.big.erd.ide.diagram
 
 import org.eclipse.sprotty.SNode
+import org.eclipse.sprotty.SGraph
 import org.eclipse.xtend.lib.annotations.Accessors
 
-/*
- * Only entity nodes, for the rest of the elements the default SModel is used
- */
+@Accessors
+class ERModel extends SGraph {
+	String name
+
+	new() { }
+	
+	new((ERModel) => void initializer) {
+		initializer.apply(this)
+	}
+}
+
+
 @Accessors
 class EntityNode extends SNode {
 	boolean expanded

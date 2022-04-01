@@ -3,13 +3,13 @@ import 'sprotty/css/sprotty.css';
 import 'sprotty/css/command-palette.css';
 import '../css/diagram.css';
 import {
-    configureModelElement, HtmlRoot, HtmlRootView, overrideViewerOptions, PreRenderedElement, PreRenderedView, SEdge, SGraphView,
-    SRoutingHandle, SRoutingHandleView, TYPES, loadDefaultModules, SGraph, ConsoleLogger, LogLevel,  SCompartmentView,
+    configureModelElement, HtmlRoot, HtmlRootView, overrideViewerOptions, PreRenderedElement, PreRenderedView, SEdge, 
+    SRoutingHandle, SRoutingHandleView, TYPES, loadDefaultModules, ConsoleLogger, LogLevel,  SCompartmentView,
     SCompartment, editLabelFeature, labelEditUiModule, SModelRoot, SLabel, ExpandButtonHandler,
     SButton, expandFeature, DiamondNodeView, DiamondNode, SLabelView, ManhattanEdgeRouter, popupFeature, creatingOnDragFeature, PolylineEdgeView, hoverFeedbackFeature
 } from 'sprotty';
-import { EntityView, ExpandEntityView, InheritanceEdgeView, TriangleButtonView } from './views';
-import { CreateRelationPort, EntityNode, MultiplicityLabel, RelationEdge } from './model';
+import { EntityView, ExpandEntityView, InheritanceEdgeView, ERModelView, TriangleButtonView } from './views';
+import { CreateRelationPort, EntityNode, ERModel, MultiplicityLabel, RelationEdge } from './model';
 import { CustomRouter } from './custom-router';
 
 /**
@@ -22,7 +22,7 @@ const DiagramModule = new ContainerModule((bind, unbind, isBound, rebind) => {
     rebind(ManhattanEdgeRouter).to(CustomRouter).inSingletonScope();
 
     const context = { bind, unbind, isBound, rebind };
-    configureModelElement(context, 'graph', SGraph, SGraphView);
+    configureModelElement(context, 'graph', ERModel, ERModelView);
     configureModelElement(context, 'node', EntityNode, EntityView, { enable: [expandFeature] });
     configureModelElement(context, 'node:weak', EntityNode, EntityView, { enable: [expandFeature] });
     configureModelElement(context, 'node:relationship', DiamondNode, DiamondNodeView);
