@@ -54,11 +54,11 @@ enum GenerateOption:
     OFF='off' | SQL='sql';
 
 enum NotationOption:
-    DEFAULT='default' | CHEN='chen' | MINMAX='minmax' | BACHMAN='bachman';   
+    DEFAULT='default' | CHEN='chen' | MINMAX='minmax' | BACHMAN='bachman' | CROWSFOOT='crowsfoot';   
 
 enum AttributeType:
 	NONE = 'none' | KEY = 'key' | FOREIGN_KEY = 'foreign-key' | PARTIAL_KEY = 'partial-key' | OPTIONAL = 'optional' | 
 	DERIVED = 'derived' | MULTIVALUED = 'multivalued';
 
 enum CardinalityType:
-	 ONE = '1' | MANY = 'N' | MANY_CHEN = 'M' | ZERO = '0' | ONE_OR_MORE = '1+' | ZERO_OR_MORE = '0+';
+	 ONE = '1' | MANY = 'N' | MANY_CHEN = 'M' | ZERO = '0' | ONE_OR_MORE = '1+' | ZERO_OR_MORE = '0+' | ZERO_OR_ONE = '?';

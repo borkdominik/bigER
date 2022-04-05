@@ -109,8 +109,10 @@ class ERDiagramGenerator implements IDiagramGenerator {
 		
 		// Create Relationship nodes and edges
 		m.relationships.forEach[ r |
-			graph.children.add(relationshipNodes(r, context))
-			addRelationEdges(r, context, model.notationOption)
+			if(model.notationOption !== NotationOption.CROWSFOOT){
+				graph.children.add(relationshipNodes(r, context))
+			}
+			addRelationEdges(r, context)
 		]
 	}
 
@@ -134,31 +136,42 @@ class ERDiagramGenerator implements IDiagramGenerator {
 		node.layoutOptions = new LayoutOptions [
 			paddingFactor = 2.0
 		]
-		
 		node.traceAndMark(relationship, context)
 		return node
 	}
 	
-	def void addRelationEdges(Relationship relationship, extension Context context, NotationOption notationOption) { 
+	def void addRelationEdges(Relationship relationship, extension Context context) { 
 		
 		if (relationship.first !== null) {
 			var cardinality = getCardinality(relationship.first)
+			if(model.notationOption.equals(NotationOption.CROWSFOOT)){
+				cardinality = combineFirstAndSecondElemCardinality(relationship)
+			}
 			val source = idCache.getId(relationship.first.target)
-			val target = idCache.getId(relationship)
-			createEdgeAndAddToGraph(relationship,source,target,'label:first', cardinality, notationOption, context)
+			val target = idCache.getId(model.notationOption.equals(NotationOption.CROWSFOOT) ? relationship.second.target : relationship)
+			createEdgeAndAddToGraph(relationship,source,target,'label:first', cardinality, context)
 		}
-		if (relationship.second !== null) {
+		if (relationship.second !== null && !model.notationOption.equals(NotationOption.CROWSFOOT)) {
 			var cardinality = getCardinality(relationship.second)
 			val source = idCache.getId(relationship)
 			val target = idCache.getId(relationship.second.target)
-			createEdgeAndAddToGraph(relationship,source,target,'label:second', cardinality, notationOption, context)
+			createEdgeAndAddToGraph(relationship,source,target,'label:second', cardinality, context)
 		}
-		if (relationship.third !== null) {
+		if (relationship.third !== null && !model.notationOption.equals(NotationOption.CROWSFOOT)) {
 			var cardinality = getCardinality(relationship.third)
 			val source = idCache.getId(relationship)
 			val target = idCache.getId(relationship.third.target)
-			createEdgeAndAddToGraph(relationship,source,target,'label:third', cardinality, notationOption, context)
+			createEdgeAndAddToGraph(relationship,source,target,'label:third', cardinality, context)
 		}
+	}
+	
+	def String combineFirstAndSecondElemCardinality(Relationship relationship){
+		val firstCardinality = getCardinality(relationship.first)
+		val secondCardinality = getCardinality(relationship.second)
+		if(relationship.first !== null && relationship.second !== null && !firstCardinality.isEmpty && !secondCardinality.isEmpty){
+			return  firstCardinality+":"+secondCardinality
+		}
+		return "";
 	}
 	
 	def String getCardinality(RelationEntity relationEntity){
@@ -166,13 +179,24 @@ class ERDiagramGenerator implements IDiagramGenerator {
 				case NotationOption.CHEN : return getChenCardinality(relationEntity.cardinality)
 				case NotationOption.BACHMAN : return (relationEntity.minMax ?: relationEntity.cardinality.toString)
 				case NotationOption.MINMAX : return (relationEntity.minMax ?: '')
+				case NotationOption.CROWSFOOT : return getCrowsFootsCardinality(relationEntity.cardinality)
 				default: return relationEntity.customMultiplicity ?: relationEntity.cardinality.toString()
 			}
 	}
 	
 	def String getChenCardinality(CardinalityType cardinality){
 		if(cardinality === null || cardinality === CardinalityType.ZERO || 
-		   cardinality === CardinalityType.ZERO_OR_MORE || cardinality === CardinalityType.ONE_OR_MORE){
+		   cardinality === CardinalityType.ZERO_OR_MORE || cardinality === CardinalityType.ONE_OR_MORE ||
+		   cardinality === CardinalityType.ZERO_OR_ONE){
+			return "";
+		}else{
+			return cardinality.toString;
+		}
+	}
+	
+	def String getCrowsFootsCardinality(CardinalityType cardinality){
+		if(cardinality === null || cardinality === CardinalityType.ZERO || 
+		   cardinality === CardinalityType.MANY || cardinality === CardinalityType.MANY_CHEN){
 			return "";
 		}else{
 			return cardinality.toString;
@@ -183,12 +207,11 @@ class ERDiagramGenerator implements IDiagramGenerator {
 									 String source, 
 									 String target,
 									 String label, 
-									 String cardinality,
-									 NotationOption notationOption, extension Context context){
+									 String cardinality, extension Context context){
 		
 		graph.children.add(new NotationEdge [sourceId = source
 								  targetId = target
-								  notation = notationOption.toString
+								  notation = model.notationOption.toString
 								  isSource = label === "label:first"
 								  id = idCache.uniqueId(relationship + sourceId + ':' + relationship.name + ':' + targetId)
 								  children =  #[new SLabel [

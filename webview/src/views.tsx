@@ -75,25 +75,34 @@ export class NotationEdgeView extends PolylineEdgeView {
         }
         
         var showLabel = true;
+        var renderBothEnds = false;
 
         if(edge instanceof NotationEdge){
-            showLabel = edge.notation !== 'bachman'
+            showLabel = edge.notation !== 'bachman' &&  edge.notation !== 'crowsfoot';
+            renderBothEnds = edge.notation === 'crowsfoot';
         }
         if(showLabel){
             return <g class-sprotty-edge={true} class-mouseover={edge.hoverFeedback}>
             {this.renderLine(edge, route, context, args)}
-            {this.renderAdditionals(edge, route, context)}
+            {this.renderAdditionalsNew(edge, route,false, context)}
             {context.renderChildren(edge, { route })}
         </g>;
-        }else{
+        } else if(renderBothEnds){
+            return <g class-sprotty-edge={true} class-mouseover={edge.hoverFeedback}>
+                {this.renderLine(edge, route, context, args)}
+                {this.renderAdditionalsNew(edge, route,true, context)}
+                {this.renderAdditionalsNew(edge, route,false, context)}
+            </g>;
+        }
+        else{
             return <g class-sprotty-edge={true} class-mouseover={edge.hoverFeedback}>
             {this.renderLine(edge, route, context, args)}
-            {this.renderAdditionals(edge, route, context)}
+            {this.renderAdditionalsNew(edge, route,false, context)}
         </g>;
         }
     }
 
-    protected renderAdditionals(edge: SEdge, segments: Point[], context: RenderingContext): VNode[] {
+    protected renderAdditionalsNew(edge: SEdge, segments: Point[], isLeft:boolean, context: RenderingContext): VNode[] {
 
         var notation:String = 'default';
         var isSource:boolean = false;
@@ -103,6 +112,7 @@ export class NotationEdgeView extends PolylineEdgeView {
             notation = edge.notation
             isSource = edge.isSource
         }
+        // Only child should be a SLabel
         edge.children.forEach((child)=>{
             if(child instanceof SLabel){
                 cardinality = child.text
@@ -114,8 +124,48 @@ export class NotationEdgeView extends PolylineEdgeView {
         const secondElem = segments[1];
 
         switch(notation){
-            case 'bachman' : return this.createBachmanEdge(source, target, secondElem, penultimateElem, cardinality, isSource);
+            case 'bachman'   :  return this.createBachmanEdge(source, target, secondElem, penultimateElem, cardinality, isSource);
+            case 'crowsfoot' :  var sourceCardinality = cardinality.split(':')[0];
+                                var targetCardinality = cardinality.split(':')[1];
+                                if(isLeft){
+                                    return this.createCrowsFootEdge(source,secondElem, isLeft, sourceCardinality)
+                                }
+                                return this.createCrowsFootEdge(target,penultimateElem, isLeft, targetCardinality)
             default :  return [];
+        }
+    }
+
+    private createCrowsFootEdge(point:Point, next:Point, isLeft:boolean,cardinality:String):VNode[]{
+        switch(cardinality){
+            case '1' :  return  [<svg>
+                                    <line x1={point.x+19} y1={point.y+11} x2={point.x+19} y2={point.y-11}
+                                        transform={`rotate(${this.angle(point, next)} ${point.x} ${point.y})`}/>
+                                    <line x1={point.x+10} y1={point.y+11} x2={point.x+10} y2={point.y-11} 
+                                        transform={`rotate(${this.angle(point, next)} ${point.x} ${point.y})`}/>
+                                </svg>];
+            case '?' :  return  [<svg>
+                                    <circle cx={point.x+25} cy={point.y} r="7" stroke-width="1" fill="var(--vscode-editor-background)"
+                                        transform={`rotate(${this.angle(point, next)} ${point.x} ${point.y})`}/>
+                                    <line x1={point.x+10} y1={point.y+11} x2={point.x+10} y2={point.y-11}
+                                        transform={`rotate(${this.angle(point, next)} ${point.x} ${point.y})`}/>
+                                </svg>];
+            case '0+':  return  [<svg>
+                                    <circle cx={point.x+26} cy={point.y} r="7" stroke-width="1" fill="var(--vscode-editor-background)"
+                                        transform={`rotate(${this.angle(point, next)} ${point.x} ${point.y})`}/>
+                                    <line x1={point.x+17} y1={point.y} x2={point.x} y2={point.y+11}
+                                        transform={`rotate(${this.angle(point, next)} ${point.x} ${point.y})`}/>
+                                    <line x1={point.x+17} y1={point.y} x2={point.x} y2={point.y-11}
+                                        transform={`rotate(${this.angle(point, next)} ${point.x} ${point.y})`}/>
+                                </svg>];
+            case '1+': return [ <svg>
+                                    <line x1={point.x+24} y1={point.y+11} x2={point.x+24} y2={point.y-11}
+                                        transform={`rotate(${this.angle(point, next)} ${point.x} ${point.y})`}/>
+                                    <line x1={point.x+17} y1={point.y} x2={point.x} y2={point.y+11}
+                                        transform={`rotate(${this.angle(point, next)} ${point.x} ${point.y})`}/>
+                                    <line x1={point.x+17} y1={point.y} x2={point.x} y2={point.y-11}
+                                        transform={`rotate(${this.angle(point, next)} ${point.x} ${point.y})`}/>
+                                </svg>];
+            default : return [];
         }
     }
 
@@ -124,6 +174,7 @@ export class NotationEdgeView extends PolylineEdgeView {
         var arrowSourceX = source.x;
         var arrowTargetX = target.x;
 
+        // Move arrow from center of the circle
         if(!isNaN(arrowSourceX)){
             arrowSourceX = arrowSourceX + 9;
         }
@@ -131,14 +182,14 @@ export class NotationEdgeView extends PolylineEdgeView {
             arrowTargetX = arrowTargetX + 9;
         }
         if(cardinality === '0' || cardinality === '1'){
-            const color = cardinality === '0' ? "black" : "var(--vscode-editorActiveLineNumber-foreground)";
+            const color = cardinality === '0' ? "var(--vscode-editor-background)" : "var(--vscode-editorActiveLineNumber-foreground)";
             if(isSource){
                 return this.createEdgeWithCircle(color, source);
             }
             return this.createEdgeWithCircle(color, target);
 
         } else if (cardinality === '0+' || cardinality === '1+'){
-            const color = cardinality === '0+' ? "black" : "var(--vscode-editorActiveLineNumber-foreground)";
+            const color = cardinality === '0+' ? "var(--vscode-editor-background)" : "var(--vscode-editorActiveLineNumber-foreground)";
             if(isSource){
                 return this.createEdgeWithCircleAndArrow(color, source, secondElem, arrowSourceX);
             }

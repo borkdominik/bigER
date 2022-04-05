@@ -47,6 +47,15 @@ class EntityRelationshipValidator extends AbstractEntityRelationshipValidator {
 				checkBachmanCardinality(firstElement, r, EntityRelationshipPackage.Literals.RELATIONSHIP__FIRST)
 				checkBachmanCardinality(secondElement, r, EntityRelationshipPackage.Literals.RELATIONSHIP__SECOND)
 				checkBachmanCardinality(thirdElement, r, EntityRelationshipPackage.Literals.RELATIONSHIP__THIRD)
+			} else if(model.notationOption.equals(NotationOption.CROWSFOOT)){
+				if(secondElement === null){
+					info('''Relationship: Second element of relation required.''', r, EntityRelationshipPackage.Literals.RELATIONSHIP__FIRST)
+				} else if(thirdElement !== null){
+					info('''Relationship: No third element allowed.''', r, EntityRelationshipPackage.Literals.RELATIONSHIP__THIRD)
+				}else{
+					checkCrowsFootCardinality(firstElement, r, EntityRelationshipPackage.Literals.RELATIONSHIP__FIRST)
+					checkCrowsFootCardinality(secondElement, r, EntityRelationshipPackage.Literals.RELATIONSHIP__SECOND)
+				}
 			}
 		]
     }
@@ -68,18 +77,34 @@ class EntityRelationshipValidator extends AbstractEntityRelationshipValidator {
 	}
     
     def checkChenCardinality(RelationEntity relationEntity, Relationship relationship, EStructuralFeature feature){
-    	if(relationEntity !== null && (relationEntity.cardinality === null || relationEntity.cardinality === CardinalityType.ZERO ||
-    		relationEntity.cardinality === CardinalityType.ONE_OR_MORE || relationEntity.cardinality === CardinalityType.ZERO_OR_MORE ||
-    		relationEntity.minMax !== null || relationEntity.customMultiplicity !== null)){
+    	if(relationEntity !== null && (relationEntity.cardinality === null || 
+    								   relationEntity.cardinality === CardinalityType.ZERO ||
+    								   relationEntity.cardinality === CardinalityType.ONE_OR_MORE || 
+    								   relationEntity.cardinality === CardinalityType.ZERO_OR_MORE ||
+    								   relationEntity.minMax !== null || 
+    								   relationEntity.customMultiplicity !== null)){
 			info('''Wrong cardinality. Usage: [1],[N] or [M]''', relationship, feature)
 		}
     }
     
-    def checkBachmanCardinality(RelationEntity relationEntity, Relationship relationship, EStructuralFeature feature){
-    	if(relationEntity !== null && (relationEntity.cardinality === null || relationEntity.customMultiplicity !== null 
-    		|| relationEntity.minMax !== null || relationEntity.cardinality === CardinalityType.MANY || 
-    		relationEntity.cardinality === CardinalityType.MANY_CHEN)){
-			info('''Wrong cardinality. Usage: [0],[0+],[1] or [1+]''',relationship, feature)
+    def checkBachmanCardinality(RelationEntity relationEntity, Relationship relationship, EStructuralFeature feature) {
+		if (relationEntity !== null && (relationEntity.cardinality === null || 
+										relationEntity.customMultiplicity !== null ||
+			 							relationEntity.minMax !== null || 
+			 							relationEntity.cardinality === CardinalityType.MANY ||
+			 							relationEntity.cardinality === CardinalityType.MANY_CHEN)) {
+			info('''Wrong cardinality. Usage: [0],[0+],[1] or [1+]''', relationship, feature)
+		}
+	}
+    
+     def checkCrowsFootCardinality(RelationEntity relationEntity, Relationship relationship, EStructuralFeature feature){
+    	if(relationEntity !== null && (relationEntity.cardinality === null || 
+    								   relationEntity.customMultiplicity !== null || 
+    								   relationEntity.minMax !== null || 
+    								   relationEntity.cardinality === CardinalityType.MANY_CHEN ||
+    								   relationEntity.cardinality === CardinalityType.MANY ||
+    								   relationEntity.cardinality === CardinalityType.ZERO)){
+			info('''Wrong cardinality. Usage: [1],[0+],[1+] or [?]''',relationship, feature)
 		}
     }
 	
