@@ -6,10 +6,10 @@ import {
     configureModelElement, HtmlRoot, HtmlRootView, overrideViewerOptions, PreRenderedElement, PreRenderedView, SEdge, 
     SRoutingHandle, SRoutingHandleView, TYPES, loadDefaultModules, ConsoleLogger, LogLevel,  SCompartmentView,
     SCompartment, editLabelFeature, labelEditUiModule, SModelRoot, SLabel, ExpandButtonHandler,
-    SButton, expandFeature, DiamondNodeView, DiamondNode, SLabelView, ManhattanEdgeRouter, popupFeature, creatingOnDragFeature, PolylineEdgeView, hoverFeedbackFeature
+    SButton, expandFeature, DiamondNodeView, DiamondNode, SLabelView, ManhattanEdgeRouter, PolylineEdgeView,
 } from 'sprotty';
-import { EntityView, ExpandEntityView, InheritanceEdgeView, ERModelView, TriangleButtonView } from './views';
-import { CreateRelationPort, EntityNode, ERModel, MultiplicityLabel, RelationEdge } from './model';
+import { EntityView, ExpandEntityView, InheritanceEdgeView, ERModelView } from './views';
+import { EntityNode, ERModel, MultiplicityLabel, RelationEdge } from './model';
 import { CustomRouter } from './custom-router';
 
 /**
@@ -45,9 +45,9 @@ const DiagramModule = new ContainerModule((bind, unbind, isBound, rebind) => {
     configureModelElement(context, 'pre-rendered', PreRenderedElement, PreRenderedView);
     configureModelElement(context, 'routing-point', SRoutingHandle, SRoutingHandleView);
     configureModelElement(context, 'volatile-routing-point', SRoutingHandle, SRoutingHandleView);
-    configureModelElement(context, 'port', CreateRelationPort, TriangleButtonView, {
+    /*configureModelElement(context, 'port', CreateRelationPort, TriangleButtonView, {
         enable: [popupFeature, creatingOnDragFeature, hoverFeedbackFeature]
-    });
+    });*/
     configureModelElement(context, ExpandButtonHandler.TYPE, SButton, ExpandEntityView);
 });
 
@@ -66,7 +66,7 @@ export function createDiagramContainer(widgetId: string): Container {
         needsServerLayout: true,
         baseDiv: widgetId,
         hiddenDiv: widgetId + '_hidden',
-        popupOpenDelay: 0
+        popupOpenDelay: 200
     });
     return container;
 }

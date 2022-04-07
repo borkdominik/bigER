@@ -25,7 +25,7 @@ Entity:
 // TODO: allow more than ternary (more generic) - e.g. save all in targets[]
 Relationship:
 	(weak?='weak')? 'relationship' name=ID '{'
-		(first=RelationEntity (('->' second=RelationEntity) ('->' third=RelationEntity)?)?)
+		(first=RelationEntity (('->' second=RelationEntity) ('->' third=RelationEntity)?)?)?
 		(attributes += Attribute)*
 	'}';
 
