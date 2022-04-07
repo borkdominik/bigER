@@ -11,7 +11,7 @@ export class ERModelView<IRenderingArgs> extends SGraphView<IRenderingArgs> {
     @inject(EdgeRouterRegistry) edgeRouterRegistry: EdgeRouterRegistry;
 
     render(model: Readonly<ERModel>, context: RenderingContext, args?: IRenderingArgs): VNode {
-        const menuModelName = document.getElementById('menubar-modelName');
+        const menuModelName = document.getElementById('toolbar-modelName');
         if (menuModelName) {
             menuModelName.innerText = model.name
         }

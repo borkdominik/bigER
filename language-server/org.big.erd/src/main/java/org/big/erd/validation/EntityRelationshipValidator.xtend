@@ -16,10 +16,12 @@ import org.big.erd.entityRelationship.AttributeType
  */
 class EntityRelationshipValidator extends AbstractEntityRelationshipValidator {
 
+	public static String EMPTY_MODEL_NAME = "emptyModelName";
+	
 	@Check
 	def checkModel(Model model) {
 		if (model.name === null || model.name.isBlank) {
-			error('''Missing name for model''', model, EntityRelationshipPackage.Literals.MODEL__NAME)
+			error('''Missing name for model''', EntityRelationshipPackage.Literals.MODEL__NAME, EMPTY_MODEL_NAME)
 		}
 		if (model.generateOption !== null) {
 			val generateOpt = model.generateOption
