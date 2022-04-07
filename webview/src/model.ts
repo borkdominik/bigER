@@ -2,13 +2,10 @@ import { injectable } from "inversify";
 import { CreateElementAction, CreatingOnDrag, EdgeLayoutable, EdgePlacement, ManhattanEdgeRouter, PolylineEdgeRouter, RectangularNode, RectangularPort,  SEdge,  SGraph,  SLabel, SRoutableElement } from 'sprotty';
 import { Action, SEdge as SEdgeSchema } from 'sprotty-protocol'
 
-export class RelationEdge extends SEdge {
-    routerKind = PolylineEdgeRouter.KIND;
-    targetAnchorCorrection = Math.sqrt(5);
-}
 
 export class ERModel extends SGraph {
     name: string
+    generateType: string
 }
 
 export class EntityNode extends RectangularNode {
@@ -19,13 +16,10 @@ export class EntityNode extends RectangularNode {
     }
 }
 
-/*
-export class RelationshipNode extends DiamondNode {
-    canConnect(routable: SRoutableElement, role: string) {
-        return true;
-    }
+export class RelationEdge extends SEdge {
+    routerKind = PolylineEdgeRouter.KIND;
+    targetAnchorCorrection = Math.sqrt(5);
 }
-*/
 
 export class CreateRelationPort extends RectangularPort implements CreatingOnDrag {
     createAction(id: string): Action {

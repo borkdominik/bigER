@@ -37,7 +37,7 @@ class ERDCodeActionService implements ICodeActionService2 {
 				edit = createInsertWorkspaceEdit(
 					model.eResource.URI, 
 					document.getPosition(document.contents.length), 
-					'''«'\n'»entity «getNewName('entity', model.entities.map[name])»«'\n'»'''
+					'''«'\n'»entity «getNewName('entity', model.entities.map[name])» {«'\n\n'»}'''
 				)
 			]));
 		}
@@ -48,7 +48,7 @@ class ERDCodeActionService implements ICodeActionService2 {
 				edit = createInsertWorkspaceEdit(
 					model.eResource.URI, 
 					document.getPosition(document.contents.length), 
-					'''«'\n'»relationship «getNewName('relationship', model.relationships.map[name])»«'\n'»'''
+					'''«'\n'»relationship «getNewName('relationship', model.relationships.map[name])» {«'\n\n'»}'''
 				)
 			]));
 		}

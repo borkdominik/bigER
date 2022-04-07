@@ -94,13 +94,6 @@ class PopupModelFactory implements IPopupModelFactory {
 									<div class="sprotty-infoTitle">«title»</div>
 								</div>
 							«ENDIF»
-							«IF semanticElement instanceof Entity»
-								«FOR attribute: semanticElement.attributes»
-									<div class="sprotty-infoRow">
-										<div class="sprotty-infoText">«attribute.name»</div>
-									</div>
-								«ENDFOR»
-							«ENDIF»
 							«IF semanticElement instanceof Relationship»
 								«FOR attribute: semanticElement.attributes»
 									<div class="sprotty-infoRow">

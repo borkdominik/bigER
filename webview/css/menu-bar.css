@@ -106,14 +106,6 @@
     box-shadow: 6px -4px 8px 0px black;
 }
 
-#biger-toolbar {
-    position: absolute;
-    top: 0px;
-    right: 0px;
-    display: flex;
-    flex-direction: row;
-}
-
 #toolbar-button {
     background: var(--vscode-menu-selectionBackground);
     height: 27.5px;

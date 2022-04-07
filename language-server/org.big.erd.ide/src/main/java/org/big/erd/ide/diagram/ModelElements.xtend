@@ -7,6 +7,7 @@ import org.eclipse.xtend.lib.annotations.Accessors
 @Accessors
 class ERModel extends SGraph {
 	String name
+	String generateType
 
 	new() { }
 	

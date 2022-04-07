@@ -16,7 +16,19 @@ import org.big.erd.entityRelationship.AttributeType
  */
 class EntityRelationshipValidator extends AbstractEntityRelationshipValidator {
 
-	
+	@Check
+	def checkModel(Model model) {
+		if (model.name === null || model.name.isBlank) {
+			error('''Missing name for model''', model, EntityRelationshipPackage.Literals.MODEL__NAME)
+		}
+		if (model.generateOption !== null) {
+			val generateOpt = model.generateOption
+			if (generateOpt.generateOptionType.toString === 'sql') {
+				// TODO: different validation mode
+				return
+			}
+		}
+	}
 	
 	// Names are unique for entities and relationships
     @Check

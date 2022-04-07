@@ -5,7 +5,6 @@ import org.big.erd.entityRelationship.Entity
 import org.big.erd.entityRelationship.Attribute
 import org.big.erd.entityRelationship.AttributeType
 import org.big.erd.entityRelationship.EntityRelationshipPackage
-import org.big.erd.entityRelationship.NotationOption
 import org.big.erd.entityRelationship.Relationship
 import org.big.erd.entityRelationship.Model
 import org.big.erd.ide.diagram.EntityNode
@@ -65,23 +64,19 @@ class ERDiagramGenerator implements IDiagramGenerator {
 		if (contentHead instanceof Model) {
 			LOG.info("Generating diagram for model with URI '" + context.resource.URI.lastSegment + "'")
 			model = contentHead
-			
-			LOG.info("Creating SGraph with notation option '" + model.notationOption.toString + "'")
-			// Call generators depending on the notation option
-			switch model.notationOption {
-				case NotationOption.DEFAULT : toSGraph(model, context)
-				default : graph = null
-			}
+			toSGraph(model, context)
 		}
 		return graph
 	}
 	
 
     def void toSGraph(Model m, extension Context context) {
+		val genOption = m.generateOption?.generateOptionType
 		graph = new ERModel => [
 			type = GRAPH
 			id = idCache.uniqueId(m, 'root')
 			name = m.name
+			generateType = genOption !== null ? genOption.toString : 'off'
 			children = new ArrayList<SModelElement>
 		]
 		graph.traceAndMark(m, context)
@@ -252,7 +247,6 @@ class ERDiagramGenerator implements IDiagramGenerator {
 					type = ATTRIBUTE_LABEL_TEXT
 					text = switch a.type {
 						case AttributeType.KEY : 'KEY'
-						case AttributeType.FOREIGN_KEY : 'FOREIGN-KEY'
 						case AttributeType.PARTIAL_KEY : 'PARTIAL-KEY'
 						case AttributeType.MULTIVALUED : '[ ]'
 						case AttributeType.DERIVED : '->'
@@ -273,7 +267,7 @@ class ERDiagramGenerator implements IDiagramGenerator {
 					id = attributeId + ".datatype"
 					text = attributeDatatypeString(a)
 					type = ATTRIBUTE_LABEL_TEXT
-				]).trace(a, EntityRelationshipPackage.Literals.ATTRIBUTE__DATATYPE, -1)
+				])
 			]
 		]
 		comp.traceAndMark(a, context)

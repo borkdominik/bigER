@@ -6,7 +6,24 @@ import { CodeAction } from 'vscode-languageserver-protocol';
 import { getRange } from 'sprotty-vscode-webview/lib/lsp/editing/traceable';
 import { WorkspaceEditAction } from 'sprotty-vscode-protocol/lib/lsp/editing';
 
-// TODO: Fix duplicate code (probably stop using codeActions)
+/**
+ * Action for changing Code Generator value (e.g. 'off' (default) or 'sql')
+ */
+export interface CodeGenerateAction {
+    kind: typeof CodeGenerateAction.KIND
+    generateType: string
+}
+export namespace CodeGenerateAction {
+    export const KIND = 'codeGenerate';
+
+    export function create(generateType: string): CodeGenerateAction {
+        console.log(generateType);
+        return {
+            kind: KIND,
+            generateType
+        };   
+    }
+}
 
 export interface AddEntityAction extends Action { 
     kind: typeof AddEntityAction.KIND

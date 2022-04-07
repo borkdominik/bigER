@@ -2,7 +2,6 @@
 import { VNode } from "snabbdom";
 import { RenderingContext, RectangularNodeView, SNode, SEdge, Point, PolylineEdgeView, toDegrees, ExpandButtonView, findParentByFeature, isExpandable,
          svg, SButton, SPort, IView, SGraphView, EdgeRouterRegistry } from 'sprotty';
-
 import { injectable, inject } from 'inversify';
 import { ERModel } from "./model";
 
@@ -13,8 +12,14 @@ export class ERModelView<IRenderingArgs> extends SGraphView<IRenderingArgs> {
 
     render(model: Readonly<ERModel>, context: RenderingContext, args?: IRenderingArgs): VNode {
         const menuModelName = document.getElementById('menubar-modelName');
-        if (menuModelName)
+        if (menuModelName) {
             menuModelName.innerText = model.name
+        }
+
+        const generateSelect = document.getElementById('select-generate') as HTMLSelectElement;
+        if (generateSelect) { 
+            generateSelect.value = model.generateType
+        }
         const edgeRouting = this.edgeRouterRegistry.routeAllChildren(model);
         const transform = `scale(${model.zoom}) translate(${-model.scroll.x},${-model.scroll.y})`;
         return <svg class-sprotty-graph={true}>
@@ -23,7 +28,6 @@ export class ERModelView<IRenderingArgs> extends SGraphView<IRenderingArgs> {
             </g>
         </svg>;
     }
-
 }
 
 export class EntityView extends RectangularNodeView {

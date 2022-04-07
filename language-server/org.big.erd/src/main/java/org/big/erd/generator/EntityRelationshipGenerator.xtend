@@ -24,11 +24,12 @@ import org.eclipse.xtext.util.RuntimeIOException
 class EntityRelationshipGenerator extends AbstractGenerator {
 
 	override void doGenerate(Resource resource, IFileSystemAccess2 fsa, IGeneratorContext context) {
+		
 		val diagram = resource.contents.get(0) as Model
 		
-		// Do not generate if generateSql is not set
-		if (!diagram.generateSql) {
-			return
+		// Check whether the generate option is set
+		if (diagram.generateOption === null || diagram.generateOption.generateOptionType.toString === 'off') {
+			return;
 		}
 
 		val name = (diagram.name ?: 'output') + '.sql'

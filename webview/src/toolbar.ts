@@ -2,7 +2,7 @@ import { postConstruct, inject, injectable } from 'inversify';
 import { SprottyDiagramIdentifier, VscodeDiagramWidget } from 'sprotty-vscode-webview';
 import { IActionDispatcher, ILogger, ModelSource, TYPES } from 'sprotty';
 import { CollapseExpandAllAction, FitToScreenAction } from 'sprotty-protocol';
-import { AddEntityAction, AddRelationshipAction } from './actions';
+import { AddEntityAction, AddRelationshipAction, CodeGenerateAction } from './actions';
 
 @injectable()
 export class ERDiagramWidget extends VscodeDiagramWidget {
@@ -12,8 +12,6 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
     @inject(TYPES.ModelSource) modelSource: ModelSource;
     @inject(TYPES.ILogger) protected logger: ILogger;
     
-    protected elementsExpanded: boolean;
-    
     @postConstruct()
     initialize(): void {
         super.initialize();
@@ -22,45 +20,11 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
     }
 
     /**
-     * Adds a toolbar to the Sprotty container
+     * Adds a toolbar (including panels) to the Sprotty container
      */
     protected addToolbar(): void {
- 
         const containerDiv = document.getElementById(this.diagramIdentifier.clientId + '_container');
-
         if (containerDiv) {
-
-            /*
-            const menu = document.createElement("div");
-            menu.id = "biger-toolbar"
-            menu.innerHTML = `
-                <vscode-button appearance="icon" aria-label="Menu" id="toolbar-button">
-	                <span class="codicon codicon-menu"></span>
-                </vscode-button>
-                <div id="toolbar-options">
-                    <vscode-option id="add-entity-button" class="button">Entity
-                        <span id="button-icon" slot="start" class="codicon codicon-chrome-maximize"/>
-                    </vscode-option>
-                    <vscode-option id="add-relationship-button" class="button">Relationship
-                        <span id="button-icon" slot="start" class="codicon codicon-debug-breakpoint-log-unverified"/>
-                    </vscode-option>
-                    <vscode-divider class="divider" role="separator"></vscode-divider>
-                    <div id="expand-div" style="display:none">
-                        <vscode-option style="width:140px;" id="expand-button" class="button">Expand</vscode-option>
-                    </div>
-                    <div id="collapse-div">
-                        <vscode-option style="width:140px;" id="collapse-button" class="button">Collapse</vscode-option>
-                    </div>
-                    <vscode-option id="center-diagram-button" class="button">Center</vscode-option>
-                    <vscode-divider class="divider" role="separator"/></vscode-divider>
-                    <vscode-link class="option" href="https://github.com/borkdominik/bigER/wiki/%F0%9F%93%96-Language-Documentation">
-                        <vscode-option id="help-button" class="button">Help
-                            <span id="button-icon" slot="start" class="fas fa-question"/>
-                        </vscode-option>
-                    </vscode-link>
-                </div>`; 
-            */
-
             const menu = document.createElement("div");
             menu.id = "biger-menubar"
             menu.innerHTML = `
@@ -88,6 +52,7 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
 
             const toolsPanel = document.createElement("div");
             toolsPanel.id = "menubar-tools-panel"
+            toolsPanel.style.display = "none";
             toolsPanel.innerHTML = `
                 <vscode-button id="add-entity-button" appearance="icon">
                     <span class="codicon codicon-chrome-maximize"></span>
@@ -96,7 +61,11 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
                     <span class="codicon codicon-debug-breakpoint-log-unverified"></span>
                 </vscode-button>
                 <div class="vertical-seperator"></div>
-                <!-- TODO
+                <!-- TODO: Delete + Zoom In/Out
+                <vscode-button id="delete-button" appearance="icon" disabled>
+                    <span class="codicon codicon-trash"></span>
+                </vscode-button>
+                <div class="vertical-seperator"></div>
                 <vscode-button appearance="icon" id="zoomIn-button">
                     <span class="codicon codicon-zoom-in"></span>
                 </vscode-button>
@@ -118,18 +87,18 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
 
             const optionsPanel = document.createElement("div");
             optionsPanel.id = "menubar-options-panel"
+            optionsPanel.style.display = "none"
             optionsPanel.innerHTML = `
                 <label style="margin: 5px 5px 5px 5px;">Generate:</label>
-                <vscode-dropdown position="below" style="height: 90%; margin: 5px 5px;">
-                    <vscode-option>Off</vscode-option>
-                    <vscode-option>SQL</vscode-option>
+                <vscode-dropdown id="select-generate" position="below" style="height: 90%; margin: 5px 5px;">
+                    <vscode-option value="off">off</vscode-option>
+                    <vscode-option value="sql">sql</vscode-option>
                 </vscode-dropdown>
             `;
             
             containerDiv.append(menu); 
             containerDiv.append(toolsPanel);
             containerDiv.append(optionsPanel);
-            this.elementsExpanded = true;
         } 
     }
     
@@ -138,22 +107,19 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
      */
     protected addEventHandlers(): void {
         document.getElementById('tools-button')!.addEventListener('click', async () => {
-            const tools = document.getElementById('menubar-tools-panel');
-            if (tools) {
-                if (tools.style.display === "none") {
-                    tools.style.display = "flex";
-                } else {
-                    tools.style.display = "none";
-                }
-            }
+            this.togglePanel('menubar-tools-panel')
         });
+
         document.getElementById('options-button')!.addEventListener('click', async () => {
-            const morePanel = document.getElementById('menubar-options-panel');
-            if (morePanel) {
-                if (morePanel.style.display === "none") {
-                    morePanel.style.display = "flex";
-                } else {
-                    morePanel.style.display = "none";
+            this.togglePanel('menubar-options-panel')
+        });
+
+        document.getElementById('select-generate')!.addEventListener('change', async () => {
+            var select = document.getElementById('select-generate') as HTMLSelectElement;
+            if (select) {
+                var value = select.options[select.selectedIndex].value;
+                if (value === 'off' || value === 'sql') {
+                    await this.actionDispatcher.dispatch(CodeGenerateAction.create(value));
                 }
             }
         });
@@ -161,51 +127,31 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
         document.getElementById('add-entity-button')!.addEventListener('click', async () => {
             await this.actionDispatcher.dispatch({kind: AddEntityAction.KIND});
         });
-
         document.getElementById('add-relationship-button')!.addEventListener('click', async () => {
             await this.actionDispatcher.dispatch({kind: AddRelationshipAction.KIND});
         });
-        
-        document.getElementById('expandAll-button')!.addEventListener('click', async () => {
-            await this.actionDispatcher.dispatch(CollapseExpandAllAction.create({expand: true}));
-        });
 
-        document.getElementById('collapseAll-button')!.addEventListener('click', async () => {
-            await this.actionDispatcher.dispatch(CollapseExpandAllAction.create({expand: false}));
-        });
-    
         document.getElementById('fit-button')!.addEventListener('click', async () => {
             await this.actionDispatcher.dispatch(FitToScreenAction.create([]));
         });
 
-        /*
-        document.getElementById('expand-button')!.addEventListener('click', async () => {
-            await this.showAndHideExpandCollapse("none", "block")
+        document.getElementById('expandAll-button')!.addEventListener('click', async () => {
+            await this.actionDispatcher.dispatch(CollapseExpandAllAction.create({expand: true}));
         });
-        document.getElementById('collapse-button')!.addEventListener('click', async () => {
-            await this.showAndHideExpandCollapse("block", "none")
+        document.getElementById('collapseAll-button')!.addEventListener('click', async () => {
+            await this.actionDispatcher.dispatch(CollapseExpandAllAction.create({expand: false}));
         });
-        document.getElementById('center-diagram-button')!.addEventListener('click', async () => {
-            await this.actionDispatcher.dispatch(FitToScreenAction.create([]));
-        }); 
-        */
+        
     }
 
-    
-    async showAndHideExpandCollapse(expandStyle:string, collapseStyle:string) {
-        var expand = document.getElementById("expand-div");
-            if(expand){
-                expand.style.display = expandStyle;
+    protected togglePanel(panelId: string): void {
+        const panel = document.getElementById(panelId);
+        if (panel) {
+            if (panel.style.display === 'none') {
+                panel.style.display = 'flex';
+            } else {
+                panel.style.display = 'none';
             }
-            var collapse = document.getElementById("collapse-div");
-            if(collapse){
-                collapse.style.display = collapseStyle;
-            }
-            if(expandStyle === "none"){
-                this.elementsExpanded = true;
-            }else{
-                this.elementsExpanded = false;
-            }
-            await this.actionDispatcher.dispatch(CollapseExpandAllAction.create({expand: this.elementsExpanded}));
+        }
     }
 }
