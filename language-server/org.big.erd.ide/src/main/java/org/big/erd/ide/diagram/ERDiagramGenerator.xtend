@@ -38,14 +38,12 @@ class ERDiagramGenerator implements IDiagramGenerator {
 	
 	// Types for the elements
 	static val GRAPH = 'graph'
-	static val ENTITY = 'node'
-	static val ENTITY_WEAK = 'node:weak'
-	static val RELATIONSHIP = 'node:relationship'
-	static val RELATIONSHIP_WEAK = 'node:weak-relationship'
-	static val ENTITY_HEADER = 'comp:header'
+	static val NODE_ENTITY = 'node:entity'
+	static val NODE_RELATIONSHIP = 'node:relationship'
+	static val COMP_ENTITY_HEADER = 'comp:entity-header'
 	static val ENTITY_LABEL = 'label:header'
-	static val ATTRIBUTES = 'comp:comp'
-	static val ATTRIBUTE_LABEL_COMP = 'comp:attributes'
+	static val COMP_ATTRIBUTES = 'comp:attributes'
+	static val COMP_ATTRIBUTE_ROW = 'comp:attribute-row'
 	static val ATTRIBUTE_LABEL_TEXT = 'label:text'
 	static val EDGE_LABEL = 'label:top'
 	static val EDGE_INHERITANCE = 'edge:inheritance'
@@ -93,11 +91,12 @@ class ERDiagramGenerator implements IDiagramGenerator {
 	}
 	
 
-	def SNode relationshipNodes(Relationship relationship, extension Context context) {
+	def RelationshipNode relationshipNodes(Relationship relationship, extension Context context) {
 		val relationshipId = idCache.uniqueId(relationship, relationship.name)
-		val node = new SNode [
+		val node = new RelationshipNode [
 			id = relationshipId
-			type = relationship.weak ? RELATIONSHIP_WEAK : RELATIONSHIP
+			type = NODE_RELATIONSHIP
+			weak = relationship.weak ? true : false
 			layout = 'vbox'
 			children =  #[ 
 				(new SLabel [
@@ -176,7 +175,8 @@ class ERDiagramGenerator implements IDiagramGenerator {
 		val entityId = idCache.uniqueId(e, e.name)
 		val node = new EntityNode [
 			id = entityId
-			type = e.weak ? ENTITY_WEAK : ENTITY
+			type = NODE_ENTITY
+			weak = e.weak ? true : false
 			layout = 'vbox'
 			layoutOptions = new LayoutOptions [ 
 				VGap = 10.0
@@ -187,7 +187,7 @@ class ERDiagramGenerator implements IDiagramGenerator {
 		// Header with label and collapse/expand button
 		val headerComp = new SCompartment => [
 			id = idCache.uniqueId(entityId + '.header-comp')
-			type = ENTITY_HEADER
+			type = COMP_ENTITY_HEADER
 			layout = 'hbox'
 			children = #[
 				(new SLabel [
@@ -195,10 +195,10 @@ class ERDiagramGenerator implements IDiagramGenerator {
 					type = ENTITY_LABEL
 					text = e.name
 				]).trace(e, EntityRelationshipPackage.Literals.ENTITY__NAME, -1),
-				new SButton [
+				(new SButton [
 					id = idCache.uniqueId(entityId + '.button')
 					type = BUTTON_EXPAND
-				]
+				])
 			] 
 		]
 		node.children.add(headerComp)	
@@ -207,7 +207,7 @@ class ERDiagramGenerator implements IDiagramGenerator {
 		if (state.expandedElements.contains(entityId) || state.currentModel.type == 'NONE') {
 			val comp = new SCompartment => [
 				id = entityId + '.attributes'
-				type = ATTRIBUTES
+				type = COMP_ATTRIBUTES
 				layout = 'vbox'
 				layoutOptions = new LayoutOptions [
 					HAlign = 'left'
@@ -229,40 +229,31 @@ class ERDiagramGenerator implements IDiagramGenerator {
 	
 	def SCompartment createAttributeLabels(Attribute a, String entityId, extension Context context) {
 		val attributeId = idCache.uniqueId(a, entityId + '.' + a.name)
+		val labelType = switch a.type {
+						case AttributeType.KEY : 'label:key'
+						case AttributeType.PARTIAL_KEY : 'label:partial-key'
+						case AttributeType.MULTIVALUED : 'label:text'
+						case AttributeType.DERIVED : 'label:derived'
+						default: 'label:text'
+		}
 		val comp = new SCompartment => [
 			id = attributeId
-			type = ATTRIBUTE_LABEL_COMP
+			type = COMP_ATTRIBUTE_ROW
 			layout = 'hbox'
 			layoutOptions = new LayoutOptions [
-				VAlign = 'left'
+				VAlign = 'middle'
 				HGap = 5.0
 			]
 			children = #[
 				(new SLabel [ 
-					id = attributeId + '.type'
-					type = ATTRIBUTE_LABEL_TEXT
-					text = switch a.type {
-						case AttributeType.KEY : 'KEY'
-						case AttributeType.PARTIAL_KEY : 'PARTIAL-KEY'
-						case AttributeType.MULTIVALUED : '[ ]'
-						case AttributeType.DERIVED : '->'
-						case AttributeType.OPTIONAL : 'NULL'
-						default: '-'
-					}
-				]),
-				(new SLabel [ 
 					id = attributeId + '.name'
 					text = a.name
-					type = switch a.type {
-						case AttributeType.KEY : 'label:text-key'
-						case AttributeType.OPTIONAL : 'label:text-null'
-						default: ATTRIBUTE_LABEL_TEXT
-					}
+					type = labelType
 				]).trace(a, EntityRelationshipPackage.Literals.ATTRIBUTE__NAME, -1),
 				(new SLabel [ 
 					id = attributeId + ".datatype"
 					text = attributeDatatypeString(a)
-					type = ATTRIBUTE_LABEL_TEXT
+					type =labelType
 				])
 			]
 		]

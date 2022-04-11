@@ -20,7 +20,7 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
     }
 
     /**
-     * Adds a toolbar (including panels) to the Sprotty container
+     * Adds a toolbar to the Sprotty container
      */
     protected addToolbar(): void {
         const containerDiv = document.getElementById(this.diagramIdentifier.clientId + '_container');
@@ -29,16 +29,7 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
             menu.id = "biger-toolbar"
             menu.innerHTML = `
                 <div id="toolbar-left">
-                <vscode-button appearance="icon" class="tooltip" id="options-button" style="margin-left: 5px;">
-                    <span class="codicon codicon-file-code"></span>
-                    <span class="tooltiptext">Options</span>
-                </vscode-button>
-                <div class="vertical-seperator"></div>
-                <p id="toolbar-modelName"></p>
-                </div>
-                <div id="toolbar-right">
-                    <div class="vertical-seperator"></div>
-                    <vscode-button id="add-entity-button" class="tooltip" appearance="icon">
+                    <vscode-button id="add-entity-button" class="tooltip" appearance="icon" style="margin-left: 5px;">
                         <span class="action-label codicon codicon-debug-stop"></span>
                         <span class="tooltiptext">New Entity</span>
                     </vscode-button>
@@ -46,6 +37,15 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
                         <span class="codicon codicon-primitive-square rotated"></span>
                         <span class="tooltiptext">New Relationship</span>
                     </vscode-button>
+                    <div class="vertical-seperator"></div>
+                    <vscode-button appearance="icon" class="tooltip" id="options-button">
+                        <span class="codicon codicon-file-code"></span>
+                        <span class="tooltiptext">Code Generator</span>
+                    </vscode-button>
+                    <div class="vertical-seperator"></div>
+                    <p id="toolbar-modelName"></p>
+                </div>
+                <div id="toolbar-right">
                     <div class="vertical-seperator"></div>
                     <vscode-button appearance="icon" id="fit-button" class="tooltip">
                         <span class="codicon codicon-screen-full"></span>

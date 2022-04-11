@@ -11,18 +11,13 @@ import org.eclipse.sprotty.SIssueMarker
 import org.eclipse.sprotty.SModelElement
 import org.eclipse.sprotty.xtext.ILanguageAwareDiagramServer
 import org.eclipse.sprotty.xtext.tracing.ITraceProvider
-import org.eclipse.xtext.naming.IQualifiedNameConverter
-import org.eclipse.xtext.naming.IQualifiedNameProvider
 import org.big.erd.entityRelationship.Entity
 import org.big.erd.entityRelationship.Relationship
-
+import java.util.ArrayList
 
 class PopupModelFactory implements IPopupModelFactory {
 
 	@Inject extension ITraceProvider
-	
-	@Inject extension IQualifiedNameProvider
-	@Inject IQualifiedNameConverter qualifiedNameConverter
 	
 	override createPopupModel(SModelElement element, RequestPopupModelAction request, IDiagramServer server) {
 		switch element {
@@ -50,7 +45,8 @@ class PopupModelFactory implements IPopupModelFactory {
 		}
 	}
 	
-	protected def CharSequence getIssueRow(SIssueMarker element) '''
+	protected def CharSequence getIssueRow(SIssueMarker element) {
+		'''
 		<div class="sprotty-infoBlock">
 			<div class="sprotty-infoRow">
 				«FOR issue: element.issues»
@@ -60,7 +56,9 @@ class PopupModelFactory implements IPopupModelFactory {
 				«ENDFOR»
 			</div>
 		</div>
-	'''
+		'''
+	}
+	
 	
 	
 	protected def getIconClass(String severity) {
@@ -73,65 +71,74 @@ class PopupModelFactory implements IPopupModelFactory {
 
 	protected def createPopup(EObject semanticElement, SModelElement element, RequestPopupModelAction request) {
 		val popupId = element.id + '-popup'
-		val title = getTitle(semanticElement)
 		val issueMarker = element.children?.filter(SIssueMarker)?.head
-		//val attributes = element.children?.filter(Attribute)
-		//val docs = semanticElement.documentation
-		if (title === null && issueMarker === null)
-			return null
-		new HtmlRoot [
+		var htmlRoot = new HtmlRoot [
 			id = popupId
 			children = #[
 				new PreRenderedElement [
 					id = popupId + '-body'
+					children = new ArrayList<SModelElement>
 					code = '''
-						<div class="sprotty-infoBlock">
-							«IF issueMarker !== null»
-								«getIssueRow(issueMarker)»
-							«ENDIF»
-							«IF title !== null»
-								<div class="sprotty-infoRow">
-									<div class="sprotty-infoTitle">«title»</div>
-								</div>
-							«ENDIF»
-							«IF semanticElement instanceof Relationship»
-								«FOR attribute: semanticElement.attributes»
-									<div class="sprotty-infoRow">
-										<div class="sprotty-infoText">«attribute.name»</div>
-									</div>
-								«ENDFOR»
-							«ENDIF»
-						</div>
+					<div class="sprotty-infoBlock">
+					«IF issueMarker !== null»
+						«getIssueRow(issueMarker)»
+					«ENDIF»
+					«getHeader(semanticElement)»
+					</div>
+					'''
+				],
+				new PopupButton [
+					id = popupId + '-editButton'
+					type = 'button:edit'
+					target = element.id + '.label'
+					kind = 'edit'
+					code = '''
+					<vscode-button class="popup-edit-button" appearance="secondary">
+						Rename
+						<span slot="start" class="codicon codicon-edit"></span>
+					</vscode-button>
+					'''
+				],
+				new PopupButton [
+					id = popupId + '-deleteButton'
+					type = 'button:delete'
+					target = element.id
+					kind = 'delete'
+					code = '''
+					<vscode-button class="popup-delete-button" appearance="secondary">
+						Delete
+						<span slot="start" class="codicon codicon-trash"></span>
+					</vscode-button>
 					'''
 				]
 			]
 			canvasBounds = request.bounds
 		]
-	}
-
-	/*
-	protected def createPopup(Entity entity, SModelElement element, RequestPopupModelAction request) {
-		val title = getTitle(semanticElement)
-		val attributes = entity.attributes
-
-	}
-	*/
-	
-	protected def String getTitle(EObject semanticElement) {
-		if(semanticElement instanceof Entity) {
-			return semanticElement.eClass.name + ' - ' + semanticElement.name
-		} else if (semanticElement instanceof Relationship) {
-			return semanticElement.eClass.name + ' - ' + semanticElement.name
-		}
 		
-		return ' '
+		return htmlRoot
 	}
 	
-	protected def String getDisplayName(EObject semanticElement) {
-		val qualifiedName = semanticElement.fullyQualifiedName
-		if (qualifiedName !== null)
-			qualifiedNameConverter.toString(qualifiedName) 
-		else 
-		 	'<unnamed>'
+	protected def String getHeader(EObject semanticElement) {
+		'''
+		<div class="popup-header">
+			«IF semanticElement instanceof Entity»
+			<div class="popup-element-info">
+				<vscode-tag class="popup-tag">Entity</vscode-tag>«semanticElement.name»
+			</div>
+			«ENDIF»
+			«IF semanticElement instanceof Relationship»
+			<div class="popup-element-info">
+				<vscode-tag class="popup-tag">Relationship</vscode-tag>«semanticElement.name»
+			</div>
+			«IF !semanticElement.attributes.empty»
+			<div class="popup-attributes">
+				«FOR attribute: semanticElement.attributes»
+				<div class="popup-attribute-info">«attribute.name»</div>
+			«ENDFOR»
+			</div>
+			«ENDIF»
+			«ENDIF»
+		</div>
+		'''
 	}
 }

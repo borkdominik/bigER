@@ -1,4 +1,5 @@
 erdiagram University
+generate=sql
 
 entity Person {
     full_name: string key

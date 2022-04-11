@@ -75,7 +75,7 @@
     flex-direction: row;
     position: absolute;
     top: 44px;
-    right: 8px;
+    left: 8px;
     background: var(--vscode-menu-background);
     box-shadow: 0 2px 8px var(--vscode-widget-shadow);
     max-width: 49%;

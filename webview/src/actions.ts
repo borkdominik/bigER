@@ -25,10 +25,12 @@ export namespace CodeGenerateAction {
     }
 }
 
+/**
+ * Synchronized Text + Diagram Action by using CodeAction
+ */
 export interface AddEntityAction extends Action { 
     kind: typeof AddEntityAction.KIND
 }
-
 export namespace AddEntityAction {
     export const KIND = 'addEntity';
 
@@ -36,11 +38,9 @@ export namespace AddEntityAction {
         return action.kind === KIND;
     }
 }
-
 export interface AddRelationshipAction extends Action { 
     kind: typeof AddRelationshipAction.KIND
 }
-
 export namespace AddRelationshipAction {
     export const KIND = 'addRelationship';
 

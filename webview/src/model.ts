@@ -1,6 +1,5 @@
 import { injectable } from "inversify";
-import { CreateElementAction, CreatingOnDrag, EdgeLayoutable, EdgePlacement, ManhattanEdgeRouter, PolylineEdgeRouter, RectangularNode, RectangularPort,  SEdge,  SGraph,  SLabel, SRoutableElement } from 'sprotty';
-import { Action, SEdge as SEdgeSchema } from 'sprotty-protocol'
+import { DiamondNode, EdgeLayoutable, EdgePlacement, PreRenderedElement, RectangularNode, SGraph,  SLabel, SRoutableElement } from 'sprotty';
 
 
 export class ERModel extends SGraph {
@@ -10,27 +9,15 @@ export class ERModel extends SGraph {
 
 export class EntityNode extends RectangularNode {
     expanded: boolean
+    weak: boolean
     
     canConnect(routable: SRoutableElement, role: string) {
         return true;
     }
 }
 
-export class RelationEdge extends SEdge {
-    routerKind = PolylineEdgeRouter.KIND;
-    targetAnchorCorrection = Math.sqrt(5);
-}
-
-export class CreateRelationPort extends RectangularPort implements CreatingOnDrag {
-    createAction(id: string): Action {
-        const edge: SEdgeSchema = {
-            id,
-            type: 'edge',
-            sourceId: this.parent.id,
-            targetId: this.id
-        };
-        return CreateElementAction.create(edge, { containerId: this.root.id });
-    }
+export class RelationshipNode extends DiamondNode {
+    weak: boolean
 }
 
 @injectable()
@@ -43,8 +30,7 @@ export class MultiplicityLabel extends SLabel implements EdgeLayoutable {
     };
 }
 
-@injectable()
-export class InheritanceEdge extends SEdge {
-    public readonly targetAnchorCorrection = Math.sqrt(5);
-    public readonly routerKind = ManhattanEdgeRouter.KIND;
+export class PopupButton extends PreRenderedElement {
+    target: string;
+	kind: string;
 }

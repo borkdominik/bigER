@@ -33,51 +33,23 @@ class EntityRelationshipGenerator extends AbstractGenerator {
 		}
 
 		val name = (diagram.name ?: 'output') + '.sql'
-		
-		// TODO: Fix Weak entites (weak -> weak and strong -> weak)
-		// TODO: Rewrite Generatot
-
 		try {
-
+			/*  1 - Strong entities -> Table
+			      * Attributes -> Column <name datatype>
+			      * Ignore Derived
+			      * Primary Key
+			
+			// 2 - Weak entity 
+			* - always 1:N
+			* 
+			*/
 			fsa.generateFile(name, '''
 			«var Attribute primaryKey»
 			«FOR entity : diagram.entities.reject[it.isWeak]»
 				CREATE TABLE «entity.name» (
-					«FOR attribute : entity.allAttributes.reject[it.type === AttributeType.DERIVED] SEPARATOR ', '»
-						«attribute.name» «attribute.datatype.transformDataType» «IF attribute.type === AttributeType.KEY»«{primaryKey = attribute; null}»«ENDIF» «IF attribute.type !== AttributeType.OPTIONAL»NOT NULL«ENDIF»		
-					«ENDFOR»
-					«IF entity.extends !== null»«entity.extends.key.name» «entity.extends.key.datatype.transformDataType»«ENDIF»
-					«'\n'»
-					PRIMARY KEY («primaryKey.name»)
-					«IF entity.extends !== null»FOREIGN KEY («entity.extends.key.name») REFERENCES «entity.extends.name»(«entity.extends.key.name»)«ENDIF»
-				);«'\n'»«'\n'»
-			«ENDFOR»
-			«var Attribute partialKey»		
-			«FOR relationship : diagram.relationships.reject[!it.isWeak || it.first === null || it.second === null]»
-				CREATE TABLE «relationship.weakEntity.name» ( 
-					«FOR attribute : relationship.weakEntity.allAttributes.reject[it.type === AttributeType.DERIVED] SEPARATOR ', '»
-						«attribute.name» «attribute.datatype.transformDataType»«IF attribute.type === AttributeType.PARTIAL_KEY»«{partialKey = attribute; null}»«ENDIF» «IF attribute.type !== AttributeType.OPTIONAL»NOT NULL«ENDIF»		
-					«ENDFOR»
-					«relationship.strongEntity.key.name» «relationship.strongEntity.key.datatype.transformDataType» NOT NULL
-					«'\n'»
-					PRIMARY KEY («partialKey.name», «relationship.strongEntity.key.name»)
-					FOREIGN KEY («relationship.strongEntity.key.name») REFERENCES «relationship.strongEntity.name»(«relationship.strongEntity.key.name») 
-						ON DELETE CASCADE
-				);«'\n'»«'\n'»
-			«ENDFOR»
-			«FOR relationship : diagram.relationships.reject[it.isWeak || it.first === null]»
-				CREATE TABLE «relationship.name» (
-					«relationship.leftKey.name» «relationship.leftKey.datatype.transformDataType»,
-					CONSTRAINT fk_«relationship.leftKey.name» FOREIGN KEY («relationship.leftKey.name»)
-						REFERENCES «relationship.first.target.name»(«relationship.leftKey.name»),
-					«relationship.rightKey.name» «relationship.rightKey.datatype.transformDataType»,
-					CONSTRAINT fk_«relationship.rightKey.name» FOREIGN KEY («relationship.rightKey.name»)
-						REFERENCES «relationship.second.target.name»(«relationship.rightKey.name»)
-					«IF relationship.third !== null»
-					«relationship.thirdKey.name» «relationship.thirdKey.datatype.transformDataType»,
-					CONSTRAINT fk_«relationship.thirdKey.name» FOREIGN KEY («relationship.thirdKey.name»)
-						REFERENCES «relationship.third.target.name»(«relationship.thirdKey.name»)
-					«ENDIF»
+				«FOR attribute : entity.allAttributes.reject[it.type === AttributeType.DERIVED] SEPARATOR ', '»
+					«attribute.name» «attribute.datatype.transformDataType»
+				«ENDFOR»
 				);«'\n'»«'\n'»
 			«ENDFOR»
 			'''
@@ -87,17 +59,18 @@ class EntityRelationshipGenerator extends AbstractGenerator {
 		}
 	}
 
-		private def transformDataType(DataType dataType) {
-			if(dataType === null) {
-				return ''
-			}
+	private def transformDataType(DataType dataType) {
+		// default
+		if(dataType === null) {
+			return 'CHAR(20)'
+		}
 			
-			val type = dataType.type
-			var size = dataType.size
+		val type = dataType.type
+		var size = dataType.size
 		
-			if (size != 0) {
-				return type +  "(" + size + ")";
-			}
+		if (size != 0) {
+			return type +  '(' + size + ')';
+		}
 		
 		return type
 	}
