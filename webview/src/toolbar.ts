@@ -2,7 +2,7 @@ import { postConstruct, inject, injectable } from 'inversify';
 import { SprottyDiagramIdentifier, VscodeDiagramWidget } from 'sprotty-vscode-webview';
 import { IActionDispatcher, ILogger, ModelSource, TYPES} from 'sprotty';
 import { CollapseExpandAllAction, FitToScreenAction } from 'sprotty-protocol';
-import { AddEntityAction, AddRelationshipAction } from './actions';
+import { AddEntityAction, AddRelationshipAction, ChangeNotationAction } from './actions';
 
 @injectable()
 export class ERDiagramWidget extends VscodeDiagramWidget {
@@ -30,18 +30,73 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
 
         if (containerDiv) {
 
+            
+
             const toolbar = document.createElement("div");
             toolbar.id = "biger-toolbar"
             toolbar.innerHTML = `
-                <vscode-button id="toolbar-button">
-                    <span class="fas fa-bars"/>
-                </vscode-button>
+                <div id="notation-div">
+                    <vscode-button id="toolbar-button">
+                        <span class="fas fa-bars"/>
+                    </vscode-button>
+                    <div id="notationOptions" style="display: none;">
+                        <vscode-option style="width:100%;" id="optionBachman" class="button">Bachman</vscode-option>
+                        <vscode-option style="width:100%;" id="optionChen" class="button">Chen</vscode-option>
+                        <vscode-option style="width:100%;" id="optionCrowsfoot" class="button">Crow's Foot</vscode-option>
+                        <vscode-option style="width:100%;" id="optionMinMax" class="button">MinMax</vscode-option>
+                        <vscode-option style="width:100%;" id="optionUml" class="button">UML</vscode-option>
+                    </div>
+
+                    <div id="help" style="display: none;">
+                        <span style="margin-top:2px;margin-left:10px;">Crows Foot</span>
+                        <vscode-divider class="divider" role="separator"></vscode-divider>
+                        <span style="margin-top:2px;margin-left:10px;">Cardinality usage:</span>
+                        <span style="margin-top:2px;margin-left:10px;">[1]  one</span>
+                        <span style="margin-top:2px;margin-left:10px;">[1+] one or more</span>
+                        <span style="margin-top:2px;margin-left:10px;">[0+] zero or more</span>
+                        <span style="margin-top:2px;margin-left:10px;">[?]  zero ore one</span>
+                    </div>
+
+                    <div id="helpBachman" style="display: none;">
+                        <span style="margin-top:2px;margin-left:10px;">Bachman</span>
+                        <vscode-divider class="divider" role="separator"></vscode-divider>
+                        <span style="margin-top:2px;margin-left:10px;">Cardinality usage:</span>
+                        <span style="margin-top:2px;margin-left:10px;">[0] zero</span>
+                        <span style="margin-top:2px;margin-left:10px;">[0+] zero or more</span>
+                        <span style="margin-top:2px;margin-left:10px;">[1] one</span>
+                        <span style="margin-top:2px;margin-left:10px;">[1+] one or more</span>
+                    </div>
+
+                    <div id="helpChen" style="display: none;">
+                        <span style="margin-top:2px;margin-left:10px;">Chen</span>
+                        <vscode-divider class="divider" role="separator"></vscode-divider>
+                        <span style="margin-top:2px;margin-left:10px;">Cardinality usage:</span>
+                        <span style="margin-top:10px;margin-left:10px;">[1] zero or one</span>
+                        <span style="margin-top:2px;margin-left:10px;">[M] zero or more</span>
+                        <span style="margin-top:2px;margin-left:10px;margin-bottom:10px;">[N] zero or more</span>
+                    </div>
+
+                    <div id="helpMinMax" style="display: none;">
+                    <span style="margin-top:2px;margin-left:10px;">MinMax</span>
+                    <vscode-divider class="divider" role="separator"></vscode-divider>
+                    <span style="margin-top:2px;margin-left:10px;">Cardinality usage:</span>
+                    <span style="margin-top:2px;margin-left:10px;">n1 min</span>
+                    <span style="margin-top:2px;margin-left:10px;">n2 max</span>
+                    <span style="margin-top:2px;margin-left:10px;">[n1,n2] n1 <= n2</span>
+                    <span style="margin-top:2px;margin-left:10px;">[n1,*] n1 or more</span>
+                </div>
+
+                </div>
                 <div id = "toolbar-options">
                     <vscode-option id="add-entity-button" class="button">Entity
                         <span id="button-icon" slot="start" class="codicon codicon-chrome-maximize"/>
                     </vscode-option>
                     <vscode-option id="add-relationship-button" class="button">Relationship
                         <span id="button-icon" slot="start" class="codicon codicon-debug-breakpoint-log-unverified"/>
+                    </vscode-option>
+                    <vscode-divider class="divider" role="separator"></vscode-divider>
+                    <vscode-option id="notationButton" class="button">Chen
+                        <span id="button-icon" slot="start" class="fas fa-angle-left"/>
                     </vscode-option>
                     <vscode-divider class="divider" role="separator"></vscode-divider>
                     <div id="expand-div" style="display:none">
@@ -52,8 +107,8 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
                     </div>
                     <vscode-option id="center-diagram-button" class="button">Center</vscode-option>
                     <vscode-divider class="divider" role="separator"/></vscode-divider>
-                    <vscode-link class="option" href="https://github.com/borkdominik/bigER/wiki/%F0%9F%93%96-Language-Documentation">
-                        <vscode-option id="help-button" class="button">Help
+                    <vscode-link style="width:100%;" class="option" href="https://github.com/borkdominik/bigER/wiki/%F0%9F%93%96-Language-Documentation">
+                        <vscode-option id="helpButton" class="button">Help
                             <span id="button-icon" slot="start" class="fas fa-question"/>
                         </vscode-option>
                     </vscode-link>
@@ -68,6 +123,111 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
      * Adds event handlers to the buttons, by dispatching corresponding events
      */
     protected addEventHandlers(): void {
+
+        let buttonTimer:NodeJS.Timeout;
+        let helBtnTimer:NodeJS.Timeout;
+        const delayEnter = 300
+        const delayLeave = 100
+        const noDelay = 0
+
+        
+        function showElement(elementName:string, dealy:number): NodeJS.Timeout{
+            return setTimeout(function() {
+                        var options = document.getElementById(elementName);
+                        if(options){
+                           options.style.display = "flex";
+                        }
+                    }, dealy);
+        }
+
+        function hideElement(elementName:string, dealy:number): NodeJS.Timeout{
+            return setTimeout(function() {
+                        var options = document.getElementById(elementName);
+                        if(options){
+                            options.style.display = "none";
+                        }
+            }, dealy);
+        }
+
+        document.getElementById('notationButton')!.addEventListener('mouseenter', async () => {
+                clearTimeout(buttonTimer);
+                buttonTimer = showElement('notationOptions', delayEnter)
+        });
+
+        document.getElementById('notationButton')!.addEventListener('mouseleave', async () => {
+            clearTimeout(buttonTimer);
+            buttonTimer = hideElement('notationOptions', delayLeave)
+        });
+
+        document.getElementById('notationOptions')!.addEventListener('mouseenter', async () => {
+            clearTimeout(buttonTimer);
+        });
+
+        document.getElementById('notationOptions')!.addEventListener('mouseleave', async () => {
+            hideElement('notationOptions', delayLeave)
+        });
+
+        function changeNotationBtn(notation:string){
+            const option = document.getElementById('notationButton');
+            if(option){
+                option.innerHTML = notation+'<span id="button-icon" slot="start" class="fas fa-angle-left"/>'
+                hideElement('notationOptions', noDelay)
+            }
+        }
+
+        document.getElementById('optionBachman')!.addEventListener('click', async () => {
+            changeNotationBtn('Bachman')
+        });
+
+        document.getElementById('optionChen')!.addEventListener('click', async () => {
+            changeNotationBtn('Chen')
+        });
+
+        document.getElementById('optionCrowsfoot')!.addEventListener('click', async () => {
+            changeNotationBtn('Crows Foot')
+            await this.actionDispatcher.dispatch(ChangeNotationAction.create("crowsfoot"));
+        });
+
+        document.getElementById('optionMinMax')!.addEventListener('click', async () => {
+            changeNotationBtn('MinMax')
+        });
+
+        document.getElementById('optionUml')!.addEventListener('click', async () => {
+            changeNotationBtn('UML')
+        });
+
+        function chooseNotation(show:boolean){
+            var notationBtn = document.getElementById("notationButton");
+            if(notationBtn){
+                switch(notationBtn.innerText){
+                    case 'Bachman' : 
+                        clearTimeout(helBtnTimer)
+                        show ? helBtnTimer = showElement('helpBachman', delayEnter) : hideElement('helpBachman', delayLeave)
+                        break
+                    case 'Chen' : 
+                        clearTimeout(helBtnTimer)
+                        show ? helBtnTimer = showElement('helpChen', delayEnter) : hideElement('helpChen', delayLeave)
+                        break
+                    case 'MinMax' : 
+                        clearTimeout(helBtnTimer)
+                        show ? helBtnTimer = showElement('helpMinMax', delayEnter) : hideElement('helpMinMax', delayLeave)
+                        break
+                    default : 
+                        clearTimeout(helBtnTimer)
+                        show ? helBtnTimer = showElement('help', delayEnter) : hideElement('help', delayLeave)
+                        break
+                }
+            }
+        }
+
+        document.getElementById('helpButton')!.addEventListener('mouseenter', async () => {
+            chooseNotation(true);
+        });
+
+        document.getElementById('helpButton')!.addEventListener('mouseleave', async () => {
+            chooseNotation(false);
+        });
+
         
         document.getElementById('toolbar-button')!.addEventListener('click', async () => {
                 var options = document.getElementById("toolbar-options");

@@ -55,7 +55,6 @@ export class ExpandEntityView extends ExpandButtonView {
 }
 
 
-
 @injectable()
 export class NotationEdgeView extends PolylineEdgeView {
 
@@ -80,6 +79,7 @@ export class NotationEdgeView extends PolylineEdgeView {
         if(edge instanceof NotationEdge){
             showLabel = edge.notation !== 'bachman' &&  edge.notation !== 'crowsfoot';
             renderBothEnds = edge.notation === 'crowsfoot';
+
         }
         if(showLabel){
             return <g class-sprotty-edge={true} class-mouseover={edge.hoverFeedback}>
@@ -104,6 +104,8 @@ export class NotationEdgeView extends PolylineEdgeView {
 
     protected renderAdditionalsNew(edge: SEdge, segments: Point[], isLeft:boolean, context: RenderingContext): VNode[] {
 
+        const crowsfoot = 'crowsfoot';
+
         var notation:String = 'default';
         var isSource:boolean = false;
         var cardinality:String = '';
@@ -111,13 +113,16 @@ export class NotationEdgeView extends PolylineEdgeView {
         if(edge instanceof NotationEdge){
             notation = edge.notation
             isSource = edge.isSource
+            cardinality = edge.crowsFootCardinality
         }
-        // Only child should be a SLabel
-        edge.children.forEach((child)=>{
-            if(child instanceof SLabel){
-                cardinality = child.text
-            }
-        })
+        if(notation !== crowsfoot){
+            // Only child should be a SLabel
+            edge.children.forEach((child)=>{
+                if(child instanceof SLabel){
+                    cardinality = child.text
+                }
+            })
+        }
         const source = segments[0];
         const target = segments[segments.length - 1];
         const penultimateElem = segments[segments.length - 2];
@@ -125,17 +130,17 @@ export class NotationEdgeView extends PolylineEdgeView {
 
         switch(notation){
             case 'bachman'   :  return this.createBachmanEdge(source, target, secondElem, penultimateElem, cardinality, isSource);
-            case 'crowsfoot' :  var sourceCardinality = cardinality.split(':')[0];
+            case crowsfoot :  var sourceCardinality = cardinality.split(':')[0];
                                 var targetCardinality = cardinality.split(':')[1];
                                 if(isLeft){
-                                    return this.createCrowsFootEdge(source,secondElem, isLeft, sourceCardinality)
+                                    return this.createCrowsFootEdge(source, secondElem, sourceCardinality)
                                 }
-                                return this.createCrowsFootEdge(target,penultimateElem, isLeft, targetCardinality)
+                                return this.createCrowsFootEdge(target, penultimateElem, targetCardinality)
             default :  return [];
         }
     }
 
-    private createCrowsFootEdge(point:Point, next:Point, isLeft:boolean,cardinality:String):VNode[]{
+    private createCrowsFootEdge(point:Point, next:Point, cardinality:String):VNode[]{
         switch(cardinality){
             case '1' :  return  [<svg>
                                     <line x1={point.x+19} y1={point.y+11} x2={point.x+19} y2={point.y-11}

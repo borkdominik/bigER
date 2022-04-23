@@ -18,6 +18,7 @@ export class EntityNode extends RectangularNode {
 export class NotationEdge extends SEdge {
     isSource: boolean
     notation: String
+    crowsFootCardinality: String
 }
 
 /*

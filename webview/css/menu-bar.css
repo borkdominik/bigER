@@ -4,7 +4,7 @@
     width: 140px;
     background: var(--vscode-menu-background);
     padding-bottom: 5px;
-    box-shadow: 6px -4px 8px 0px black;
+    box-shadow: 0px 0px 2px 0px #131212;
 }
 
 #biger-toolbar{
@@ -15,27 +15,33 @@
     flex-direction: row;
 }
 
+#notation-div{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+#notationOptions{
+    z-index: 9;
+    margin-top: 38px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    background: var(--vscode-menu-background);
+    box-shadow: 0px 0px 2px 0px #131212;
+}
+
 #toolbar-button {
+    z-index: 8;
     background: var(--vscode-menu-selectionBackground);
     height: 27.5px;
+    width: 35px;
     --border-width: 0;
 }
 
 #toolbar-button span{
     margin-top: 5px;
 }
-
-#dropDown-erNotations{
-    background: var(--vscode-menu-background);
-    --dropdown-border: none;
-    --dropdown-background: var(--vscode-menu-background);
-    padding-left: 10px;
-}
-
-#dropDown-erNotations:hover{
-    background: var(--vscode-menu-selectionBackground);
-}
-
 
 .divider{
     margin-top: 5px;
@@ -56,10 +62,22 @@
     --border-width: 0;
 }
 
-#help-button{
+#helpButton{
     width:140px;
 }
 
 #button-icon{
     margin-right: 5px;
+}
+
+#help, 
+#helpBachman,
+#helpChen,
+#helpMinMax{
+    margin-top: 38px;
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    background: var(--vscode-menu-background);
 }

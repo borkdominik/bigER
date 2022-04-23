@@ -208,15 +208,27 @@ class ERDiagramGenerator implements IDiagramGenerator {
 									 String target,
 									 String label, 
 									 String cardinality, extension Context context){
+		var edgeLabelText =	'';
+		var cardinalityCrowsFoot = '';					 	
+									 	
+		if(model.notationOption.equals(NotationOption.CROWSFOOT)){
+			cardinalityCrowsFoot = cardinality
+		}else{
+			edgeLabelText = cardinality
+		}
+		
+		val edgeLabelTextFinal = edgeLabelText
+		val cardinalityCrowsFootFinal = cardinalityCrowsFoot
 		
 		graph.children.add(new NotationEdge [sourceId = source
 								  targetId = target
 								  notation = model.notationOption.toString
+								  crowsFootCardinality = cardinalityCrowsFootFinal
 								  isSource = label === "label:first"
 								  id = idCache.uniqueId(relationship + sourceId + ':' + relationship.name + ':' + targetId)
 								  children =  #[new SLabel [
 												id = idCache.uniqueId(relationship + label)
-												text = cardinality
+												text = edgeLabelTextFinal
 												type = EDGE_LABEL]]])
 	}
 	
