@@ -2,7 +2,6 @@ package org.big.erd.ide.diagram
 
 import org.eclipse.sprotty.SNode
 import org.eclipse.sprotty.SEdge
-import org.big.erd.entityRelationship.NotationOption
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.eclipse.sprotty.SGraph
 
@@ -24,7 +23,7 @@ class EntityNode extends SNode {
 class NotationEdge extends SEdge {
 	Boolean isSource
 	String notation
-	String crowsFootCardinality
+	String relationshipCardinality
 	
 	new() { }
 	

@@ -29,13 +29,9 @@ Relationship:
 		(attributes += Attribute)*
 	'}')?;
 
-/**
- * TODO: Support Min/Max Notation
- * cardinality = max, multiplicity = min/max
- */
 RelationEntity:
 	target=[Entity] ('[' 
-		(cardinality=CardinalityType | customMultiplicity=STRING | minMax=MinMax)
+		(cardinality=CardinalityType | customMultiplicity=STRING | minMax=MinMax | uml=Uml)
 	']')? (partial?='partial')?;
 
 /**
@@ -49,12 +45,15 @@ DataType:
 	
 terminal MinMax:
 	 ('0'..'9')*','('0'..'9')*('*')?;
+	 
+terminal Uml:
+	 ('strong ')?('weak ')?('0'..'9')*'..'('0'..'9')*('*')?;
 
 enum GenerateOption:
     OFF='off' | SQL='sql';
 
 enum NotationOption:
-    DEFAULT='default' | CHEN='chen' | MINMAX='minmax' | BACHMAN='bachman' | CROWSFOOT='crowsfoot';   
+    DEFAULT='default' | CHEN='chen' | MINMAX='minmax' | BACHMAN='bachman' | CROWSFOOT='crowsfoot'| UML='uml';   
 
 enum AttributeType:
 	NONE = 'none' | KEY = 'key' | FOREIGN_KEY = 'foreign-key' | PARTIAL_KEY = 'partial-key' | OPTIONAL = 'optional' | 

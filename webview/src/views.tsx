@@ -58,6 +58,10 @@ export class ExpandEntityView extends ExpandButtonView {
 @injectable()
 export class NotationEdgeView extends PolylineEdgeView {
 
+    bachman:string = 'bachman'
+    crowsfoot:string = 'crowsfoot';
+    uml:string = "uml";
+
     render(edge: Readonly<SEdge>, context: RenderingContext, args?: IViewArgs): VNode | undefined {
 
         const route = this.edgeRouterRegistry.route(edge, args);
@@ -77,9 +81,8 @@ export class NotationEdgeView extends PolylineEdgeView {
         var renderBothEnds = false;
 
         if(edge instanceof NotationEdge){
-            showLabel = edge.notation !== 'bachman' &&  edge.notation !== 'crowsfoot';
-            renderBothEnds = edge.notation === 'crowsfoot';
-
+            showLabel = edge.notation !== this.bachman && edge.notation !== this.crowsfoot;
+            renderBothEnds = edge.notation === this.crowsfoot ||  edge.notation === this.uml;
         }
         if(showLabel){
             return <g class-sprotty-edge={true} class-mouseover={edge.hoverFeedback}>
@@ -104,8 +107,6 @@ export class NotationEdgeView extends PolylineEdgeView {
 
     protected renderAdditionalsNew(edge: SEdge, segments: Point[], isLeft:boolean, context: RenderingContext): VNode[] {
 
-        const crowsfoot = 'crowsfoot';
-
         var notation:String = 'default';
         var isSource:boolean = false;
         var cardinality:String = '';
@@ -113,9 +114,9 @@ export class NotationEdgeView extends PolylineEdgeView {
         if(edge instanceof NotationEdge){
             notation = edge.notation
             isSource = edge.isSource
-            cardinality = edge.crowsFootCardinality
+            cardinality = edge.relationshipCardinality
         }
-        if(notation !== crowsfoot){
+        if(notation !== this.crowsfoot || notation !== this.uml){
             // Only child should be a SLabel
             edge.children.forEach((child)=>{
                 if(child instanceof SLabel){
@@ -129,16 +130,34 @@ export class NotationEdgeView extends PolylineEdgeView {
         const secondElem = segments[1];
 
         switch(notation){
-            case 'bachman'   :  return this.createBachmanEdge(source, target, secondElem, penultimateElem, cardinality, isSource);
-            case crowsfoot :  var sourceCardinality = cardinality.split(':')[0];
-                                var targetCardinality = cardinality.split(':')[1];
-                                if(isLeft){
-                                    return this.createCrowsFootEdge(source, secondElem, sourceCardinality)
-                                }
-                                return this.createCrowsFootEdge(target, penultimateElem, targetCardinality)
-            default :  return [];
+            case this.bachman   :   return this.createBachmanEdge(source, target, secondElem, penultimateElem, cardinality, isSource);
+
+            case this.crowsfoot :   var sourceCardinality = cardinality.split(':')[0];
+                                    var targetCardinality = cardinality.split(':')[1];
+                                    if(isLeft){
+                                        return this.createCrowsFootEdge(source, secondElem, sourceCardinality)
+                                    }
+                                    return this.createCrowsFootEdge(target, penultimateElem, targetCardinality)
+
+            case this.uml       :   var sourceCardinality = cardinality.split(':')[0];
+                                    var targetCardinality = cardinality.split(':')[1];
+                                    if(isLeft){
+                                        return this.createUmlEdge(source, sourceCardinality)
+                                    }
+                                    return this.createUmlEdge1(target, targetCardinality)
+
+            default             :   return [];
         }
     }
+
+    private createUmlEdge1(point:Point, cardinality:String):VNode[]{
+        return[<text x={point.x-30} y={point.y+20} fill="white" text={cardinality}></text>]
+    }
+
+    private createUmlEdge(point:Point, cardinality:String):VNode[]{
+        return[<text x={point.x+30} y={point.y+20} fill="white" text={cardinality}>t2</text>]
+    }
+
 
     private createCrowsFootEdge(point:Point, next:Point, cardinality:String):VNode[]{
         switch(cardinality){

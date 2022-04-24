@@ -78,6 +78,15 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
                         <span class="helpText">[min,max] min <= max</span>
                         <span class="helpText">[min,*] min or more</span>
                     </div>
+                    <div id="helpUml" style="display: none;">
+                        <span class="helpText">UML</span>
+                        <vscode-divider class="divider" role="separator"></vscode-divider>
+                        <span class="helpText">Cardinality usage:</span>
+                        <span class="helpText">[num] or [type num] </span>
+                        <span class="helpText">type: strong|weak</span>
+                        <span class="helpText">[min..max] min <= max</span>
+                        <span class="helpText">[min..*] min or more</span>
+                    </div>
                 </div>
                 <div id = "toolbar-options">
                     <vscode-option id="add-entity-button" class="button">Entity
@@ -205,6 +214,9 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
                         break
                     case 'MinMax' : 
                         hideOrShowElement('helpMinMax', show)
+                        break
+                    case 'UML' : 
+                        hideOrShowElement('helpUml', show)
                         break
                     default : 
                         hideOrShowElement('help', show)
