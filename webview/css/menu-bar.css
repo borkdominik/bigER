@@ -4,7 +4,7 @@
     width: 140px;
     background: var(--vscode-menu-background);
     padding-bottom: 5px;
-    box-shadow: 0px 0px 2px 0px #131212;
+    box-shadow: 0px 0px 3px 0px #13121252;
 }
 
 #biger-toolbar{
@@ -28,7 +28,7 @@
     flex-direction: column;
     align-items: flex-start;
     background: var(--vscode-menu-background);
-    box-shadow: 0px 0px 2px 0px #131212;
+    box-shadow: 0px 0px 3px 0px #13121252;
 }
 
 #toolbar-button {
@@ -37,6 +37,7 @@
     height: 27.5px;
     width: 35px;
     --border-width: 0;
+    box-shadow: 0px 0px 3px 0px #13121252;
 }
 
 #toolbar-button span{
@@ -82,7 +83,7 @@
     flex-direction: column;
     align-items: flex-start;
     background: var(--vscode-menu-background);
-    box-shadow: 0px 0px 2px 0px #131212;
+    box-shadow: 0px 0px 3px 0px #13121252;
 }
 
 .helpText{
