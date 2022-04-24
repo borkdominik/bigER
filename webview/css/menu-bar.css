@@ -74,10 +74,18 @@
 #helpBachman,
 #helpChen,
 #helpMinMax{
+    z-index: 9;
     margin-top: 38px;
     padding: 5px;
+    padding-right: 15px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     background: var(--vscode-menu-background);
+    box-shadow: 0px 0px 2px 0px #131212;
+}
+
+.helpText{
+    margin-top:2px;
+    margin-left:10px;
 }

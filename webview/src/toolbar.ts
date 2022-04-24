@@ -29,9 +29,6 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
         const containerDiv = document.getElementById(this.diagramIdentifier.clientId + '_container');
 
         if (containerDiv) {
-
-            
-
             const toolbar = document.createElement("div");
             toolbar.id = "biger-toolbar"
             toolbar.innerHTML = `
@@ -46,46 +43,41 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
                         <vscode-option style="width:100%;" id="optionMinMax" class="button">MinMax</vscode-option>
                         <vscode-option style="width:100%;" id="optionUml" class="button">UML</vscode-option>
                     </div>
-
                     <div id="help" style="display: none;">
-                        <span style="margin-top:2px;margin-left:10px;">Crows Foot</span>
+                        <span class="helpText">Crows Foot</span>
                         <vscode-divider class="divider" role="separator"></vscode-divider>
-                        <span style="margin-top:2px;margin-left:10px;">Cardinality usage:</span>
-                        <span style="margin-top:2px;margin-left:10px;">[1]  one</span>
-                        <span style="margin-top:2px;margin-left:10px;">[1+] one or more</span>
-                        <span style="margin-top:2px;margin-left:10px;">[0+] zero or more</span>
-                        <span style="margin-top:2px;margin-left:10px;">[?]  zero ore one</span>
+                        <span class="helpText">Cardinality usage:</span>
+                        <span class="helpText">[1]&nbsp&nbsp&nbsp one</span>
+                        <span class="helpText">[1+]&nbsp one or more</span>
+                        <span class="helpText">[0+]&nbsp zero or more</span>
+                        <span class="helpText">[?]&nbsp&nbsp&nbsp zero ore one</span>
                     </div>
-
                     <div id="helpBachman" style="display: none;">
-                        <span style="margin-top:2px;margin-left:10px;">Bachman</span>
+                        <span class="helpText">Bachman</span>
                         <vscode-divider class="divider" role="separator"></vscode-divider>
-                        <span style="margin-top:2px;margin-left:10px;">Cardinality usage:</span>
-                        <span style="margin-top:2px;margin-left:10px;">[0] zero</span>
-                        <span style="margin-top:2px;margin-left:10px;">[0+] zero or more</span>
-                        <span style="margin-top:2px;margin-left:10px;">[1] one</span>
-                        <span style="margin-top:2px;margin-left:10px;">[1+] one or more</span>
+                        <span class="helpText">Cardinality usage:</span>
+                        <span class="helpText">[0] zero</span>
+                        <span class="helpText">[0+] zero or more</span>
+                        <span class="helpText">[1] one</span>
+                        <span class="helpText">[1+] one or more</span>
                     </div>
-
                     <div id="helpChen" style="display: none;">
-                        <span style="margin-top:2px;margin-left:10px;">Chen</span>
+                        <span class="helpText">Chen</span>
                         <vscode-divider class="divider" role="separator"></vscode-divider>
-                        <span style="margin-top:2px;margin-left:10px;">Cardinality usage:</span>
+                        <span class="helpText">Cardinality usage:</span>
                         <span style="margin-top:10px;margin-left:10px;">[1] zero or one</span>
-                        <span style="margin-top:2px;margin-left:10px;">[M] zero or more</span>
-                        <span style="margin-top:2px;margin-left:10px;margin-bottom:10px;">[N] zero or more</span>
+                        <span class="helpText">[M] zero or more</span>
+                        <span class="helpText" style="margin-bottom:11px;">[N] zero or more</span>
                     </div>
-
                     <div id="helpMinMax" style="display: none;">
-                    <span style="margin-top:2px;margin-left:10px;">MinMax</span>
-                    <vscode-divider class="divider" role="separator"></vscode-divider>
-                    <span style="margin-top:2px;margin-left:10px;">Cardinality usage:</span>
-                    <span style="margin-top:2px;margin-left:10px;">n1 min</span>
-                    <span style="margin-top:2px;margin-left:10px;">n2 max</span>
-                    <span style="margin-top:2px;margin-left:10px;">[n1,n2] n1 <= n2</span>
-                    <span style="margin-top:2px;margin-left:10px;">[n1,*] n1 or more</span>
-                </div>
-
+                        <span class="helpText">MinMax</span>
+                        <vscode-divider class="divider" role="separator"></vscode-divider>
+                        <span class="helpText">Cardinality usage:</span>
+                        <span class="helpText">min: number</span>
+                        <span class="helpText">max: number</span>
+                        <span class="helpText">[min,max] min <= max</span>
+                        <span class="helpText">[min,*] min or more</span>
+                    </div>
                 </div>
                 <div id = "toolbar-options">
                     <vscode-option id="add-entity-button" class="button">Entity
@@ -124,12 +116,11 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
      */
     protected addEventHandlers(): void {
 
-        let buttonTimer:NodeJS.Timeout;
-        let helBtnTimer:NodeJS.Timeout;
+        let notationBtnTimer:NodeJS.Timeout;
+        let helpBtnTimer:NodeJS.Timeout;
         const delayEnter = 300
         const delayLeave = 100
         const noDelay = 0
-
         
         function showElement(elementName:string, dealy:number): NodeJS.Timeout{
             return setTimeout(function() {
@@ -150,20 +141,21 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
         }
 
         document.getElementById('notationButton')!.addEventListener('mouseenter', async () => {
-                clearTimeout(buttonTimer);
-                buttonTimer = showElement('notationOptions', delayEnter)
+                clearTimeout(notationBtnTimer);
+                notationBtnTimer = showElement('notationOptions', delayEnter)
         });
 
         document.getElementById('notationButton')!.addEventListener('mouseleave', async () => {
-            clearTimeout(buttonTimer);
-            buttonTimer = hideElement('notationOptions', delayLeave)
+            clearTimeout(notationBtnTimer);
+            notationBtnTimer = hideElement('notationOptions', delayLeave)
         });
 
         document.getElementById('notationOptions')!.addEventListener('mouseenter', async () => {
-            clearTimeout(buttonTimer);
+            clearTimeout(notationBtnTimer);
         });
 
         document.getElementById('notationOptions')!.addEventListener('mouseleave', async () => {
+            clearTimeout(notationBtnTimer);
             hideElement('notationOptions', delayLeave)
         });
 
@@ -196,25 +188,26 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
             changeNotationBtn('UML')
         });
 
+        function hideOrShowElement(element:string, show:boolean){
+            clearTimeout(helpBtnTimer)
+            show ? helpBtnTimer = showElement(element, delayEnter) : hideElement(element, delayLeave)
+        }
+
         function chooseNotation(show:boolean){
             var notationBtn = document.getElementById("notationButton");
             if(notationBtn){
                 switch(notationBtn.innerText){
                     case 'Bachman' : 
-                        clearTimeout(helBtnTimer)
-                        show ? helBtnTimer = showElement('helpBachman', delayEnter) : hideElement('helpBachman', delayLeave)
+                        hideOrShowElement('helpBachman', show)
                         break
                     case 'Chen' : 
-                        clearTimeout(helBtnTimer)
-                        show ? helBtnTimer = showElement('helpChen', delayEnter) : hideElement('helpChen', delayLeave)
+                        hideOrShowElement('helpChen', show)
                         break
                     case 'MinMax' : 
-                        clearTimeout(helBtnTimer)
-                        show ? helBtnTimer = showElement('helpMinMax', delayEnter) : hideElement('helpMinMax', delayLeave)
+                        hideOrShowElement('helpMinMax', show)
                         break
                     default : 
-                        clearTimeout(helBtnTimer)
-                        show ? helBtnTimer = showElement('help', delayEnter) : hideElement('help', delayLeave)
+                        hideOrShowElement('help', show)
                         break
                 }
             }
