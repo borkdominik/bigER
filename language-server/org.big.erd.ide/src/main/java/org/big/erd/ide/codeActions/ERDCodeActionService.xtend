@@ -81,21 +81,34 @@ class ERDCodeActionService implements ICodeActionService2 {
 				)
 			]));
 			}*/
+			if (d.code?.getLeft == EntityRelationshipValidator.MISSING_MODEL_HEADER) {
+				val text = '''erdiagram ModelName«'\n'»'''
+				result.add(Either.forRight(new CodeAction => [
+					kind = CodeActionKind.QuickFix
+					title = "Insert model header"
+					edit = new WorkspaceEdit() => [
+						addTextEdit(model.eResource.URI, new TextEdit => [
+							range = params.range
+							newText = text
+						])
+					]
+				]));
+			}
+			
 			if (d.code?.getLeft == EntityRelationshipValidator.LOWERCASE_ENTITY_NAME) {
-			val text = document.getSubstring(params.range)
-			result.add(Either.forRight(new CodeAction => [
-				kind = CodeActionKind.QuickFix
-				title = "Capitalize Name"
-				edit = new WorkspaceEdit() => [
+				val text = document.getSubstring(params.range)
+				result.add(Either.forRight(new CodeAction => [
+					kind = CodeActionKind.QuickFix
+					title = "Capitalize Name"
+					edit = new WorkspaceEdit() => [
 						addTextEdit(model.eResource.URI, new TextEdit => [
 							range = params.range
 							newText = text.toFirstUpper
 						])
-				]
-			]));
+					]
+				]));
 			}
 		}
-		
 		
 		return result			
 	}

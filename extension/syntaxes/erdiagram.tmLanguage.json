@@ -12,7 +12,7 @@
 			"match": "\\b(entity|relationship|entities|relationships)\\b"
 		}, {
 			"name": "constant.language.erdiagram",
-			"match": "\\b(generateSql)\\b"
+			"match": "\\b(erdiagram|generate)\\b"
 		}, {
             "name": "entity.name.tag.erdiagram",
 			"match": "\\b(extends|weak)\\b"
@@ -25,9 +25,6 @@
 		}, {
 			"name": "keyword.datatype.erdiagram",
 			"match": "\\b(int|double|string|boolean|datetime)\\b"
-		}, {
-			"name": "entity.name.section.erdiagram",
-			"match": "\\b(erdiagram)\\b"
 		}, {
             "name": "string.quoted.double.erdiagram",
             "begin": "\"",

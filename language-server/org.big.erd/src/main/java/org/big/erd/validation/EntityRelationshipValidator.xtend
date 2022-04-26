@@ -18,14 +18,14 @@ import org.big.erd.entityRelationship.Entity
  */
 class EntityRelationshipValidator extends AbstractEntityRelationshipValidator {
 
-	public static String MISSING_MODEL_NAME = "missingModelName";
+	public static String MISSING_MODEL_HEADER = "missingModelHeader";
 	public static String MISSING_ATTRIBUTE_DATATYPE = "missingAttributeDatatype";
 	public static String LOWERCASE_ENTITY_NAME = "lowercaseEntityName";
 	
 	@Check
 	def checkModel(Model model) {
 		if (model.name === null || model.name.isBlank) {
-			error('''Missing model name''', EntityRelationshipPackage.Literals.MODEL__NAME, MISSING_MODEL_NAME)
+			error('''Missing model header 'erdiagram <name>' ''' , model, EntityRelationshipPackage.Literals.MODEL__NAME,  MISSING_MODEL_HEADER)
 		}
 	}
 	
