@@ -1,6 +1,7 @@
 package org.big.erd.ide.launch
 
 import com.google.gson.GsonBuilder
+import org.big.erd.ide.diagram.CustomActionTypeAdapterFactory
 import com.google.inject.Module
 import org.eclipse.elk.alg.layered.options.LayeredMetaDataProvider
 import org.eclipse.elk.core.util.persistence.ElkGraphResourceFactory
@@ -30,6 +31,7 @@ class ERDiagramLanguageServerSetup extends DiagramLanguageServerSetup {
 			.registerTypeAdapterFactory(factory)
 			.registerTypeAdapterFactory(new EditActionTypeAdapterFactory)
 			.registerTypeAdapterFactory(new EnumTypeAdapter.Factory)
+			.registerTypeAdapterFactory(new CustomActionTypeAdapterFactory)
 	}
 	
 	override Module getLanguageServerModule() {

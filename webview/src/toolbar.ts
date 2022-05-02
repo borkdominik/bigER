@@ -39,11 +39,15 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
                     <div id="notationOptions" style="display: none;">
                         <vscode-option style="width:100%;" id="optionBachman" class="button">Bachman</vscode-option>
                         <vscode-option style="width:100%;" id="optionChen" class="button">Chen</vscode-option>
-                        <vscode-option style="width:100%;" id="optionCrowsfoot" class="button">Crow's Foot</vscode-option>
-                        <vscode-option style="width:100%;" id="optionMinMax" class="button">MinMax</vscode-option>
+                        <vscode-option style="width:100%;" id="optionCrowsfoot" class="button">Crows Foot</vscode-option>
+                        <vscode-option style="width:100%;" id="optionMinMax" class="button">Min Max</vscode-option>
                         <vscode-option style="width:100%;" id="optionUml" class="button">UML</vscode-option>
                     </div>
                     <div id="help" style="display: none;">
+                    <span class="helpText">should not be displayed</span>
+                   
+                </div>
+                    <div id="helpCrowsFoot" style="display: none;">
                         <span class="helpText">Crows Foot</span>
                         <vscode-divider class="divider" role="separator"></vscode-divider>
                         <span class="helpText">Cardinality usage:</span>
@@ -70,7 +74,7 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
                         <span class="helpText" style="margin-bottom:11px;">[N] zero or more</span>
                     </div>
                     <div id="helpMinMax" style="display: none;">
-                        <span class="helpText">MinMax</span>
+                        <span class="helpText">Min Max</span>
                         <vscode-divider class="divider" role="separator"></vscode-divider>
                         <span class="helpText">Cardinality usage:</span>
                         <span class="helpText">min: number</span>
@@ -82,8 +86,8 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
                         <span class="helpText">UML</span>
                         <vscode-divider class="divider" role="separator"></vscode-divider>
                         <span class="helpText">Cardinality usage:</span>
-                        <span class="helpText">[num] or [type num] </span>
-                        <span class="helpText">type: strong|weak</span>
+                        <span class="helpText">[type] min..max </span>
+                        <span class="helpText">type: strong | weak</span>
                         <span class="helpText">[min..max] min <= max</span>
                         <span class="helpText">[min..*] min or more</span>
                     </div>
@@ -150,7 +154,6 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
         }
 
         document.getElementById('notationButton')!.addEventListener('mouseenter', async () => {
-                clearTimeout(notationBtnTimer);
                 notationBtnTimer = showElement('notationOptions', delayEnter)
         });
 
@@ -178,10 +181,12 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
 
         document.getElementById('optionBachman')!.addEventListener('click', async () => {
             changeNotationBtn('Bachman')
+            await this.actionDispatcher.dispatch(ChangeNotationAction.create("bachman"));
         });
 
         document.getElementById('optionChen')!.addEventListener('click', async () => {
             changeNotationBtn('Chen')
+            await this.actionDispatcher.dispatch(ChangeNotationAction.create("chen"));
         });
 
         document.getElementById('optionCrowsfoot')!.addEventListener('click', async () => {
@@ -191,10 +196,12 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
 
         document.getElementById('optionMinMax')!.addEventListener('click', async () => {
             changeNotationBtn('MinMax')
+            await this.actionDispatcher.dispatch(ChangeNotationAction.create("minmax"));
         });
 
         document.getElementById('optionUml')!.addEventListener('click', async () => {
             changeNotationBtn('UML')
+            await this.actionDispatcher.dispatch(ChangeNotationAction.create("uml"));
         });
 
         function hideOrShowElement(element:string, show:boolean){
@@ -212,7 +219,10 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
                     case 'Chen' : 
                         hideOrShowElement('helpChen', show)
                         break
-                    case 'MinMax' : 
+                    case 'Crows Foot' : 
+                        hideOrShowElement('helpCrowsFoot', show)
+                        break
+                    case 'Min Max' : 
                         hideOrShowElement('helpMinMax', show)
                         break
                     case 'UML' : 
@@ -272,18 +282,14 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
 
     async showAndHideExpandCollapse(expandStyle:string, collapseStyle:string) {
         var expand = document.getElementById("expand-div");
-            if(expand){
-                expand.style.display = expandStyle;
-            }
-            var collapse = document.getElementById("collapse-div");
-            if(collapse){
-                collapse.style.display = collapseStyle;
-            }
-            if(expandStyle === "none"){
-                this.elementsExpanded = true;
-            }else{
-                this.elementsExpanded = false;
-            }
-            await this.actionDispatcher.dispatch(CollapseExpandAllAction.create({expand: this.elementsExpanded}));
+        if(expand){
+            expand.style.display = expandStyle;
+        }
+        var collapse = document.getElementById("collapse-div");
+        if(collapse){
+            collapse.style.display = collapseStyle;
+        }
+        this.elementsExpanded = expandStyle === "none"
+        await this.actionDispatcher.dispatch(CollapseExpandAllAction.create({expand: this.elementsExpanded}));
     }
 }

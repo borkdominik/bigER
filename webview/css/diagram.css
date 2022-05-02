@@ -2,6 +2,14 @@
     stroke-width: 2;
 }
 
+svg {
+    outline: none;
+}
+
+.sprotty-graph.selected {
+    border: none;
+}
+
 .sprotty-infoBlock {
     color: black; 
 }

@@ -7,6 +7,8 @@ import org.eclipse.sprotty.SGraph
 
 /*
  * Only entity nodes, for the rest of the elements the default SModel is used
+ * 
+ * 
  */
 @Accessors
 class EntityNode extends SNode {
@@ -35,7 +37,7 @@ class NotationEdge extends SEdge {
 @Accessors
 class ERModel extends SGraph {
 	String name
-	String notationType
+	String notation
 
 	new() { }
 	

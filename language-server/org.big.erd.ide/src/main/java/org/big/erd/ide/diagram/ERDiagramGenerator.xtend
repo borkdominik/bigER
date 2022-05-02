@@ -5,12 +5,12 @@ import org.big.erd.entityRelationship.Entity
 import org.big.erd.entityRelationship.Attribute
 import org.big.erd.entityRelationship.AttributeType
 import org.big.erd.entityRelationship.EntityRelationshipPackage
-import org.big.erd.entityRelationship.NotationOption
 import org.big.erd.entityRelationship.Relationship
 import org.big.erd.entityRelationship.RelationEntity
 import org.big.erd.entityRelationship.Model
 import org.big.erd.ide.diagram.EntityNode
 import org.big.erd.ide.diagram.NotationEdge
+import org.big.erd.ide.diagram.ERModel
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.sprotty.SEdge
 import org.eclipse.sprotty.SModelElement
@@ -29,6 +29,7 @@ import org.eclipse.sprotty.xtext.tracing.ITraceProvider
 import org.eclipse.sprotty.xtext.SIssueMarkerDecorator
 import org.eclipse.sprotty.SCompartment
 import org.big.erd.entityRelationship.CardinalityType
+import org.big.erd.entityRelationship.NotationType
 
 import static org.big.erd.entityRelationship.EntityRelationshipPackage.Literals.*
 
@@ -67,35 +68,15 @@ class ERDiagramGenerator implements IDiagramGenerator {
 		if (contentHead instanceof Model) {
 			LOG.info("Generating diagram for model with URI '" + context.resource.URI.lastSegment + "'")
 			model = contentHead
-			
-			LOG.info("Creating SGraph with notation option '" + model.notationOption.toString + "'")
 			// Call generators depending on the notation option
-			switch model.notationOption {
-				case NotationOption.MINMAX : toGraphforMinMax(model, context)
-				default :toSGraph(model, context)
-			}
+			toSGraph(model, context)
 		}
 		return graph
 	}
-	 
-	 def void toGraphforMinMax(Model m, extension Context context){
-		m.relationships.forEach[ r |
-			if(r.first !== null && r.first.minMax !== null && !r.first.minMax.contains("(") && !r.first.minMax.contains(")")){
-				r.first.minMax = "("+(r.first.minMax ?: "")+")"
-			}
-			if(r.second !== null && r.second.minMax !== null && !r.second.minMax.contains("(") && !r.second.minMax.contains(")")){
-				r.second.minMax = "("+(r.second.minMax ?: "")+")"
-			}
-			if(r.third !== null && r.third.minMax !== null && !r.third.minMax.contains("(") && !r.third.minMax.contains(")")){
-				r.third.minMax = "("+(r.third.minMax ?: "")+")"
-			}
-		]
-		toSGraph(m,context)
-	 }
-	
 
     def void toSGraph(Model m, extension Context context) {
-		graph = new SGraph => [
+		graph = new ERModel => [
+			notation = m.notation.notationType.toString
 			type = GRAPH
 			id = idCache.uniqueId(m, 'root')
 			children = new ArrayList<SModelElement>
@@ -109,8 +90,9 @@ class ERDiagramGenerator implements IDiagramGenerator {
 		
 		// Create Relationship nodes and edges
 		m.relationships.forEach[ r |
-			if(model.notationOption !== NotationOption.CROWSFOOT && model.notationOption !== NotationOption.UML){
-				graph.children.add(relationshipNodes(r, context))
+			if(!model.notation.notationType.equals(NotationType.CROWSFOOT) && 
+			   !model.notation.notationType.equals(NotationType.UML)){
+					graph.children.add(relationshipNodes(r, context))
 			}
 			addRelationEdges(r, context)
 		]
@@ -144,20 +126,23 @@ class ERDiagramGenerator implements IDiagramGenerator {
 		
 		if (relationship.first !== null) {
 			var cardinality = getCardinality(relationship.first)
-			if(model.notationOption.equals(NotationOption.CROWSFOOT) || model.notationOption.equals(NotationOption.UML)){
+			if(model.notation.notationType.equals(NotationType.CROWSFOOT) ||
+			   model.notation.notationType.equals(NotationType.UML)){
 				cardinality = combineFirstAndSecondElemCardinality(relationship)
 			}
 			val source = idCache.getId(relationship.first.target)
-			val target = idCache.getId(model.notationOption.equals(NotationOption.CROWSFOOT) || model.notationOption.equals(NotationOption.UML) ? relationship.second.target : relationship)
+			val target = idCache.getId(model.notation.notationType.equals(NotationType.CROWSFOOT) || 
+									   model.notation.notationType.equals(NotationType.UML) ? relationship.second.target : relationship
+			)
 			createEdgeAndAddToGraph(relationship,source,target,'label:first', cardinality, context)
 		}
-		if (relationship.second !== null && !model.notationOption.equals(NotationOption.CROWSFOOT)) {
+		if (relationship.second !== null && !model.notation.notationType.equals(NotationType.CROWSFOOT)) {
 			var cardinality = getCardinality(relationship.second)
 			val source = idCache.getId(relationship)
 			val target = idCache.getId(relationship.second.target)
 			createEdgeAndAddToGraph(relationship,source,target,'label:second', cardinality, context)
 		}
-		if (relationship.third !== null && !model.notationOption.equals(NotationOption.CROWSFOOT)) {
+		if (relationship.third !== null && !model.notation.notationType.equals(NotationType.CROWSFOOT)) {
 			var cardinality = getCardinality(relationship.third)
 			val source = idCache.getId(relationship)
 			val target = idCache.getId(relationship.third.target)
@@ -175,12 +160,12 @@ class ERDiagramGenerator implements IDiagramGenerator {
 	}
 	
 	def String getCardinality(RelationEntity relationEntity){
-		switch model.notationOption {
-				case NotationOption.BACHMAN : return relationEntity.cardinality.toString
-				case NotationOption.CHEN : return getChenCardinality(relationEntity.cardinality)
-				case NotationOption.CROWSFOOT : return getCrowsFootsCardinality(relationEntity.cardinality)
-				case NotationOption.MINMAX : return relationEntity.minMax ?: ''
-				case NotationOption.UML : return relationEntity.uml ?: relationEntity.cardinality.toString()
+		switch model.notation.notationType {
+				case NotationType.BACHMAN : return relationEntity.cardinality.toString
+				case NotationType.CHEN : return getChenCardinality(relationEntity.cardinality)
+				case NotationType.CROWSFOOT : return getCrowsFootsCardinality(relationEntity.cardinality)
+				case NotationType.MINMAX : return relationEntity.minMax ?: ''
+				case NotationType.UML : return relationEntity.uml ?: relationEntity.cardinality.toString()
 				default: return relationEntity.customMultiplicity ?: relationEntity.cardinality.toString()
 			}
 	}
@@ -212,11 +197,17 @@ class ERDiagramGenerator implements IDiagramGenerator {
 		var edgeLabelText =	'';
 		var cardinalityLabels = '';					 	
 									 	
-		if(model.notationOption.equals(NotationOption.CROWSFOOT)){
+		if(model.notation.notationType.equals(NotationType.CROWSFOOT)){
 			cardinalityLabels = cardinality
-		}else if(model.notationOption.equals(NotationOption.UML)){
+		}else if(model.notation.notationType.equals(NotationType.UML)){
 			edgeLabelText = relationship.name
 			cardinalityLabels = cardinality
+		}else if(model.notation.notationType.equals(NotationType.MINMAX)){
+			if(!cardinality.isEmpty && !cardinality.contains('(') && !cardinality.contains(')')){
+				edgeLabelText = '('+cardinality+')'
+			}else{
+				edgeLabelText = cardinality
+			}
 		}else{
 			edgeLabelText = cardinality
 		}
@@ -224,9 +215,11 @@ class ERDiagramGenerator implements IDiagramGenerator {
 		val edgeLabelTextFinal = edgeLabelText
 		val cardinalityLabelsFinal = cardinalityLabels
 		
+		LOG.info('labelcardi: '+cardinalityLabelsFinal+' edgetext: '+ edgeLabelTextFinal)
+		
 		graph.children.add(new NotationEdge [sourceId = source
 								  targetId = target
-								  notation = model.notationOption.toString
+								  notation = model.notation.notationType.toString
 								  relationshipCardinality = cardinalityLabelsFinal
 								  isSource = label === "label:first"
 								  id = idCache.uniqueId(relationship + sourceId + ':' + relationship.name + ':' + targetId)

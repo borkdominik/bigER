@@ -7,10 +7,10 @@ generate entityRelationship "http://www.big.org/erd/EntityRelationship"
 Model:
 	'erdiagram' name=ID ('{'
 		('generate' '=' generateOption=GenerateOption)?
-		('notation' '=' notationOption=NotationOption)?
 	'}')?
 	
 	// keep old generate option until dependent code is fixed
+	notation=Notation?
 	(generateSql?='generateSql')?
 
 	(entities+=Entity | relationships+=Relationship)*;
@@ -19,6 +19,9 @@ Entity:
 	(weak?='weak')? 'entity' name=ID ('extends' extends=[Entity])? ('{'
 		(attributes += Attribute)*
 	'}')?;
+	
+Notation:
+	'notation' '=' notationType=NotationType;
 
 /**
  * TODO: allow more than ternary (more generic) - e.g. save all in targets[]
@@ -51,9 +54,10 @@ terminal Uml:
 
 enum GenerateOption:
     OFF='off' | SQL='sql';
-
-enum NotationOption:
+    
+enum NotationType:
     DEFAULT='default' | CHEN='chen' | MINMAX='minmax' | BACHMAN='bachman' | CROWSFOOT='crowsfoot'| UML='uml';   
+     
 
 enum AttributeType:
 	NONE = 'none' | KEY = 'key' | FOREIGN_KEY = 'foreign-key' | PARTIAL_KEY = 'partial-key' | OPTIONAL = 'optional' | 

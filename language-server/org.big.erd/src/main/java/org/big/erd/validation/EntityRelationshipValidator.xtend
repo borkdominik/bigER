@@ -4,7 +4,7 @@
 package org.big.erd.validation
 
 import org.big.erd.entityRelationship.Model
-import org.big.erd.entityRelationship.NotationOption
+import org.big.erd.entityRelationship.NotationType
 import org.big.erd.entityRelationship.EntityRelationshipPackage
 import com.google.common.collect.Multimaps
 import org.eclipse.xtext.validation.Check
@@ -14,7 +14,6 @@ import org.big.erd.entityRelationship.CardinalityType
 import org.big.erd.entityRelationship.RelationEntity
 import org.big.erd.entityRelationship.Relationship
 import org.eclipse.emf.ecore.EStructuralFeature
-import org.eclipse.emf.ecore.EObject
 
 /**
  * This class contains custom validation rules. 
@@ -27,23 +26,23 @@ class EntityRelationshipValidator extends AbstractEntityRelationshipValidator {
 	
     @Check
 	def checkCardinality(Model model) {
-     
+		
 		model.relationships.forEach [ r |
 			val firstElement = r.first
 			val secondElement = r.second
 			val thirdElement = r.third
 			
-			if(model.notationOption.equals(NotationOption.BACHMAN)){
+			if(model.notation.notationType.equals(NotationType.BACHMAN)){
 				checkBachmanCardinality(firstElement, r, EntityRelationshipPackage.Literals.RELATIONSHIP__FIRST)
 				checkBachmanCardinality(secondElement, r, EntityRelationshipPackage.Literals.RELATIONSHIP__SECOND)
 				checkBachmanCardinality(thirdElement, r, EntityRelationshipPackage.Literals.RELATIONSHIP__THIRD)
 				
-			}else if(model.notationOption.equals(NotationOption.CHEN)){
+			}else if(model.notation.notationType.equals(NotationType.CHEN)){
 				checkChenCardinality(firstElement, r, EntityRelationshipPackage.Literals.RELATIONSHIP__FIRST)
 				checkChenCardinality(secondElement, r, EntityRelationshipPackage.Literals.RELATIONSHIP__SECOND)
 				checkChenCardinality(thirdElement, r, EntityRelationshipPackage.Literals.RELATIONSHIP__THIRD)
 				
-			}else if(model.notationOption.equals(NotationOption.CROWSFOOT)){
+			}else if(model.notation.notationType.equals(NotationType.CROWSFOOT)){
 				if(secondElement === null){
 					info('''Relationship: Second element of relation required.''', r, EntityRelationshipPackage.Literals.RELATIONSHIP__FIRST)
 				} else if(thirdElement !== null){
@@ -52,12 +51,12 @@ class EntityRelationshipValidator extends AbstractEntityRelationshipValidator {
 					checkCrowsFootCardinality(firstElement, r, EntityRelationshipPackage.Literals.RELATIONSHIP__FIRST)
 					checkCrowsFootCardinality(secondElement, r, EntityRelationshipPackage.Literals.RELATIONSHIP__SECOND)
 				}
-			}else if(model.notationOption.equals(NotationOption.MINMAX)){
+			}else if(model.notation.notationType.equals(NotationType.MINMAX)){
 				checkMinMaxCardinality(firstElement, r, EntityRelationshipPackage.Literals.RELATIONSHIP__FIRST)
 				checkMinMaxCardinality(secondElement, r, EntityRelationshipPackage.Literals.RELATIONSHIP__SECOND)
 				checkMinMaxCardinality(thirdElement, r, EntityRelationshipPackage.Literals.RELATIONSHIP__THIRD)
 				
-			}else if(model.notationOption.equals(NotationOption.UML)){
+			}else if(model.notation.notationType.equals(NotationType.UML)){
 				checkUmlCardinality(firstElement, r, EntityRelationshipPackage.Literals.RELATIONSHIP__FIRST)
 				checkUmlCardinality(secondElement, r, EntityRelationshipPackage.Literals.RELATIONSHIP__SECOND)
 				checkUmlCardinality(thirdElement, r, EntityRelationshipPackage.Literals.RELATIONSHIP__THIRD)

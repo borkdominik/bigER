@@ -1,10 +1,41 @@
 /** @jsx svg */
 import { VNode } from "snabbdom";
 import { RenderingContext, RectangularNodeView, SNode, SEdge, Point, PolylineEdgeView, toDegrees, ExpandButtonView, findParentByFeature, isExpandable,
-         svg, SButton, SPort, IView, SLabel, IViewArgs } from 'sprotty';
-import {NotationEdge } from './model';
+         svg, SButton, SPort, IView, SLabel, IViewArgs , SGraphView, EdgeRouterRegistry} from 'sprotty';
+import {NotationEdge, ERModel } from './model';
 
-import { injectable } from 'inversify';
+import { injectable, inject } from 'inversify';
+
+@injectable()
+export class ERModelView<IRenderingArgs> extends SGraphView<IRenderingArgs> {
+
+    @inject(EdgeRouterRegistry) edgeRouterRegistry: EdgeRouterRegistry;
+
+    render(model: Readonly<ERModel>, context: RenderingContext, args?: IRenderingArgs): VNode {
+        const notationButton = document.getElementById('notationButton');
+        if (notationButton) {
+            notationButton.innerHTML = convertNotatoinString(model)+'<span id="button-icon" slot="start" class="fas fa-angle-left"/>'
+        } 
+        const edgeRouting = this.edgeRouterRegistry.routeAllChildren(model);
+        const transform = `scale(${model.zoom}) translate(${-model.scroll.x},${-model.scroll.y})`;
+        return <svg class-sprotty-graph={true}>
+            <g transform={transform}>
+                {context.renderChildren(model, { edgeRouting })}
+            </g>
+        </svg>;
+    }
+}
+
+function convertNotatoinString(model: Readonly<ERModel>):string{
+    switch(model.notation){
+        case 'bachman'   : return 'Bachman';
+        case 'chen'      : return 'Chen';
+        case 'crowsfoot' : return 'Crows Foot';
+        case 'minmax'    : return 'Min Max';
+        case 'uml'       : return 'UML';
+        default : return '';
+    }
+}
 
 export class EntityView extends RectangularNodeView {
     render(node: Readonly<SNode>, context: RenderingContext): VNode | undefined {
@@ -53,7 +84,6 @@ export class ExpandEntityView extends ExpandButtonView {
             </g>;
     }
 }
-
 
 @injectable()
 export class NotationEdgeView extends PolylineEdgeView {
@@ -116,7 +146,7 @@ export class NotationEdgeView extends PolylineEdgeView {
             isSource = edge.isSource
             cardinality = edge.relationshipCardinality
         }
-        if(notation !== this.crowsfoot || notation !== this.uml){
+        if(notation !== this.crowsfoot && notation !== this.uml){
             // Only child should be a SLabel
             edge.children.forEach((child)=>{
                 if(child instanceof SLabel){
@@ -134,6 +164,7 @@ export class NotationEdgeView extends PolylineEdgeView {
 
             case this.crowsfoot :   var sourceCardinality = cardinality.split(':')[0];
                                     var targetCardinality = cardinality.split(':')[1];
+                                    console.log('cardi '+sourceCardinality+"  "+targetCardinality)
                                     if(isLeft){
                                         return this.createCrowsFootEdge(source, secondElem, sourceCardinality)
                                     }
