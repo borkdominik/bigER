@@ -22,6 +22,7 @@ export class EntityNode extends RectangularNode {
 
 export class NotationEdge extends SEdge {
     isSource: boolean
+    showRelationship: boolean
     notation: String
     relationshipCardinality: String
 }

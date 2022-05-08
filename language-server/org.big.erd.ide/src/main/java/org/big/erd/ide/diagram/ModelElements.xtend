@@ -25,6 +25,7 @@ class EntityNode extends SNode {
 class NotationEdge extends SEdge {
 	Boolean isSource
 	String notation
+	Boolean showRelationship
 	String relationshipCardinality
 	
 	new() { }

@@ -22,7 +22,7 @@ import org.eclipse.emf.ecore.EStructuralFeature
  */
 class EntityRelationshipValidator extends AbstractEntityRelationshipValidator {
 	
-	 static val LOG = Logger.getLogger(EntityRelationshipValidator)
+	static val LOG = Logger.getLogger(EntityRelationshipValidator)
 	
     @Check
 	def checkCardinality(Model model) {
@@ -69,18 +69,20 @@ class EntityRelationshipValidator extends AbstractEntityRelationshipValidator {
 										relationEntity.customMultiplicity !== null ||
 			 							relationEntity.minMax !== null || relationEntity.uml !== null ||
 			 							relationEntity.cardinality === CardinalityType.MANY ||
-			 							relationEntity.cardinality === CardinalityType.MANY_CHEN)) {
+			 							relationEntity.cardinality === CardinalityType.MANY_CHEN ||
+			 							relationEntity.cardinality === CardinalityType.ZERO_OR_ONE)) {
 			info('''Wrong cardinality. Usage: [0],[0+],[1] or [1+]''', relationship, feature)
 		}
 	}
     
     def checkChenCardinality(RelationEntity relationEntity, Relationship relationship, EStructuralFeature feature){
-    	if(relationEntity !== null && (relationEntity.cardinality === null || 
+    	if(relationEntity !== null && (relationEntity.cardinality === null ||
+    								   relationEntity.customMultiplicity !== null ||
+			 						   relationEntity.minMax !== null || relationEntity.uml !== null ||
     								   relationEntity.cardinality === CardinalityType.ZERO ||
     								   relationEntity.cardinality === CardinalityType.ONE_OR_MORE || 
     								   relationEntity.cardinality === CardinalityType.ZERO_OR_MORE ||
-    								   relationEntity.minMax !== null ||  relationEntity.uml !== null ||
-    								   relationEntity.customMultiplicity !== null)){
+			 						   relationEntity.cardinality === CardinalityType.ZERO_OR_ONE)){
 			info('''Wrong cardinality. Usage: [1],[N] or [M]''', relationship, feature)
 		}
     }
@@ -119,15 +121,21 @@ class EntityRelationshipValidator extends AbstractEntityRelationshipValidator {
 				relationEntity.cardinality !== CardinalityType.ONE){
 					info('''Wrong cardinality.Usage: [num],[min..max] or [min..*]''', relationship, feature)
 			}
-			if(relationEntity.uml.contains("strong") && relationEntity.uml.contains("weak")){
-				info('''Invalid aggregation. Use strong or weak''', relationship, feature)
+			if(relationEntity.uml.contains("comp") && relationEntity.uml.contains("agg")){
+				info('''Invalid aggregation. Use comp or agg''', relationship, feature)
 			}
 			if (relationEntity.uml.contains("..")) {
-				var numbers = relationEntity.uml.split("\\.\\.")
+				var cardinality = relationEntity.uml
+				
+				if(relationEntity.uml.contains(" ")){
+					// remove type (agg|comp)
+					cardinality = relationEntity.uml.split(" ").get(1)
+				}
+				var numbers = cardinality.split("\\.\\.")
 				if(numbers.length <= 1){
 					info('''Wrong cardinality. Usage: [min..max] min <= max''', relationship, feature)
 				}
-				if(numbers.length == 2){
+				if(numbers.length === 2){
 					if(numbers.get(0).isEmpty || numbers.get(1).isEmpty){
 						info('''Wrong cardinality. Usage: [min..max] min <= max''', relationship, feature)
 					}

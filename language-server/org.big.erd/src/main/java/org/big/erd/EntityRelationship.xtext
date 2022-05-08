@@ -50,7 +50,7 @@ terminal MinMax:
 	 ('0'..'9')*','('0'..'9')*('*')?;
 	 
 terminal Uml:
-	 ('strong ')?('weak ')?('0'..'9')*'..'('0'..'9')*('*')?;
+	 ('comp ')?('agg ')?('0'..'9')+('..'('0'..'9')+)?('..''*')?;
 
 enum GenerateOption:
     OFF='off' | SQL='sql';

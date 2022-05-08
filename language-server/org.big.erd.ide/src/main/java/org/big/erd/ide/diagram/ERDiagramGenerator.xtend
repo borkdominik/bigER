@@ -61,7 +61,6 @@ class ERDiagramGenerator implements IDiagramGenerator {
 	SGraph graph
 	List<Entity> extendedEntities
 	
-	
 	override generate(Context context) {
 		this.state = context.state
 		val contentHead = context.resource.contents.head
@@ -90,9 +89,14 @@ class ERDiagramGenerator implements IDiagramGenerator {
 		
 		// Create Relationship nodes and edges
 		m.relationships.forEach[ r |
-			if(!model.notation.notationType.equals(NotationType.CROWSFOOT) && 
-			   !model.notation.notationType.equals(NotationType.UML)){
+			if(!model.notation.notationType.equals(NotationType.CROWSFOOT)){
+				if(model.notation.notationType.equals(NotationType.UML)){
+					if(r.third !== null){
+						graph.children.add(relationshipNodes(r, context))
+					}
+				}else{
 					graph.children.add(relationshipNodes(r, context))
+				}	
 			}
 			addRelationEdges(r, context)
 		]
@@ -128,33 +132,39 @@ class ERDiagramGenerator implements IDiagramGenerator {
 			var cardinality = getCardinality(relationship.first)
 			if(model.notation.notationType.equals(NotationType.CROWSFOOT) ||
 			   model.notation.notationType.equals(NotationType.UML)){
-				cardinality = combineFirstAndSecondElemCardinality(relationship)
+				cardinality = combineFirstAndSecondElemCardinality(relationship.first, relationship.second)
 			}
 			val source = idCache.getId(relationship.first.target)
 			val target = idCache.getId(model.notation.notationType.equals(NotationType.CROWSFOOT) || 
-									   model.notation.notationType.equals(NotationType.UML) ? relationship.second.target : relationship
+				 model.notation.notationType.equals(NotationType.UML) && relationship.third === null ? relationship.second.target : relationship
 			)
 			createEdgeAndAddToGraph(relationship,source,target,'label:first', cardinality, context)
 		}
 		if (relationship.second !== null && !model.notation.notationType.equals(NotationType.CROWSFOOT)) {
 			var cardinality = getCardinality(relationship.second)
+			if(model.notation.notationType.equals(NotationType.UML)){
+				cardinality = combineFirstAndSecondElemCardinality(relationship.first, relationship.second)
+			}
 			val source = idCache.getId(relationship)
 			val target = idCache.getId(relationship.second.target)
 			createEdgeAndAddToGraph(relationship,source,target,'label:second', cardinality, context)
 		}
 		if (relationship.third !== null && !model.notation.notationType.equals(NotationType.CROWSFOOT)) {
 			var cardinality = getCardinality(relationship.third)
+			if(model.notation.notationType.equals(NotationType.UML)){
+				cardinality = combineFirstAndSecondElemCardinality(relationship.second, relationship.third)
+			}
 			val source = idCache.getId(relationship)
 			val target = idCache.getId(relationship.third.target)
 			createEdgeAndAddToGraph(relationship,source,target,'label:third', cardinality, context)
 		}
 	}
 	
-	def String combineFirstAndSecondElemCardinality(Relationship relationship){
-		val firstCardinality = getCardinality(relationship.first)
-		val secondCardinality = getCardinality(relationship.second)
-		if(relationship.first !== null && relationship.second !== null && !firstCardinality.isEmpty && !secondCardinality.isEmpty){
-			return  firstCardinality+":"+secondCardinality
+	def String combineFirstAndSecondElemCardinality(RelationEntity source, RelationEntity target){
+		val firstCardinality = getCardinality(source)
+		val secondCardinality = getCardinality(target)
+		if(source !== null && target !== null && !firstCardinality.isEmpty && !secondCardinality.isEmpty){
+			return firstCardinality+":"+secondCardinality
 		}
 		return "";
 	}
@@ -189,19 +199,18 @@ class ERDiagramGenerator implements IDiagramGenerator {
 		}
 	}
 	
-	def void createEdgeAndAddToGraph(Relationship relationship,
-									 String source, 
-									 String target,
-									 String label, 
+	def void createEdgeAndAddToGraph(Relationship relationship,String source, String target,String label, 
 									 String cardinality, extension Context context){
 		var edgeLabelText =	'';
-		var cardinalityLabels = '';					 	
+		var combinedLabels = '';					 	
 									 	
 		if(model.notation.notationType.equals(NotationType.CROWSFOOT)){
-			cardinalityLabels = cardinality
+			combinedLabels = cardinality
+			
 		}else if(model.notation.notationType.equals(NotationType.UML)){
 			edgeLabelText = relationship.name
-			cardinalityLabels = cardinality
+			combinedLabels = cardinality
+			
 		}else if(model.notation.notationType.equals(NotationType.MINMAX)){
 			if(!cardinality.isEmpty && !cardinality.contains('(') && !cardinality.contains(')')){
 				edgeLabelText = '('+cardinality+')'
@@ -211,16 +220,15 @@ class ERDiagramGenerator implements IDiagramGenerator {
 		}else{
 			edgeLabelText = cardinality
 		}
-		// must be final for use in lambda expression
+		// must be final for lambda expression
 		val edgeLabelTextFinal = edgeLabelText
-		val cardinalityLabelsFinal = cardinalityLabels
-		
-		LOG.info('labelcardi: '+cardinalityLabelsFinal+' edgetext: '+ edgeLabelTextFinal)
+		val combinedLabelsFinal = combinedLabels
 		
 		graph.children.add(new NotationEdge [sourceId = source
 								  targetId = target
 								  notation = model.notation.notationType.toString
-								  relationshipCardinality = cardinalityLabelsFinal
+								  relationshipCardinality = combinedLabelsFinal
+								  showRelationship = relationship.third !== null
 								  isSource = label === "label:first"
 								  id = idCache.uniqueId(relationship + sourceId + ':' + relationship.name + ':' + targetId)
 								  children =  #[new SLabel [

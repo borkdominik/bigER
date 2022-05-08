@@ -3,7 +3,6 @@ import { VNode } from "snabbdom";
 import { RenderingContext, RectangularNodeView, SNode, SEdge, Point, PolylineEdgeView, toDegrees, ExpandButtonView, findParentByFeature, isExpandable,
          svg, SButton, SPort, IView, SLabel, IViewArgs , SGraphView, EdgeRouterRegistry} from 'sprotty';
 import {NotationEdge, ERModel } from './model';
-
 import { injectable, inject } from 'inversify';
 
 @injectable()
@@ -109,33 +108,50 @@ export class NotationEdgeView extends PolylineEdgeView {
         
         var showLabel = true;
         var renderBothEnds = false;
+        var showRelationship = false;
+        var isSource = false;
 
         if(edge instanceof NotationEdge){
             showLabel = edge.notation !== this.bachman && edge.notation !== this.crowsfoot;
-            renderBothEnds = edge.notation === this.crowsfoot ||  edge.notation === this.uml;
+            showRelationship = edge.showRelationship
+            renderBothEnds = edge.notation === this.crowsfoot || (edge.notation === this.uml && !showRelationship);
+            isSource = edge.isSource
+           
         }
-        if(showLabel){
-            return <g class-sprotty-edge={true} class-mouseover={edge.hoverFeedback}>
-            {this.renderLine(edge, route, context, args)}
-            {this.renderAdditionalsNew(edge, route,false, context)}
-            {context.renderChildren(edge, { route })}
-        </g>;
-        } else if(renderBothEnds){
+        if(renderBothEnds){
+            if(showLabel){
+                return <g class-sprotty-edge={true} class-mouseover={edge.hoverFeedback}>
+                        {this.renderLine(edge, route, context, args)}
+                        {this.renderAdditionalsNew(edge, route,true,showRelationship,context)}
+                        {this.renderAdditionalsNew(edge, route,false,showRelationship,context)}
+                        {context.renderChildren(edge, { route })}
+                    </g>;
+            }
             return <g class-sprotty-edge={true} class-mouseover={edge.hoverFeedback}>
                 {this.renderLine(edge, route, context, args)}
-                {this.renderAdditionalsNew(edge, route,true, context)}
-                {this.renderAdditionalsNew(edge, route,false, context)}
+                {this.renderAdditionalsNew(edge, route,true,showRelationship,context)}
+                {this.renderAdditionalsNew(edge, route,false,showRelationship,context)}
             </g>;
-        }
-        else{
+        }else if(showRelationship){
+            return <g class-sprotty-edge={true} class-mouseover={edge.hoverFeedback}>
+                {this.renderLine(edge, route, context, args)}
+                {this.renderAdditionalsNew(edge, route, isSource,showRelationship, context)}
+            </g>;
+        }else if(showLabel){
+            return <g class-sprotty-edge={true} class-mouseover={edge.hoverFeedback}>
+                {this.renderLine(edge, route, context, args)}
+                {this.renderAdditionalsNew(edge, route,false,showRelationship, context)}
+                {context.renderChildren(edge, { route })}
+            </g>;
+        }else{
             return <g class-sprotty-edge={true} class-mouseover={edge.hoverFeedback}>
             {this.renderLine(edge, route, context, args)}
-            {this.renderAdditionalsNew(edge, route,false, context)}
+            {this.renderAdditionalsNew(edge, route,false,showRelationship,context)}
         </g>;
         }
     }
 
-    protected renderAdditionalsNew(edge: SEdge, segments: Point[], isLeft:boolean, context: RenderingContext): VNode[] {
+    protected renderAdditionalsNew(edge: SEdge, segments: Point[], isLeft:boolean, showRelationship:boolean, context: RenderingContext): VNode[] {
 
         var notation:String = 'default';
         var isSource:boolean = false;
@@ -162,31 +178,77 @@ export class NotationEdgeView extends PolylineEdgeView {
         switch(notation){
             case this.bachman   :   return this.createBachmanEdge(source, target, secondElem, penultimateElem, cardinality, isSource);
 
-            case this.crowsfoot :   var sourceCardinality = cardinality.split(':')[0];
+            case this.crowsfoot :   if(!cardinality.includes(':')){
+                                        return [];
+                                    }
+                                    var sourceCardinality = cardinality.split(':')[0];
                                     var targetCardinality = cardinality.split(':')[1];
-                                    console.log('cardi '+sourceCardinality+"  "+targetCardinality)
+                                   
                                     if(isLeft){
                                         return this.createCrowsFootEdge(source, secondElem, sourceCardinality)
                                     }
                                     return this.createCrowsFootEdge(target, penultimateElem, targetCardinality)
 
-            case this.uml       :   var sourceCardinality = cardinality.split(':')[0];
-                                    var targetCardinality = cardinality.split(':')[1];
-                                    if(isLeft){
-                                        return this.createUmlEdge(source, sourceCardinality)
+            case this.uml       :   if(!cardinality.includes(':')){
+                                        return [];
                                     }
-                                    return this.createUmlEdge1(target, targetCardinality)
+                                    var sourceCardinality = cardinality.split(':')[0];
+                                    var targetCardinality = cardinality.split(':')[1];
+                                    if(!showRelationship){
+                                        if(isLeft){
+                                            return this.checkForTypeAndCreateEdge(sourceCardinality,source,secondElem, isLeft)
+                                        }
+                                    }else{
+                                        if(isSource){
+                                            return this.checkForTypeAndCreateEdge(sourceCardinality,source,secondElem, isLeft)
+                                        }
+                                    }
+                                    return this.checkForTypeAndCreateEdge(targetCardinality,target,penultimateElem, isLeft)
 
             default             :   return [];
         }
     }
 
-    private createUmlEdge1(point:Point, cardinality:String):VNode[]{
-        return[<text x={point.x-30} y={point.y+20} fill="white" text={cardinality}></text>]
+    private checkForTypeAndCreateEdge(cardinality:string, source:Point, target:Point, isLeft:boolean): VNode[]{
+        if(cardinality.includes(' ')){
+            var type = cardinality.split(' ')[0]
+            var number = cardinality.split(' ')[1]
+            return this.createUmlEdge(source,target,type, number,isLeft)
+        }
+        return this.createUmlEdge(source,target,'no type', cardinality,isLeft)
     }
 
-    private createUmlEdge(point:Point, cardinality:String):VNode[]{
-        return[<text x={point.x+30} y={point.y+20} fill="white" text={cardinality}>t2</text>]
+    private createUmlEdge(point:Point,next:Point,type:string, cardinality:String, isLeft:boolean):VNode[]{
+        var xText = point.x
+        var yText = point.y
+        var xRectCorrection = point.x
+        if(isLeft){
+            xText += 10
+            xRectCorrection += 1
+        }else{
+            xText -= 24
+            xRectCorrection -= 1
+        }
+        if(point.y <= next.y){
+            yText += 25
+        }else{
+            yText -= 30
+        }
+        if(type === 'comp'){
+            return [<svg>
+                        <text x={xText} y={yText} fill="white" >{cardinality}</text>
+                        <rect x={xRectCorrection} y={point.y-12} width={12} height={12} fill="var(--vscode-editor-background)"
+                              transform={`rotate(${this.angle(point, next)+45}  ${xRectCorrection} ${point.y})`}/>
+                    </svg>]
+        }
+        if(type === 'agg'){
+            return [<svg>
+                        <text x={xText} y={yText} fill="white" >{cardinality}</text>
+                        <rect x={xRectCorrection} y={point.y-12} width={12} height={12} fill="var(--vscode-editorActiveLineNumber-foreground)"
+                            transform={`rotate(${this.angle(point, next)+45}  ${xRectCorrection} ${point.y})`}/>
+                    </svg>]
+        }
+        return [<text x={xText} y={yText} fill="var(--vscode-editor-background)" >{cardinality}</text>]
     }
 
 

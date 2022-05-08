@@ -45,7 +45,6 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
                     </div>
                     <div id="help" style="display: none;">
                     <span class="helpText">should not be displayed</span>
-                   
                 </div>
                     <div id="helpCrowsFoot" style="display: none;">
                         <span class="helpText">Crows Foot</span>
@@ -146,10 +145,10 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
 
         function hideElement(elementName:string, dealy:number): NodeJS.Timeout{
             return setTimeout(function() {
-                        var options = document.getElementById(elementName);
-                        if(options){
-                            options.style.display = "none";
-                        }
+                var options = document.getElementById(elementName);
+                if(options){
+                    options.style.display = "none";
+                }
             }, dealy);
         }
 
@@ -247,11 +246,7 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
         document.getElementById('toolbar-button')!.addEventListener('click', async () => {
                 var options = document.getElementById("toolbar-options");
                 if(options){
-                    if (options.style.display === "none") {
-                        options.style.display = "flex";
-                      } else {
-                        options.style.display = "none";
-                      }
+                    options.style.display = options.style.display === "none" ? "flex" : "none";
                 }
         });
 
