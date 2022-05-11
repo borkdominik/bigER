@@ -1,4 +1,5 @@
 import { Container, ContainerModule } from 'inversify';
+import { LibavoidRouter } from 'sprotty-routing-libavoid';
 import 'sprotty/css/sprotty.css';
 import 'sprotty/css/command-palette.css';
 import '../css/diagram.css';
@@ -6,11 +7,10 @@ import {
     configureModelElement, HtmlRoot, HtmlRootView, overrideViewerOptions, PreRenderedElement, PreRenderedView, SEdge, SGraphView,
     SRoutingHandle, SRoutingHandleView, TYPES, loadDefaultModules, SGraph, ConsoleLogger, LogLevel,  SCompartmentView,
     SCompartment, editLabelFeature, labelEditUiModule, SModelRoot, SLabel, ExpandButtonHandler,
-    SButton, expandFeature, DiamondNodeView, DiamondNode, SLabelView, ManhattanEdgeRouter, popupFeature, creatingOnDragFeature, PolylineEdgeView, hoverFeedbackFeature
+    SButton, expandFeature, DiamondNodeView, DiamondNode, SLabelView, popupFeature, creatingOnDragFeature, PolylineEdgeView, hoverFeedbackFeature
 } from 'sprotty';
 import { EntityView, ExpandEntityView, InheritanceEdgeView, TriangleButtonView } from './views';
 import { CreateRelationPort, EntityNode, MultiplicityLabel, RelationEdge } from './model';
-import { CustomRouter } from './custom-router';
 
 /**
  * Sprotty Dependency Injection container 
@@ -19,7 +19,8 @@ const DiagramModule = new ContainerModule((bind, unbind, isBound, rebind) => {
 
     rebind(TYPES.ILogger).to(ConsoleLogger).inSingletonScope();
     rebind(TYPES.LogLevel).toConstantValue(LogLevel.warn);
-    rebind(ManhattanEdgeRouter).to(CustomRouter).inSingletonScope();
+    bind(LibavoidRouter).toSelf().inSingletonScope();
+    bind(TYPES.IEdgeRouter).toService(LibavoidRouter);
 
     const context = { bind, unbind, isBound, rebind };
     configureModelElement(context, 'graph', SGraph, SGraphView);

@@ -1,5 +1,6 @@
 //@ts-check
 const path = require('path');
+const CopyPlugin = require("copy-webpack-plugin");
 
 const outputPath = path.resolve(__dirname, '../extension/pack');
 
@@ -44,7 +45,14 @@ const config = {
                 }
             }
         ]
-    }
+    },
+    plugins: [
+        new CopyPlugin({
+            patterns: [
+                { from: "node_modules/libavoid-js/dist/libavoid.wasm" }
+            ],
+        }),
+    ]
 };
 
 module.exports = config;

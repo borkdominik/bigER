@@ -1,9 +1,10 @@
 import { injectable } from "inversify";
-import { CreateElementAction, CreatingOnDrag, EdgeLayoutable, EdgePlacement, ManhattanEdgeRouter, PolylineEdgeRouter, RectangularNode, RectangularPort,  SEdge,  SLabel, SRoutableElement } from 'sprotty';
+import { CreateElementAction, CreatingOnDrag, EdgeLayoutable, EdgePlacement, RectangularNode, RectangularPort,  SEdge,  SLabel, SRoutableElement } from 'sprotty';
 import { Action, SEdge as SEdgeSchema } from 'sprotty-protocol'
+import { LibavoidRouter } from 'sprotty-routing-libavoid';
 
 export class RelationEdge extends SEdge {
-    routerKind = PolylineEdgeRouter.KIND;
+    routerKind = LibavoidRouter.KIND;
     targetAnchorCorrection = Math.sqrt(5);
 }
 
@@ -29,7 +30,8 @@ export class CreateRelationPort extends RectangularPort implements CreatingOnDra
             id,
             type: 'edge',
             sourceId: this.parent.id,
-            targetId: this.id
+            targetId: this.id,
+            routerKind: LibavoidRouter.KIND,
         };
         return CreateElementAction.create(edge, { containerId: this.root.id });
     }
@@ -48,5 +50,5 @@ export class MultiplicityLabel extends SLabel implements EdgeLayoutable {
 @injectable()
 export class InheritanceEdge extends SEdge {
     public readonly targetAnchorCorrection = Math.sqrt(5);
-    public readonly routerKind = ManhattanEdgeRouter.KIND;
+    public readonly routerKind = LibavoidRouter.KIND;
 }
