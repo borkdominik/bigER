@@ -863,10 +863,10 @@ kind-of@^6.0.2:
   resolved "https://registry.yarnpkg.com/kind-of/-/kind-of-6.0.3.tgz#07c05034a6c349fa06e24fa35aa76db4580ce4dd"
   integrity sha512-dcS1ul+9tmeD95T+x28/ehLgd9mENa3LsvDTtzm3vyBEO7RPptvAD+t44WVXaUjTBRcrpFeFlC8WCruUR456hw==
 
-libavoid-js@^0.1.13:
-  version "0.1.13"
-  resolved "https://registry.yarnpkg.com/libavoid-js/-/libavoid-js-0.1.13.tgz#0ebc092f539c1482e823e988b0322a259052cf47"
-  integrity sha512-KVxERUM+Xf97CXuzC9+6oP8+jqCVDAq8Us5ucyislhe0GrUrUDSUq/s07EbVeNYyDPJ1tVcnSvwKg8C9vlcuoA==
+libavoid-js@^0.1.15:
+  version "0.1.15"
+  resolved "https://registry.yarnpkg.com/libavoid-js/-/libavoid-js-0.1.15.tgz#fb7c72fcb2e32d768f8139824b53e46b307ee63e"
+  integrity sha512-coznAaMLR9AwY0KQ7AANtv2fo/c163dSFIuIGVm9FC7aQLtUqbW/cWY3lSU2tHwCgn+hB1Qa9lDXZDMSV45fjQ==
   dependencies:
     "@babel/runtime-corejs3" "^7.15.4"
     core-js-pure "^3.18.3"
@@ -1362,13 +1362,13 @@ sprotty-protocol@~0.11.0:
   resolved "https://registry.yarnpkg.com/sprotty-protocol/-/sprotty-protocol-0.11.0.tgz#f8ff89121155520b4e32ea0c05927e7a56173b99"
   integrity sha512-OxRKrKx8mNOxX8CBKsP4epu7YGjT4XvaGwNfAwtVQVh2OPQq98t78A86XGjJThw9axm950QX0KQWGbrzX7FJuQ==
 
-sprotty-routing-libavoid@^1.0.26:
-  version "1.0.26"
-  resolved "https://registry.yarnpkg.com/sprotty-routing-libavoid/-/sprotty-routing-libavoid-1.0.26.tgz#2709a02b3e4b206647dea0e95d7ebfd511d4ea37"
-  integrity sha512-npgd1cDE4qSaBPqEcpz98ckQTjyQjjloTmvWRpPm4JsrUPKJDDO0717hWlnOe1RqEH8LysB6riDfRoz4itpI7w==
+sprotty-routing-libavoid@^1.0.29:
+  version "1.0.29"
+  resolved "https://registry.yarnpkg.com/sprotty-routing-libavoid/-/sprotty-routing-libavoid-1.0.29.tgz#df6622c653bfb4d4819ca4cdc126db15cb391a88"
+  integrity sha512-J7IxkAp8hRlnQ7sKPv0i2cdSB6rgw/fYekm1nvOxltirkPEj753Gl1CtO2WFCvCKxJ0Y3nc505/mPHGipP9N9Q==
   dependencies:
     inversify "^5.0.1"
-    libavoid-js "^0.1.13"
+    libavoid-js "^0.1.15"
     path-browserify "^1.0.1"
     reflect-metadata "^0.1.13"
     sprotty "0.11.1"

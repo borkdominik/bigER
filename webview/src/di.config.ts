@@ -1,5 +1,5 @@
 import { Container, ContainerModule } from 'inversify';
-import { LibavoidRouter } from 'sprotty-routing-libavoid';
+import { LibavoidRouter, LibavoidDiamondAnchor, LibavoidEllipseAnchor, LibavoidRectangleAnchor } from 'sprotty-routing-libavoid';
 import 'sprotty/css/sprotty.css';
 import 'sprotty/css/command-palette.css';
 import '../css/diagram.css';
@@ -16,11 +16,13 @@ import { CreateRelationPort, EntityNode, MultiplicityLabel, RelationEdge } from 
  * Sprotty Dependency Injection container 
  */
 const DiagramModule = new ContainerModule((bind, unbind, isBound, rebind) => {
-
     rebind(TYPES.ILogger).to(ConsoleLogger).inSingletonScope();
     rebind(TYPES.LogLevel).toConstantValue(LogLevel.warn);
     bind(LibavoidRouter).toSelf().inSingletonScope();
     bind(TYPES.IEdgeRouter).toService(LibavoidRouter);
+    bind(TYPES.IAnchorComputer).to(LibavoidDiamondAnchor).inSingletonScope();
+    bind(TYPES.IAnchorComputer).to(LibavoidEllipseAnchor).inSingletonScope();
+    bind(TYPES.IAnchorComputer).to(LibavoidRectangleAnchor).inSingletonScope();
 
     const context = { bind, unbind, isBound, rebind };
     configureModelElement(context, 'graph', SGraph, SGraphView);
