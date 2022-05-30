@@ -86,7 +86,7 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
                         <vscode-divider class="divider" role="separator"></vscode-divider>
                         <span class="helpText">Cardinality usage:</span>
                         <span class="helpText">[type] min..max </span>
-                        <span class="helpText">type: strong | weak</span>
+                        <span class="helpText">type: agg | comp</span>
                         <span class="helpText">[min..max] min <= max</span>
                         <span class="helpText">[min..*] min or more</span>
                     </div>

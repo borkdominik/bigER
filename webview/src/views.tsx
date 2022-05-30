@@ -105,7 +105,6 @@ export class NotationEdgeView extends PolylineEdgeView {
             // so we need to render a group to ensure the children have a chance to be rendered.
             return <g>{context.renderChildren(edge, { route })}</g>;
         }
-        
         var showLabel = true;
         var renderBothEnds = false;
         var showRelationship = false;
@@ -116,7 +115,6 @@ export class NotationEdgeView extends PolylineEdgeView {
             showRelationship = edge.showRelationship
             renderBothEnds = edge.notation === this.crowsfoot || (edge.notation === this.uml && !showRelationship);
             isSource = edge.isSource
-           
         }
         if(renderBothEnds){
             if(showLabel){
@@ -196,20 +194,20 @@ export class NotationEdgeView extends PolylineEdgeView {
                                     var targetCardinality = cardinality.split(':')[1];
                                     if(!showRelationship){
                                         if(isLeft){
-                                            return this.checkForTypeAndCreateEdge(sourceCardinality,source,secondElem, isLeft)
+                                            return this.checkForTypeAndCreateUmlEdge(sourceCardinality,source,secondElem, isLeft)
                                         }
                                     }else{
                                         if(isSource){
-                                            return this.checkForTypeAndCreateEdge(sourceCardinality,source,secondElem, isLeft)
+                                            return this.checkForTypeAndCreateUmlEdge(sourceCardinality,source,secondElem, isLeft)
                                         }
                                     }
-                                    return this.checkForTypeAndCreateEdge(targetCardinality,target,penultimateElem, isLeft)
+                                    return this.checkForTypeAndCreateUmlEdge(targetCardinality,target,penultimateElem, isLeft)
 
             default             :   return [];
         }
     }
 
-    private checkForTypeAndCreateEdge(cardinality:string, source:Point, target:Point, isLeft:boolean): VNode[]{
+    private checkForTypeAndCreateUmlEdge(cardinality:string, source:Point, target:Point, isLeft:boolean): VNode[]{
         if(cardinality.includes(' ')){
             var type = cardinality.split(' ')[0]
             var number = cardinality.split(' ')[1]
@@ -221,13 +219,19 @@ export class NotationEdgeView extends PolylineEdgeView {
     private createUmlEdge(point:Point,next:Point,type:string, cardinality:String, isLeft:boolean):VNode[]{
         var xText = point.x
         var yText = point.y
-        var xRectCorrection = point.x
+        var xRectCorrected = point.x
+        
         if(isLeft){
             xText += 10
-            xRectCorrection += 1
+            xRectCorrected += 1
         }else{
-            xText -= 24
-            xRectCorrection -= 1
+            xText -= 20+cardinality.length
+            if(cardinality.length > 3){
+                xText -= cardinality.length * 3
+            }else{
+                xText -= cardinality.length 
+            }
+            xRectCorrected -= 1
         }
         if(point.y <= next.y){
             yText += 25
@@ -236,19 +240,19 @@ export class NotationEdgeView extends PolylineEdgeView {
         }
         if(type === 'comp'){
             return [<svg>
-                        <text x={xText} y={yText} fill="white" >{cardinality}</text>
-                        <rect x={xRectCorrection} y={point.y-12} width={12} height={12} fill="var(--vscode-editor-background)"
-                              transform={`rotate(${this.angle(point, next)+45}  ${xRectCorrection} ${point.y})`}/>
+                        <text class-top={true} class-sprotty-label={true} x={xText} y={yText}>{cardinality}</text>
+                        <rect x={xRectCorrected} y={point.y-12} width={12} height={12} fill="var(--vscode-editor-background)"
+                              transform={`rotate(${this.angle(point, next)+45}  ${xRectCorrected} ${point.y})`}/>
                     </svg>]
         }
         if(type === 'agg'){
             return [<svg>
-                        <text x={xText} y={yText} fill="white" >{cardinality}</text>
-                        <rect x={xRectCorrection} y={point.y-12} width={12} height={12} fill="var(--vscode-editorActiveLineNumber-foreground)"
-                            transform={`rotate(${this.angle(point, next)+45}  ${xRectCorrection} ${point.y})`}/>
+                        <text class-top={true} class-sprotty-label={true} x={xText} y={yText}>{cardinality}</text>
+                        <rect x={xRectCorrected} y={point.y-12} width={12} height={12} fill="var(--vscode-editorActiveLineNumber-foreground)"
+                            transform={`rotate(${this.angle(point, next)+45}  ${xRectCorrected} ${point.y})`}/>
                     </svg>]
         }
-        return [<text x={xText} y={yText} fill="var(--vscode-editor-background)" >{cardinality}</text>]
+        return [<text class-top={true} class-sprotty-label={true} x={xText} y={yText}>{cardinality}</text>]
     }
 
 

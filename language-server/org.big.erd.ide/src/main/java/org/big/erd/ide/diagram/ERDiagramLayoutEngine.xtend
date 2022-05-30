@@ -30,7 +30,7 @@ class ERDiagramLayoutEngine extends ElkLayoutEngine {
 	
 	// TODO: Improve layout
 	override layout(SModelRoot root, Action cause) {
-		if (root instanceof SGraph) {
+		if (root instanceof ERModel) {
 			val configurator = new SprottyLayoutConfigurator
 			configurator.configureByType('graph')
 				.setProperty(CoreOptions.DIRECTION, Direction.RIGHT)
@@ -47,6 +47,8 @@ class ERDiagramLayoutEngine extends ElkLayoutEngine {
 				.setProperty(LayeredOptions.SPACING_EDGE_NODE_BETWEEN_LAYERS, 20.0)
 				*/
 			configurator.configureByType('node')
+				 .setProperty(CoreOptions.PORT_ALIGNMENT_DEFAULT, PortAlignment.CENTER)
+				 .setProperty(CoreOptions.PORT_CONSTRAINTS, PortConstraints.FIXED_SIDE)
 			configurator.configureByType('node:relationship')
 				.setProperty(CoreOptions.PORT_ALIGNMENT_DEFAULT, PortAlignment.CENTER)
 				.setProperty(CoreOptions.PORT_CONSTRAINTS, PortConstraints.FIXED_SIDE)
@@ -56,6 +58,11 @@ class ERDiagramLayoutEngine extends ElkLayoutEngine {
 			configurator.configureByType('port')
 				.setProperty(CoreOptions.PORT_SIDE, PortSide.NORTH)
 				.setProperty(CoreOptions.PORT_BORDER_OFFSET, 5.0)
+				
+			if(root.notation === 'crowsfoot'){
+				configurator.configureByType('graph')
+					.setProperty(LayeredOptions.SPACING_NODE_NODE_BETWEEN_LAYERS, 120.0)
+				}
 			layout(root, configurator, cause)
 		}
 	}

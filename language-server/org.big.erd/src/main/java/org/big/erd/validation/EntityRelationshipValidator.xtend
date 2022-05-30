@@ -60,6 +60,7 @@ class EntityRelationshipValidator extends AbstractEntityRelationshipValidator {
 				checkUmlCardinality(firstElement, r, EntityRelationshipPackage.Literals.RELATIONSHIP__FIRST)
 				checkUmlCardinality(secondElement, r, EntityRelationshipPackage.Literals.RELATIONSHIP__SECOND)
 				checkUmlCardinality(thirdElement, r, EntityRelationshipPackage.Literals.RELATIONSHIP__THIRD)
+				checkNoMultipleAggregation(r)
 			}
 		]
     }
@@ -116,10 +117,10 @@ class EntityRelationshipValidator extends AbstractEntityRelationshipValidator {
 	
 	def checkUmlCardinality(RelationEntity relationEntity, Relationship relationship, EStructuralFeature feature) {
 		if (relationEntity !== null) {
-			if (relationEntity.uml === null && 
-				relationEntity.cardinality !== CardinalityType.ZERO && 
-				relationEntity.cardinality !== CardinalityType.ONE){
-					info('''Wrong cardinality.Usage: [num],[min..max] or [min..*]''', relationship, feature)
+			if(relationEntity.customMultiplicity !== null || relationEntity.minMax !== null ||
+			  (relationEntity.uml === null && relationEntity.cardinality !== CardinalityType.ZERO && 
+			  relationEntity.cardinality !== CardinalityType.ONE)){
+				info('''Wrong cardinality.Usage: [num],[min..max] or [min..*]''', relationship, feature)
 			}
 			if(relationEntity.uml.contains("comp") && relationEntity.uml.contains("agg")){
 				info('''Invalid aggregation. Use comp or agg''', relationship, feature)
@@ -148,6 +149,36 @@ class EntityRelationshipValidator extends AbstractEntityRelationshipValidator {
 			}
 		}
 	}
+	
+	def checkNoMultipleAggregation(Relationship relationship){
+		val firstElement = relationship.first
+		val secondElement = relationship.second
+		val thirdElement = relationship.third
+		var aggregationCounter = 0;
+		
+		if(firstElement != null){
+			if(firstElement.uml.contains("agg") || firstElement.uml.contains("comp")){
+				aggregationCounter++;
+			}
+		}
+		if(secondElement != null){
+			if(secondElement.uml.contains("agg") || secondElement.uml.contains("comp")){
+				aggregationCounter++;
+				if(aggregationCounter > 1){
+					info('''No multiple aggregation possible.''', relationship, EntityRelationshipPackage.Literals.RELATIONSHIP__SECOND)
+				}
+			}
+		}
+		if(thirdElement != null){
+			if(thirdElement.uml.contains("agg") || thirdElement.uml.contains("comp")){
+				aggregationCounter++;
+				if(aggregationCounter > 1){
+					info('''No multiple aggregation possible.''', relationship, EntityRelationshipPackage.Literals.RELATIONSHIP__THIRD)
+				}
+			}
+		}
+	}
+	
 	
 	// Names are unique for entities and relationships
     @Check

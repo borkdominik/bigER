@@ -93,7 +93,7 @@ class ERDiagramGenerator implements IDiagramGenerator {
 				if(model.notation.notationType.equals(NotationType.UML)){
 					if(r.third !== null){
 						graph.children.add(relationshipNodes(r, context))
-					}
+					}	
 				}else{
 					graph.children.add(relationshipNodes(r, context))
 				}	
@@ -130,20 +130,20 @@ class ERDiagramGenerator implements IDiagramGenerator {
 		
 		if (relationship.first !== null) {
 			var cardinality = getCardinality(relationship.first)
-			if(model.notation.notationType.equals(NotationType.CROWSFOOT) ||
-			   model.notation.notationType.equals(NotationType.UML)){
-				cardinality = combineFirstAndSecondElemCardinality(relationship.first, relationship.second)
+			if(model.notation.notationType.equals(NotationType.CROWSFOOT) || model.notation.notationType.equals(NotationType.UML)){
+				cardinality = combineCardinality(relationship.first, relationship.second)
 			}
 			val source = idCache.getId(relationship.first.target)
 			val target = idCache.getId(model.notation.notationType.equals(NotationType.CROWSFOOT) || 
-				 model.notation.notationType.equals(NotationType.UML) && relationship.third === null ? relationship.second.target : relationship
+				 (model.notation.notationType.equals(NotationType.UML) && relationship.third === null) ? relationship.second.target : relationship
 			)
 			createEdgeAndAddToGraph(relationship,source,target,'label:first', cardinality, context)
 		}
-		if (relationship.second !== null && !model.notation.notationType.equals(NotationType.CROWSFOOT)) {
+		if (relationship.second !== null && !model.notation.notationType.equals(NotationType.CROWSFOOT) &&
+			!(model.notation.notationType.equals(NotationType.UML) && relationship.third === null)) {
 			var cardinality = getCardinality(relationship.second)
 			if(model.notation.notationType.equals(NotationType.UML)){
-				cardinality = combineFirstAndSecondElemCardinality(relationship.first, relationship.second)
+				cardinality = combineCardinality(relationship.first, relationship.second)
 			}
 			val source = idCache.getId(relationship)
 			val target = idCache.getId(relationship.second.target)
@@ -152,7 +152,7 @@ class ERDiagramGenerator implements IDiagramGenerator {
 		if (relationship.third !== null && !model.notation.notationType.equals(NotationType.CROWSFOOT)) {
 			var cardinality = getCardinality(relationship.third)
 			if(model.notation.notationType.equals(NotationType.UML)){
-				cardinality = combineFirstAndSecondElemCardinality(relationship.second, relationship.third)
+				cardinality = combineCardinality(relationship.second, relationship.third)
 			}
 			val source = idCache.getId(relationship)
 			val target = idCache.getId(relationship.third.target)
@@ -160,7 +160,7 @@ class ERDiagramGenerator implements IDiagramGenerator {
 		}
 	}
 	
-	def String combineFirstAndSecondElemCardinality(RelationEntity source, RelationEntity target){
+	def String combineCardinality(RelationEntity source, RelationEntity target){
 		val firstCardinality = getCardinality(source)
 		val secondCardinality = getCardinality(target)
 		if(source !== null && target !== null && !firstCardinality.isEmpty && !secondCardinality.isEmpty){
@@ -201,27 +201,27 @@ class ERDiagramGenerator implements IDiagramGenerator {
 	
 	def void createEdgeAndAddToGraph(Relationship relationship,String source, String target,String label, 
 									 String cardinality, extension Context context){
-		var edgeLabelText =	'';
+		var labelText =	'';
 		var combinedLabels = '';					 	
 									 	
 		if(model.notation.notationType.equals(NotationType.CROWSFOOT)){
 			combinedLabels = cardinality
 			
 		}else if(model.notation.notationType.equals(NotationType.UML)){
-			edgeLabelText = relationship.name
+			labelText = relationship.name
 			combinedLabels = cardinality
 			
 		}else if(model.notation.notationType.equals(NotationType.MINMAX)){
 			if(!cardinality.isEmpty && !cardinality.contains('(') && !cardinality.contains(')')){
-				edgeLabelText = '('+cardinality+')'
+				labelText = '('+cardinality+')'
 			}else{
-				edgeLabelText = cardinality
+				labelText = cardinality
 			}
 		}else{
-			edgeLabelText = cardinality
+			labelText = cardinality
 		}
 		// must be final for lambda expression
-		val edgeLabelTextFinal = edgeLabelText
+		val edgeLabelTextFinal = labelText
 		val combinedLabelsFinal = combinedLabels
 		
 		graph.children.add(new NotationEdge [sourceId = source
