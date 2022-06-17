@@ -14,25 +14,43 @@ class CustomActionTypeAdapterFactory extends EditActionTypeAdapterFactory {
 	
 	new() {
 		addActionKind(ChangeNotationAction.KIND, ChangeNotationAction)
+		addActionKind(CodeGenerateAction.KIND, CodeGenerateAction)
 	}
 	
 }
 
 /**
- * Action to change the generateOption in the underlying model, to be synchronized
- * with the diagram
+ * Action to change the notation option in the underlying model, to be synchronized with the diagram
  */
 @Accessors
 @EqualsHashCode
 @ToString(skipNulls = true)
 class ChangeNotationAction implements Action {
-    
-    public static val KIND = 'changeNotation'
+  
+  public static val KIND = 'changeNotation'
 	String kind = KIND
-    String notation
+  String notation
 
 	new() {}
-	new(Consumer<ChangeNotationAction> initializer) {
+	
+  new(Consumer<ChangeNotationAction> initializer) {
+		initializer.accept(this)
+	}
+	
+}
+
+/**
+ * Action to change the generate option in the underlying model, to be synchronized with the diagram
+ */
+class CodeGenerateAction implements Action {
+    
+  public static val KIND = 'codeGenerate'
+	String kind = KIND
+  String generateType
+
+	new() {}
+	
+  new(Consumer<CodeGenerateAction> initializer) {
 		initializer.accept(this)
 	}
 	

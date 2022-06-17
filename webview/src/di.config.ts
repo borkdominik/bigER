@@ -2,53 +2,56 @@ import { Container, ContainerModule } from 'inversify';
 import 'sprotty/css/sprotty.css';
 import 'sprotty/css/command-palette.css';
 import '../css/diagram.css';
+import '../css/popup.css';
 import {
-    configureModelElement, HtmlRoot, HtmlRootView, overrideViewerOptions, PreRenderedElement, PreRenderedView, SEdge,
+    configureModelElement, HtmlRoot, HtmlRootView, overrideViewerOptions, PreRenderedElement, PreRenderedView, SEdge, 
     SRoutingHandle, SRoutingHandleView, TYPES, loadDefaultModules, ConsoleLogger, LogLevel,  SCompartmentView,
     SCompartment, editLabelFeature, labelEditUiModule, SModelRoot, SLabel, ExpandButtonHandler,
-    SButton, expandFeature, DiamondNodeView, DiamondNode, SLabelView, ManhattanEdgeRouter, popupFeature, creatingOnDragFeature, hoverFeedbackFeature
+    SButton, expandFeature, SLabelView, PolylineEdgeView, CreateElementCommand, configureCommand, ExpandButtonView
 } from 'sprotty';
-import { EntityView, ExpandEntityView, InheritanceEdgeView, TriangleButtonView, NotationEdgeView, ERModelView } from './views';
-import { CreateRelationPort, EntityNode, MultiplicityLabel, NotationEdge, ERModel } from './model';
-import { CustomRouter } from './custom-router';
+import { InheritanceEdgeView, ERModelView, EntityNodeView, RelationshipNodeView } from './views';
+import { EntityNode, ERModel, MultiplicityLabel, RelationshipNode } from './model';
 
 /**
  * Sprotty Dependency Injection container 
  */
 const DiagramModule = new ContainerModule((bind, unbind, isBound, rebind) => {
-
     rebind(TYPES.ILogger).to(ConsoleLogger).inSingletonScope();
     rebind(TYPES.LogLevel).toConstantValue(LogLevel.warn);
-    rebind(ManhattanEdgeRouter).to(CustomRouter).inSingletonScope();
-
+    // change animation speed to 400ms
+    rebind(TYPES.CommandStackOptions).toConstantValue({
+        defaultDuration: 400,
+        undoHistoryLimit: 50
+    })
+    // Model element bindings
     const context = { bind, unbind, isBound, rebind };
     configureModelElement(context, 'graph', ERModel, ERModelView);
-    configureModelElement(context, 'node', EntityNode, EntityView, { enable: [expandFeature] });
-    configureModelElement(context, 'node:weak', EntityNode, EntityView, { enable: [expandFeature] });
-    configureModelElement(context, 'node:relationship', DiamondNode, DiamondNodeView);
-    configureModelElement(context, 'node:weak-relationship', DiamondNode, DiamondNodeView);
-    configureModelElement(context, 'comp:header', SCompartment, SCompartmentView);
-    configureModelElement(context, 'comp:comp', SCompartment, SCompartmentView);
+    // Nodes
+    configureModelElement(context, 'node:entity', EntityNode, EntityNodeView, { enable: [expandFeature] });
+    configureModelElement(context, 'node:relationship', RelationshipNode, RelationshipNodeView);
+    // Compartments
+    configureModelElement(context, 'comp:entity-header', SCompartment, SCompartmentView);
     configureModelElement(context, 'comp:attributes', SCompartment, SCompartmentView);
-    configureModelElement(context, 'edge', NotationEdge, NotationEdgeView);
+    configureModelElement(context, 'comp:attribute-row', SCompartment, SCompartmentView);
+    // Edges
+    configureModelElement(context, 'edge', SEdge, PolylineEdgeView);
     configureModelElement(context, 'edge:inheritance', SEdge, InheritanceEdgeView);
+    // Labels
     configureModelElement(context, 'label:header', SLabel, SLabelView, { enable: [editLabelFeature] });
     configureModelElement(context, 'label:relationship', SLabel, SLabelView, { enable: [editLabelFeature] });
     configureModelElement(context, 'label:top', MultiplicityLabel, SLabelView);
     configureModelElement(context, 'label:text', SLabel, SLabelView, { enable: [editLabelFeature] });
-    configureModelElement(context, 'label:text-key', SLabel, SLabelView);
-    configureModelElement(context, 'label:text-fk', SLabel, SLabelView);
-    configureModelElement(context, 'label:text-pk', SLabel, SLabelView);
-    configureModelElement(context, 'label:text-null', SLabel, SLabelView);
+    configureModelElement(context, 'label:key', SLabel, SLabelView, { enable: [editLabelFeature] });
+    configureModelElement(context, 'label:partial-key', SLabel, SLabelView, { enable: [editLabelFeature] });
+    configureModelElement(context, 'label:derived', SLabel, SLabelView, { enable: [editLabelFeature] });
+    // Additional Sprotty elements
     configureModelElement(context, 'html', HtmlRoot, HtmlRootView);
     configureModelElement(context, 'palette', SModelRoot, HtmlRootView);
     configureModelElement(context, 'pre-rendered', PreRenderedElement, PreRenderedView);
     configureModelElement(context, 'routing-point', SRoutingHandle, SRoutingHandleView);
     configureModelElement(context, 'volatile-routing-point', SRoutingHandle, SRoutingHandleView);
-    configureModelElement(context, 'port', CreateRelationPort, TriangleButtonView, {
-        enable: [popupFeature, creatingOnDragFeature, hoverFeedbackFeature]
-    });
-    configureModelElement(context, ExpandButtonHandler.TYPE, SButton, ExpandEntityView);
+    configureModelElement(context, ExpandButtonHandler.TYPE, SButton, ExpandButtonView);
+    configureCommand(context, CreateElementCommand);
 });
 
 /**
@@ -57,7 +60,6 @@ const DiagramModule = new ContainerModule((bind, unbind, isBound, rebind) => {
 export function createDiagramContainer(widgetId: string): Container {
     
     const container = new Container();
-
     // use labelEditUi from VS Code
     loadDefaultModules(container, { exclude: [labelEditUiModule] });
     container.load(DiagramModule);

@@ -3,8 +3,9 @@ import * as vscode from 'vscode';
 import { LspLabelEditActionHandler, SprottyLspEditVscodeExtension, WorkspaceEditActionHandler } from "sprotty-vscode/lib/lsp/editing";
 import { LanguageClient, ServerOptions, LanguageClientOptions } from "vscode-languageclient/node";
 import { SprottyWebview } from "sprotty-vscode/lib/sprotty-webview";
-import { SprottyDiagramIdentifier } from "sprotty-vscode/lib/lsp";
+import { SprottyDiagramIdentifier, SprottyLspWebview } from "sprotty-vscode/lib/lsp";
 import { ERDiagramWebview } from './erdiagram-webview';
+import newModel from './commands/new-model';
 
 export class ERDiagramLspVscodeExtension extends SprottyLspEditVscodeExtension {
 
@@ -12,12 +13,17 @@ export class ERDiagramLspVscodeExtension extends SprottyLspEditVscodeExtension {
         super('erdiagram', context);
     }
 
+    protected registerCommands() {
+        super.registerCommands();
+        this.context.subscriptions.push(
+            vscode.commands.registerCommand('erdiagram.model.new', (...commandArgs: any) => {
+                newModel();
+        }));
+    }
+
     protected getDiagramType(commandArgs: any[]): string | undefined {
-        if (commandArgs.length === 0 || 
-            // Check the file extension if the view is created for a source file
-            commandArgs[0] instanceof vscode.Uri && commandArgs[0].path.endsWith('.erd')) {
-                // Return a Sprotty diagram type (this info is passed to the Sprotty model source)
-                return 'erdiagram-diagram';
+        if (commandArgs.length === 0 || (commandArgs[0] instanceof vscode.Uri && commandArgs[0].path.endsWith('.erd'))) {
+            return 'erdiagram-diagram';
         }
     }
     
@@ -25,15 +31,12 @@ export class ERDiagramLspVscodeExtension extends SprottyLspEditVscodeExtension {
         const webview = new ERDiagramWebview({
             extension: this,
             identifier,
-            // Root paths from which the webview can load local resources using URIs
             localResourceRoots: [this.getExtensionFileUri('pack'), this.getExtensionFileUri('node_modules')],
-            // Path to the bundled webview implementation
             scriptUri: this.getExtensionFileUri('pack', 'webview.js'),
-            singleton: false // Change this to `true` to enable a singleton view
-        });
+            singleton: false
+        }) as SprottyLspWebview;
         webview.addActionHandler(WorkspaceEditActionHandler);
         webview.addActionHandler(LspLabelEditActionHandler);
-        
         return webview;
     }
     
@@ -41,22 +44,22 @@ export class ERDiagramLspVscodeExtension extends SprottyLspEditVscodeExtension {
         const executable = process.platform === 'win32' ? 'erdiagram-language-server.bat' : 'erdiagram-language-server';
         const languageServerPath =  path.join('server', 'erdiagram-language-server', 'bin', executable);
         const serverLauncher = context.asAbsolutePath(languageServerPath);
-        
         const serverOptions: ServerOptions = {
-            run: {
-                command: serverLauncher,
-                args: ['-trace']
+            run: { 
+                command: serverLauncher, 
+                args: ['-trace'] 
             },
             debug: {
                 command: serverLauncher,
                 args: ['-trace']
             }
         };
-        
         const clientOptions: LanguageClientOptions = {
-            documentSelector: [{ scheme: 'file', language: 'erdiagram' }]
+            documentSelector: [{
+                scheme: 'file', 
+                language: 'erdiagram' 
+            }]
         };
-        
         const languageClient = new LanguageClient('erdiagramLanguageClient', 'ERDiagram Language Server', serverOptions, clientOptions);
         context.subscriptions.push(languageClient.start());
         return languageClient;

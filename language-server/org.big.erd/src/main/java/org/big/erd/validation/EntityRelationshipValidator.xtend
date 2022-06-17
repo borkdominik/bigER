@@ -14,6 +14,8 @@ import org.big.erd.entityRelationship.CardinalityType
 import org.big.erd.entityRelationship.RelationEntity
 import org.big.erd.entityRelationship.Relationship
 import org.eclipse.emf.ecore.EStructuralFeature
+import org.big.erd.entityRelationship.Attribute
+import org.big.erd.entityRelationship.Entity
 
 /**
  * This class contains custom validation rules. 
@@ -21,10 +23,95 @@ import org.eclipse.emf.ecore.EStructuralFeature
  * See https://www.eclipse.org/Xtext/documentation/303_runtime_concepts.html#validation
  */
 class EntityRelationshipValidator extends AbstractEntityRelationshipValidator {
+
+	public static String MISSING_MODEL_HEADER = "missingModelHeader";
+	public static String MISSING_ATTRIBUTE_DATATYPE = "missingAttributeDatatype";
+	public static String LOWERCASE_ENTITY_NAME = "lowercaseEntityName";
 	
-	static val LOG = Logger.getLogger(EntityRelationshipValidator)
+	@Check
+	def checkModel(Model model) {
+		if (model.name === null || model.name.isBlank) {
+			error('''Missing model header 'erdiagram <name>' ''' , model, EntityRelationshipPackage.Literals.MODEL__NAME,  MISSING_MODEL_HEADER)
+		}
+	}
 	
+	@Check
+	def checkUppercaseName(Entity entity) {
+		if (!Character.isUpperCase(entity.name.charAt(0))) {
+			info('''Entity name '«entity.name»' should start with an upper-case letter''', EntityRelationshipPackage.Literals.ENTITY__NAME, LOWERCASE_ENTITY_NAME)
+		}
+	}
+	
+	@Check
+	def checkAttribute(Attribute attribute) {
+		val model = attribute.eContainer.eContainer as Model
+		if (model.generateOption !== null && model.generateOption.generateOptionType.toString === 'sql') {
+			if (attribute.datatype === null || attribute.datatype.toString.nullOrEmpty) {
+				warning('''Missing datatype for attribute''', EntityRelationshipPackage.Literals.ATTRIBUTE__DATATYPE, MISSING_ATTRIBUTE_DATATYPE)
+			}
+		}
+	}
+	
+	// Names are unique for entities and relationships
     @Check
+	def uniqueNames(Model model) {
+        // Entities
+        val entityNames = Multimaps.index(model.entities, [name ?: ''])
+        entityNames.keySet.forEach [ name |
+        	val commonName = entityNames.get(name)
+			if (commonName.size > 1) 
+				commonName.forEach [
+					error('''Multiple entites named '«name»'«».''', it, EntityRelationshipPackage.Literals.ENTITY__NAME)
+			]
+		]
+		// Relationships
+		val relNames = Multimaps.index(model.relationships, [name ?: ''])
+        relNames.keySet.forEach [ name |
+			val commonName = relNames.get(name)
+			if (commonName.size > 1) 
+				commonName.forEach [
+					error('''Multiple relationships named '«name»'«».''', it, EntityRelationshipPackage.Literals.RELATIONSHIP__NAME)
+			]
+		]
+    }
+    
+    @Check
+	def extendedEntites(Model model) {
+        // Entities
+        val extends = model.entities.filter[it.extends !== null]
+        if (model.generateOption.generateOptionType.toString === 'sql') {
+        	extends.forEach[ e |
+        		error('''Code Generator does not support Generalization. Remove extension from '«e.name»'.''', e, EntityRelationshipPackage.Literals.ENTITY__NAME)
+        	]
+        	
+        	
+        }
+    }
+    
+    
+	// Check if strong entities contain primary key and no partial key
+	@Check
+	def containsKey(Model model) {
+		val entities = model.entities?.filter[e | !e.weak]
+        entities.forEach [ e |
+			val attributes = e.attributes?.filter[a | a.type === AttributeType.KEY]
+			if (attributes.isNullOrEmpty) 
+				info('''Missing primary key for entity''', e, EntityRelationshipPackage.Literals.ENTITY__NAME)
+		]
+    }
+
+	// Check if weak entities contain partial key and no primary key
+	@Check
+	def containsPartialKey(Model model) {
+		val entities = model.entities?.filter[e | e.weak]
+        entities.forEach [ e |
+			val attributes = e.attributes?.filter[a | a.type == AttributeType.PARTIAL_KEY]
+			if (attributes.isNullOrEmpty) 
+				info('''Missing partial-key for weak entity''', e, EntityRelationshipPackage.Literals.ENTITY__NAME)
+		]
+    }
+    
+  @Check
 	def checkCardinality(Model model) {
 		
 		model.relationships.forEach [ r |
@@ -178,60 +265,8 @@ class EntityRelationshipValidator extends AbstractEntityRelationshipValidator {
 			}
 		}
 	}
-	
-	
-	// Names are unique for entities and relationships
-    @Check
-	def uniqueNames(Model model) {
-        // Entities
-        val entityNames = Multimaps.index(model.entities, [name ?: ''])
-        entityNames.keySet.forEach [ name |
-        	val commonName = entityNames.get(name)
-			if (commonName.size > 1) 
-				commonName.forEach [
-					error('''Multiple entites named '«name»'«».''', it, EntityRelationshipPackage.Literals.ENTITY__NAME)
-			]
-		]
-		// Relationships
-		val relNames = Multimaps.index(model.relationships, [name ?: ''])
-        relNames.keySet.forEach [ name |
-			val commonName = relNames.get(name)
-			if (commonName.size > 1) 
-				commonName.forEach [
-					error('''Multiple relationships named '«name»'«».''', it, EntityRelationshipPackage.Literals.RELATIONSHIP__NAME)
-			]
-		]
-    }
     
-	// Check if strong entities contain primary key and no partial key
-	@Check
-	def containsKey(Model model) {
-		val entities = model.entities?.filter[e | !e.weak]
-        entities.forEach [ e |
-			val attributes = e.attributes?.filter[a | a.type === AttributeType.KEY]
-			val keyAttributes = e.attributes?.filter[a | a.type == AttributeType.PARTIAL_KEY]
-			if (attributes.size < 1) 
-				info('''Strong Entity '«e.name»'«» does not contain a primary key''', e, EntityRelationshipPackage.Literals.ENTITY__NAME)
-			if (keyAttributes.size > 0) 
-				info('''Strong Entity '«e.name»'«» is not allowed to have a partial key''', e, EntityRelationshipPackage.Literals.ENTITY__NAME)
-		]
-    }
-
-	// Check if weak entities contain partial key and no primary key
-	@Check
-	def containsPartialKey(Model model) {
-		val entities = model.entities?.filter[e | e.weak]
-        entities.forEach [ e |
-			val attributes = e.attributes?.filter[a | a.type == AttributeType.PARTIAL_KEY]
-			val keyAttributes = e.attributes?.filter[a | a.type == AttributeType.KEY]
-			if (attributes.size < 1) 
-				info('''Weak Entity '«e.name»'«» does not contain a partial key''', e, EntityRelationshipPackage.Literals.ENTITY__NAME)
-			if (keyAttributes.size > 0) 
-				info('''Weak Entity '«e.name»'«» is not allowed to have a primary key''', e, EntityRelationshipPackage.Literals.ENTITY__NAME)
-		]
-    }
-    
-    /* TODO: Fix this? Scoping already handles available entities‚
+    /* 
     @Check
 	def checkNoCycleInheritance(Entity entity) {
 		// dont check if entity does not extend
@@ -249,4 +284,5 @@ class EntityRelationshipValidator extends AbstractEntityRelationshipValidator {
 		}
 	}
 	*/
+	
 }

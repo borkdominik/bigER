@@ -4,19 +4,43 @@ import org.eclipse.sprotty.SNode
 import org.eclipse.sprotty.SEdge
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.eclipse.sprotty.SGraph
+import org.eclipse.xtend.lib.annotations.Accessors
+import org.eclipse.sprotty.PreRenderedElement
+import org.eclipse.sprotty.SButton
 
-/*
- * Only entity nodes, for the rest of the elements the default SModel is used
- * 
- * 
- */
+@Accessors
+class ERModel extends SGraph {
+	String name
+	String generateType
+  String notation
+
+	new() { }
+	
+	new((ERModel) => void initializer) {
+		initializer.apply(this)
+	}
+}
+
+
 @Accessors
 class EntityNode extends SNode {
 	boolean expanded
+	boolean weak
 	
 	new() { }
 	
 	new((EntityNode) => void initializer) {
+		initializer.apply(this)
+	}
+}
+
+@Accessors
+class RelationshipNode extends SNode {
+	boolean weak
+	
+	new() { }
+	
+	new((RelationshipNode) => void initializer) {
 		initializer.apply(this)
 	}
 }
@@ -36,15 +60,13 @@ class NotationEdge extends SEdge {
 }
 
 @Accessors
-class ERModel extends SGraph {
-	String name
-	String notation
+class PopupButton extends PreRenderedElement {
+	String target
+	String kind
 
 	new() { }
 	
-		
-	new((ERModel) => void initializer) {
+	new((PopupButton) => void initializer) {
 		initializer.apply(this)
 	}
-	
 }

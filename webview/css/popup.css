@@ -1,0 +1,68 @@
+.sprotty-popup {
+    color: var(--vscode-activityBar-foreground);
+    background: var(--vscode-activityBar-background);
+    border: 1px solid var(--vscode-sideBarSectionHeader-border);
+    z-index: 1;
+    padding: 0px;
+    width: auto;
+    min-width: auto;
+    max-width: 300px;
+    box-shadow: 5px 5px 5px black;
+}
+
+.sprotty-popup > div {
+    display: flex;
+    flex-direction: column;
+    margin: 0px;
+    width: fit-content;
+}
+
+.popup-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    font-size: small;
+    font-weight: bold;
+    border-bottom: 1px solid var(--vscode-sideBarSectionHeader-border);
+    padding: 10px;
+}
+
+
+.popup-tag {
+    margin-right: 5px;
+    margin-left: 5px;
+}
+
+.sprotty-infoBlock {
+    display: flex;
+    flex-direction: column;
+}
+
+
+.sprotty-infoRow {
+    font-size: small;
+    margin: 0px;
+    border-bottom: 1px solid gray;
+    padding-bottom: 10px;
+    padding: 5px;
+}
+
+.popup-edit-button {
+    color: white;
+    /*background: var(--vscode-charts-blue);*/
+    width: 100%;
+    background-color: none;
+    padding: 0px;
+    font-size: x-small;
+    text-align: left;
+
+}
+.popup-delete-button {
+    color: white;
+    /*background: var(--vscode-charts-red);*/
+    width: 100%;
+    background-color: none;
+    padding: 0px;
+    font-size: x-small;
+    text-align: left;
+}

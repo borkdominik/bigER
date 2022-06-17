@@ -1,18 +1,20 @@
 import { postConstruct, inject, injectable } from 'inversify';
-import { SprottyDiagramIdentifier, VscodeDiagramWidget } from 'sprotty-vscode-webview';
-import { IActionDispatcher, ILogger, ModelSource, TYPES} from 'sprotty';
+import { VscodeDiagramWidget } from 'sprotty-vscode-webview';
+import { SprottyDiagramIdentifier } from 'sprotty-vscode-protocol';
+import { IActionDispatcher, ILogger, TYPES } from 'sprotty';
 import { CollapseExpandAllAction, FitToScreenAction } from 'sprotty-protocol';
-import { AddEntityAction, AddRelationshipAction, ChangeNotationAction } from './actions';
+import { AddEntityAction, AddRelationshipAction, ChangeNotationAction, CodeGenerateAction } from './actions';
 
 @injectable()
 export class ERDiagramWidget extends VscodeDiagramWidget {
 
     @inject(TYPES.IActionDispatcher) actionDispatcher: IActionDispatcher;
     @inject(SprottyDiagramIdentifier) diagramIdentifier: SprottyDiagramIdentifier;
-    @inject(TYPES.ModelSource) modelSource: ModelSource;
     @inject(TYPES.ILogger) protected logger: ILogger;
     
-    protected elementsExpanded: boolean;
+    constructor() {
+        super();
+    }
     
     @postConstruct()
     initialize(): void {
@@ -25,101 +27,64 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
      * Adds a toolbar to the Sprotty container
      */
     protected addToolbar(): void {
- 
         const containerDiv = document.getElementById(this.diagramIdentifier.clientId + '_container');
-
         if (containerDiv) {
-            const toolbar = document.createElement("div");
-            toolbar.id = "biger-toolbar"
-            toolbar.innerHTML = `
-                <div id="notation-div">
-                    <vscode-button id="toolbar-button">
-                        <span class="fas fa-bars"/>
+            const menu = document.createElement("div");
+            menu.id = "biger-toolbar"
+            menu.innerHTML = `
+                <div id="toolbar-left">
+                    <vscode-button id="add-entity-button" class="tooltip" appearance="icon" style="margin-left: 5px;">
+                        <span class="action-label codicon codicon-debug-stop"></span>
+                        <span class="tooltiptext">New Entity</span>
                     </vscode-button>
-                    <div id="notationOptions" style="display: none;">
-                        <vscode-option style="width:100%;" id="optionBachman" class="button">Bachman</vscode-option>
-                        <vscode-option style="width:100%;" id="optionChen" class="button">Chen</vscode-option>
-                        <vscode-option style="width:100%;" id="optionCrowsfoot" class="button">Crows Foot</vscode-option>
-                        <vscode-option style="width:100%;" id="optionMinMax" class="button">Min Max</vscode-option>
-                        <vscode-option style="width:100%;" id="optionUml" class="button">UML</vscode-option>
-                    </div>
-                    <div id="help" style="display: none;">
-                    <span class="helpText">should not be displayed</span>
+                    <vscode-button id="add-relationship-button" class="tooltip" appearance="icon">
+                        <span class="codicon codicon-primitive-square rotated"></span>
+                        <span class="tooltiptext">New Relationship</span>
+                    </vscode-button>
+                    <div class="vertical-seperator"></div>
+                    <vscode-button appearance="icon" class="tooltip" id="options-button">
+                        <span class="codicon codicon-file-code"></span>
+                        <span class="tooltiptext">Code Generator</span>
+                    </vscode-button>
+                    <div class="vertical-seperator"></div>
+                    <p id="toolbar-modelName"></p>
                 </div>
-                    <div id="helpCrowsFoot" style="display: none;">
-                        <span class="helpText">Crows Foot</span>
-                        <vscode-divider class="divider" role="separator"></vscode-divider>
-                        <span class="helpText">Cardinality usage:</span>
-                        <span class="helpText">[1]&nbsp&nbsp&nbsp one</span>
-                        <span class="helpText">[1+]&nbsp one or more</span>
-                        <span class="helpText">[0+]&nbsp zero or more</span>
-                        <span class="helpText">[?]&nbsp&nbsp&nbsp zero ore one</span>
-                    </div>
-                    <div id="helpBachman" style="display: none;">
-                        <span class="helpText">Bachman</span>
-                        <vscode-divider class="divider" role="separator"></vscode-divider>
-                        <span class="helpText">Cardinality usage:</span>
-                        <span class="helpText">[0] zero</span>
-                        <span class="helpText">[0+] zero or more</span>
-                        <span class="helpText">[1] one</span>
-                        <span class="helpText">[1+] one or more</span>
-                    </div>
-                    <div id="helpChen" style="display: none;">
-                        <span class="helpText">Chen</span>
-                        <vscode-divider class="divider" role="separator"></vscode-divider>
-                        <span class="helpText">Cardinality usage:</span>
-                        <span style="margin-top:10px;margin-left:10px;">[1] zero or one</span>
-                        <span class="helpText">[M] zero or more</span>
-                        <span class="helpText" style="margin-bottom:11px;">[N] zero or more</span>
-                    </div>
-                    <div id="helpMinMax" style="display: none;">
-                        <span class="helpText">Min Max</span>
-                        <vscode-divider class="divider" role="separator"></vscode-divider>
-                        <span class="helpText">Cardinality usage:</span>
-                        <span class="helpText">min: number</span>
-                        <span class="helpText">max: number</span>
-                        <span class="helpText">[min,max] min <= max</span>
-                        <span class="helpText">[min,*] min or more</span>
-                    </div>
-                    <div id="helpUml" style="display: none;">
-                        <span class="helpText">UML</span>
-                        <vscode-divider class="divider" role="separator"></vscode-divider>
-                        <span class="helpText">Cardinality usage:</span>
-                        <span class="helpText">[type] min..max </span>
-                        <span class="helpText">type: agg | comp</span>
-                        <span class="helpText">[min..max] min <= max</span>
-                        <span class="helpText">[min..*] min or more</span>
-                    </div>
-                </div>
-                <div id = "toolbar-options">
-                    <vscode-option id="add-entity-button" class="button">Entity
-                        <span id="button-icon" slot="start" class="codicon codicon-chrome-maximize"/>
-                    </vscode-option>
-                    <vscode-option id="add-relationship-button" class="button">Relationship
-                        <span id="button-icon" slot="start" class="codicon codicon-debug-breakpoint-log-unverified"/>
-                    </vscode-option>
-                    <vscode-divider class="divider" role="separator"></vscode-divider>
-                    <vscode-option id="notationButton" class="button">Chen
-                        <span id="button-icon" slot="start" class="fas fa-angle-left"/>
-                    </vscode-option>
-                    <vscode-divider class="divider" role="separator"></vscode-divider>
-                    <div id="expand-div" style="display:none">
-                        <vscode-option style="width:140px;" id="expand-button" class="button">Expand</vscode-option>
-                    </div>
-                    <div id="collapse-div">
-                        <vscode-option style="width:140px;" id="collapse-button" class="button">Collapse</vscode-option>
-                    </div>
-                    <vscode-option id="center-diagram-button" class="button">Center</vscode-option>
-                    <vscode-divider class="divider" role="separator"/></vscode-divider>
-                    <vscode-link style="width:100%;" class="option" href="https://github.com/borkdominik/bigER/wiki/%F0%9F%93%96-Language-Documentation">
-                        <vscode-option id="helpButton" class="button">Help
-                            <span id="button-icon" slot="start" class="fas fa-question"/>
-                        </vscode-option>
+                <div id="toolbar-right">
+                    <div class="vertical-seperator"></div>
+                    <vscode-button appearance="icon" id="fit-button" class="tooltip">
+                        <span class="codicon codicon-screen-full"></span>
+                        <span class="tooltiptext">Fit to Screen</span>
+                    </vscode-button>
+                    <vscode-button appearance="icon" id="collapseAll-button" class="tooltip">
+                        <span class="codicon codicon-collapse-all"></span>
+                        <span class="tooltiptext">Collapse All</span>
+                    </vscode-button>
+                    <vscode-button appearance="icon" id="expandAll-button" class="tooltip">
+                        <span class="codicon codicon-expand-all"></span>
+                        <span class="tooltiptext">Expand All</span>
+                    </vscode-button>
+                    <div class="vertical-seperator"></div>
+                    <vscode-link href="https://github.com/borkdominik/bigER/wiki/%F0%9F%93%96-Language-Documentation">
+                        <vscode-button appearance="icon" class="tooltip-help" id="more-button" style="margin-right: 5px;">
+                            <span class="codicon codicon-question"></span>
+                            <span class="tooltiptext">Help</span>
+                        </vscode-button>
                     </vscode-link>
                 </div>`;
 
-            containerDiv.append(toolbar);   
-            this.elementsExpanded = true;
+            const optionsPanel = document.createElement("div");
+            optionsPanel.id = "toolbar-options-panel"
+            optionsPanel.style.display = "none"
+            optionsPanel.innerHTML = `
+                <label style="margin: 5px 5px 5px 5px;">Generate:</label>
+                <vscode-dropdown id="select-generate" position="below" style="height: 90%; margin: 5px 5px;">
+                    <vscode-option value="off">off</vscode-option>
+                    <vscode-option value="sql">sql</vscode-option>
+                </vscode-dropdown>
+            `;
+            
+            containerDiv.append(menu);
+            containerDiv.append(optionsPanel);
         } 
     }
     
@@ -127,164 +92,43 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
      * Adds event handlers to the buttons, by dispatching corresponding events
      */
     protected addEventHandlers(): void {
-
-        let notationBtnTimer:NodeJS.Timeout;
-        let helpBtnTimer:NodeJS.Timeout;
-        const delayEnter = 300
-        const delayLeave = 100
-        const noDelay = 0
-        
-        function showElement(elementName:string, dealy:number): NodeJS.Timeout{
-            return setTimeout(function() {
-                        var options = document.getElementById(elementName);
-                        if(options){
-                           options.style.display = "flex";
-                        }
-                    }, dealy);
-        }
-
-        function hideElement(elementName:string, dealy:number): NodeJS.Timeout{
-            return setTimeout(function() {
-                var options = document.getElementById(elementName);
-                if(options){
-                    options.style.display = "none";
-                }
-            }, dealy);
-        }
-
-        document.getElementById('notationButton')!.addEventListener('mouseenter', async () => {
-                notationBtnTimer = showElement('notationOptions', delayEnter)
-        });
-
-        document.getElementById('notationButton')!.addEventListener('mouseleave', async () => {
-            clearTimeout(notationBtnTimer);
-            notationBtnTimer = hideElement('notationOptions', delayLeave)
-        });
-
-        document.getElementById('notationOptions')!.addEventListener('mouseenter', async () => {
-            clearTimeout(notationBtnTimer);
-        });
-
-        document.getElementById('notationOptions')!.addEventListener('mouseleave', async () => {
-            clearTimeout(notationBtnTimer);
-            hideElement('notationOptions', delayLeave)
-        });
-
-        function changeNotationBtn(notation:string){
-            const option = document.getElementById('notationButton');
-            if(option){
-                option.innerHTML = notation+'<span id="button-icon" slot="start" class="fas fa-angle-left"/>'
-                hideElement('notationOptions', noDelay)
-            }
-        }
-
-        document.getElementById('optionBachman')!.addEventListener('click', async () => {
-            changeNotationBtn('Bachman')
-            await this.actionDispatcher.dispatch(ChangeNotationAction.create("bachman"));
-        });
-
-        document.getElementById('optionChen')!.addEventListener('click', async () => {
-            changeNotationBtn('Chen')
-            await this.actionDispatcher.dispatch(ChangeNotationAction.create("chen"));
-        });
-
-        document.getElementById('optionCrowsfoot')!.addEventListener('click', async () => {
-            changeNotationBtn('Crows Foot')
-            await this.actionDispatcher.dispatch(ChangeNotationAction.create("crowsfoot"));
-        });
-
-        document.getElementById('optionMinMax')!.addEventListener('click', async () => {
-            changeNotationBtn('MinMax')
-            await this.actionDispatcher.dispatch(ChangeNotationAction.create("minmax"));
-        });
-
-        document.getElementById('optionUml')!.addEventListener('click', async () => {
-            changeNotationBtn('UML')
-            await this.actionDispatcher.dispatch(ChangeNotationAction.create("uml"));
-        });
-
-        function hideOrShowElement(element:string, show:boolean){
-            clearTimeout(helpBtnTimer)
-            show ? helpBtnTimer = showElement(element, delayEnter) : hideElement(element, delayLeave)
-        }
-
-        function chooseNotation(show:boolean){
-            var notationBtn = document.getElementById("notationButton");
-            if(notationBtn){
-                switch(notationBtn.innerText){
-                    case 'Bachman' : 
-                        hideOrShowElement('helpBachman', show)
-                        break
-                    case 'Chen' : 
-                        hideOrShowElement('helpChen', show)
-                        break
-                    case 'Crows Foot' : 
-                        hideOrShowElement('helpCrowsFoot', show)
-                        break
-                    case 'Min Max' : 
-                        hideOrShowElement('helpMinMax', show)
-                        break
-                    case 'UML' : 
-                        hideOrShowElement('helpUml', show)
-                        break
-                    default : 
-                        hideOrShowElement('help', show)
-                        break
-                }
-            }
-        }
-
-        document.getElementById('helpButton')!.addEventListener('mouseenter', async () => {
-            chooseNotation(true);
-        });
-
-        document.getElementById('helpButton')!.addEventListener('mouseleave', async () => {
-            chooseNotation(false);
-        });
-
-        
-        document.getElementById('toolbar-button')!.addEventListener('click', async () => {
-                var options = document.getElementById("toolbar-options");
-                if(options){
-                    options.style.display = options.style.display === "none" ? "flex" : "none";
-                }
-        });
-
         document.getElementById('add-entity-button')!.addEventListener('click', async () => {
-            await this.actionDispatcher.dispatch({
-                kind: AddEntityAction.KIND
-            });
+            await this.actionDispatcher.dispatch({kind: AddEntityAction.KIND});
         });
-
         document.getElementById('add-relationship-button')!.addEventListener('click', async () => {
-            await this.actionDispatcher.dispatch({
-                kind: AddRelationshipAction.KIND
-            });
+            await this.actionDispatcher.dispatch({kind: AddRelationshipAction.KIND});
         });
-        
-        document.getElementById('expand-button')!.addEventListener('click', async () => {
-            await this.showAndHideExpandCollapse("none", "block")
-        });
-
-        document.getElementById('collapse-button')!.addEventListener('click', async () => {
-            await this.showAndHideExpandCollapse("block", "none")
-        });
-
-        document.getElementById('center-diagram-button')!.addEventListener('click', async () => {
+        document.getElementById('fit-button')!.addEventListener('click', async () => {
             await this.actionDispatcher.dispatch(FitToScreenAction.create([]));
+        });
+        document.getElementById('expandAll-button')!.addEventListener('click', async () => {
+            await this.actionDispatcher.dispatch(CollapseExpandAllAction.create({expand: true}));
+        });
+        document.getElementById('collapseAll-button')!.addEventListener('click', async () => {
+            await this.actionDispatcher.dispatch(CollapseExpandAllAction.create({expand: false}));
+        });
+        document.getElementById('options-button')!.addEventListener('click', async () => {
+            this.togglePanel('toolbar-options-panel')
+        });
+        document.getElementById('select-generate')!.addEventListener('change', async () => {
+            var select = document.getElementById('select-generate') as HTMLSelectElement;
+            if (select) {
+                var value = select.options[select.selectedIndex].value;
+                if (value === 'off' || value === 'sql') {
+                    await this.actionDispatcher.dispatch(CodeGenerateAction.create(value));
+                }
+            }
         });
     }
 
-    async showAndHideExpandCollapse(expandStyle:string, collapseStyle:string) {
-        var expand = document.getElementById("expand-div");
-        if(expand){
-            expand.style.display = expandStyle;
+    protected togglePanel(panelId: string): void {
+        const panel = document.getElementById(panelId);
+        if (panel) {
+            if (panel.style.display === 'none') {
+                panel.style.display = 'flex';
+            } else {
+                panel.style.display = 'none';
+            }
         }
-        var collapse = document.getElementById("collapse-div");
-        if(collapse){
-            collapse.style.display = collapseStyle;
-        }
-        this.elementsExpanded = expandStyle === "none"
-        await this.actionDispatcher.dispatch(CollapseExpandAllAction.create({expand: this.elementsExpanded}));
     }
 }

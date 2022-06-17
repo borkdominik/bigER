@@ -14,6 +14,7 @@ import org.eclipse.sprotty.xtext.launch.DiagramLanguageServerSetup
 import org.eclipse.sprotty.xtext.ls.SyncDiagramServerModule
 import org.eclipse.xtext.ide.server.ServerModule
 import org.eclipse.xtext.util.Modules2
+import org.big.erd.ide.diagram.CustomActionTypeAdapterFactory
 // import org.eclipse.xtext.resource.IResourceServiceProvider
 // import org.eclipse.elk.alg.force.options.StressMetaDataProvider
 
@@ -26,9 +27,9 @@ class ERDiagramLanguageServerSetup extends DiagramLanguageServerSetup {
 	}
 	
 	override GsonBuilder configureGson(GsonBuilder gsonBuilder) {
-		val factory = new ActionTypeAdapter.Factory()
+		//val factory = new ActionTypeAdapter.Factory()
 		gsonBuilder
-			.registerTypeAdapterFactory(factory)
+			//.registerTypeAdapterFactory(factory)
 			.registerTypeAdapterFactory(new EditActionTypeAdapterFactory)
 			.registerTypeAdapterFactory(new EnumTypeAdapter.Factory)
 			.registerTypeAdapterFactory(new CustomActionTypeAdapterFactory)

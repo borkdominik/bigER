@@ -1,13 +1,13 @@
 dependencies {
-	compile project(':org.big.erd')
-	compile "org.eclipse.xtext:org.eclipse.xtext.ide:${xtextVersion}"
-	compile "org.eclipse.xtext:org.eclipse.xtext.xbase.ide:${xtextVersion}"
+	implementation project(':org.big.erd')
+	implementation "org.eclipse.xtext:org.eclipse.xtext.ide:${xtextVersion}"
+	implementation "org.eclipse.xtext:org.eclipse.xtext.xbase.ide:${xtextVersion}"
 
-	compile "org.eclipse.sprotty:org.eclipse.sprotty.server:${sprottyVersion}"
-	compile "org.eclipse.sprotty:org.eclipse.sprotty.xtext:${sprottyVersion}"
-	compile "org.eclipse.sprotty:org.eclipse.sprotty.layout:${sprottyVersion}"
+	implementation "org.eclipse.sprotty:org.eclipse.sprotty.server:${sprottyVersion}"
+	implementation "org.eclipse.sprotty:org.eclipse.sprotty.xtext:${sprottyVersion}"
+	implementation "org.eclipse.sprotty:org.eclipse.sprotty.layout:${sprottyVersion}"
 	
-	compile "org.eclipse.elk:org.eclipse.elk.alg.layered:${elkVersion}"
+	implementation "org.eclipse.elk:org.eclipse.elk.alg.layered:${elkVersion}"
 	
 }
 

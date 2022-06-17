@@ -13,13 +13,7 @@ export class ERDiagramWebview extends SprottyLspWebview {
     protected initializeWebview(webview: vscode.Webview, title?: string) {
         const extensionUri = this.extension.context.extensionUri;
         const codiconsUri = webview.asWebviewUri(vscode.Uri.joinPath(extensionUri, 'node_modules', '@vscode/codicons', 'dist', 'codicon.css'));
-        const toolkitUri = getUri(webview, extensionUri, [
-            "node_modules",
-            "@vscode",
-            "webview-ui-toolkit",
-            "dist",
-            "toolkit.js",
-          ]); 
+        const toolkitUri = this.getUri(webview, extensionUri, 'node_modules', '@vscode', 'webview-ui-toolkit', 'dist', 'toolkit.js'); 
         webview.html = `
             <!DOCTYPE html>
             <html lang="en">
@@ -40,8 +34,8 @@ export class ERDiagramWebview extends SprottyLspWebview {
                 </body>
             </html>`;
     }
-}
 
-export function getUri(webview: Webview, extensionUri: Uri, pathList: string[]) {
-    return webview.asWebviewUri(Uri.joinPath(extensionUri, ...pathList));
+    getUri(webview: Webview, extensionUri: Uri, ...pathList: string[]) {
+        return webview.asWebviewUri(Uri.joinPath(extensionUri, ...pathList));
+    }
 }

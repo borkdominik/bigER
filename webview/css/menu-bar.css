@@ -1,27 +1,41 @@
-#toolbar-options {
-    display: none;
-	flex-direction: column;
-    width: 140px;
-    background: var(--vscode-menu-background);
-    padding-bottom: 5px;
-    box-shadow: 0px 0px 3px 0px #13121252;
-}
-
-#biger-toolbar{
+#biger-toolbar {
     position: absolute;
     top: 0px;
-    right: 0px;
     display: flex;
-    flex-direction: row;
+    width: 100%;
+    height: 35px;
+    border-top: 1px solid var(--vscode-sideBarSectionHeader-border);
+    border-bottom: 1px solid var(--vscode-sideBarSectionHeader-border);
+    background: var(--vscode-sideBar-background);
 }
 
-#notation-div{
+/* Toolbar sections */
+#toolbar-left {
+    display: flex;
+    position: absolute;
+    left: 0px;
+    top: 5px;
+}
+#toolbar-middle {
+    position: absolute;
+    left: 50%;
+    top: 5px;
+    transform: translate(-50%, 0%);
+}
+#toolbar-right {
+    display: flex;
+    position: absolute;
+    right: 0px;
+    top: 5px;
+}
+
+#notation-div {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
 }
 
-#notationOptions{
+#notationOptions {
     z-index: 9;
     margin-top: 38px;
     display: flex;
@@ -31,18 +45,112 @@
     box-shadow: 0px 0px 3px 0px #13121252;
 }
 
+/* Tooltips */
+.tooltip .tooltiptext {
+    visibility: hidden;
+    top: 120%;
+    width: fit-content;
+    background-color: var(--vscode-activityBar-background);
+    color: var(--vscode-activityBar-foreground);
+    text-align: center;
+    padding: 5px 5px;
+    border-radius: 1px;
+    font-size: 12px;
+    /* Position the tooltip text - see examples below! */
+    position: absolute;
+    z-index: 1;
+}
+.tooltip-help .tooltiptext {
+    visibility: hidden;
+    top: 120%;
+    right: 10%;
+    width: fit-content;
+    background-color: var(--vscode-activityBar-background);
+    color: var(--vscode-activityBar-foreground);
+    text-align: center;
+    padding: 5px 5px;
+    border-radius: 1px;
+    font-size: 12px;
+    /* Position the tooltip text - see examples below! */
+    position: absolute;
+    z-index: 1;
+}
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}
+.tooltip-help:hover .tooltiptext {
+    visibility: visible;
+}
+
+.rotated {
+    transform: rotate(45deg);
+}
+
+#toolbar-options-panel {
+    display: flex;
+    flex-direction: row;
+    position: absolute;
+    top: 44px;
+    left: 8px;
+    background: var(--vscode-menu-background);
+    box-shadow: 0 2px 8px var(--vscode-widget-shadow);
+    max-width: 49%;
+    flex-wrap: wrap;
+    border: 1px solid var(--vscode-sideBarSectionHeader-border);
+}
+
+#toolbar-modelName {
+    font-size: 18px;
+    margin: 0 0 0 5px;
+}
+
+.vertical-seperator {
+    border-left: 1px solid var(--vscode-sideBarSectionHeader-border);
+    margin: 0 5px 0 5px;
+}
+
+/* not used, but keeping for future purposes */
+#toolbar-bottom {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translate(-50%, 0%);
+    display: flex;
+    justify-content: center;
+}
+
+/* old */
+
+#toolbar-options {
+    display: none;
+	flex-direction: column;
+    width: 140px;
+    background: var(--vscode-menu-background);
+    padding-bottom: 5px;
+    box-shadow: 6px -4px 8px 0px black;
+}
+
 #toolbar-button {
-    z-index: 8;
     background: var(--vscode-menu-selectionBackground);
     height: 27.5px;
-    width: 35px;
     --border-width: 0;
-    box-shadow: 0px 0px 3px 0px #13121252;
 }
 
 #toolbar-button span{
     margin-top: 5px;
 }
+
+#dropDown-erNotations{
+    background: var(--vscode-menu-background);
+    --dropdown-border: none;
+    --dropdown-background: var(--vscode-menu-background);
+    padding-left: 10px;
+}
+
+#dropDown-erNotations:hover{
+    background: var(--vscode-menu-selectionBackground);
+}
+
 
 .divider{
     margin-top: 5px;
@@ -63,32 +171,10 @@
     --border-width: 0;
 }
 
-#helpButton{
+#help-button{
     width:140px;
 }
 
 #button-icon{
     margin-right: 5px;
-}
-
-#help, 
-#helpBachman,
-#helpChen,
-#helpMinMax,
-#helpUml,
-#helpCrowsFoot {
-    z-index: 9;
-    margin-top: 38px;
-    padding: 5px;
-    padding-right: 15px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    background: var(--vscode-menu-background);
-    box-shadow: 0px 0px 3px 0px #13121252;
-}
-
-.helpText{
-    margin-top:2px;
-    margin-left:10px;
 }

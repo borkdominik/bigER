@@ -8,66 +8,47 @@ import org.eclipse.elk.core.options.CoreOptions
 import org.eclipse.sprotty.Action
 import org.eclipse.elk.alg.layered.options.LayeredOptions
 import org.eclipse.elk.core.options.Direction
-// Keeping these imports for possible later use
-// import org.apache.log4j.Logger
-// import org.eclipse.elk.core.options.CoreOptions;
-// import org.eclipse.elk.alg.layered.options.PortSortingStrategy
-import org.eclipse.elk.alg.layered.options.NodeFlexibility
-// import org.eclipse.elk.core.options.PortConstraints
-// import org.eclipse.elk.core.options.PortSide
-// import org.eclipse.elk.alg.force.options.StressOptions;
-// import org.eclipse.elk.core.options.PortAlignment
-// import org.eclipse.elk.core.options.EdgeRouting
-// import org.eclipse.elk.alg.force.options.ForceOptions;
-import org.eclipse.elk.alg.layered.options.NodePlacementStrategy
 import org.eclipse.elk.core.options.PortAlignment
 import org.eclipse.elk.core.options.PortConstraints
 import org.eclipse.elk.core.options.PortSide
 import org.eclipse.elk.core.math.ElkMargin
+import org.apache.log4j.Logger
 
 class ERDiagramLayoutEngine extends ElkLayoutEngine {
 
-    //static val LOG = Logger.getLogger(ERDiagramLayoutEngine)
+    static val LOG = Logger.getLogger(ERDiagramLayoutEngine)
 	
-	// TODO: Improve layout
+	// TODO: Layout improvement
 	override layout(SModelRoot root, Action cause) {
 		if (root instanceof ERModel) {
+			LOG.info("Applying macro layout for ERModel with id '" + root.id + "'")
 			val configurator = new SprottyLayoutConfigurator
-			configurator.configureByType('graph')
-				.setProperty(CoreOptions.DIRECTION, Direction.RIGHT)
+			
+      configurator.configureByType('graph')
+			  .setProperty(CoreOptions.DIRECTION, Direction.RIGHT)
 				.setProperty(CoreOptions.SPACING_NODE_NODE, 40.0)
 				.setProperty(LayeredOptions.SPACING_NODE_NODE_BETWEEN_LAYERS, 40.0)
-				 .setProperty(CoreOptions.SPACING_PORT_PORT, 30.0)
-				/* 
-				.setProperty(CoreOptions.EDGE_ROUTING, EdgeRouting.SPLINES)
-				.setProperty(LayeredOptions.SPACING_NODE_SELF_LOOP, 20.0)
-				.setProperty(CoreOptions.SPACING_NODE_NODE, 40.0)
-				.setProperty(LayeredOptions.SPACING_NODE_NODE_BETWEEN_LAYERS, 40.0)
-				.setProperty(LayeredOptions.SPACING_EDGE_EDGE, 20.0)
-				.setProperty(LayeredOptions.SPACING_EDGE_EDGE_BETWEEN_LAYERS, 0.0)
-				.setProperty(LayeredOptions.SPACING_EDGE_NODE, 20.0)
-				.setProperty(LayeredOptions.SPACING_EDGE_NODE_BETWEEN_LAYERS, 20.0)
-				*/
-			configurator.configureByType('node')
+				.setProperty(CoreOptions.SPACING_PORT_PORT, 30.0)
+			
+      configurator.configureByType('node')
 				 .setProperty(CoreOptions.PORT_ALIGNMENT_DEFAULT, PortAlignment.CENTER)
 				 .setProperty(CoreOptions.PORT_CONSTRAINTS, PortConstraints.FIXED_SIDE)
 				 .setProperty(CoreOptions.SPACING_PORT_PORT, 30.0)
-				 
-			configurator.configureByType('node:relationship')
+			
+      configurator.configureByType('node:relationship')
 				.setProperty(CoreOptions.PORT_ALIGNMENT_DEFAULT, PortAlignment.CENTER)
 				.setProperty(CoreOptions.PORT_CONSTRAINTS, PortConstraints.FIXED_SIDE)
-			configurator.configureByType('node:weak-relationship')
+			
+      configurator.configureByType('node:weak-relationship')
 				.setProperty(CoreOptions.PORT_ALIGNMENT_DEFAULT, PortAlignment.CENTER)
 				.setProperty(CoreOptions.PORT_CONSTRAINTS, PortConstraints.FIXED_SIDE)
-			configurator.configureByType('port')
-				.setProperty(CoreOptions.PORT_SIDE, PortSide.NORTH)
-				.setProperty(CoreOptions.PORT_BORDER_OFFSET, 25.0)
 				
-			if(root.notation === 'crowsfoot'){
+			if (root.notation === 'crowsfoot') {
 				configurator.configureByType('graph')
 					.setProperty(LayeredOptions.SPACING_NODE_NODE_BETWEEN_LAYERS, 120.0)
-				}
+			}
 			layout(root, configurator, cause)
 		}
 	}
+
 }

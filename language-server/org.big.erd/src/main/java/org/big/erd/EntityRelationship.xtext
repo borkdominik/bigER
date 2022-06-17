@@ -1,67 +1,57 @@
 grammar org.big.erd.EntityRelationship with org.eclipse.xtext.common.Terminals
 
-
-
 generate entityRelationship "http://www.big.org/erd/EntityRelationship"
 
 Model:
-	'erdiagram' name=ID ('{'
-		('generate' '=' generateOption=GenerateOption)?
-	'}')?
-	
-	// keep old generate option until dependent code is fixed
-	notation=Notation?
-	(generateSql?='generateSql')?
-
+	'erdiagram' name=ID
+	generateOption=GenerateOption?
+	notationOption=NotationOption?
 	(entities+=Entity | relationships+=Relationship)*;
 
-Entity:
-	(weak?='weak')? 'entity' name=ID ('extends' extends=[Entity])? ('{'
-		(attributes += Attribute)*
-	'}')?;
-	
-Notation:
-	'notation' '=' notationType=NotationType;
+GenerateOption:
+	'generate' '=' generateOptionType=GenerateOptionType;
 
-/**
- * TODO: allow more than ternary (more generic) - e.g. save all in targets[]
- */
-Relationship:
-	(weak?='weak')? 'relationship' name=ID ('{'
-		(first=RelationEntity (('->' second=RelationEntity) ('->' third=RelationEntity)?)?)
+NotationOption:
+	'notation' '=' notationOptionType=NotationOptionType;
+
+Entity:
+	(weak?='weak')? 'entity' name=ID ('extends' extends=[Entity])? '{'
 		(attributes += Attribute)*
-	'}')?;
+	'}';
+
+Relationship:
+	(weak?='weak')? 'relationship' name=ID '{'
+		(first=RelationEntity (('->' second=RelationEntity) ('->' third=RelationEntity)?)?)?
+		(attributes += Attribute)*
+	'}';
 
 RelationEntity:
 	target=[Entity] ('[' 
-		(cardinality=CardinalityType | customMultiplicity=STRING | minMax=MinMax | uml=Uml)
-	']')? (partial?='partial')?;
+		(cardinality=CardinalityType | customMultiplicity=STRING)
+	']')?;
 
-/**
- * TODO: Remove old datatype (defaults, e.g. int, double, ...)
- */
 Attribute:
 	name=ID (':' datatype=DataType)? (type=AttributeType)?;
 
 DataType:
-	type=ID ('(' size=INT ')')?;
-	
-terminal MinMax:
-	 ('0'..'9')+','('0'..'9')?('*')?;
-	 
-terminal Uml:
-	 ('comp ')?('agg ')?('0'..'9')+('..'('0'..'9')+)?('..''*')?;
-
-enum GenerateOption:
-    OFF='off' | SQL='sql';
-    
-enum NotationType:
-    DEFAULT='default' | CHEN='chen' | MINMAX='minmax' | BACHMAN='bachman' | CROWSFOOT='crowsfoot'| UML='uml';   
-     
+	type=ID ('(' size=INT ')')?;  
 
 enum AttributeType:
-	NONE = 'none' | KEY = 'key' | FOREIGN_KEY = 'foreign-key' | PARTIAL_KEY = 'partial-key' | OPTIONAL = 'optional' | 
-	DERIVED = 'derived' | MULTIVALUED = 'multivalued';
+	NONE = 'none' | 
+	KEY = 'key' | 
+	PARTIAL_KEY = 'partial-key' | 
+	OPTIONAL = 'optional' |  
+	DERIVED = 'derived' | 
+	MULTIVALUED = 'multivalued';
 
 enum CardinalityType:
-	 ONE = '1' | MANY = 'N' | MANY_CHEN = 'M' | ZERO = '0' | ONE_OR_MORE = '1+' | ZERO_OR_MORE = '0+' | ZERO_OR_ONE = '?';
+	NONE = 'none' |
+	ONE = '1' | 
+	MANY = 'N';
+
+enum GenerateOptionType:
+	OFF = 'off' | 
+	SQL = 'sql';
+
+enum NotationOptionType:
+	DEFAULT = 'default';

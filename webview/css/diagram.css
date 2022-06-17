@@ -1,37 +1,62 @@
-.svg {
-    stroke-width: 2;
-}
-
 svg {
-    outline: none;
+    outline: none; /* To remove border when clicking into diagram */
+}
+.sprotty {
+    user-select: none;
+}
+.sprotty-hidden {
+    width: 0px;
+    height: 0px;
 }
 
 .sprotty-graph.selected {
     border: none;
 }
+  
+text {
+    stroke-width: 0;
+    fill: #000;
+    font-family: sans-serif;
+    font-size: var(--vscode-editor-font-size);
 
-.sprotty-infoBlock {
-    color: black; 
 }
 
 .sprotty-node {
     stroke-width: 1;
     fill: rgb(219,218,235);
-    stroke: rgb(27, 27, 27);
+    /*fill: var(--vscode-list-inactiveSelectionBackground);*/
+    /*stroke: rgb(27, 27, 27);*/
+    stroke: var(--vscode-list-deemphasizedForeground);
+}
+.sprotty-node.selected {
+    stroke-width: 5;
+    stroke: yellow;
+    /*fill: var(--vscode-list-activeSelectionBackground);*/
+
+}
+.sprotty-node.mouseover:not(.selected) {
+    stroke-width: 3;
+    stroke: orange;
+    /*stroke: var(--vscode-list-activeSelectionForeground);
+    fill: var(--vscode-list-hoverBackground);*/
+}
+
+.relationship > .sprotty-node {
+    fill: white;
+}
+
+.header {
+    font-size: 18px;
+    font-weight: bold;
+}
+.comp-separator {
+    stroke-width: 1;
+    stroke: var(--vscode-list-deemphasizedForeground);;
 }
 
 .sprotty-edge.inheritance {
     stroke-width: 3;
     stroke:rgb(255, 255, 255);
-}
-
-.comp-separator {
-    stroke-width: 1;
-    stroke: black;
-}
-
-.relationship > .sprotty-node {
-    fill: white;
 }
 
 .relationship {
@@ -51,8 +76,24 @@ svg {
     stroke-width: 8;
 }
 
-.sprotty-node.diamond-node {
-    fill: rgb(255, 255, 255);
+.border-weak {
+    stroke: white;
+    stroke-width: 1;
+    fill: black;
+}
+
+
+.key {
+    font-style: italic;
+    text-decoration: underline;
+}
+.partial-key {
+    font-style: italic;
+    text-decoration: underline;
+    fill: gray;
+}
+.derived {
+    fill: gray;
 }
 
 .right.sprotty-label {
@@ -60,66 +101,7 @@ svg {
 }
 
 .top.sprotty-label {
-    fill: white;
-}
-
-.sprotty-node.selected {
-    stroke-width: 5;
-    stroke: yellow;
-}
-
-.sprotty-node.mouseover:not(.selected) {
-    stroke-width: 3;
-    stroke: orange;
-}
-
-.header {
-    font-size: 18px;
-    font-weight: bold;
-}
-
-.sprotty-comp {
-    line-height: 3px;
-    font-weight: normal;
-    text-align: left;
-}
-
-.text-key {
-    stroke-width: 0;
-    stroke: #000;
-    fill: #000;
-    font-family: sans-serif;
-    font-size: 8pt;
-    font-weight: bold;
-    text-decoration: underline;
-}
-
-.text-null {
-    stroke-width: 0;
-    stroke: rgb(124, 124, 124);;
-    fill: rgb(124, 124, 124);
-    font-family: sans-serif;
-    font-size: 8pt;
-}
-
-.text-pk {
-    stroke-width: 0;
-    fill: #000;
-    text-decoration: underline;
-}
-
-.text-fk {
-    stroke-width: 0;
-    fill: #000;
-    text-decoration: underline;
-}
-
-text {
-    stroke-width: 0;
-    stroke: #000;
-    fill: #000;
-    font-family: sans-serif;
-    font-size: 8pt;
+    fill: var(--vscode-foreground);
 }
 
 .sprotty-edge {
@@ -147,7 +129,6 @@ text {
     stroke-width: 5;
 }
 
-
 .sprotty-edge-arrow {
     fill:var(--vscode-editorActiveLineNumber-foreground);
 }
@@ -171,9 +152,6 @@ text {
     fill: var(--vscode-editor-selectionHighlightBackground);
 }
 
-.palette-button {
-    color: black;
-}
 
 .sprotty-status {
     position: absolute;
@@ -185,16 +163,18 @@ text {
     align-items: center;
 	font-family: "Trebuchet MS", Helvetica, sans-serif;
 }
-
-.sprotty-status .fatal {
-	color: orangered;
-}
-
 .sprotty-status .error {
     color: orangered;
 }
-
-
+.sprotty-status-message.error {
+	background-color: white;
+	border: 1px solid black;
+	padding: 10px;
+	margin-left: 15px;
+}
+.sprotty-status .fatal {
+	color: orangered;
+}
 .sprotty-status-message.fatal {
 	background-color: white;
 	border: 1px solid black;
@@ -202,16 +182,8 @@ text {
 	margin-left: 15px;
 }
 
-.sprotty-status-message.error {
-	background-color: white;
-	border: 1px solid black;
-	padding: 10px;
-	margin-left: 15px;
-}
 
-.sprotty-hidden {
-    width: 0px;
-    height: 0px;
-}
+
+
 
 
