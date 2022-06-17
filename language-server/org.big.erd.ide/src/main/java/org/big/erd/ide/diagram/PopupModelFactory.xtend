@@ -14,6 +14,7 @@ import org.eclipse.sprotty.xtext.tracing.ITraceProvider
 import org.big.erd.entityRelationship.Entity
 import org.big.erd.entityRelationship.Relationship
 import java.util.ArrayList
+import org.big.erd.entityRelationship.DataType
 
 class PopupModelFactory implements IPopupModelFactory {
 
@@ -84,6 +85,15 @@ class PopupModelFactory implements IPopupModelFactory {
 						«getIssueRow(issueMarker)»
 					«ENDIF»
 					«getHeader(semanticElement)»
+					«IF semanticElement instanceof Relationship»
+						«IF !semanticElement.attributes.empty»
+						«FOR attribute: semanticElement.attributes»
+							<div class="popup-header">
+								<div class="popup-attribute-info">«attribute.name» : «attribute.datatype.transformDataType»</div>
+							</div>
+						«ENDFOR»
+						«ENDIF»
+					«ENDIF»
 					</div>
 					'''
 				],
@@ -130,15 +140,25 @@ class PopupModelFactory implements IPopupModelFactory {
 			<div class="popup-element-info">
 				<vscode-tag class="popup-tag">Relationship</vscode-tag>«semanticElement.name»
 			</div>
-			«IF !semanticElement.attributes.empty»
-			<div class="popup-attributes">
-				«FOR attribute: semanticElement.attributes»
-				<div class="popup-attribute-info">«attribute.name»</div>
-			«ENDFOR»
-			</div>
-			«ENDIF»
 			«ENDIF»
 		</div>
+		
 		'''
+	}
+	
+	private def transformDataType(DataType dataType) {
+		// default
+		if(dataType === null) {
+			return ''
+		}
+			
+		val type = dataType.type
+		var size = dataType.size
+		
+		if (size != 0) {
+			return type +  '(' + size + ')';
+		}
+		
+		return type
 	}
 }

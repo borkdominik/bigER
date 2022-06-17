@@ -96,7 +96,7 @@ text {
 }
 
 .top.sprotty-label {
-    fill: white;
+    fill: var(--vscode-foreground);
 }
 
 .sprotty-edge {

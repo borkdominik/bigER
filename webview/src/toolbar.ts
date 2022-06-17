@@ -1,6 +1,7 @@
 import { postConstruct, inject, injectable } from 'inversify';
-import { SprottyDiagramIdentifier, VscodeDiagramWidget } from 'sprotty-vscode-webview';
-import { IActionDispatcher, ILogger, ModelSource, TYPES } from 'sprotty';
+import { VscodeDiagramWidget } from 'sprotty-vscode-webview';
+import { SprottyDiagramIdentifier } from 'sprotty-vscode-protocol';
+import { IActionDispatcher, ILogger, TYPES } from 'sprotty';
 import { CollapseExpandAllAction, FitToScreenAction } from 'sprotty-protocol';
 import { AddEntityAction, AddRelationshipAction, CodeGenerateAction } from './actions';
 
@@ -9,8 +10,11 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
 
     @inject(TYPES.IActionDispatcher) actionDispatcher: IActionDispatcher;
     @inject(SprottyDiagramIdentifier) diagramIdentifier: SprottyDiagramIdentifier;
-    @inject(TYPES.ModelSource) modelSource: ModelSource;
     @inject(TYPES.ILogger) protected logger: ILogger;
+    
+    constructor() {
+        super();
+    }
     
     @postConstruct()
     initialize(): void {

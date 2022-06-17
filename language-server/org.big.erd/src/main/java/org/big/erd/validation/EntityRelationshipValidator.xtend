@@ -69,6 +69,19 @@ class EntityRelationshipValidator extends AbstractEntityRelationshipValidator {
 		]
     }
     
+    @Check
+	def extendedEntites(Model model) {
+        // Entities
+        val extends = model.entities.filter[it.extends !== null]
+        if (model.generateOption.generateOptionType.toString === 'sql') {
+        	extends.forEach[ e |
+        		error('''Code Generator does not support Generalization. Remove extension from '«e.name»'.''', e, EntityRelationshipPackage.Literals.ENTITY__NAME)
+        	]
+        	
+        	
+        }
+    }
+    
     
 	// Check if strong entities contain primary key and no partial key
 	@Check

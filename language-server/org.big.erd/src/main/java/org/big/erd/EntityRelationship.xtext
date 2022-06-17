@@ -3,26 +3,22 @@ grammar org.big.erd.EntityRelationship with org.eclipse.xtext.common.Terminals
 generate entityRelationship "http://www.big.org/erd/EntityRelationship"
 
 Model:
-	{Model}
-	('erdiagram' name=ID)?
+	'erdiagram' name=ID
 	generateOption=GenerateOption?
 	notationOption=NotationOption?
 	(entities+=Entity | relationships+=Relationship)*;
 
 GenerateOption:
-	'generate' '=' generateOptionType=GenerateOptionType
-;
+	'generate' '=' generateOptionType=GenerateOptionType;
 
 NotationOption:
-	'notation' '=' notationOptionType=NotationOptionType
-;
+	'notation' '=' notationOptionType=NotationOptionType;
 
 Entity:
 	(weak?='weak')? 'entity' name=ID ('extends' extends=[Entity])? '{'
 		(attributes += Attribute)*
 	'}';
 
-// TODO: allow more than ternary (more generic) - e.g. save all in targets[]
 Relationship:
 	(weak?='weak')? 'relationship' name=ID '{'
 		(first=RelationEntity (('->' second=RelationEntity) ('->' third=RelationEntity)?)?)?
@@ -49,6 +45,7 @@ enum AttributeType:
 	MULTIVALUED = 'multivalued';
 
 enum CardinalityType:
+	NONE = 'none' |
 	ONE = '1' | 
 	MANY = 'N';
 

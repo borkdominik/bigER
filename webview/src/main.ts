@@ -4,7 +4,8 @@ import '../css/menu-bar.css'
 import { Container } from 'inversify';
 import { SprottyLspEditStarter } from 'sprotty-vscode-webview/lib/lsp/editing';
 import { createDiagramContainer } from './di.config';
-import { SprottyDiagramIdentifier, VscodeDiagramServer, VscodeDiagramWidget} from 'sprotty-vscode-webview'
+import { SprottyDiagramIdentifier } from 'sprotty-vscode-protocol';
+import { VscodeDiagramServer, VscodeDiagramWidget} from 'sprotty-vscode-webview'
 import { ERDiagramWidget } from './toolbar';
 import { configureCommand, configureModelElement, TYPES } from 'sprotty';
 import { AddEntityCommand, AddRelationshipCommand } from './actions';

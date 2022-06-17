@@ -27,7 +27,7 @@ import org.eclipse.sprotty.xtext.SIssueMarkerDecorator
 import org.eclipse.sprotty.SCompartment
 
 import static org.big.erd.entityRelationship.EntityRelationshipPackage.Literals.*
-
+import org.big.erd.entityRelationship.CardinalityType
 
 class ERDiagramGenerator implements IDiagramGenerator {
     
@@ -118,6 +118,7 @@ class ERDiagramGenerator implements IDiagramGenerator {
 	// TODO: Refactor method (duplicate code)
 	def void addRelationEdges(Relationship relationship, extension Context context) { 
 		if (relationship.first !== null) {
+			val multiplicityTextFirst = relationship.first.cardinality === CardinalityType.NONE ? ' ' : relationship.first.cardinality.toString();
 			val edge = new SEdge [
 				sourceId = idCache.getId(relationship.first.target)
 				targetId = idCache.getId(relationship)
@@ -126,7 +127,7 @@ class ERDiagramGenerator implements IDiagramGenerator {
 				children = #[
 					new SLabel [
 						id = idCache.uniqueId(relationship + 'label:first')
-						text = relationship.first.customMultiplicity ?: relationship.first.cardinality.toString()
+						text = relationship.first.customMultiplicity ?: multiplicityTextFirst
 						type = EDGE_LABEL
 					]
 				]
@@ -134,6 +135,7 @@ class ERDiagramGenerator implements IDiagramGenerator {
 			graph.children.add(edge)	
 		}
 		if (relationship.second !== null) {
+			val multiplicityTextSecond = relationship.second.cardinality === CardinalityType.NONE ? ' ' : relationship.second.cardinality.toString();
 			val edge = new SEdge [
 				sourceId = idCache.getId(relationship)
 				targetId = idCache.getId(relationship.second.target)
@@ -142,7 +144,7 @@ class ERDiagramGenerator implements IDiagramGenerator {
 				children = #[
 					new SLabel [
 						id = idCache.uniqueId(relationship + 'label:second')
-						text = relationship.second.customMultiplicity ?: relationship.second.cardinality.toString()
+						text = relationship.second.customMultiplicity ?: multiplicityTextSecond
 						type = EDGE_LABEL
 					]
 				]
@@ -151,6 +153,7 @@ class ERDiagramGenerator implements IDiagramGenerator {
 		}
 		if (relationship.third !== null) {
 			val edge = new SEdge [
+				val multiplicityTextThird = relationship.third.cardinality === CardinalityType.NONE ? ' ' : relationship.third.cardinality.toString();
 				sourceId = idCache.getId(relationship)
 				targetId = idCache.getId(relationship.third.target)
 				val theId = idCache.uniqueId(relationship + sourceId + ':' + relationship.name + ':' + targetId)
@@ -158,7 +161,7 @@ class ERDiagramGenerator implements IDiagramGenerator {
 				children =  #[
 					new SLabel [
 						id = idCache.uniqueId(relationship + 'label:third')
-						text = relationship.third.customMultiplicity ?: relationship.third.cardinality.toString()
+						text = relationship.third.customMultiplicity ?: multiplicityTextThird
 						type = EDGE_LABEL
 					]
 				]

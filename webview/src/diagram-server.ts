@@ -1,16 +1,19 @@
-import { ActionHandlerRegistry  } from "sprotty";
+//import { ActionHandlerRegistry  } from "sprotty";
+import { injectable } from "inversify";
+import { ActionHandlerRegistry } from "sprotty";
 import { Action, isAction } from 'sprotty-protocol';
 import { VscodeLspEditDiagramServer } from "sprotty-vscode-webview/lib/lsp/editing";
 import { CodeGenerateAction } from "./actions";
 
+@injectable()
 export class BigERDiagramServer extends VscodeLspEditDiagramServer {
     
-    initialize(registry: ActionHandlerRegistry) {
+    override initialize(registry: ActionHandlerRegistry): void {
         super.initialize(registry);
         registry.register(CodeGenerateAction.KIND, this);
     }
 
-    handleLocally(action: Action): boolean {
+    override handleLocally(action: Action): boolean {
         if (isAction(CodeGenerateAction.KIND)) {
             return true;
         }

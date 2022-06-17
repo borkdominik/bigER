@@ -38,4 +38,5 @@ class ERDiagramLayoutEngine extends ElkLayoutEngine {
 			layout(root, configurator, cause)
 		}
 	}
+
 }

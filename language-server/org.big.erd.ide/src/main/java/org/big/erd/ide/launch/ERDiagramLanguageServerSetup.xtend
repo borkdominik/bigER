@@ -26,9 +26,9 @@ class ERDiagramLanguageServerSetup extends DiagramLanguageServerSetup {
 	}
 	
 	override GsonBuilder configureGson(GsonBuilder gsonBuilder) {
-		val factory = new ActionTypeAdapter.Factory()
+		//val factory = new ActionTypeAdapter.Factory()
 		gsonBuilder
-			.registerTypeAdapterFactory(factory)
+			//.registerTypeAdapterFactory(factory)
 			.registerTypeAdapterFactory(new EditActionTypeAdapterFactory)
 			.registerTypeAdapterFactory(new EnumTypeAdapter.Factory)
 			.registerTypeAdapterFactory(new CustomActionTypeAdapterFactory)

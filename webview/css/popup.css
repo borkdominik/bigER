@@ -33,6 +33,11 @@
     margin-left: 5px;
 }
 
+.sprotty-infoBlock {
+    display: flex;
+    flex-direction: column;
+}
+
 
 .sprotty-infoRow {
     font-size: small;

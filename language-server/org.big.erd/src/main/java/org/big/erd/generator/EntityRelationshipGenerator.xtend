@@ -15,6 +15,7 @@ import org.big.erd.entityRelationship.AttributeType
 import org.big.erd.entityRelationship.Relationship
 import java.util.Set
 import org.eclipse.xtext.util.RuntimeIOException
+import org.big.erd.entityRelationship.CardinalityType
 
 /**
  * Generates code from your model files on save.
@@ -31,34 +32,99 @@ class EntityRelationshipGenerator extends AbstractGenerator {
 		if (diagram.generateOption === null || diagram.generateOption.generateOptionType.toString === 'off') {
 			return;
 		}
+		
 
 		val name = (diagram.name ?: 'output') + '.sql'
 		try {
-			/*  1 - Strong entities -> Table
-			      * Attributes -> Column <name datatype>
-			      * Ignore Derived
-			      * Primary Key
-			
-			// 2 - Weak entity 
-			* - always 1:N
-			* 
-			*/
 			fsa.generateFile(name, '''
-			«var Attribute primaryKey»
-			«FOR entity : diagram.entities.reject[it.isWeak]»
-				CREATE TABLE «entity.name» (
-				«FOR attribute : entity.allAttributes.reject[it.type === AttributeType.DERIVED] SEPARATOR ', '»
-					«attribute.name» «attribute.datatype.transformDataType»
+				«FOR entity : diagram.entities.reject[it.isWeak]»
+					«entity.toTable»
 				«ENDFOR»
-				);«'\n'»«'\n'»
-			«ENDFOR»
+				«FOR relationship : diagram.relationships.reject[!it.isWeak]»
+					«relationship.weakToTable»
+				«ENDFOR»
+				«FOR relationship : diagram.relationships.reject[it.isWeak]»
+					«relationship.toTable»
+				«ENDFOR»
+				
 			'''
 			)
 		} catch (RuntimeIOException e) {
 			throw new Error("Could not generate file. Did you open a folder?")
 		}
 	}
+	
+	private def toTable(Entity entity) {
+		return ''' 
+			CREATE TABLE «entity.name»(
+			«FOR attribute : entity.allAttributes.reject[it.type === AttributeType.DERIVED]»
+				«'\t'»«attribute.name» «attribute.datatype.transformDataType»,
+			«ENDFOR»
+			«'\t'»PRIMARY KEY («entity.primaryKey.name»)
+			);«'\n'»«'\n'»
+		'''
+	}
+	
+	private def toTable(Relationship relationship) {
+		val keySource = relationship.first.target?.primaryKey
+		val keyTarget = relationship.second.target?.primaryKey
+		return ''' 
+			CREATE TABLE «relationship.name»(
+			«relationship.first.target.foreignKeyRef»
+			«relationship.second.target.foreignKeyRef»
+			«IF relationship.third?.target !== null», «relationship.third.target.foreignKeyRef»«ENDIF»
+			«FOR attribute : relationship.attributes»
+				«'\t'»«attribute.name» «attribute.datatype.transformDataType»,
+			«ENDFOR»
+			«'\t'»PRIMARY KEY («keySource.name», «keyTarget.name»«IF relationship.third?.target !== null», «relationship.third.target.primaryKey.name»«ENDIF»)
+			);«'\n'»«'\n'»
+		'''
+	}
+	
+	private def weakToTable(Relationship relationship) {
+		val strong = getStrongEntity(relationship)
+		val weak = getWeakEntity(relationship)
+		return ''' 
+			CREATE TABLE «weak.name»(
+			«FOR attribute : weak.allAttributes.reject[it.type === AttributeType.DERIVED]»
+				«'\t'»«attribute.name» «attribute.datatype.transformDataType»,
+			«ENDFOR»
+			«FOR attribute : relationship.attributes»
+				«'\t'»«attribute.name» «attribute.datatype.transformDataType»,
+			«ENDFOR»
+			«'\t'»«strong.primaryKey.name» «strong.primaryKey.datatype.transformDataType»,
+			«'\t'»PRIMARY KEY («weak.partialKey.name», «strong.primaryKey.name»),
+			«'\t'»FOREIGN KEY («strong.primaryKey.name») references «strong.name» ON DELETE CASCASE
+			);«'\n'»«'\n'»
+		'''
+	}
+	
+	
+	private def foreignKeyRef(Entity entity) {
+		val key = entity.attributes.filter[a | a.type === AttributeType.KEY]
+		if (key.nullOrEmpty) {
+			val attr = entity.attributes.get(0)
+			return '''«'\t'»«attr.name» «attr.datatype.transformDataType» references «entity.name»(«attr.name»),'''
+		}
+		return '''
+			«'\t'»«key.get(0).name» «key.get(0).datatype.transformDataType» references «entity.name»(«key.get(0).name»),
+		'''
+	}
 
+	private def primaryKey(Entity entity) {
+		val keyAttributes = entity.attributes?.filter[it.type === AttributeType.KEY]
+		if (keyAttributes.nullOrEmpty)
+			return entity.attributes.get(0)
+		return keyAttributes.get(0)
+	}
+	
+	private def partialKey(Entity entity) {
+		val keyAttributes = entity.attributes?.filter[a | a.type === AttributeType.PARTIAL_KEY]
+		if (keyAttributes.nullOrEmpty)
+			return entity.attributes.get(0)
+		return keyAttributes.get(0)
+	}
+	
 	private def transformDataType(DataType dataType) {
 		// default
 		if(dataType === null) {
@@ -97,52 +163,5 @@ class EntityRelationshipGenerator extends AbstractGenerator {
 		return attributes
 	}
 	
-	/* 
-	private def getStrongEntityName(Entity entity, Model m) {
-		val weakRelationships = m.relationships.reject[!it.isWeak]
-		for (Relationship r : weakRelationships) {
-			if (r.left.target === entity) {
-				return r.right.target.name
-			}
-			if (r.right.target === entity) {
-				return r.left.target.name
-			}
-		}
-	}
-	*/
-
-	private def getKey(Entity entity) {
-		for(Attribute a : entity.attributes) {
-			if (a.type === AttributeType.KEY) {
-				return a
-			}
-		}
-	}
-
-	private def getLeftKey(Relationship relationship) {
-		val entity = relationship.first.target
-		for(Attribute a : entity.attributes) {
-			if (a.type === AttributeType.KEY) {
-				return a
-			}
-		}
-	}
-
-	private def getRightKey(Relationship relationship) {
-		val entity = relationship.second.target
-		for(Attribute a : entity.attributes) {
-			if (a.type === AttributeType.KEY) {
-				return a
-			}
-		}
-	}
-
-	private def getThirdKey(Relationship relationship) {
-		val entity = relationship.third.target
-		for(Attribute a : entity.attributes) {
-			if (a.type === AttributeType.KEY) {
-				return a
-			}
-		}
-	}
+	
 }

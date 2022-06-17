@@ -1,45 +1,100 @@
-# bigER Modeling Tool
+<!-- HEADER -->
+<div align="center">
+	<a href="https://github.com/othneildrew/Best-README-Template">
+    	<img src="./extension/media/logo.png" alt="Logo" width="100" height="100">
+	</a>
+	<h3 align="center">bigER Modeling Tool</h3>
+	<p align="center">
+    	VS Code Extension for creating Entity-Relationship (ER) diagrams with a textual language and SQL code generation
+		</br>
+    	<a href="https://marketplace.visualstudio.com/items?itemName=BIGModelingTools.erdiagram">
+			<strong>Download from Marketplace</strong>
+		</a>
+	<br />
+    <br />
+   	<a href="#">Read Wiki</a> |
+    <a href="#">Report Bug</a> |
+    <a href="#">Request Feature</a>
+  </p>
+</div>
 
->### *VS Code Extension to create Entity-Relationship (ER) diagrams and generate SQL code with a textual language*
+---
+
+<!-- TABLE OF CONTENTS -->
+<details>
+  <summary>Table of Contents</summary>
+  <ol>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#getting-started">Getting Started</a></li>
+    <li><a href="#example">Example</a></li>
+    <li><a href="#build-instructions">Build Instructions</a></li>
+    <li><a href="#issues">Issues</a></li>
+    <li><a href="#contributing">Contributing</a></li>
+	<li><a href="#license">License</a></li>
+  </ol>
+</details>
+
+
+<!-- FEATURES -->
+## About the Project
 
 <p align="center">
  <img src="https://raw.githubusercontent.com/borkdominik/bigER/main/extension/media/example.gif" width="75%"/>
 </p>
 
+**Features**:
+- 📝 **Textual Language** to specify model elements through ER concepts.
+- 🧠 **Smart Editing** features for the textual editor such as, code completion or refactorings.
+- 📊 **Diagram View** synchronized with textual changes and automatic layout.
+- 🎨 **Graphical Interactions** on the diagram to modify the underlying model.  
+- 🖨️ **Code Generation** to generate SQL tables from the specified ER model.  
 
-### Features
-
-📝 **Textual Language** to specify model elements and apply ER concepts  
-🧠 **Smart Editing** features for the language such as Syntax Highlighting or Auto Complete  
-📊 **Diagram View** synchronized with textual changes and elements are laid out automatically  
-🎨 **Graphical Interactions** to customize the diagram or modify the underlying model  
-🖨️ **Code Generation** to generate SQL statements  
-
-The tool is built based on web technologies and language features are communicated with the [Language Server Protocol (LSP)](https://microsoft.github.io/language-server-protocol/). This makes bigER highly reusable and simplifies implementation for other editors that also use the LSP. The language and editor features are realized as a language server with [Xtext](https://www.eclipse.org/Xtext/). [Sprotty](https://github.com/eclipse/sprotty) together with [Sprotty Server](https://github.com/eclipse/sprotty-server) is used to create the diagrams and both connect to VS Code by using [Sprotty VS Code](https://github.com/eclipse/sprotty-vscode). 
-
-[**Download the extension from the VS Code Marketplace**](https://marketplace.visualstudio.com/items?itemName=BIGModelingTools.erdiagram)
-
----
-
-### Sections
-
-➜ [Quick Example](#quick-example)  
-➜ [Getting Started](#getting-started)  
-➜ [Build Instructions](#build-instructions)    
-➜ [Known Issues](#known-issues)      
-➜ [Contributers](#contributors) 
-
-### Wiki
-
-[🏷️ Feature Overview](https://github.com/borkdominik/bigER/wiki/%F0%9F%8F%B7%EF%B8%8F-Feature-Overview)  
-[📖 Language Documentation](https://github.com/borkdominik/bigER/wiki/%F0%9F%93%96-Language-Documentation) 
-
-> ⚠️ The wiki pages are still in progress
-
-</br>   
+The tool uses a language server for the ER modeling language which communicates its language features through the [Language Server Protocol (LSP)](https://microsoft.github.io/language-server-protocol/). This makes bigER highly reusable, increases perfomance and simplifies implementation for other editors that also use the LSP. 
 
 
-## Quick Example 
+The language and editor features are realized with the [Xtext](https://www.eclipse.org/Xtext/) language workbench, while [Sprotty](https://github.com/eclipse/sprotty) with a [Sprotty-enhanced Graphical Language Server](https://github.com/eclipse/sprotty-server) is used for rendering the diagrams. All of this is integrated with VS Code by implementing a [Sprotty VS Code Extension](https://github.com/eclipse/sprotty-vscode).
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+
+
+<!-- GETTING STARTED -->
+## Getting Started
+
+To start using the tool, download the extension from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=BIGModelingTools.erdiagram) or clone this repository (see [Build Instructions](#build-instructions)). 
+
+Open a file ending in `.erd` and refer to the minimal example below to specify a new ER model. The diagram view can then be opened with the button in the editor or from the context menu of the file. 
+
+*example.erd*
+```
+erdiagram Example
+generate=sql
+
+entity Customer {
+    id: int key
+    name: string
+}
+
+entity Order {
+    order_number: int key
+    price: double
+}
+
+relationship Places {
+    Customer[1] -> Order[N]
+}
+```
+
+> The first line always has to include the `erdiagram` keyword followed by a name.
+
+The `generate=sql` statement in line 2 is optional and can be used to generate SQL statements. When the specified ER model is valid a new *src-gen* folder is created in the current workspace that contains the file with the generated SQL tables. 
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+
+
+<!-- EXAMPLE -->
+## Example 
 
 **Textual**
 
@@ -178,38 +233,11 @@ CREATE TABLE publishes (
 ```
 </details>
 
-## Getting Started
+<p align="right">(<a href="#top">back to top</a>)</p>
 
-To start using the tool, download the extension from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=BIGModelingTools.erdiagram) or clone this repository (see [Build Instructions](#build-instructions)). 
 
-Open a file ending in `.erd` and refer to the minimal example below to specify a new ER model. The diagram view can then be opened with the button in the editor or from the context menu of the file. 
 
-*example.erd*
-```
-erdiagram Example
-generateSql
-
-entity Customer {
-    id: int key
-    name: string
-}
-
-entity Order {
-    order_number: int key
-    price: double
-}
-
-relationship Places {
-    Customer[1] -> Order[N]
-}
-```
-
-> The first line always has to include the `erdiagram` keyword followed by a name.
-
-The `generateSql` keyword in line 2 is optional and can be used to generate SQL statements. The ER model has to be valid and a *src-gen* folder will be created containing the generated code. 
-
-<!-- GIF opening file, pasting example and opening diagram -->
-
+<!-- BUILD INSTRUCTIONS -->
 ## Build Instructions
 
 The minimum requirements to to build and run the project are:
@@ -223,7 +251,7 @@ The minimum requirements to to build and run the project are:
 Download or clone the repository and in the root folder of the project execute the following commands:
 
 ```bash
-language-server/gradlew -p language-server/ build   
+language-server/gradlew -p language-server/ build 
 yarn --cwd webview  
 yarn --cwd extension
 ```
@@ -232,23 +260,39 @@ This builds the code for the language server, the webview and the extension. The
 
 The code is split into a **client side** (extension with webview) and a **server side** (language with LSP and diagram server). It is recommended to use  **VS Code** for the client code, written in *TypeScript* and **Eclipse** for the server side, based on *Java*. Eclipse must be compatible with Xtext and Xtend (e.g. [Eclipse IDE for Java and DSL Developers](https://www.eclipse.org/downloads/packages/release/juno/sr2/eclipse-ide-java-and-dsl-developers)) and create a new workspace to avoid configuration issues. Import the language server as a Gradle project (<kbd>File -> Import -> Existing Gradle Project</kbd>) and override the workspace settings.
 
-## Known Issues
+<p align="right">(<a href="#top">back to top</a>)</p>
 
-**Fix**
-- Code Generator can cause the language server to crash (e.g. weak entities)
 
-**Next steps**
 
-- [ ] New ER concepts - partial/full participation, min-max Notation
-- [ ] New Diagram Features - Delete button, Support also renaming attributes and multiplicity
-- [ ] Improve Code Generator - Include all ER concepts, button in Diagram, multiple SQL dialects, fix crashes/bugs
-- [ ] Improve Layout and Styling (Light/Dark Theme)
-- [ ] Improve LSP features
+<!-- ISSUES -->
+## Issues
 
-## Contributors
+Project issues are managed on GitHub, see currently [Open Issues](https://github.com/borkdominik/bigER/issues) for more information. Do not hesitate to [report a bug]() or [request a feature]() through the offered issue templates. 
 
-[Philipp-Lorenz Glaser](https://github.com/plglaser) (Main developer)   
-[Georg Hammerschmied](https://github.com/SchmiedHammer)  
-[Dominik Bork](https://github.com/borkdominik)
 
-[All Contributors](https://github.com/borkdominik/bigER/graphs/contributors)
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+
+
+<!-- CONTRIBUTING -->
+## Contributing
+
+Contributions to the project are always welcome! See the [Contribution Guidelines]() for more information.
+
+**Contributers**:
+- [Philipp-Lorenz Glaser](https://github.com/plglaser) (Main developer)   
+- [Georg Hammerschmied](https://github.com/SchmiedHammer)  
+- [Dominik Bork](https://github.com/borkdominik)
+
+[See All Contributors](https://github.com/borkdominik/bigER/graphs/contributors)
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+
+
+<!-- LICENSE -->
+## License 
+
+The project is distributed under the MIT License. See [License]() for more details.
+
+<p align="right">(<a href="#top">back to top</a>)</p>

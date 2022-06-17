@@ -2,19 +2,19 @@
     "compilerOptions": {
         "declaration": true,                     
         "declarationMap": true,
-        "noUnusedLocals": true,
-        "strictPropertyInitialization": false,
+        "downlevelIteration": true,
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
-        "module": "commonjs",
-        "moduleResolution": "node",
-        "strict": true,                          
-        "downlevelIteration": true,
-        "target": "es6",  
         "lib": [
             "es6"
         ],
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "noUnusedLocals": true,
+        "skipLibCheck": true,
         "sourceMap": true,
-        "skipLibCheck": true
+        "strict": true, 
+        "strictPropertyInitialization": false,             
+        "target": "es5"
     }
 }  

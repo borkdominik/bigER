@@ -2,11 +2,12 @@
     "name": "erdiagram",
     "displayName": "bigER Modeling Tool",
     "description": "Entity Relationship Diagrams with a textual editor and SQL code generation.",
-    "version": "0.0.3",
+    "version": "0.1.0",
     "publisher": "BIGModelingTools",
     "categories": [
         "Programming Languages",
-        "Visualization"
+        "Visualization",
+        "Snippets"
     ],
     "keywords": [
         "Entity Relationship",
@@ -31,10 +32,11 @@
     "main": "./pack/main",
     "activationEvents": [
         "onLanguage:erdiagram",
-        "onCommand:erdiagram.diagram.open"
+        "onCommand:erdiagram.diagram.open",
+        "onCommand:erdiagram.model.new"
     ],
     "files": [
-        "lib",
+        "dist",
         "extension",
         "server",
         "syntaxes",
@@ -62,32 +64,43 @@
                 "path": "./syntaxes/erdiagram.tmLanguage.json"
             }
         ],
+        "snippets": [
+            {
+                "language": "erdiagram",
+                "path": "./snippets.json"
+            }
+        ],
         "commands": [
             {
                 "command": "erdiagram.diagram.open",
                 "title": "Open ER Diagram",
                 "icon": "$(type-hierarchy-super)",
-                "category": "ER Diagram"
+                "category": "bigER"
             },
             {
                 "command": "erdiagram.diagram.fit",
                 "title": "Fit to Screen",
-                "category": "ER Diagram"
+                "category": "bigER"
             },
             {
                 "command": "erdiagram.diagram.center",
                 "title": "Center selection",
-                "category": "ER Diagram"
+                "category": "bigER"
             },
             {
                 "command": "erdiagram.diagram.export",
                 "title": "Export diagram to SVG",
-                "category": "ER Diagram"
+                "category": "bigER"
             },
             {
                 "command": "erdiagram.diagram.delete",
                 "title": "Delete selected element",
-                "category": "ER Diagram"
+                "category": "bigER"
+            },
+            {
+                "command": "erdiagram.model.new",
+                "title": "New ER Model",
+                "category": "bigER"
             }
         ],
         "menus": {
@@ -112,6 +125,12 @@
                     "group": "navigation"
                 }
             ],
+            "file/newFile": [
+                {
+                    "command": "erdiagram.model.new",
+                    "group": "file"
+                }
+            ],
             "commandPalette": [
                 {
                     "command": "erdiagram.diagram.open",
@@ -132,6 +151,9 @@
                 {
                     "command": "erdiagram.diagram.export",
                     "when": "erdiagram-diagram-focused"
+                },
+                {
+                    "command": "erdiagram.model.new"
                 }
             ]
         },
@@ -157,24 +179,25 @@
         ]
     },
     "dependencies": {
-        "sprotty": "0.11.1",
         "sprotty-vscode": "^0.2.0",
         "sprotty-vscode-webview": "^0.2.0",
         "vscode-languageclient": "^7.0.0"
     },
     "devDependencies": {
-        "@types/node": "^12.11.7",
+        "@types/node": "^12.12.6",
         "@types/vscode": "1.46.0",
-        "@vscode/webview-ui-toolkit": "0.8.4",
-        "rimraf": "latest",
-        "ts-loader": "^8.0.14",
-        "typescript": "^4.3.0",
-        "webpack": "^4.44.1",
-        "webpack-cli": "^4.9.2"
+        "@vscode/webview-ui-toolkit": "^1.0.0",
+        "latest": "^0.2.0",
+        "rimraf": "^3.0.2",
+        "source-map-loader": "^3.0.0",
+        "ts-loader": "^9.2.6",
+        "typescript": "~4.6.2",
+        "webpack": "^5.64.2",
+        "webpack-cli": "^4.9.1"
     },
     "scripts": {
         "prepare": "yarn run clean && yarn run build",
-        "clean": "rimraf extension/lib extension/pack",
+        "clean": "rimraf extension/dist extension/pack",
         "build": "webpack --mode=development",
         "watch": "webpack --mode=development --watch"
     }

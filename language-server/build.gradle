@@ -1,17 +1,18 @@
 buildscript {
 	repositories {
 		mavenCentral()
+		gradlePluginPortal()
 	}
 	dependencies {
-		classpath 'org.xtext:xtext-gradle-plugin:2.0.8'
+		classpath 'org.xtext:xtext-gradle-plugin:3.0.2'
 	}
 }
 
 subprojects {
 	group = 'org.big.erd'
 	//version = '0.1.0-SNAPSHOT'
-	ext.xtextVersion = '2.26.0'
-	ext.sprottyVersion = '0.9.1'
+	ext.xtextVersion = '2.27.0'
+	ext.sprottyVersion = '0.12.0'
 	ext.elkVersion = '0.7.1'
 	
 	repositories {
