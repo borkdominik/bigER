@@ -9,31 +9,30 @@
             "include": "#comments"
         }, {
 			"name": "entity.name.type.erdiagram",
-			"match": "\\b(entity|relationship|entities|relationships)\\b"
-		}, {
-			"name": "constant.language.erdiagram",
-			"match": "\\b(generateSql)\\b"
+			"match": "\\b(entity|relationship)\\b"
 		}, {
             "name": "entity.name.tag.erdiagram",
 			"match": "\\b(extends|weak)\\b"
         }, {
+			"name": "constant.language.erdiagram",
+			"match": "\\b(erdiagram)\\b"
+		}, {
+            "name": "storage.type.erdiagram",
+			"match": "\\b(generate)\\b"
+        }, {
+            "name": "storage.modifier.erdiagram",
+			"match": "\\b(sql|off)\\b"
+        }, {
 			"name": "keyword.operator.erdiagram",
-			"match": "(\\-\\>)"
+			"match": "\\b(->|=|:)\\b"
 		}, {
 			"name": "entity.other.attribute-name.erdiagram",
 			"match": "\\b(key|derived|multivalued|foreign-key|optional|partial-key)\\b"
 		}, {
-			"name": "keyword.datatype.erdiagram",
-			"match": "\\b(int|double|string|boolean|datetime)\\b"
-		}, {
-			"name": "entity.name.section.erdiagram",
-			"match": "\\b(erdiagram)\\b"
-		}, {
             "name": "string.quoted.double.erdiagram",
             "begin": "\"",
             "end": "\""
-        },
-        {
+        }, {
             "name": "string.quoted.single.erdiagram",
             "begin": "'",
             "end": "'"

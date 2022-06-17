@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="entityRelationship" nsURI="http://www.big.org/erd/EntityRelationship"
+    nsPrefix="entityRelationship">
+  <eClassifiers xsi:type="ecore:EClass" name="Model">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="generateOption" eType="#//GenerateOption"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="notationOption" eType="#//NotationOption"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="entities" upperBound="-1"
+        eType="#//Entity" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="relationships" upperBound="-1"
+        eType="#//Relationship" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="GenerateOption">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="generateOptionType" eType="#//GenerateOptionType"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="NotationOption">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="notationOptionType" eType="#//NotationOptionType"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Entity">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="weak" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="extends" eType="#//Entity"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="attributes" upperBound="-1"
+        eType="#//Attribute" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Relationship">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="weak" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="first" eType="#//RelationEntity"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="second" eType="#//RelationEntity"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="third" eType="#//RelationEntity"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="attributes" upperBound="-1"
+        eType="#//Attribute" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RelationEntity">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="#//Entity"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="cardinality" eType="#//CardinalityType"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="customMultiplicity" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Attribute">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="datatype" eType="#//DataType"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="#//AttributeType"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DataType">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="size" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="AttributeType">
+    <eLiterals name="NONE" literal="none"/>
+    <eLiterals name="KEY" value="1" literal="key"/>
+    <eLiterals name="PARTIAL_KEY" value="2" literal="partial-key"/>
+    <eLiterals name="OPTIONAL" value="3" literal="optional"/>
+    <eLiterals name="DERIVED" value="4" literal="derived"/>
+    <eLiterals name="MULTIVALUED" value="5" literal="multivalued"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="CardinalityType">
+    <eLiterals name="NONE" literal="none"/>
+    <eLiterals name="ONE" value="1" literal="1"/>
+    <eLiterals name="MANY" value="2" literal="N"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="GenerateOptionType">
+    <eLiterals name="OFF" literal="off"/>
+    <eLiterals name="SQL" value="1" literal="sql"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="NotationOptionType">
+    <eLiterals name="DEFAULT" literal="default"/>
+  </eClassifiers>
+</ecore:EPackage>

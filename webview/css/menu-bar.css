@@ -1,3 +1,110 @@
+#biger-toolbar {
+    position: absolute;
+    top: 0px;
+    display: flex;
+    width: 100%;
+    height: 35px;
+    border-top: 1px solid var(--vscode-sideBarSectionHeader-border);
+    border-bottom: 1px solid var(--vscode-sideBarSectionHeader-border);
+    background: var(--vscode-sideBar-background);
+}
+
+/* Toolbar sections */
+#toolbar-left {
+    display: flex;
+    position: absolute;
+    left: 0px;
+    top: 5px;
+}
+#toolbar-middle {
+    position: absolute;
+    left: 50%;
+    top: 5px;
+    transform: translate(-50%, 0%);
+}
+#toolbar-right {
+    display: flex;
+    position: absolute;
+    right: 0px;
+    top: 5px;
+}
+
+/* Tooltips */
+.tooltip .tooltiptext {
+    visibility: hidden;
+    top: 120%;
+    width: fit-content;
+    background-color: var(--vscode-activityBar-background);
+    color: var(--vscode-activityBar-foreground);
+    text-align: center;
+    padding: 5px 5px;
+    border-radius: 1px;
+    font-size: 12px;
+    /* Position the tooltip text - see examples below! */
+    position: absolute;
+    z-index: 1;
+}
+.tooltip-help .tooltiptext {
+    visibility: hidden;
+    top: 120%;
+    right: 10%;
+    width: fit-content;
+    background-color: var(--vscode-activityBar-background);
+    color: var(--vscode-activityBar-foreground);
+    text-align: center;
+    padding: 5px 5px;
+    border-radius: 1px;
+    font-size: 12px;
+    /* Position the tooltip text - see examples below! */
+    position: absolute;
+    z-index: 1;
+}
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}
+.tooltip-help:hover .tooltiptext {
+    visibility: visible;
+}
+
+.rotated {
+    transform: rotate(45deg);
+}
+
+#toolbar-options-panel {
+    display: flex;
+    flex-direction: row;
+    position: absolute;
+    top: 44px;
+    left: 8px;
+    background: var(--vscode-menu-background);
+    box-shadow: 0 2px 8px var(--vscode-widget-shadow);
+    max-width: 49%;
+    flex-wrap: wrap;
+    border: 1px solid var(--vscode-sideBarSectionHeader-border);
+}
+
+#toolbar-modelName {
+    font-size: 18px;
+    margin: 0 0 0 5px;
+}
+
+.vertical-seperator {
+    border-left: 1px solid var(--vscode-sideBarSectionHeader-border);
+    margin: 0 5px 0 5px;
+}
+
+/* not used, but keeping for future purposes */
+#toolbar-bottom {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translate(-50%, 0%);
+    display: flex;
+    justify-content: center;
+}
+
+/* old */
+
 #toolbar-options {
     display: none;
 	flex-direction: column;
@@ -5,14 +112,6 @@
     background: var(--vscode-menu-background);
     padding-bottom: 5px;
     box-shadow: 6px -4px 8px 0px black;
-}
-
-#biger-toolbar{
-    position: absolute;
-    top: 0px;
-    right: 0px;
-    display: flex;
-    flex-direction: row;
 }
 
 #toolbar-button {

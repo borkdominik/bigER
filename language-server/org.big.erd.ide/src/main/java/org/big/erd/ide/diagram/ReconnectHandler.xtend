@@ -4,21 +4,17 @@ import com.google.inject.Inject
 import org.eclipse.lsp4j.Range
 import org.eclipse.lsp4j.TextEdit
 import org.eclipse.lsp4j.WorkspaceEdit
-import org.eclipse.sprotty.SEdge
 import org.eclipse.sprotty.SModelElement
 import org.eclipse.sprotty.SModelIndex
 import org.eclipse.sprotty.xtext.ILanguageAwareDiagramServer
 import org.eclipse.sprotty.xtext.ReconnectAction
 import org.eclipse.sprotty.xtext.WorkspaceEditAction
 import org.eclipse.sprotty.xtext.tracing.PositionConverter
-import org.eclipse.sprotty.xtext.tracing.XtextTrace
 import org.eclipse.xtext.ide.server.ILanguageServerAccess
 import org.eclipse.xtext.ide.server.UriExtensions
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils
-import static extension org.eclipse.xtext.EcoreUtil2.*
 import org.big.erd.entityRelationship.Entity
 import org.big.erd.entityRelationship.Relationship
-import org.big.erd.entityRelationship.Model
 import org.big.erd.entityRelationship.RelationEntity
 
 class ReconnectHandler {
@@ -29,7 +25,6 @@ class ReconnectHandler {
 	def handle(ReconnectAction action, ILanguageAwareDiagramServer server) {
 		val root = server.diagramState.currentModel
 		val extension index = new SModelIndex(root)
-		val routable = action.routableId?.get
 		val source = action.newSourceId?.get
 		val target = action.newTargetId?.get
 		server.diagramLanguageServer.languageServerAccess.doRead(server.sourceUri, [ context |
