@@ -29,6 +29,22 @@
     top: 5px;
 }
 
+#notation-div {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+#notationOptions {
+    z-index: 9;
+    margin-top: 38px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    background: var(--vscode-menu-background);
+    box-shadow: 0px 0px 3px 0px #13121252;
+}
+
 /* Tooltips */
 .tooltip .tooltiptext {
     visibility: hidden;

@@ -9,11 +9,16 @@ svg {
     height: 0px;
 }
 
+.sprotty-graph.selected {
+    border: none;
+}
+  
 text {
     stroke-width: 0;
     fill: #000;
     font-family: sans-serif;
     font-size: var(--vscode-editor-font-size);
+
 }
 
 .sprotty-node {

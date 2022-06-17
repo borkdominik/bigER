@@ -3,7 +3,7 @@ import { injectable } from "inversify";
 import { ActionHandlerRegistry } from "sprotty";
 import { Action, isAction } from 'sprotty-protocol';
 import { VscodeLspEditDiagramServer } from "sprotty-vscode-webview/lib/lsp/editing";
-import { CodeGenerateAction } from "./actions";
+import { ChangeNotationAction, CodeGenerateAction } from "./actions";
 
 @injectable()
 export class BigERDiagramServer extends VscodeLspEditDiagramServer {
@@ -15,6 +15,8 @@ export class BigERDiagramServer extends VscodeLspEditDiagramServer {
 
     override handleLocally(action: Action): boolean {
         if (isAction(CodeGenerateAction.KIND)) {
+            return true;
+        } else if (isAction(ChangeNotationAction.KIND)) {
             return true;
         }
         return super.handleLocally(action);

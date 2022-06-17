@@ -11,6 +11,7 @@ import org.eclipse.elk.core.options.Direction
 import org.eclipse.elk.core.options.PortAlignment
 import org.eclipse.elk.core.options.PortConstraints
 import org.eclipse.elk.core.options.PortSide
+import org.eclipse.elk.core.math.ElkMargin
 import org.apache.log4j.Logger
 
 class ERDiagramLayoutEngine extends ElkLayoutEngine {
@@ -19,22 +20,33 @@ class ERDiagramLayoutEngine extends ElkLayoutEngine {
 	
 	// TODO: Layout improvement
 	override layout(SModelRoot root, Action cause) {
-		if (root instanceof SGraph) {
-			LOG.info("Applying macro layout for SGraph '" + root.id + "'")
+		if (root instanceof ERModel) {
+			LOG.info("Applying macro layout for ERModel with id '" + root.id + "'")
 			val configurator = new SprottyLayoutConfigurator
-			configurator.configureByType('graph')
-				.setProperty(CoreOptions.DIRECTION, Direction.RIGHT)
+			
+      configurator.configureByType('graph')
+			  .setProperty(CoreOptions.DIRECTION, Direction.RIGHT)
 				.setProperty(CoreOptions.SPACING_NODE_NODE, 40.0)
 				.setProperty(LayeredOptions.SPACING_NODE_NODE_BETWEEN_LAYERS, 40.0)
-			configurator.configureByType('node:relationship')
+				.setProperty(CoreOptions.SPACING_PORT_PORT, 30.0)
+			
+      configurator.configureByType('node')
+				 .setProperty(CoreOptions.PORT_ALIGNMENT_DEFAULT, PortAlignment.CENTER)
+				 .setProperty(CoreOptions.PORT_CONSTRAINTS, PortConstraints.FIXED_SIDE)
+				 .setProperty(CoreOptions.SPACING_PORT_PORT, 30.0)
+			
+      configurator.configureByType('node:relationship')
 				.setProperty(CoreOptions.PORT_ALIGNMENT_DEFAULT, PortAlignment.CENTER)
 				.setProperty(CoreOptions.PORT_CONSTRAINTS, PortConstraints.FIXED_SIDE)
-			configurator.configureByType('node:weak-relationship')
+			
+      configurator.configureByType('node:weak-relationship')
 				.setProperty(CoreOptions.PORT_ALIGNMENT_DEFAULT, PortAlignment.CENTER)
 				.setProperty(CoreOptions.PORT_CONSTRAINTS, PortConstraints.FIXED_SIDE)
-			configurator.configureByType('port')
-				.setProperty(CoreOptions.PORT_SIDE, PortSide.NORTH)
-				.setProperty(CoreOptions.PORT_BORDER_OFFSET, 5.0)
+				
+			if (root.notation === 'crowsfoot') {
+				configurator.configureByType('graph')
+					.setProperty(LayeredOptions.SPACING_NODE_NODE_BETWEEN_LAYERS, 120.0)
+			}
 			layout(root, configurator, cause)
 		}
 	}

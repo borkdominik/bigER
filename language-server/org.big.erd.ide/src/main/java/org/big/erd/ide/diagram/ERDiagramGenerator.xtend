@@ -6,8 +6,10 @@ import org.big.erd.entityRelationship.Attribute
 import org.big.erd.entityRelationship.AttributeType
 import org.big.erd.entityRelationship.EntityRelationshipPackage
 import org.big.erd.entityRelationship.Relationship
+import org.big.erd.entityRelationship.RelationEntity
 import org.big.erd.entityRelationship.Model
 import org.big.erd.ide.diagram.EntityNode
+import org.big.erd.ide.diagram.NotationEdge
 import org.big.erd.ide.diagram.ERModel
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.sprotty.SEdge
@@ -25,13 +27,15 @@ import org.eclipse.sprotty.IDiagramState
 import org.eclipse.sprotty.xtext.tracing.ITraceProvider
 import org.eclipse.sprotty.xtext.SIssueMarkerDecorator
 import org.eclipse.sprotty.SCompartment
+import org.big.erd.entityRelationship.CardinalityType
+import org.big.erd.entityRelationship.NotationType
 
 import static org.big.erd.entityRelationship.EntityRelationshipPackage.Literals.*
 import org.big.erd.entityRelationship.CardinalityType
 
 class ERDiagramGenerator implements IDiagramGenerator {
     
-    static val LOG = Logger.getLogger(ERDiagramGenerator)
+  static val LOG = Logger.getLogger(ERDiagramGenerator)
     
 	@Inject extension ITraceProvider
 	@Inject extension SIssueMarkerDecorator
@@ -54,7 +58,6 @@ class ERDiagramGenerator implements IDiagramGenerator {
 	SGraph graph
 	List<Entity> extendedEntities
 	
-	
 	override generate(Context context) {
 		this.state = context.state
 		val contentHead = context.resource.contents.head
@@ -65,14 +68,14 @@ class ERDiagramGenerator implements IDiagramGenerator {
 		}
 		return graph
 	}
-	
 
-    def void toSGraph(Model m, extension Context context) {
+  def void toSGraph(Model m, extension Context context) {
 		val genOption = m.generateOption?.generateOptionType
 		graph = new ERModel => [
-			type = GRAPH
 			id = idCache.uniqueId(m, 'root')
+      type = GRAPH
 			name = m.name
+      notation = m.notation.notationType.toString
 			generateType = genOption !== null ? genOption.toString : 'off'
 			children = new ArrayList<SModelElement>
 		]
@@ -85,89 +88,128 @@ class ERDiagramGenerator implements IDiagramGenerator {
 		
 		// Create Relationship nodes and edges
 		m.relationships.forEach[ r |
-			graph.children.add(relationshipNodes(r, context))
+			if(!model.notation.notationType.equals(NotationType.CROWSFOOT)){
+				if(model.notation.notationType.equals(NotationType.UML)){
+					if(r.third !== null){
+						graph.children.add(relationshipNodes(r, context))
+					}	
+				}else{
+					graph.children.add(relationshipNodes(r, context))
+				}	
+			}
 			addRelationEdges(r, context)
 		]
 	}
-	
 
-	def RelationshipNode relationshipNodes(Relationship relationship, extension Context context) {
-		val relationshipId = idCache.uniqueId(relationship, relationship.name)
-		val node = new RelationshipNode [
-			id = relationshipId
-			type = NODE_RELATIONSHIP
-			weak = relationship.weak ? true : false
-			layout = 'vbox'
-			children =  #[ 
-				(new SLabel [
-					id = idCache.uniqueId(relationshipId + '.label')
-					text = relationship.name
-					type = 'label:relationship'
-				]).trace(relationship, RELATIONSHIP__NAME, -1)
-			]
-		]
-		node.layoutOptions = new LayoutOptions [
-			paddingFactor = 2.0
-		]
+	def void addRelationEdges(Relationship relationship, extension Context context) { 
 		
-		node.traceAndMark(relationship, context)
-		return node
+		if (relationship.first !== null) {
+			var cardinality = getCardinality(relationship.first)
+			if(model.notation.notationType.equals(NotationType.CROWSFOOT) || model.notation.notationType.equals(NotationType.UML)){
+				cardinality = combineCardinality(relationship.first, relationship.second)
+			}
+			val source = idCache.getId(relationship.first.target)
+			val target = idCache.getId(model.notation.notationType.equals(NotationType.CROWSFOOT) || 
+				 (model.notation.notationType.equals(NotationType.UML) && relationship.third === null) ? relationship.second.target : relationship
+			)
+			createEdgeAndAddToGraph(relationship,source,target,'label:first', cardinality, context)
+		}
+		if (relationship.second !== null && !model.notation.notationType.equals(NotationType.CROWSFOOT) &&
+			!(model.notation.notationType.equals(NotationType.UML) && relationship.third === null)) {
+			var cardinality = getCardinality(relationship.second)
+			if(model.notation.notationType.equals(NotationType.UML)){
+				cardinality = combineCardinality(relationship.first, relationship.second)
+			}
+			val source = idCache.getId(relationship)
+			val target = idCache.getId(relationship.second.target)
+			createEdgeAndAddToGraph(relationship,source,target,'label:second', cardinality, context)
+		}
+		if (relationship.third !== null && !model.notation.notationType.equals(NotationType.CROWSFOOT)) {
+			var cardinality = getCardinality(relationship.third)
+			if(model.notation.notationType.equals(NotationType.UML)){
+				cardinality = combineCardinality(relationship.second, relationship.third)
+			}
+			val source = idCache.getId(relationship)
+			val target = idCache.getId(relationship.third.target)
+			createEdgeAndAddToGraph(relationship,source,target,'label:third', cardinality, context)
+		}
 	}
 	
+	def String combineCardinality(RelationEntity source, RelationEntity target) {
+		val firstCardinality = getCardinality(source)
+		val secondCardinality = getCardinality(target)
+		if(source !== null && target !== null && !firstCardinality.isEmpty && !secondCardinality.isEmpty){
+			return firstCardinality+":"+secondCardinality
+		}
+		return "";
+	}
 	
-	// TODO: Refactor method (duplicate code)
-	def void addRelationEdges(Relationship relationship, extension Context context) { 
-		if (relationship.first !== null) {
-			val multiplicityTextFirst = relationship.first.cardinality === CardinalityType.NONE ? ' ' : relationship.first.cardinality.toString();
-			val edge = new SEdge [
-				sourceId = idCache.getId(relationship.first.target)
-				targetId = idCache.getId(relationship)
-				val theId = idCache.uniqueId(relationship + sourceId + ':' + relationship.name + ':' + targetId)
-				id = theId
-				children = #[
-					new SLabel [
-						id = idCache.uniqueId(relationship + 'label:first')
-						text = relationship.first.customMultiplicity ?: multiplicityTextFirst
-						type = EDGE_LABEL
-					]
-				]
-			]
-			graph.children.add(edge)	
+	def String getCardinality(RelationEntity relationEntity) {
+		switch model.notation.notationType {
+				case NotationType.BACHMAN : return relationEntity.cardinality.toString
+				case NotationType.CHEN : return getChenCardinality(relationEntity.cardinality)
+				case NotationType.CROWSFOOT : return getCrowsFootsCardinality(relationEntity.cardinality)
+				case NotationType.MINMAX : return relationEntity.minMax ?: ''
+				case NotationType.UML : return relationEntity.uml ?: relationEntity.cardinality.toString()
+				default: return relationEntity.customMultiplicity ?: relationEntity.cardinality.toString()
+			}
+	}
+	
+	def String getChenCardinality(CardinalityType cardinality) {
+		if(cardinality === null || cardinality === CardinalityType.ZERO || 
+		   cardinality === CardinalityType.ZERO_OR_MORE || cardinality === CardinalityType.ONE_OR_MORE ||
+		   cardinality === CardinalityType.ZERO_OR_ONE){
+			return "";
+		}else{
+			return cardinality.toString;
 		}
-		if (relationship.second !== null) {
-			val multiplicityTextSecond = relationship.second.cardinality === CardinalityType.NONE ? ' ' : relationship.second.cardinality.toString();
-			val edge = new SEdge [
-				sourceId = idCache.getId(relationship)
-				targetId = idCache.getId(relationship.second.target)
-				val theId = idCache.uniqueId(relationship + sourceId + ':' + relationship.name + ':' + targetId)
-				id = theId
-				children = #[
-					new SLabel [
-						id = idCache.uniqueId(relationship + 'label:second')
-						text = relationship.second.customMultiplicity ?: multiplicityTextSecond
-						type = EDGE_LABEL
-					]
-				]
-			]
-			graph.children.add(edge)	
+	}
+	
+	def String getCrowsFootsCardinality(CardinalityType cardinality) {
+		if(cardinality === null || cardinality === CardinalityType.ZERO || 
+		   cardinality === CardinalityType.MANY || cardinality === CardinalityType.MANY_CHEN){
+			return "";
+		}else{
+			return cardinality.toString;
 		}
-		if (relationship.third !== null) {
-			val edge = new SEdge [
-				val multiplicityTextThird = relationship.third.cardinality === CardinalityType.NONE ? ' ' : relationship.third.cardinality.toString();
-				sourceId = idCache.getId(relationship)
-				targetId = idCache.getId(relationship.third.target)
-				val theId = idCache.uniqueId(relationship + sourceId + ':' + relationship.name + ':' + targetId)
-				id = theId
-				children =  #[
-					new SLabel [
-						id = idCache.uniqueId(relationship + 'label:third')
-						text = relationship.third.customMultiplicity ?: multiplicityTextThird
-						type = EDGE_LABEL
-					]
-				]
-			]
-			graph.children.add(edge)	
+	}
+	
+	def void createEdgeAndAddToGraph(Relationship relationship,String source, String target,String label, 
+									 String cardinality, extension Context context){
+		var labelText =	'';
+		var combinedLabels = '';					 	
+									 	
+		if (model.notation.notationType.equals(NotationType.CROWSFOOT)) {
+			combinedLabels = cardinality
+			
+		} else if(model.notation.notationType.equals(NotationType.UML)) {
+			labelText = relationship.name
+			combinedLabels = cardinality
+			
+		} else if(model.notation.notationType.equals(NotationType.MINMAX)) {
+			if(!cardinality.isEmpty && !cardinality.contains('(') && !cardinality.contains(')')){
+				labelText = '('+cardinality+')'
+			} else {
+				labelText = cardinality
+			}
+		} else {
+			labelText = cardinality
 		}
+		// must be final for lambda expression
+		val edgeLabelTextFinal = labelText
+		val combinedLabelsFinal = combinedLabels
+		
+		graph.children.add(new NotationEdge [sourceId = source
+								  targetId = target
+								  notation = model.notation.notationType.toString
+								  relationshipCardinality = combinedLabelsFinal
+								  showRelationship = relationship.third !== null
+								  isSource = label === "label:first"
+								  id = idCache.uniqueId(relationship + sourceId + ':' + relationship.name + ':' + targetId)
+								  children =  #[new SLabel [
+												id = idCache.uniqueId(relationship + label)
+												text = edgeLabelTextFinal
+												type = EDGE_LABEL]]])
 	}
 	
 

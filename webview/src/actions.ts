@@ -47,7 +47,23 @@ export namespace AddRelationshipAction {
     export function is(action: Action): action is AddRelationshipAction {
         return action.kind === KIND;
     }
-    
+}
+
+export interface ChangeNotationAction {
+    kind: typeof ChangeNotationAction.KIND
+    notation: string
+}
+
+export namespace ChangeNotationAction {
+    export const KIND = 'changeNotation';
+
+    export function create(notation: string): ChangeNotationAction {
+        console.log(notation);
+        return {
+            kind: KIND,
+            notation
+        };   
+    }
 }
 
 @injectable()

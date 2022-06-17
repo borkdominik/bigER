@@ -9,19 +9,20 @@ import org.apache.log4j.Logger
 class ERDiagramServer extends LanguageAwareDiagramServer {
 	
 	static val LOG = Logger.getLogger(ERDiagramServer)
-
-	@Inject ReconnectHandler reconnectHandler
+  @Inject ReconnectHandler reconnectHandler
 	@Inject GenerateHandler generateHandler
+	@Inject NotationHandler notationHandler
 	
-	
-	// handle new actions here
 	override protected handleAction(Action action) {
-		if (action.kind === ReconnectAction.KIND) 
-			reconnectHandler.handle(action as ReconnectAction, this)
-		else if (action.kind === CodeGenerateAction.KIND) {
-			LOG.info("CodeGenerateAction: " + action.toString)
-			generateHandler.handle(action as CodeGenerateAction, this)
-		} else 
+		if (action.kind === ReconnectAction.KIND) {
+			  reconnectHandler.handle(action as ReconnectAction, this)
+    } else if (action.kind === ChangeNotationAction.KIND) {
+			  notationHandler.handle(action as ChangeNotationAction, this)
+    } else if (action.kind === CodeGenerateAction.KIND) {
+			  generateHandler.handle(action as CodeGenerateAction, this)
+		} else {
 			super.handleAction(action)
+    }
 	}
+	
 } 

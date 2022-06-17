@@ -1,6 +1,8 @@
 package org.big.erd.ide.diagram
 
 import org.eclipse.sprotty.SNode
+import org.eclipse.sprotty.SEdge
+import org.eclipse.xtend.lib.annotations.Accessors
 import org.eclipse.sprotty.SGraph
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.eclipse.sprotty.PreRenderedElement
@@ -10,6 +12,7 @@ import org.eclipse.sprotty.SButton
 class ERModel extends SGraph {
 	String name
 	String generateType
+  String notation
 
 	new() { }
 	
@@ -38,6 +41,20 @@ class RelationshipNode extends SNode {
 	new() { }
 	
 	new((RelationshipNode) => void initializer) {
+		initializer.apply(this)
+	}
+}
+
+@Accessors
+class NotationEdge extends SEdge {
+	Boolean isSource
+	String notation
+	Boolean showRelationship
+	String relationshipCardinality
+	
+	new() { }
+	
+	new((NotationEdge) => void initializer) {
 		initializer.apply(this)
 	}
 }

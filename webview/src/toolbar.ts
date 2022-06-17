@@ -3,7 +3,7 @@ import { VscodeDiagramWidget } from 'sprotty-vscode-webview';
 import { SprottyDiagramIdentifier } from 'sprotty-vscode-protocol';
 import { IActionDispatcher, ILogger, TYPES } from 'sprotty';
 import { CollapseExpandAllAction, FitToScreenAction } from 'sprotty-protocol';
-import { AddEntityAction, AddRelationshipAction, CodeGenerateAction } from './actions';
+import { AddEntityAction, AddRelationshipAction, ChangeNotationAction, CodeGenerateAction } from './actions';
 
 @injectable()
 export class ERDiagramWidget extends VscodeDiagramWidget {
