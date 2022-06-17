@@ -11,18 +11,14 @@ import org.eclipse.sprotty.xtext.tracing.PositionConverter
 import org.eclipse.xtext.ide.server.ILanguageServerAccess
 import org.eclipse.xtext.ide.server.UriExtensions
 import org.big.erd.entityRelationship.Model
-import org.apache.log4j.Logger
+//import org.apache.log4j.Logger
 import org.eclipse.xtext.resource.ILocationInFileProvider
 import org.eclipse.lsp4j.Position
-import org.eclipse.osgi.internal.location.Locker.MockLocker
-import org.big.erd.entityRelationship.NotationType
-
-import org.eclipse.xtext.nodemodel.util.NodeModelUtils
-import org.eclipse.emf.ecore.EObject
+import static org.big.erd.entityRelationship.EntityRelationshipPackage.Literals.*
 
 class NotationHandler {
 	
-	static val LOG = Logger.getLogger(NotationHandler)
+	//static val LOG = Logger.getLogger(NotationHandler)
 	
 	@Inject UriExtensions uriExtensions
 	@Inject extension PositionConverter
@@ -31,7 +27,7 @@ class NotationHandler {
 	def handle(ChangeNotationAction action, ILanguageAwareDiagramServer server) {
 		
 		val root = server.diagramState.currentModel
-		val notation = action?.notation
+		val newNotation = action?.notation
 		
 		server.diagramLanguageServer.languageServerAccess.doRead(server.sourceUri, [ context |
 			
@@ -39,12 +35,26 @@ class NotationHandler {
 			
 			if (rootelem instanceof Model) {
 				val textEdits = newArrayList
-				var textRegion = locationInFileProvider.getFullTextRegion(rootelem.notation)
-        		var startPosition = toPosition(textRegion.offset, rootelem.notation)
-        		var endPosition = toPosition(textRegion.offset + textRegion.length, rootelem.notation)
+				
+				if (rootelem.notation !== null) {
             		
-        		var range = new Range(startPosition, endPosition)
-        		textEdits += new TextEdit(range, 'notation='+notation)
+            		var textRegion = locationInFileProvider.getFullTextRegion(rootelem.notation)
+            		var startPosition = toPosition(textRegion.offset, rootelem.notation)
+            		var endPosition = toPosition(textRegion.offset + textRegion.length, rootelem.notation)
+            		var range = new Range(startPosition, endPosition)
+            		var newText = '''notation=«newNotation»'''
+            		textEdits += new TextEdit(range, newText)
+            		
+            	} else {
+            		
+            		var textRegion = locationInFileProvider.getFullTextRegion(rootelem, MODEL__NAME, -1);
+            		var rootPosition = toPosition(textRegion.offset + textRegion.length, rootelem)
+            		var generatePosition = new Position(rootPosition.line + 1, 0)
+            		var range = new Range(generatePosition, generatePosition)
+            		var newText = '''notation=«newNotation»«'\n'»'''
+            		textEdits += new TextEdit(range, newText)
+            		
+            	}
 				
 				val workspaceEdit = new WorkspaceEdit() => [changes = #{ server.sourceUri -> textEdits }]
 				server.dispatch(new WorkspaceEditAction => [it.workspaceEdit = workspaceEdit]);

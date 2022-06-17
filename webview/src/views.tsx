@@ -1,9 +1,9 @@
 /** @jsx svg */
 import { VNode } from "snabbdom";
 import { RenderingContext, RectangularNodeView, SEdge, Point, PolylineEdgeView, toDegrees,
-         svg, SPort, SGraphView, EdgeRouterRegistry, IViewArgs, Hoverable, Selectable, DiamondNodeView, Diamond, SNode, PreRenderedView } from 'sprotty';
+         svg, SPort, SGraphView, EdgeRouterRegistry, IViewArgs, Hoverable, Selectable, DiamondNodeView, Diamond, SNode, PreRenderedView, SLabel } from 'sprotty';
 import { injectable, inject } from 'inversify';
-import { EntityNode, ERModel, PopupButton, RelationshipNode } from "./model";
+import { EntityNode, ERModel, NotationEdge, PopupButton, RelationshipNode } from "./model";
 
 @injectable()
 export class ERModelView<IRenderingArgs> extends SGraphView<IRenderingArgs> {
@@ -19,11 +19,11 @@ export class ERModelView<IRenderingArgs> extends SGraphView<IRenderingArgs> {
         // set code generator option 
         const generateSelect = document.getElementById('select-generate') as HTMLSelectElement;
         if (generateSelect) { 
-            generateSelect.value = model.generateType
+            generateSelect.value = model.generateType;
         }
-        const notationButton = document.getElementById('notationButton');
-        if (notationButton) {
-            notationButton.innerHTML = convertNotatoinString(model)+'<span id="button-icon" slot="start" class="fas fa-angle-left"/>'
+        const notationSelect = document.getElementById('select-notation') as HTMLSelectElement;
+        if (notationSelect) { 
+            notationSelect.value = model.notation;
         }
         const edgeRouting = this.edgeRouterRegistry.routeAllChildren(model);
         const transform = `scale(${model.zoom}) translate(${-model.scroll.x},${-model.scroll.y})`;
@@ -34,6 +34,18 @@ export class ERModelView<IRenderingArgs> extends SGraphView<IRenderingArgs> {
         </svg>;
     }
 }
+
+/*
+function convertNotationString(model: Readonly<ERModel>):string{
+    switch(model.notation){
+        case 'bachman'   : return 'Bachman';
+        case 'chen'      : return 'Chen';
+        case 'crowsfoot' : return 'Crows Foot';
+        case 'minmax'    : return 'Min Max';
+        case 'uml'       : return 'UML';
+        default : return '';
+    }
+}*/
 
 @injectable()
 export class EntityNodeView extends RectangularNodeView {

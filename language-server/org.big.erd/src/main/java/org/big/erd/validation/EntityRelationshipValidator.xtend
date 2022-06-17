@@ -4,7 +4,6 @@
 package org.big.erd.validation
 
 import org.big.erd.entityRelationship.Model
-import org.big.erd.entityRelationship.NotationType
 import org.big.erd.entityRelationship.EntityRelationshipPackage
 import com.google.common.collect.Multimaps
 import org.eclipse.xtext.validation.Check
@@ -16,6 +15,7 @@ import org.big.erd.entityRelationship.Relationship
 import org.eclipse.emf.ecore.EStructuralFeature
 import org.big.erd.entityRelationship.Attribute
 import org.big.erd.entityRelationship.Entity
+import org.big.erd.entityRelationship.NotationType
 
 /**
  * This class contains custom validation rules. 

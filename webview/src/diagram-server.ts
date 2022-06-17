@@ -10,6 +10,7 @@ export class BigERDiagramServer extends VscodeLspEditDiagramServer {
     
     override initialize(registry: ActionHandlerRegistry): void {
         super.initialize(registry);
+        registry.register(ChangeNotationAction.KIND, this);
         registry.register(CodeGenerateAction.KIND, this);
     }
 

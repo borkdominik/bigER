@@ -1,5 +1,6 @@
 erdiagram University
-generate=sql
+//notation=default
+//generate=sql
 
 // -- Entities --
 entity Student {

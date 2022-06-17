@@ -7,10 +7,10 @@ import {
     configureModelElement, HtmlRoot, HtmlRootView, overrideViewerOptions, PreRenderedElement, PreRenderedView, SEdge, 
     SRoutingHandle, SRoutingHandleView, TYPES, loadDefaultModules, ConsoleLogger, LogLevel,  SCompartmentView,
     SCompartment, editLabelFeature, labelEditUiModule, SModelRoot, SLabel, ExpandButtonHandler,
-    SButton, expandFeature, SLabelView, PolylineEdgeView, CreateElementCommand, configureCommand, ExpandButtonView
+    SButton, expandFeature, SLabelView, CreateElementCommand, configureCommand, ExpandButtonView
 } from 'sprotty';
-import { InheritanceEdgeView, ERModelView, EntityNodeView, RelationshipNodeView } from './views';
-import { EntityNode, ERModel, MultiplicityLabel, RelationshipNode } from './model';
+import { InheritanceEdgeView, ERModelView, EntityNodeView, RelationshipNodeView, NotationEdgeView } from './views';
+import { EntityNode, ERModel, MultiplicityLabel, NotationEdge, RelationshipNode } from './model';
 
 /**
  * Sprotty Dependency Injection container 
@@ -34,7 +34,7 @@ const DiagramModule = new ContainerModule((bind, unbind, isBound, rebind) => {
     configureModelElement(context, 'comp:attributes', SCompartment, SCompartmentView);
     configureModelElement(context, 'comp:attribute-row', SCompartment, SCompartmentView);
     // Edges
-    configureModelElement(context, 'edge', SEdge, PolylineEdgeView);
+    configureModelElement(context, 'edge', NotationEdge, NotationEdgeView);
     configureModelElement(context, 'edge:inheritance', SEdge, InheritanceEdgeView);
     // Labels
     configureModelElement(context, 'label:header', SLabel, SLabelView, { enable: [editLabelFeature] });

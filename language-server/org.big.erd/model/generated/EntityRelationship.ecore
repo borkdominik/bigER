@@ -6,7 +6,7 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="generateOption" eType="#//GenerateOption"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="notationOption" eType="#//NotationOption"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="notation" eType="#//NotationOption"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="entities" upperBound="-1"
         eType="#//Entity" containment="true"/>
@@ -17,7 +17,7 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="generateOptionType" eType="#//GenerateOptionType"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="NotationOption">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="notationOptionType" eType="#//NotationOptionType"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="notationType" eType="#//NotationType"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Entity">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="weak" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
@@ -42,6 +42,8 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="#//Entity"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="cardinality" eType="#//CardinalityType"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="customMultiplicity" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="minMax" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="uml" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Attribute">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -62,15 +64,24 @@
     <eLiterals name="MULTIVALUED" value="5" literal="multivalued"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="CardinalityType">
-    <eLiterals name="NONE" literal="none"/>
-    <eLiterals name="ONE" value="1" literal="1"/>
-    <eLiterals name="MANY" value="2" literal="N"/>
+    <eLiterals name="ONE" literal="1"/>
+    <eLiterals name="MANY" value="1" literal="N"/>
+    <eLiterals name="MANY_CHEN" value="2" literal="M"/>
+    <eLiterals name="ZERO" value="3" literal="0"/>
+    <eLiterals name="ONE_OR_MORE" value="4" literal="1+"/>
+    <eLiterals name="ZERO_OR_MORE" value="5" literal="0+"/>
+    <eLiterals name="ZERO_OR_ONE" value="6" literal="?"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="GenerateOptionType">
     <eLiterals name="OFF" literal="off"/>
     <eLiterals name="SQL" value="1" literal="sql"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EEnum" name="NotationOptionType">
+  <eClassifiers xsi:type="ecore:EEnum" name="NotationType">
     <eLiterals name="DEFAULT" literal="default"/>
+    <eLiterals name="CHEN" value="1" literal="chen"/>
+    <eLiterals name="MINMAX" value="2" literal="minmax"/>
+    <eLiterals name="BACHMAN" value="3" literal="bachman"/>
+    <eLiterals name="CROWSFOOT" value="4" literal="crowsfoot"/>
+    <eLiterals name="UML" value="5" literal="uml"/>
   </eClassifiers>
 </ecore:EPackage>

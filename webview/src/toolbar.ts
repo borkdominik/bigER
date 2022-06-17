@@ -46,6 +46,10 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
                         <span class="codicon codicon-file-code"></span>
                         <span class="tooltiptext">Code Generator</span>
                     </vscode-button>
+                    <vscode-button appearance="icon" class="tooltip" id="notation-button">
+                        <span class="codicon codicon-symbol-color"></span>
+                        <span class="tooltiptext">Notation</span>
+                    </vscode-button>
                     <div class="vertical-seperator"></div>
                     <p id="toolbar-modelName"></p>
                 </div>
@@ -82,9 +86,24 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
                     <vscode-option value="sql">sql</vscode-option>
                 </vscode-dropdown>
             `;
+            const notationPanel = document.createElement("div");
+            notationPanel.id = "toolbar-notation-panel"
+            notationPanel.style.display = "none"
+            notationPanel.innerHTML = `
+                <label style="margin: 5px 5px 5px 5px;">Notation:</label>
+                <vscode-dropdown id="select-notation" position="below" style="height: 90%; margin: 5px 30px;">
+                    <vscode-option value="default">Default</vscode-option>
+                    <vscode-option value="bachman">Bachman</vscode-option>
+                    <vscode-option value="chen">Chen</vscode-option>
+                    <vscode-option value="crowsfoot">Crows Foot</vscode-option>
+                    <vscode-option value="minmax">Min Max</vscode-option>
+                    <vscode-option value="uml">UML</vscode-option>
+                </vscode-dropdown>
+            `;
             
             containerDiv.append(menu);
             containerDiv.append(optionsPanel);
+            containerDiv.append(notationPanel);
         } 
     }
     
@@ -116,6 +135,19 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
                 var value = select.options[select.selectedIndex].value;
                 if (value === 'off' || value === 'sql') {
                     await this.actionDispatcher.dispatch(CodeGenerateAction.create(value));
+                }
+            }
+        });
+        document.getElementById('notation-button')!.addEventListener('click', async () => {
+            this.togglePanel('toolbar-notation-panel')
+        });
+        document.getElementById('select-notation')!.addEventListener('change', async () => {
+            var select = document.getElementById('select-notation') as HTMLSelectElement;
+            if (select) {
+                var value = select.options[select.selectedIndex].value;
+                if (value === 'default' || value === 'chen' || value === 'minmax' || value === 'bachman'
+                    || value === 'crowsfoot' || value === 'uml') {
+                    await this.actionDispatcher.dispatch(ChangeNotationAction.create(value));
                 }
             }
         });

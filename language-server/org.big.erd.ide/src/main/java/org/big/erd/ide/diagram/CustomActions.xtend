@@ -42,6 +42,9 @@ class ChangeNotationAction implements Action {
 /**
  * Action to change the generate option in the underlying model, to be synchronized with the diagram
  */
+@Accessors
+@EqualsHashCode
+@ToString(skipNulls = true)
 class CodeGenerateAction implements Action {
     
   public static val KIND = 'codeGenerate'

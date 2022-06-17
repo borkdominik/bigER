@@ -1,5 +1,5 @@
 import { injectable } from "inversify";
-import { DiamondNode, EdgeLayoutable, EdgePlacement, PreRenderedElement, RectangularNode, SGraph,  SLabel, SRoutableElement } from 'sprotty';
+import { DiamondNode, EdgeLayoutable, EdgePlacement, PreRenderedElement, RectangularNode, SEdge, SGraph,  SLabel, SRoutableElement } from 'sprotty';
 
 
 export class ERModel extends SGraph {
@@ -19,11 +19,6 @@ export class EntityNode extends RectangularNode {
 
 export class RelationshipNode extends DiamondNode {
     weak: boolean
-}
-
-export class RelationEdge extends SEdge {
-    routerKind = PolylineEdgeRouter.KIND;
-    targetAnchorCorrection = Math.sqrt(5);
 }
 
 export class NotationEdge extends SEdge {
@@ -47,10 +42,4 @@ export class MultiplicityLabel extends SLabel implements EdgeLayoutable {
 export class PopupButton extends PreRenderedElement {
     target: string;
 	kind: string;
-}
-
-@injectable()
-export class InheritanceEdge extends SEdge {
-    public readonly targetAnchorCorrection = Math.sqrt(5);
-    public readonly routerKind = ManhattanEdgeRouter.KIND;
 }
