@@ -1,45 +1,56 @@
 erdiagram University
-generateSql
+//notation=default
+//generate=sql
 
-entity Person {
-    full_name: string key
-    birthday: datetime
-    age: int derived
+// -- Entities --
+entity Student {
+    id: INT key
+    name: VARCHAR(255)
+    birthday: DATE
+    age: SMALLINT 
 }
-
-entity Student extends Person {
-    matr_nr: int key
-    undergraduate: boolean
-}
-
 entity Course {
-    course_id: int key
-    title: string
+    course_nr: INT key
+    course_name: VARCHAR(100)
+    credits: SMALLINT
 }
-
 weak entity Lecture {
-    lect_nr: int partial-key
+    title: VARCHAR(255) partial-key
+}
+entity Instructor {
+    instructor_id: INT key
+    name: VARCHAR(255)
+}
+entity Department {
+    dept_nr: INT key
+    name: VARCHAR(100)
+    abbreviation: CHAR(5) 
+}
+weak entity Room {
+    room_nr: INT partial-key
+}
+entity Building {
+    building_id: CHAR(8) key
+    address: VARCHAR(255)
 }
 
-weak relationship contains {
+// -- Relationships-- 
+relationship Exam {
+    Student[1]  -> Course[N] -> Instructor[N]
+    points: DOUBLE
+}
+weak relationship has {
+    Room[N] -> Building[1]
+}
+relationship Office {   
+    Room[1] -> Instructor[1]
+}
+relationship Work {
+    Instructor[N] -> Department[1]
+}
+weak relationship include {
     Course[1] -> Lecture[N]
 }
-
-entity Professor extends Person {
-    pers_nr: int key
-}
-
-entity Publication {
-    pub_id: int key
-    title: string
-    research_area: string optional
-}
-
-relationship takes_exam {
-    Course[N] -> Professor[1] -> Student[N]
-    points: double
-}
-
-relationship publishes {
-    Publication[N] -> Professor[N]
+relationship Location {
+    Building[N] -> Department[1]
 }

@@ -1,18 +1,20 @@
 import { postConstruct, inject, injectable } from 'inversify';
-import { SprottyDiagramIdentifier, VscodeDiagramWidget } from 'sprotty-vscode-webview';
-import { IActionDispatcher, ILogger, ModelSource, TYPES} from 'sprotty';
+import { VscodeDiagramWidget } from 'sprotty-vscode-webview';
+import { SprottyDiagramIdentifier } from 'sprotty-vscode-protocol';
+import { IActionDispatcher, ILogger, TYPES } from 'sprotty';
 import { CollapseExpandAllAction, FitToScreenAction } from 'sprotty-protocol';
-import { AddEntityAction, AddRelationshipAction } from './actions';
+import { AddEntityAction, AddRelationshipAction, ChangeNotationAction, CodeGenerateAction } from './actions';
 
 @injectable()
 export class ERDiagramWidget extends VscodeDiagramWidget {
 
     @inject(TYPES.IActionDispatcher) actionDispatcher: IActionDispatcher;
     @inject(SprottyDiagramIdentifier) diagramIdentifier: SprottyDiagramIdentifier;
-    @inject(TYPES.ModelSource) modelSource: ModelSource;
     @inject(TYPES.ILogger) protected logger: ILogger;
     
-    protected elementsExpanded: boolean;
+    constructor() {
+        super();
+    }
     
     @postConstruct()
     initialize(): void {
@@ -25,42 +27,83 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
      * Adds a toolbar to the Sprotty container
      */
     protected addToolbar(): void {
- 
         const containerDiv = document.getElementById(this.diagramIdentifier.clientId + '_container');
-
         if (containerDiv) {
-
-            const toolbar = document.createElement("div");
-            toolbar.id = "biger-toolbar"
-            toolbar.innerHTML = `
-                <vscode-button id="toolbar-button">
-                    <span class="fas fa-bars"/>
-                </vscode-button>
-                <div id = "toolbar-options">
-                    <vscode-option id="add-entity-button" class="button">Entity
-                        <span id="button-icon" slot="start" class="codicon codicon-chrome-maximize"/>
-                    </vscode-option>
-                    <vscode-option id="add-relationship-button" class="button">Relationship
-                        <span id="button-icon" slot="start" class="codicon codicon-debug-breakpoint-log-unverified"/>
-                    </vscode-option>
-                    <vscode-divider class="divider" role="separator"></vscode-divider>
-                    <div id="expand-div" style="display:none">
-                        <vscode-option style="width:140px;" id="expand-button" class="button">Expand</vscode-option>
-                    </div>
-                    <div id="collapse-div">
-                        <vscode-option style="width:140px;" id="collapse-button" class="button">Collapse</vscode-option>
-                    </div>
-                    <vscode-option id="center-diagram-button" class="button">Center</vscode-option>
-                    <vscode-divider class="divider" role="separator"/></vscode-divider>
-                    <vscode-link class="option" href="https://github.com/borkdominik/bigER/wiki/%F0%9F%93%96-Language-Documentation">
-                        <vscode-option id="help-button" class="button">Help
-                            <span id="button-icon" slot="start" class="fas fa-question"/>
-                        </vscode-option>
+            const menu = document.createElement("div");
+            menu.id = "biger-toolbar"
+            menu.innerHTML = `
+                <div id="toolbar-left">
+                    <vscode-button id="add-entity-button" class="tooltip" appearance="icon" style="margin-left: 5px;">
+                        <span class="action-label codicon codicon-debug-stop"></span>
+                        <span class="tooltiptext">New Entity</span>
+                    </vscode-button>
+                    <vscode-button id="add-relationship-button" class="tooltip" appearance="icon">
+                        <span class="codicon codicon-primitive-square rotated"></span>
+                        <span class="tooltiptext">New Relationship</span>
+                    </vscode-button>
+                    <div class="vertical-seperator"></div>
+                    <vscode-button appearance="icon" class="tooltip" id="options-button">
+                        <span class="codicon codicon-file-code"></span>
+                        <span class="tooltiptext">Code Generator</span>
+                    </vscode-button>
+                    <vscode-button appearance="icon" class="tooltip" id="notation-button">
+                        <span class="codicon codicon-symbol-color"></span>
+                        <span class="tooltiptext">Notation</span>
+                    </vscode-button>
+                    <div class="vertical-seperator"></div>
+                    <p id="toolbar-modelName"></p>
+                </div>
+                <div id="toolbar-right">
+                    <div class="vertical-seperator"></div>
+                    <vscode-button appearance="icon" id="fit-button" class="tooltip">
+                        <span class="codicon codicon-screen-full"></span>
+                        <span class="tooltiptext">Fit to Screen</span>
+                    </vscode-button>
+                    <vscode-button appearance="icon" id="collapseAll-button" class="tooltip">
+                        <span class="codicon codicon-collapse-all"></span>
+                        <span class="tooltiptext">Collapse All</span>
+                    </vscode-button>
+                    <vscode-button appearance="icon" id="expandAll-button" class="tooltip">
+                        <span class="codicon codicon-expand-all"></span>
+                        <span class="tooltiptext">Expand All</span>
+                    </vscode-button>
+                    <div class="vertical-seperator"></div>
+                    <vscode-link href="https://github.com/borkdominik/bigER/wiki/%F0%9F%93%96-Language-Documentation">
+                        <vscode-button appearance="icon" class="tooltip-help" id="more-button" style="margin-right: 5px;">
+                            <span class="codicon codicon-question"></span>
+                            <span class="tooltiptext">Help</span>
+                        </vscode-button>
                     </vscode-link>
                 </div>`;
 
-            containerDiv.append(toolbar);   
-            this.elementsExpanded = true;
+            const optionsPanel = document.createElement("div");
+            optionsPanel.id = "toolbar-options-panel"
+            optionsPanel.style.display = "none"
+            optionsPanel.innerHTML = `
+                <label style="margin: 5px 5px 5px 5px;">Generate:</label>
+                <vscode-dropdown id="select-generate" position="below" style="height: 90%; margin: 5px 5px;">
+                    <vscode-option value="off">off</vscode-option>
+                    <vscode-option value="sql">sql</vscode-option>
+                </vscode-dropdown>
+            `;
+            const notationPanel = document.createElement("div");
+            notationPanel.id = "toolbar-notation-panel"
+            notationPanel.style.display = "none"
+            notationPanel.innerHTML = `
+                <label style="margin: 5px 5px 5px 5px;">Notation:</label>
+                <vscode-dropdown id="select-notation" position="below" style="height: 90%; margin: 5px 30px;">
+                    <vscode-option value="default">Default</vscode-option>
+                    <vscode-option value="bachman">Bachman</vscode-option>
+                    <vscode-option value="chen">Chen</vscode-option>
+                    <vscode-option value="crowsfoot">Crows Foot</vscode-option>
+                    <vscode-option value="minmax">Min Max</vscode-option>
+                    <vscode-option value="uml">UML</vscode-option>
+                </vscode-dropdown>
+            `;
+            
+            containerDiv.append(menu);
+            containerDiv.append(optionsPanel);
+            containerDiv.append(notationPanel);
         } 
     }
     
@@ -68,57 +111,56 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
      * Adds event handlers to the buttons, by dispatching corresponding events
      */
     protected addEventHandlers(): void {
-        
-        document.getElementById('toolbar-button')!.addEventListener('click', async () => {
-                var options = document.getElementById("toolbar-options");
-                if(options){
-                    if (options.style.display === "none") {
-                        options.style.display = "flex";
-                      } else {
-                        options.style.display = "none";
-                      }
-                }
-        });
-
         document.getElementById('add-entity-button')!.addEventListener('click', async () => {
-            await this.actionDispatcher.dispatch({
-                kind: AddEntityAction.KIND
-            });
+            await this.actionDispatcher.dispatch({kind: AddEntityAction.KIND});
         });
-
         document.getElementById('add-relationship-button')!.addEventListener('click', async () => {
-            await this.actionDispatcher.dispatch({
-                kind: AddRelationshipAction.KIND
-            });
+            await this.actionDispatcher.dispatch({kind: AddRelationshipAction.KIND});
         });
-        
-        document.getElementById('expand-button')!.addEventListener('click', async () => {
-            await this.showAndHideExpandCollapse("none", "block")
-        });
-
-        document.getElementById('collapse-button')!.addEventListener('click', async () => {
-            await this.showAndHideExpandCollapse("block", "none")
-        });
-
-        document.getElementById('center-diagram-button')!.addEventListener('click', async () => {
+        document.getElementById('fit-button')!.addEventListener('click', async () => {
             await this.actionDispatcher.dispatch(FitToScreenAction.create([]));
+        });
+        document.getElementById('expandAll-button')!.addEventListener('click', async () => {
+            await this.actionDispatcher.dispatch(CollapseExpandAllAction.create({expand: true}));
+        });
+        document.getElementById('collapseAll-button')!.addEventListener('click', async () => {
+            await this.actionDispatcher.dispatch(CollapseExpandAllAction.create({expand: false}));
+        });
+        document.getElementById('options-button')!.addEventListener('click', async () => {
+            this.togglePanel('toolbar-options-panel')
+        });
+        document.getElementById('select-generate')!.addEventListener('change', async () => {
+            var select = document.getElementById('select-generate') as HTMLSelectElement;
+            if (select) {
+                var value = select.options[select.selectedIndex].value;
+                if (value === 'off' || value === 'sql') {
+                    await this.actionDispatcher.dispatch(CodeGenerateAction.create(value));
+                }
+            }
+        });
+        document.getElementById('notation-button')!.addEventListener('click', async () => {
+            this.togglePanel('toolbar-notation-panel')
+        });
+        document.getElementById('select-notation')!.addEventListener('change', async () => {
+            var select = document.getElementById('select-notation') as HTMLSelectElement;
+            if (select) {
+                var value = select.options[select.selectedIndex].value;
+                if (value === 'default' || value === 'chen' || value === 'minmax' || value === 'bachman'
+                    || value === 'crowsfoot' || value === 'uml') {
+                    await this.actionDispatcher.dispatch(ChangeNotationAction.create(value));
+                }
+            }
         });
     }
 
-    async showAndHideExpandCollapse(expandStyle:string, collapseStyle:string) {
-        var expand = document.getElementById("expand-div");
-            if(expand){
-                expand.style.display = expandStyle;
+    protected togglePanel(panelId: string): void {
+        const panel = document.getElementById(panelId);
+        if (panel) {
+            if (panel.style.display === 'none') {
+                panel.style.display = 'flex';
+            } else {
+                panel.style.display = 'none';
             }
-            var collapse = document.getElementById("collapse-div");
-            if(collapse){
-                collapse.style.display = collapseStyle;
-            }
-            if(expandStyle === "none"){
-                this.elementsExpanded = true;
-            }else{
-                this.elementsExpanded = false;
-            }
-            await this.actionDispatcher.dispatch(CollapseExpandAllAction.create({expand: this.elementsExpanded}));
+        }
     }
 }

@@ -6,12 +6,48 @@ import { CodeAction } from 'vscode-languageserver-protocol';
 import { getRange } from 'sprotty-vscode-webview/lib/lsp/editing/traceable';
 import { WorkspaceEditAction } from 'sprotty-vscode-protocol/lib/lsp/editing';
 
-// TODO: Fix duplicate code (probably stop using codeActions)
+/**
+ * Action for changing Code Generator value (e.g. 'off' (default) or 'sql')
+ */
+export interface CodeGenerateAction {
+    kind: typeof CodeGenerateAction.KIND
+    generateType: string
+}
+export namespace CodeGenerateAction {
+    export const KIND = 'codeGenerate';
 
+    export function create(generateType: string): CodeGenerateAction {
+        console.log(generateType);
+        return {
+            kind: KIND,
+            generateType
+        };   
+    }
+}
+
+export interface ChangeNotationAction {
+    kind: typeof ChangeNotationAction.KIND
+    notation: string
+}
+
+export namespace ChangeNotationAction {
+    export const KIND = 'changeNotation';
+
+    export function create(notation: string): ChangeNotationAction {
+        console.log(notation);
+        return {
+            kind: KIND,
+            notation
+        };   
+    }
+}
+
+/**
+ * Synchronized Text + Diagram Action by using CodeAction
+ */
 export interface AddEntityAction extends Action { 
     kind: typeof AddEntityAction.KIND
 }
-
 export namespace AddEntityAction {
     export const KIND = 'addEntity';
 
@@ -19,18 +55,15 @@ export namespace AddEntityAction {
         return action.kind === KIND;
     }
 }
-
 export interface AddRelationshipAction extends Action { 
     kind: typeof AddRelationshipAction.KIND
 }
-
 export namespace AddRelationshipAction {
     export const KIND = 'addRelationship';
 
     export function is(action: Action): action is AddRelationshipAction {
         return action.kind === KIND;
     }
-    
 }
 
 @injectable()

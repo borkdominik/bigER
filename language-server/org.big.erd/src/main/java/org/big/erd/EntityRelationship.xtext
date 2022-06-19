@@ -1,59 +1,64 @@
 grammar org.big.erd.EntityRelationship with org.eclipse.xtext.common.Terminals
 
+import "http://www.eclipse.org/emf/2002/Ecore" as ecore
 generate entityRelationship "http://www.big.org/erd/EntityRelationship"
 
 Model:
-	'erdiagram' name=ID ('{'
-		('generate' '=' generateOption=GenerateOption)?
-		('notation' '=' notationOption=NotationOption)?
-	'}')?
-	
-	// keep old generate option until dependent code is fixed
-	(generateSql?='generateSql')?
-
+	'erdiagram' name=ID
+	(generateOption=GenerateOption? & notation=NotationOption?)
 	(entities+=Entity | relationships+=Relationship)*;
 
+GenerateOption:
+	'generate' '=' generateOptionType=GenerateOptionType;
+
+NotationOption:
+	'notation' '=' notationType=NotationType;
+
 Entity:
-	(weak?='weak')? 'entity' name=ID ('extends' extends=[Entity])? ('{'
+	(weak?='weak')? 'entity' name=ID ('extends' extends=[Entity])? '{'
 		(attributes += Attribute)*
-	'}')?;
+	'}';
 
-/**
- * TODO: allow more than ternary (more generic) - e.g. save all in targets[]
- */
 Relationship:
-	(weak?='weak')? 'relationship' name=ID ('{'
-		(first=RelationEntity (('->' second=RelationEntity) ('->' third=RelationEntity)?)?)
+	(weak?='weak')? 'relationship' name=ID '{'
+		(first=RelationEntity (('->' second=RelationEntity) ('->' third=RelationEntity)?)?)?
 		(attributes += Attribute)*
-	'}')?;
+	'}';
 
-/**
- * TODO: Support Min/Max Notation
- * cardinality = max, multiplicity = min/max
- */
 RelationEntity:
 	target=[Entity] ('[' 
-		(cardinality=CardinalityType | customMultiplicity=STRING)
-	']')? (partial?='partial')?;
+		(cardinality=CardinalityType | customMultiplicity=STRING | minMax=MinMax | uml=Uml)
+	']')?;
 
-/**
- * TODO: Remove old datatype (defaults, e.g. int, double, ...)
- */
 Attribute:
 	name=ID (':' datatype=DataType)? (type=AttributeType)?;
 
 DataType:
-	type=ID ('(' size=INT ')')?;
-
-enum GenerateOption:
-    OFF='off' | SQL='sql';
-
-enum NotationOption:
-    DEFAULT='default';   
+	type=ID ('(' size=INT ')')?;  
+	
+terminal INT returns ecore::EInt:
+    ('0'..'9')+;
+    
+terminal MinMax:
+	 ('0'..'9')+','('0'..'9')?('*')?;
+	 
+terminal Uml:
+	 ('comp ')?('agg ')?('0'..'9')+('..'('0'..'9')+)?('..''*')?;
 
 enum AttributeType:
-	NONE = 'none' | KEY = 'key' | FOREIGN_KEY = 'foreign-key' | PARTIAL_KEY = 'partial-key' | OPTIONAL = 'optional' | 
-	DERIVED = 'derived' | MULTIVALUED = 'multivalued';
+	NONE = 'none' | 
+	KEY = 'key' | 
+	PARTIAL_KEY = 'partial-key' | 
+	OPTIONAL = 'optional' |  
+	DERIVED = 'derived' | 
+	MULTIVALUED = 'multivalued';
 
 enum CardinalityType:
-	ONE = '1' | MANY = 'N';
+	ONE = '1' | MANY = 'N' | MANY_CHEN = 'M' | ZERO = '0' | ONE_OR_MORE = '1+' | ZERO_OR_MORE = '0+' | ZERO_OR_ONE = '?';
+
+enum GenerateOptionType:
+	OFF = 'off' | 
+	SQL = 'sql';
+
+enum NotationType:
+    DEFAULT='default' | CHEN='chen' | MINMAX='minmax' | BACHMAN='bachman' | CROWSFOOT='crowsfoot'| UML='uml';   

@@ -1,7 +1,7 @@
 .vscode/**
 *.vsix
 node_modules
-lib/**
+dist/**
 src/** 
 **/webpack.config.js
 **/tsconfig.json
