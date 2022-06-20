@@ -1,11 +1,11 @@
 import 'reflect-metadata';
 import 'sprotty-vscode-webview/css/sprotty-vscode.css';
-import '../css/menu-bar.css'
+import '../css/menu-bar.css';
 import { Container } from 'inversify';
 import { SprottyLspEditStarter } from 'sprotty-vscode-webview/lib/lsp/editing';
 import { createDiagramContainer } from './di.config';
 import { SprottyDiagramIdentifier } from 'sprotty-vscode-protocol';
-import { VscodeDiagramServer, VscodeDiagramWidget} from 'sprotty-vscode-webview'
+import { VscodeDiagramServer, VscodeDiagramWidget } from 'sprotty-vscode-webview';
 import { load as loadLibavoidRouter } from 'sprotty-routing-libavoid';
 import { ERDiagramWidget } from './toolbar';
 import { configureCommand, configureModelElement, TYPES } from 'sprotty';
@@ -17,7 +17,7 @@ import { PopupButtonListener } from './popup';
 
 
 export class ERDiagramSprottyStarter extends SprottyLspEditStarter {
-    
+
     createContainer(diagramIdentifier: SprottyDiagramIdentifier) {
         return createDiagramContainer(diagramIdentifier.clientId);
     }

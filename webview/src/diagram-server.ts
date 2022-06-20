@@ -1,4 +1,3 @@
-//import { ActionHandlerRegistry  } from "sprotty";
 import { injectable } from "inversify";
 import { ActionHandlerRegistry } from "sprotty";
 import { Action, isAction } from 'sprotty-protocol';
@@ -7,7 +6,7 @@ import { ChangeNotationAction, CodeGenerateAction } from "./actions";
 
 @injectable()
 export class BigERDiagramServer extends VscodeLspEditDiagramServer {
-    
+
     override initialize(registry: ActionHandlerRegistry): void {
         super.initialize(registry);
         registry.register(ChangeNotationAction.KIND, this);

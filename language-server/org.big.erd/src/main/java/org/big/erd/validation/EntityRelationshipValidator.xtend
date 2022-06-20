@@ -8,7 +8,6 @@ import org.big.erd.entityRelationship.EntityRelationshipPackage
 import com.google.common.collect.Multimaps
 import org.eclipse.xtext.validation.Check
 import org.big.erd.entityRelationship.AttributeType
-import org.apache.log4j.Logger
 import org.big.erd.entityRelationship.CardinalityType
 import org.big.erd.entityRelationship.RelationEntity
 import org.big.erd.entityRelationship.Relationship
@@ -243,12 +242,12 @@ class EntityRelationshipValidator extends AbstractEntityRelationshipValidator {
 		val thirdElement = relationship.third
 		var aggregationCounter = 0;
 		
-		if(firstElement != null){
+		if(firstElement !== null){
 			if(firstElement.uml.contains("agg") || firstElement.uml.contains("comp")){
 				aggregationCounter++;
 			}
 		}
-		if(secondElement != null){
+		if(secondElement !== null){
 			if(secondElement.uml.contains("agg") || secondElement.uml.contains("comp")){
 				aggregationCounter++;
 				if(aggregationCounter > 1){
@@ -256,7 +255,7 @@ class EntityRelationshipValidator extends AbstractEntityRelationshipValidator {
 				}
 			}
 		}
-		if(thirdElement != null){
+		if(thirdElement !== null){
 			if(thirdElement.uml.contains("agg") || thirdElement.uml.contains("comp")){
 				aggregationCounter++;
 				if(aggregationCounter > 1){

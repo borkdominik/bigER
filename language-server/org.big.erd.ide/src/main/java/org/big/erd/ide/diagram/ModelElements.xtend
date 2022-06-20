@@ -4,32 +4,31 @@ import org.eclipse.sprotty.SNode
 import org.eclipse.sprotty.SEdge
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.eclipse.sprotty.SGraph
-import org.eclipse.xtend.lib.annotations.Accessors
 import org.eclipse.sprotty.PreRenderedElement
-import org.eclipse.sprotty.SButton
 
 @Accessors
 class ERModel extends SGraph {
 	String name
 	String generateType
-  String notation
+	String notation
 
-	new() { }
-	
-	new((ERModel) => void initializer) {
+	new() {
+	}
+
+	new((ERModel)=>void initializer) {
 		initializer.apply(this)
 	}
 }
-
 
 @Accessors
 class EntityNode extends SNode {
 	boolean expanded
 	boolean weak
-	
-	new() { }
-	
-	new((EntityNode) => void initializer) {
+
+	new() {
+	}
+
+	new((EntityNode)=>void initializer) {
 		initializer.apply(this)
 	}
 }
@@ -37,10 +36,11 @@ class EntityNode extends SNode {
 @Accessors
 class RelationshipNode extends SNode {
 	boolean weak
-	
-	new() { }
-	
-	new((RelationshipNode) => void initializer) {
+
+	new() {
+	}
+
+	new((RelationshipNode)=>void initializer) {
 		initializer.apply(this)
 	}
 }
@@ -51,10 +51,11 @@ class NotationEdge extends SEdge {
 	String notation
 	Boolean showRelationship
 	String relationshipCardinality
-	
-	new() { }
-	
-	new((NotationEdge) => void initializer) {
+
+	new() {
+	}
+
+	new((NotationEdge)=>void initializer) {
 		initializer.apply(this)
 	}
 }
@@ -64,9 +65,10 @@ class PopupButton extends PreRenderedElement {
 	String target
 	String kind
 
-	new() { }
-	
-	new((PopupButton) => void initializer) {
+	new() {
+	}
+
+	new((PopupButton)=>void initializer) {
 		initializer.apply(this)
 	}
 }

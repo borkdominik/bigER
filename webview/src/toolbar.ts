@@ -11,11 +11,11 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
     @inject(TYPES.IActionDispatcher) actionDispatcher: IActionDispatcher;
     @inject(SprottyDiagramIdentifier) diagramIdentifier: SprottyDiagramIdentifier;
     @inject(TYPES.ILogger) protected logger: ILogger;
-    
+
     constructor() {
         super();
     }
-    
+
     @postConstruct()
     initialize(): void {
         super.initialize();
@@ -30,7 +30,7 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
         const containerDiv = document.getElementById(this.diagramIdentifier.clientId + '_container');
         if (containerDiv) {
             const menu = document.createElement("div");
-            menu.id = "biger-toolbar"
+            menu.id = "biger-toolbar";
             menu.innerHTML = `
                 <div id="toolbar-left">
                     <vscode-button id="add-entity-button" class="tooltip" appearance="icon" style="margin-left: 5px;">
@@ -68,7 +68,7 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
                         <span class="tooltiptext">Expand All</span>
                     </vscode-button>
                     <div class="vertical-seperator"></div>
-                    <vscode-link href="https://github.com/borkdominik/bigER/wiki/%F0%9F%93%96-Language-Documentation">
+                    <vscode-link href="https://github.com/borkdominik/bigER/wiki/Language-Documentation">
                         <vscode-button appearance="icon" class="tooltip-help" id="more-button" style="margin-right: 5px;">
                             <span class="codicon codicon-question"></span>
                             <span class="tooltiptext">Help</span>
@@ -77,8 +77,8 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
                 </div>`;
 
             const optionsPanel = document.createElement("div");
-            optionsPanel.id = "toolbar-options-panel"
-            optionsPanel.style.display = "none"
+            optionsPanel.id = "toolbar-options-panel";
+            optionsPanel.style.display = "none";
             optionsPanel.innerHTML = `
                 <label style="margin: 5px 5px 5px 5px;">Generate:</label>
                 <vscode-dropdown id="select-generate" position="below" style="height: 90%; margin: 5px 5px;">
@@ -87,8 +87,8 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
                 </vscode-dropdown>
             `;
             const notationPanel = document.createElement("div");
-            notationPanel.id = "toolbar-notation-panel"
-            notationPanel.style.display = "none"
+            notationPanel.id = "toolbar-notation-panel";
+            notationPanel.style.display = "none";
             notationPanel.innerHTML = `
                 <label style="margin: 5px 5px 5px 5px;">Notation:</label>
                 <vscode-dropdown id="select-notation" position="below" style="height: 90%; margin: 5px 30px;">
@@ -100,53 +100,52 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
                     <vscode-option value="uml">UML</vscode-option>
                 </vscode-dropdown>
             `;
-            
+
             containerDiv.append(menu);
             containerDiv.append(optionsPanel);
             containerDiv.append(notationPanel);
-        } 
+        }
     }
-    
+
     /**
      * Adds event handlers to the buttons, by dispatching corresponding events
      */
     protected addEventHandlers(): void {
-        document.getElementById('add-entity-button')!.addEventListener('click', async () => {
+        (document.getElementById('add-entity-button') as HTMLElement).addEventListener('click', async () => {
             await this.actionDispatcher.dispatch({kind: AddEntityAction.KIND});
         });
-        document.getElementById('add-relationship-button')!.addEventListener('click', async () => {
+        (document.getElementById('add-relationship-button') as HTMLElement).addEventListener('click', async () => {
             await this.actionDispatcher.dispatch({kind: AddRelationshipAction.KIND});
         });
-        document.getElementById('fit-button')!.addEventListener('click', async () => {
+        (document.getElementById('fit-button') as HTMLElement).addEventListener('click', async () => {
             await this.actionDispatcher.dispatch(FitToScreenAction.create([]));
         });
-        document.getElementById('expandAll-button')!.addEventListener('click', async () => {
+        (document.getElementById('expandAll-button') as HTMLElement).addEventListener('click', async () => {
             await this.actionDispatcher.dispatch(CollapseExpandAllAction.create({expand: true}));
         });
-        document.getElementById('collapseAll-button')!.addEventListener('click', async () => {
+        (document.getElementById('collapseAll-button') as HTMLElement).addEventListener('click', async () => {
             await this.actionDispatcher.dispatch(CollapseExpandAllAction.create({expand: false}));
         });
-        document.getElementById('options-button')!.addEventListener('click', async () => {
-            this.togglePanel('toolbar-options-panel')
+        (document.getElementById('options-button') as HTMLElement).addEventListener('click', async () => {
+            this.togglePanel('toolbar-options-panel');
         });
-        document.getElementById('select-generate')!.addEventListener('change', async () => {
-            var select = document.getElementById('select-generate') as HTMLSelectElement;
+        (document.getElementById('select-generate') as HTMLElement).addEventListener('change', async () => {
+            const select = document.getElementById('select-generate') as HTMLSelectElement;
             if (select) {
-                var value = select.options[select.selectedIndex].value;
+                const value = select.options[select.selectedIndex].value;
                 if (value === 'off' || value === 'sql') {
                     await this.actionDispatcher.dispatch(CodeGenerateAction.create(value));
                 }
             }
         });
-        document.getElementById('notation-button')!.addEventListener('click', async () => {
-            this.togglePanel('toolbar-notation-panel')
+        (document.getElementById('notation-button') as HTMLElement).addEventListener('click', async () => {
+            this.togglePanel('toolbar-notation-panel');
         });
-        document.getElementById('select-notation')!.addEventListener('change', async () => {
-            var select = document.getElementById('select-notation') as HTMLSelectElement;
+        (document.getElementById('select-notation') as HTMLElement).addEventListener('change', async () => {
+            const select = document.getElementById('select-notation') as HTMLSelectElement;
             if (select) {
-                var value = select.options[select.selectedIndex].value;
-                if (value === 'default' || value === 'chen' || value === 'minmax' || value === 'bachman'
-                    || value === 'crowsfoot' || value === 'uml') {
+                const value = select.options[select.selectedIndex].value;
+                if (value === 'default' || value === 'chen' || value === 'minmax' || value === 'bachman' || value === 'crowsfoot' || value === 'uml') {
                     await this.actionDispatcher.dispatch(ChangeNotationAction.create(value));
                 }
             }

@@ -1,5 +1,5 @@
 import { Command, CommandExecutionContext, CommandReturn, IActionDispatcher, TYPES } from "sprotty";
-import { Action } from "sprotty-protocol"
+import { Action } from "sprotty-protocol";
 import { inject, injectable } from 'inversify';
 import { CodeActionProvider } from "sprotty-vscode-webview/lib/lsp/editing";
 import { CodeAction } from 'vscode-languageserver-protocol';
@@ -17,11 +17,10 @@ export namespace CodeGenerateAction {
     export const KIND = 'codeGenerate';
 
     export function create(generateType: string): CodeGenerateAction {
-        console.log(generateType);
         return {
             kind: KIND,
             generateType
-        };   
+        };
     }
 }
 
@@ -34,18 +33,17 @@ export namespace ChangeNotationAction {
     export const KIND = 'changeNotation';
 
     export function create(notation: string): ChangeNotationAction {
-        console.log(notation);
         return {
             kind: KIND,
             notation
-        };   
+        };
     }
 }
 
 /**
  * Synchronized Text + Diagram Action by using CodeAction
  */
-export interface AddEntityAction extends Action { 
+export interface AddEntityAction extends Action {
     kind: typeof AddEntityAction.KIND
 }
 export namespace AddEntityAction {
@@ -55,7 +53,7 @@ export namespace AddEntityAction {
         return action.kind === KIND;
     }
 }
-export interface AddRelationshipAction extends Action { 
+export interface AddRelationshipAction extends Action {
     kind: typeof AddRelationshipAction.KIND
 }
 export namespace AddRelationshipAction {
@@ -78,7 +76,7 @@ export class AddEntityCommand extends Command {
     constructor(@inject(TYPES.Action) readonly action: AddEntityAction) {
         super();
     }
-    
+
     async getCodeAction(context: CommandExecutionContext) {
         const range = getRange(context.root);
         if (range) {
@@ -90,7 +88,7 @@ export class AddEntityCommand extends Command {
             }
         }
     }
-    
+
     execute(context: CommandExecutionContext): CommandReturn {
         this.getCodeAction(context).then(() => {
             this.actionDispatcher.dispatch(<WorkspaceEditAction> {
@@ -100,7 +98,7 @@ export class AddEntityCommand extends Command {
         });
         return context.root;
     }
-    
+
     undo(context: CommandExecutionContext): CommandReturn {
         return context.root;
     }
@@ -122,7 +120,7 @@ export class AddRelationshipCommand extends Command {
     constructor(@inject(TYPES.Action) readonly action: AddRelationshipAction) {
         super();
     }
-    
+
     async getCodeAction(context: CommandExecutionContext) {
         const range = getRange(context.root);
         if (range) {
@@ -134,7 +132,7 @@ export class AddRelationshipCommand extends Command {
             }
         }
     }
-    
+
     execute(context: CommandExecutionContext): CommandReturn {
         this.getCodeAction(context).then(() => {
             this.actionDispatcher.dispatch(<WorkspaceEditAction> {
@@ -144,7 +142,7 @@ export class AddRelationshipCommand extends Command {
         });
         return context.root;
     }
-    
+
     undo(context: CommandExecutionContext): CommandReturn {
         return context.root;
     }

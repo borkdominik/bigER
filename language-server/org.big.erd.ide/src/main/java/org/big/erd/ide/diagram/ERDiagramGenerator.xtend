@@ -46,7 +46,6 @@ class ERDiagramGenerator implements IDiagramGenerator {
 	static val ENTITY_LABEL = 'label:header'
 	static val COMP_ATTRIBUTES = 'comp:attributes'
 	static val COMP_ATTRIBUTE_ROW = 'comp:attribute-row'
-	static val ATTRIBUTE_LABEL_TEXT = 'label:text'
 	static val EDGE_LABEL = 'label:top'
 	static val EDGE_INHERITANCE = 'edge:inheritance'
 	static val BUTTON_EXPAND = 'button:expand'
@@ -104,6 +103,8 @@ class ERDiagramGenerator implements IDiagramGenerator {
 				addRelationEdges(r, context)
 			}
 		]
+
+		LOG.info("Generated Graph: " + graph)
 	}
 
 	def RelationshipNode relationshipNodes(Relationship relationship, extension Context context) {
@@ -133,15 +134,13 @@ class ERDiagramGenerator implements IDiagramGenerator {
 		val notation = model.notation?.notationType !== null ? model.notation.notationType : NotationType.DEFAULT;
 		if (relationship.first !== null) {
 			var cardinality = getCardinality(relationship.first)
-			if (notation.equals(NotationType.CROWSFOOT) ||
-				notation.equals(NotationType.UML)) {
+			if (notation.equals(NotationType.CROWSFOOT) || notation.equals(NotationType.UML)) {
 				cardinality = combineCardinality(relationship.first, relationship.second)
 			}
 			val source = idCache.getId(relationship.first.target)
 			val target = idCache.getId(
-				notation.equals(NotationType.CROWSFOOT) ||
-					(notation.equals(NotationType.UML) &&
-						relationship.third === null) ? relationship.second.target : relationship
+				notation.equals(NotationType.CROWSFOOT) || (notation.equals(NotationType.UML) &&
+					relationship.third === null) ? relationship.second.target : relationship
 			)
 			createEdgeAndAddToGraph(relationship, source, target, 'label:first', cardinality, context)
 		}
@@ -231,8 +230,7 @@ class ERDiagramGenerator implements IDiagramGenerator {
 		// must be final for lambda expression
 		val edgeLabelTextFinal = labelText
 		val combinedLabelsFinal = combinedLabels
-		
-		
+
 		graph.children.add(new NotationEdge [
 			sourceId = source
 			targetId = target
