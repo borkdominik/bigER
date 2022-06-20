@@ -12,7 +12,7 @@ import org.eclipse.sprotty.SButton
 class ERModel extends SGraph {
 	String name
 	String generateType
-  String notation
+ 	String notation
 
 	new() { }
 	

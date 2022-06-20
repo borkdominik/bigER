@@ -10,6 +10,7 @@
     "prepare": "yarn run clean && yarn run build",
     "clean": "rimraf out",
     "build": "webpack --mode=development",
+    "lint": "eslint './src/**'",
     "watch:": "webpack --mode=development --watch"
   },
   "files": [
@@ -23,8 +24,11 @@
     "sprotty-vscode-webview": "^0.2.0"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.28.0",
+    "@typescript-eslint/parser": "^5.28.0",
     "@vscode/webview-ui-toolkit": "^1.0.0",
     "css-loader": "^6.5.1",
+    "eslint": "^8.18.0",
     "file-loader": "^6.2.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",

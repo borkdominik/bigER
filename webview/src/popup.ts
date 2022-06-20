@@ -6,30 +6,32 @@ import { DeleteWithWorkspaceEditAction } from 'sprotty-vscode-protocol/lib/lsp/e
 
 
 export class PopupButtonListener extends MouseListener {
-    
+
     @inject(TYPES.ILogger) protected logger: ILogger;
     @inject(TYPES.IActionDispatcher) actionDispatcher: IActionDispatcher;
 
     mouseDown(target: SModelElement, event: MouseEvent): (Action | Promise<Action>)[] {
-        let actions: Action[] = [];
+        const actions: Action[] = [];
         if (target instanceof PopupButton) {
             switch (target.kind) {
-                case 'delete':
+                case 'delete': {
                     const elementIds: string[] = [];
                     elementIds.push(target.target);
                     // deselect all elements and only re-select current element
                     this.actionDispatcher.dispatch(SelectAllAction.create({ select: false }));
                     this.actionDispatcher.dispatch(SelectAction.create({ selectedElementsIDs: elementIds }));
-                    this.actionDispatcher.dispatch({ kind: DeleteWithWorkspaceEditAction.KIND })
+                    this.actionDispatcher.dispatch({ kind: DeleteWithWorkspaceEditAction.KIND });
                     break;
-                case 'edit':
-                    actions.push(EditLabelAction.create(target.target))
+                }
+                case 'edit': {
+                    actions.push(EditLabelAction.create(target.target));
                     break;
+                }
             }
-            //return [this.getWorkspaceEditAction(target)];
+            // return [this.getWorkspaceEditAction(target)];
             actions.push(SetPopupModelAction.create(EMPTY_ROOT));
             return actions;
         }
         return [];
     }
-};
+}

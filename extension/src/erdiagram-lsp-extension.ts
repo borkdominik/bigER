@@ -15,8 +15,7 @@ export class ERDiagramLspVscodeExtension extends SprottyLspEditVscodeExtension {
 
     protected registerCommands() {
         super.registerCommands();
-        this.context.subscriptions.push(
-            vscode.commands.registerCommand('erdiagram.model.new', (...commandArgs: any) => {
+        this.context.subscriptions.push(vscode.commands.registerCommand('erdiagram.model.new', (...commandArgs: any[]) => {
                 newModel();
         }));
     }
@@ -26,7 +25,7 @@ export class ERDiagramLspVscodeExtension extends SprottyLspEditVscodeExtension {
             return 'erdiagram-diagram';
         }
     }
-    
+
     createWebView(identifier: SprottyDiagramIdentifier): SprottyWebview {
         const webview = new ERDiagramWebview({
             extension: this,
@@ -39,15 +38,15 @@ export class ERDiagramLspVscodeExtension extends SprottyLspEditVscodeExtension {
         webview.addActionHandler(LspLabelEditActionHandler);
         return webview;
     }
-    
+
     protected activateLanguageClient(context: vscode.ExtensionContext): LanguageClient {
         const executable = process.platform === 'win32' ? 'erdiagram-language-server.bat' : 'erdiagram-language-server';
         const languageServerPath =  path.join('server', 'erdiagram-language-server', 'bin', executable);
         const serverLauncher = context.asAbsolutePath(languageServerPath);
         const serverOptions: ServerOptions = {
-            run: { 
-                command: serverLauncher, 
-                args: ['-trace'] 
+            run: {
+                command: serverLauncher,
+                args: ['-trace']
             },
             debug: {
                 command: serverLauncher,
@@ -56,13 +55,13 @@ export class ERDiagramLspVscodeExtension extends SprottyLspEditVscodeExtension {
         };
         const clientOptions: LanguageClientOptions = {
             documentSelector: [{
-                scheme: 'file', 
-                language: 'erdiagram' 
+                scheme: 'file',
+                language: 'erdiagram'
             }]
         };
         const languageClient = new LanguageClient('erdiagramLanguageClient', 'ERDiagram Language Server', serverOptions, clientOptions);
         context.subscriptions.push(languageClient.start());
         return languageClient;
     }
-    
+
 }

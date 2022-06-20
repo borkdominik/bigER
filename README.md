@@ -1,7 +1,7 @@
 <!-- HEADER -->
 <div align="center">
 	<a href="https://github.com/othneildrew/Best-README-Template">
-    	<img src="./extension/media/logo.png" alt="Logo" width="100" height="100">
+    	<img src="./extension/media/logo.png" alt="Logo" width="150" height="150">
 	</a>
 	<h3 align="center">bigER Modeling Tool</h3>
 	<p align="center">
@@ -12,9 +12,9 @@
 		</a>
 	<br />
     <br />
-   	<a href="#">Read Wiki</a> |
-    <a href="#">Report Bug</a> |
-    <a href="#">Request Feature</a>
+   	<a href="https://github.com/borkdominik/bigER/wiki">Read Wiki</a> |
+    <a href="https://github.com/borkdominik/bigER/issues">Report Bug</a> |
+    <a href="https://github.com/borkdominik/bigER/issues">Request Feature</a>
   </p>
 </div>
 
@@ -24,7 +24,7 @@
 <details>
   <summary>Table of Contents</summary>
   <ol>
-    <li><a href="#features">Features</a></li>
+    <li><a href="#about-the-project">About the Project</a></li>
     <li><a href="#getting-started">Getting Started</a></li>
     <li><a href="#example">Example</a></li>
     <li><a href="#build-instructions">Build Instructions</a></li>

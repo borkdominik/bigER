@@ -1,31 +1,27 @@
 import { injectable } from "inversify";
-import { DiamondNode, EdgeLayoutable, EdgePlacement, PreRenderedElement, RectangularNode, SEdge, SGraph,  SLabel, SRoutableElement } from 'sprotty';
+import { DiamondNode, EdgeLayoutable, EdgePlacement, PreRenderedElement, RectangularNode, SEdge, SGraph,  SLabel } from 'sprotty';
 
 
 export class ERModel extends SGraph {
-    name: string
-    generateType: string
-    notation: string
+    name: string;
+    generateType: string;
+    notation: string;
 }
 
 export class EntityNode extends RectangularNode {
-    expanded: boolean
-    weak: boolean
-    
-    canConnect(routable: SRoutableElement, role: string) {
-        return true;
-    }
+    expanded: boolean;
+    weak: boolean;
 }
 
 export class RelationshipNode extends DiamondNode {
-    weak: boolean
+    weak: boolean;
 }
 
 export class NotationEdge extends SEdge {
-    isSource: boolean
-    showRelationship: boolean
-    notation: String
-    relationshipCardinality: String
+    isSource: boolean;
+    showRelationship: boolean;
+    notation: string;
+    relationshipCardinality: string;
 }
 
 

@@ -4,7 +4,7 @@ import 'sprotty/css/command-palette.css';
 import '../css/diagram.css';
 import '../css/popup.css';
 import {
-    configureModelElement, HtmlRoot, HtmlRootView, overrideViewerOptions, PreRenderedElement, PreRenderedView, SEdge, 
+    configureModelElement, HtmlRoot, HtmlRootView, overrideViewerOptions, PreRenderedElement, PreRenderedView, SEdge,
     SRoutingHandle, SRoutingHandleView, TYPES, loadDefaultModules, ConsoleLogger, LogLevel,  SCompartmentView,
     SCompartment, editLabelFeature, labelEditUiModule, SModelRoot, SLabel, ExpandButtonHandler,
     SButton, expandFeature, SLabelView, CreateElementCommand, configureCommand, ExpandButtonView
@@ -13,7 +13,7 @@ import { InheritanceEdgeView, ERModelView, EntityNodeView, RelationshipNodeView,
 import { EntityNode, ERModel, MultiplicityLabel, NotationEdge, RelationshipNode } from './model';
 
 /**
- * Sprotty Dependency Injection container 
+ * Sprotty Dependency Injection container
  */
 const DiagramModule = new ContainerModule((bind, unbind, isBound, rebind) => {
     rebind(TYPES.ILogger).to(ConsoleLogger).inSingletonScope();
@@ -22,7 +22,7 @@ const DiagramModule = new ContainerModule((bind, unbind, isBound, rebind) => {
     rebind(TYPES.CommandStackOptions).toConstantValue({
         defaultDuration: 400,
         undoHistoryLimit: 50
-    })
+    });
     // Model element bindings
     const context = { bind, unbind, isBound, rebind };
     configureModelElement(context, 'graph', ERModel, ERModelView);
@@ -58,7 +58,7 @@ const DiagramModule = new ContainerModule((bind, unbind, isBound, rebind) => {
  * Creates the container, loads the default Sprotty modules and adds ViewerOptions
  */
 export function createDiagramContainer(widgetId: string): Container {
-    
+
     const container = new Container();
     // use labelEditUi from VS Code
     loadDefaultModules(container, { exclude: [labelEditUiModule] });
