@@ -17,7 +17,6 @@ export namespace CodeGenerateAction {
     export const KIND = 'codeGenerate';
 
     export function create(generateType: string): CodeGenerateAction {
-        console.log(generateType);
         return {
             kind: KIND,
             generateType
@@ -34,7 +33,6 @@ export namespace ChangeNotationAction {
     export const KIND = 'changeNotation';
 
     export function create(notation: string): ChangeNotationAction {
-        console.log(notation);
         return {
             kind: KIND,
             notation

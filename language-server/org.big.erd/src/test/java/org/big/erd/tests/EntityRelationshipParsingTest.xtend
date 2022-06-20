@@ -11,13 +11,17 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.^extension.ExtendWith
 import org.big.erd.entityRelationship.Model
+import org.eclipse.xtext.testing.validation.ValidationTestHelper
 
 @ExtendWith(InjectionExtension)
 @InjectWith(EntityRelationshipInjectorProvider)
 class EntityRelationshipParsingTest {
-	@Inject
-	ParseHelper<Model> parseHelper
 	
+	@Inject ParseHelper<Model> parseHelper
+	@Inject ValidationTestHelper validationTestHelper
+	
+	static val MODEL_NAME = "Model"
+
 	@Test
 	def void loadModel() {
 		val result = parseHelper.parse('''
@@ -45,5 +49,20 @@ relationship buys {
 		Assertions.assertNotNull(result)
 		val errors = result.eResource.errors
 		Assertions.assertTrue(errors.isEmpty, '''Unexpected errors: «errors.join(", ")»''')
+	}
+	
+	@Test
+	def void testEmptyModel() {
+		val model = parseHelper.parse(
+		'''
+			erdiagram «MODEL_NAME»
+		'''
+		)
+		Assertions.assertNotNull(model)
+		Assertions.assertEquals(MODEL_NAME, model.name)
+		val errors = model.eResource.errors
+		Assertions.assertTrue(errors.isEmpty, '''Unexpected errors: «errors.join(", ")»''')
+		validationTestHelper.assertNoIssues(model)
+		
 	}
 }

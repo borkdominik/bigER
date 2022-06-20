@@ -1,7 +1,6 @@
 /** @jsx svg */
-import { svg } from 'sprotty/lib/lib/jsx';
 import { VNode } from "snabbdom";
-import { RenderingContext, RectangularNodeView, SEdge, Point, PolylineEdgeView, toDegrees,
+import { RenderingContext, svg, RectangularNodeView, SEdge, Point, PolylineEdgeView, toDegrees, // eslint-disable-line @typescript-eslint/no-unused-vars
          SPort, SGraphView, EdgeRouterRegistry, IViewArgs, Hoverable, Selectable, DiamondNodeView, Diamond, SNode, PreRenderedView, SLabel } from 'sprotty';
 import { injectable, inject } from 'inversify';
 import { EntityNode, ERModel, NotationEdge, PopupButton, RelationshipNode } from "./model";
@@ -299,19 +298,19 @@ export class NotationEdgeView extends PolylineEdgeView {
 
     private createCrowsFootEdge(point:Point, next:Point, cardinality:string):VNode[] {
         switch (cardinality) {
-            case '1':  return  [<svg>
+            case '1': return [<svg>
                                     <line x1={point.x + 19} y1={point.y + 11} x2={point.x + 19} y2={point.y - 11}
                                         transform={`rotate(${this.angle(point, next)} ${point.x} ${point.y})`}/>
                                     <line x1={point.x + 10} y1={point.y + 11} x2={point.x + 10} y2={point.y - 11}
                                         transform={`rotate(${this.angle(point, next)} ${point.x} ${point.y})`}/>
                                 </svg>];
-            case '?':  return  [<svg>
+            case '?': return [<svg>
                                     <circle cx={point.x + 25} cy={point.y} r="7" stroke-width="1" fill="var(--vscode-editor-background)"
                                         transform={`rotate(${this.angle(point, next)} ${point.x} ${point.y})`}/>
                                     <line x1={point.x + 10} y1={point.y + 11} x2={point.x + 10} y2={point.y - 11}
                                         transform={`rotate(${this.angle(point, next)} ${point.x} ${point.y})`}/>
                                 </svg>];
-            case '0+':  return  [<svg>
+            case '0+': return [<svg>
                                     <circle cx={point.x + 26} cy={point.y} r="7" stroke-width="1" fill="var(--vscode-editor-background)"
                                         transform={`rotate(${this.angle(point, next)} ${point.x} ${point.y})`}/>
                                     <line x1={point.x + 17} y1={point.y} x2={point.x} y2={point.y + 11}

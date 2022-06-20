@@ -42,6 +42,13 @@
       "no-dupe-class-members": "error",
       "arrow-parens": ["error", "always"],
       "function-paren-newline": ["error", "never"],
-      "@typescript-eslint/no-explicit-any": "off"
+      "@typescript-eslint/no-explicit-any": "off",
+      "no-duplicate-imports": "error",
+      "no-alert": "error",
+      "no-console": ["warn", { "allow": ["warn", "error"] }],
+      "jsx-quotes": ["error", "prefer-double"],
+      "no-whitespace-before-property": "error",
+      "no-multiple-empty-lines": ["error", { "max": 2, "maxEOF": 0 }],
+      "no-multi-spaces": "error"
     }
   }

@@ -41,7 +41,7 @@ export class ERDiagramLspVscodeExtension extends SprottyLspEditVscodeExtension {
 
     protected activateLanguageClient(context: vscode.ExtensionContext): LanguageClient {
         const executable = process.platform === 'win32' ? 'erdiagram-language-server.bat' : 'erdiagram-language-server';
-        const languageServerPath =  path.join('server', 'erdiagram-language-server', 'bin', executable);
+        const languageServerPath = path.join('server', 'erdiagram-language-server', 'bin', executable);
         const serverLauncher = context.asAbsolutePath(languageServerPath);
         const serverOptions: ServerOptions = {
             run: {

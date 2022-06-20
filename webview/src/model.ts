@@ -1,5 +1,5 @@
 import { injectable } from "inversify";
-import { DiamondNode, EdgeLayoutable, EdgePlacement, PreRenderedElement, RectangularNode, SEdge, SGraph,  SLabel } from 'sprotty';
+import { DiamondNode, EdgeLayoutable, EdgePlacement, PreRenderedElement, RectangularNode, SEdge, SGraph, SLabel } from 'sprotty';
 
 
 export class ERModel extends SGraph {
