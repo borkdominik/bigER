@@ -128,7 +128,6 @@ export class NotationEdgeView extends PolylineEdgeView {
     uml:string = "uml";
 
     render(edge: Readonly<SEdge>, context: RenderingContext, args?: IViewArgs): VNode | undefined {
-
         const route = this.edgeRouterRegistry.route(edge, args);
         if (route.length === 0) {
             return this.renderDanglingEdge("Cannot compute route", edge, context);

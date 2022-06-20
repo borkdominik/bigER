@@ -5,13 +5,13 @@ import 'sprotty/css/command-palette.css';
 import '../css/diagram.css';
 import '../css/popup.css';
 import {
-    configureModelElement, HtmlRoot, HtmlRootView, overrideViewerOptions, PreRenderedElement, PreRenderedView, SEdge, 
+    configureModelElement, HtmlRoot, HtmlRootView, overrideViewerOptions, PreRenderedElement, PreRenderedView,
     SRoutingHandle, SRoutingHandleView, TYPES, loadDefaultModules, ConsoleLogger, LogLevel,  SCompartmentView,
     SCompartment, editLabelFeature, labelEditUiModule, SModelRoot, SLabel, ExpandButtonHandler,
     SButton, expandFeature, SLabelView, CreateElementCommand, configureCommand, ExpandButtonView
 } from 'sprotty';
 import { InheritanceEdgeView, ERModelView, EntityNodeView, RelationshipNodeView, NotationEdgeView } from './views';
-import { EntityNode, ERModel, MultiplicityLabel, NotationEdge, RelationshipNode } from './model';
+import { EntityNode, ERModel, MultiplicityLabel, NotationEdge, RelationshipNode, InheritanceEdge } from './model';
 
 /**
  * Sprotty Dependency Injection container 
@@ -19,6 +19,7 @@ import { EntityNode, ERModel, MultiplicityLabel, NotationEdge, RelationshipNode 
 const DiagramModule = new ContainerModule((bind, unbind, isBound, rebind) => {
     rebind(TYPES.ILogger).to(ConsoleLogger).inSingletonScope();
     rebind(TYPES.LogLevel).toConstantValue(LogLevel.warn);
+    // Router
     bind(LibavoidRouter).toSelf().inSingletonScope();
     bind(TYPES.IEdgeRouter).toService(LibavoidRouter);
     bind(TYPES.IAnchorComputer).to(LibavoidDiamondAnchor).inSingletonScope();
@@ -42,7 +43,7 @@ const DiagramModule = new ContainerModule((bind, unbind, isBound, rebind) => {
     configureModelElement(context, 'comp:attribute-row', SCompartment, SCompartmentView);
     // Edges
     configureModelElement(context, 'edge', NotationEdge, NotationEdgeView);
-    configureModelElement(context, 'edge:inheritance', SEdge, InheritanceEdgeView);
+    configureModelElement(context, 'edge:inheritance', InheritanceEdge, InheritanceEdgeView);
     // Labels
     configureModelElement(context, 'label:header', SLabel, SLabelView, { enable: [editLabelFeature] });
     configureModelElement(context, 'label:relationship', SLabel, SLabelView, { enable: [editLabelFeature] });
@@ -79,5 +80,3 @@ export function createDiagramContainer(widgetId: string): Container {
     });
     return container;
 }
-
-

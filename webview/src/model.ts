@@ -1,5 +1,5 @@
 import { injectable } from "inversify";
-import { DiamondNode, EdgeLayoutable, EdgePlacement, PreRenderedElement, RectangularNode, SEdge, SGraph,  SLabel, SRoutableElement } from 'sprotty';
+import { DiamondNode, EdgeLayoutable, EdgePlacement, PreRenderedElement, RectangularNode, SGraph,  SLabel, SRoutableElement } from 'sprotty';
 import { LibavoidRouter, LibavoidEdge, RouteType } from 'sprotty-routing-libavoid';
 
 
@@ -22,7 +22,8 @@ export class RelationshipNode extends DiamondNode {
     weak: boolean
 }
 
-export class NotationEdge extends SEdge {
+export class NotationEdge extends LibavoidEdge {
+    public readonly routerKind = LibavoidRouter.KIND;
     isSource: boolean
     showRelationship: boolean
     notation: String
