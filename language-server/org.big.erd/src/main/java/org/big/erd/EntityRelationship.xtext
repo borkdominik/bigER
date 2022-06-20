@@ -35,7 +35,8 @@ Attribute:
 
 DataType:
 	type=ID ('(' size=INT ')')?;  
-	
+
+@Override	
 terminal INT returns ecore::EInt:
     ('0'..'9')+;
     

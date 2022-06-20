@@ -3,22 +3,21 @@ package org.big.erd.ide.diagram
 import org.eclipse.sprotty.xtext.DefaultDiagramModule
 import org.eclipse.sprotty.xtext.IDiagramGenerator
 
-
 class DiagramModule extends DefaultDiagramModule {
 
 	def Class<? extends IDiagramGenerator> bindIDiagramGenerator() {
 		ERDiagramGenerator
-	} 
-	
+	}
+
 	override bindIDiagramServer() {
 		ERDiagramServer
 	}
 
-    override bindIDiagramServerFactory() {
+	override bindIDiagramServerFactory() {
 		ERDiagramServerFactory
 	}
 
-    override bindILayoutEngine() {
+	override bindILayoutEngine() {
 		ERDiagramLayoutEngine
 	}
 
@@ -29,5 +28,5 @@ class DiagramModule extends DefaultDiagramModule {
 	override bindIDiagramExpansionListener() {
 		ExpansionListener
 	}
-	
+
 }

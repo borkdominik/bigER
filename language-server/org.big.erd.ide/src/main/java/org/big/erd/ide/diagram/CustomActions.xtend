@@ -11,12 +11,12 @@ import org.eclipse.xtend.lib.annotations.ToString
  * Factory to process custom actions on the server
  */
 class CustomActionTypeAdapterFactory extends EditActionTypeAdapterFactory {
-	
+
 	new() {
 		addActionKind(ChangeNotationAction.KIND, ChangeNotationAction)
 		addActionKind(CodeGenerateAction.KIND, CodeGenerateAction)
 	}
-	
+
 }
 
 /**
@@ -24,19 +24,20 @@ class CustomActionTypeAdapterFactory extends EditActionTypeAdapterFactory {
  */
 @Accessors
 @EqualsHashCode
-@ToString(skipNulls = true)
+@ToString(skipNulls=true)
 class ChangeNotationAction implements Action {
-  
-  public static val KIND = 'changeNotation'
-	String kind = KIND
-  String notation
 
-	new() {}
-	
-  new(Consumer<ChangeNotationAction> initializer) {
+	public static val KIND = 'changeNotation'
+	String kind = KIND
+	String notation
+
+	new() {
+	}
+
+	new(Consumer<ChangeNotationAction> initializer) {
 		initializer.accept(this)
 	}
-	
+
 }
 
 /**
@@ -44,17 +45,18 @@ class ChangeNotationAction implements Action {
  */
 @Accessors
 @EqualsHashCode
-@ToString(skipNulls = true)
+@ToString(skipNulls=true)
 class CodeGenerateAction implements Action {
-    
-  public static val KIND = 'codeGenerate'
-	String kind = KIND
-  String generateType
 
-	new() {}
-	
-  new(Consumer<CodeGenerateAction> initializer) {
+	public static val KIND = 'codeGenerate'
+	String kind = KIND
+	String generateType
+
+	new() {
+	}
+
+	new(Consumer<CodeGenerateAction> initializer) {
 		initializer.accept(this)
 	}
-	
+
 }

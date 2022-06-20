@@ -15,7 +15,6 @@ import org.big.erd.entityRelationship.AttributeType
 import org.big.erd.entityRelationship.Relationship
 import java.util.Set
 import org.eclipse.xtext.util.RuntimeIOException
-import org.big.erd.entityRelationship.CardinalityType
 
 /**
  * Generates code from your model files on save.

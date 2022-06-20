@@ -24,5 +24,5 @@ class EntityRelationshipIdeSetup extends EntityRelationshipStandaloneSetup {
 			)
 		)
 	}
-	
+
 }

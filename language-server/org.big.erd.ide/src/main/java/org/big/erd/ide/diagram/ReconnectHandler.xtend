@@ -18,10 +18,10 @@ import org.big.erd.entityRelationship.Relationship
 import org.big.erd.entityRelationship.RelationEntity
 
 class ReconnectHandler {
-	
+
 	@Inject UriExtensions uriExtensions
 	@Inject extension PositionConverter
-	
+
 	def handle(ReconnectAction action, ILanguageAwareDiagramServer server) {
 		val root = server.diagramState.currentModel
 		val extension index = new SModelIndex(root)
@@ -34,7 +34,7 @@ class ReconnectHandler {
 				val textEdits = newArrayList
 				var relationText = ''
 				var newRange = getNewRange(sourceElement as Relationship)
-				
+
 				if ((sourceElement as Relationship).first === null) {
 					relationText = ''' {«'\n\t'»«(targetElement as Entity).name»«'\n'»}'''
 					textEdits += new TextEdit(newRange, relationText)
@@ -48,29 +48,29 @@ class ReconnectHandler {
 						// Not supported
 						return null
 					}
-					
+
 				}
 				val workspaceEdit = new WorkspaceEdit() => [
-					changes = #{ server.sourceUri -> textEdits }
+					changes = #{server.sourceUri -> textEdits}
 				]
 				server.dispatch(new WorkspaceEditAction => [
 					it.workspaceEdit = workspaceEdit
 				]);
-				}
+			}
 			return null
 		])
 	}
-	
+
 	private def getNewRange(Relationship sourceElement) {
 		val position = NodeModelUtils.findActualNodeFor(sourceElement).endOffset.toPosition(sourceElement)
 		return new Range(position, position)
 	}
-	
+
 	private def getSourceRange(RelationEntity sourceElement) {
 		val position = NodeModelUtils.findActualNodeFor(sourceElement).endOffset.toPosition(sourceElement)
 		return new Range(position, position)
 	}
-	
+
 	private def resolveElement(SModelElement sElement, ILanguageServerAccess.Context context) {
 		if (sElement.trace !== null) {
 			val connectableURI = sElement.trace.toURI
@@ -79,10 +79,10 @@ class ReconnectHandler {
 			return null
 		}
 	}
-	
+
 	private def toURI(String path) {
 		val parts = path.split('#')
-		if(parts.size !== 2)
+		if (parts.size !== 2)
 			throw new IllegalArgumentException('Invalid trace URI ' + path)
 		return uriExtensions.toUri(parts.head).trimQuery.appendFragment(parts.last)
 	}

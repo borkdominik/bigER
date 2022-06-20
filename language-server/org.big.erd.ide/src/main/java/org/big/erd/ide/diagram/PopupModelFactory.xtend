@@ -19,7 +19,7 @@ import org.big.erd.entityRelationship.DataType
 class PopupModelFactory implements IPopupModelFactory {
 
 	@Inject extension ITraceProvider
-	
+
 	override createPopupModel(SModelElement element, RequestPopupModelAction request, IDiagramServer server) {
 		switch element {
 			SIssueMarker: {
@@ -36,35 +36,33 @@ class PopupModelFactory implements IPopupModelFactory {
 				]
 			}
 			case null:
-				null 
- 			default: {
+				null
+			default: {
 				val future = element.withSource(server as ILanguageAwareDiagramServer) [ semanticElement, context |
 					semanticElement?.createPopup(element, request) ?: null
 				]
 				future.get
-			} 
+			}
 		}
 	}
-	
+
 	protected def CharSequence getIssueRow(SIssueMarker element) {
 		'''
-		<div class="sprotty-infoBlock">
-			<div class="sprotty-infoRow">
-				«FOR issue: element.issues»
-					<div class="sprotty-infoText">
-						<i class="fa «issue.severity.iconClass» sprotty-«issue.severity»" />«issue.message»
-					</div>
-				«ENDFOR»
+			<div class="sprotty-infoBlock">
+				<div class="sprotty-infoRow">
+					«FOR issue : element.issues»
+						<div class="sprotty-infoText">
+							<i class="fa «issue.severity.iconClass» sprotty-«issue.severity»" />«issue.message»
+						</div>
+					«ENDFOR»
+				</div>
 			</div>
-		</div>
 		'''
 	}
-	
-	
-	
+
 	protected def getIconClass(String severity) {
 		switch severity {
-			case 'error', 
+			case 'error',
 			case 'warning': 'fa-exclamation-circle'
 			case 'info': 'fa-info-circle'
 		}
@@ -80,21 +78,21 @@ class PopupModelFactory implements IPopupModelFactory {
 					id = popupId + '-body'
 					children = new ArrayList<SModelElement>
 					code = '''
-					<div class="sprotty-infoBlock">
-					«IF issueMarker !== null»
-						«getIssueRow(issueMarker)»
-					«ENDIF»
-					«getHeader(semanticElement)»
-					«IF semanticElement instanceof Relationship»
-						«IF !semanticElement.attributes.empty»
-						«FOR attribute: semanticElement.attributes»
-							<div class="popup-header">
-								<div class="popup-attribute-info">«attribute.name» : «attribute.datatype.transformDataType»</div>
-							</div>
-						«ENDFOR»
+						<div class="sprotty-infoBlock">
+						«IF issueMarker !== null»
+							«getIssueRow(issueMarker)»
 						«ENDIF»
-					«ENDIF»
-					</div>
+						«getHeader(semanticElement)»
+						«IF semanticElement instanceof Relationship»
+							«IF !semanticElement.attributes.empty»
+								«FOR attribute: semanticElement.attributes»
+									<div class="popup-header">
+										<div class="popup-attribute-info">«attribute.name» : «attribute.datatype.transformDataType»</div>
+									</div>
+								«ENDFOR»
+							«ENDIF»
+						«ENDIF»
+						</div>
 					'''
 				],
 				new PopupButton [
@@ -103,10 +101,10 @@ class PopupModelFactory implements IPopupModelFactory {
 					target = element.id + '.label'
 					kind = 'edit'
 					code = '''
-					<vscode-button class="popup-edit-button" appearance="secondary">
-						Rename
-						<span slot="start" class="codicon codicon-edit"></span>
-					</vscode-button>
+						<vscode-button class="popup-edit-button" appearance="secondary">
+							Rename
+							<span slot="start" class="codicon codicon-edit"></span>
+						</vscode-button>
 					'''
 				],
 				new PopupButton [
@@ -115,50 +113,50 @@ class PopupModelFactory implements IPopupModelFactory {
 					target = element.id
 					kind = 'delete'
 					code = '''
-					<vscode-button class="popup-delete-button" appearance="secondary">
-						Delete
-						<span slot="start" class="codicon codicon-trash"></span>
-					</vscode-button>
+						<vscode-button class="popup-delete-button" appearance="secondary">
+							Delete
+							<span slot="start" class="codicon codicon-trash"></span>
+						</vscode-button>
 					'''
 				]
 			]
 			canvasBounds = request.bounds
 		]
-		
+
 		return htmlRoot
 	}
-	
+
 	protected def String getHeader(EObject semanticElement) {
 		'''
-		<div class="popup-header">
-			«IF semanticElement instanceof Entity»
-			<div class="popup-element-info">
-				<vscode-tag class="popup-tag">Entity</vscode-tag>«semanticElement.name»
+			<div class="popup-header">
+				«IF semanticElement instanceof Entity»
+					<div class="popup-element-info">
+						<vscode-tag class="popup-tag">Entity</vscode-tag>«semanticElement.name»
+					</div>
+				«ENDIF»
+				«IF semanticElement instanceof Relationship»
+					<div class="popup-element-info">
+						<vscode-tag class="popup-tag">Relationship</vscode-tag>«semanticElement.name»
+					</div>
+				«ENDIF»
 			</div>
-			«ENDIF»
-			«IF semanticElement instanceof Relationship»
-			<div class="popup-element-info">
-				<vscode-tag class="popup-tag">Relationship</vscode-tag>«semanticElement.name»
-			</div>
-			«ENDIF»
-		</div>
-		
+			
 		'''
 	}
-	
+
 	private def transformDataType(DataType dataType) {
 		// default
-		if(dataType === null) {
+		if (dataType === null) {
 			return ''
 		}
-			
+
 		val type = dataType.type
 		var size = dataType.size
-		
+
 		if (size != 0) {
-			return type +  '(' + size + ')';
+			return type + '(' + size + ')';
 		}
-		
+
 		return type
 	}
 }

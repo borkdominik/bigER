@@ -7,10 +7,6 @@ import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EReference
 import org.eclipse.xtext.EcoreUtil2
 
-//import static extension org.eclipse.xtext.EcoreUtil2.*
-
-// import static org.big.erd.entityRelationship.EntityRelationshipPackage.Literals.*
-
 /**
  * This class contains custom scoping description.
  * 

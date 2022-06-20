@@ -12,7 +12,7 @@ import org.big.erd.ide.codeActions.ERDCodeActionService
  * Editor components are registered here
  */
 class EntityRelationshipIdeModule extends AbstractEntityRelationshipIdeModule {
-    
+
 	def Class<? extends ICodeActionService2> bindICodeActionService2() {
 		ERDCodeActionService
 	}
@@ -20,5 +20,5 @@ class EntityRelationshipIdeModule extends AbstractEntityRelationshipIdeModule {
 	def Class<? extends HoverService> bindHoverService() {
 		ERDHoverService
 	}
-	
+
 }

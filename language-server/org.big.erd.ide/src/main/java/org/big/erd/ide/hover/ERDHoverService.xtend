@@ -13,7 +13,7 @@ class ERDHoverService extends HoverService {
 
 	override String getContents(EObject element) {
 		val documentation = element.documentation
-		if(documentation === null) getFirstLine(element) else getFirstLine(element) + "  \n" + documentation 
+		if(documentation === null) getFirstLine(element) else getFirstLine(element) + "  \n" + documentation
 	}
 
 	def String getFirstLine(EObject o) {
