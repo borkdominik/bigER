@@ -6,7 +6,7 @@ import '../css/diagram.css';
 import '../css/popup.css';
 import {
     configureModelElement, HtmlRoot, HtmlRootView, overrideViewerOptions, PreRenderedElement, PreRenderedView,
-    SRoutingHandle, SRoutingHandleView, TYPES, loadDefaultModules, ConsoleLogger, LogLevel,  SCompartmentView,
+    SRoutingHandle, SRoutingHandleView, TYPES, loadDefaultModules, ConsoleLogger, LogLevel, SCompartmentView,
     SCompartment, editLabelFeature, labelEditUiModule, SModelRoot, SLabel, ExpandButtonHandler,
     SButton, expandFeature, SLabelView, CreateElementCommand, configureCommand, ExpandButtonView, editFeature
 } from 'sprotty';
