@@ -5,7 +5,8 @@ import { Container } from 'inversify';
 import { SprottyLspEditStarter } from 'sprotty-vscode-webview/lib/lsp/editing';
 import { createDiagramContainer } from './di.config';
 import { SprottyDiagramIdentifier } from 'sprotty-vscode-protocol';
-import { VscodeDiagramServer, VscodeDiagramWidget} from 'sprotty-vscode-webview';
+import { VscodeDiagramServer, VscodeDiagramWidget } from 'sprotty-vscode-webview';
+import { load as loadLibavoidRouter } from 'sprotty-routing-libavoid';
 import { ERDiagramWidget } from './toolbar';
 import { configureCommand, configureModelElement, TYPES } from 'sprotty';
 import { AddEntityCommand, AddRelationshipCommand } from './actions';
@@ -33,4 +34,6 @@ export class ERDiagramSprottyStarter extends SprottyLspEditStarter {
     }
 }
 
-new ERDiagramSprottyStarter();
+loadLibavoidRouter().then(() => {
+    new ERDiagramSprottyStarter();
+});

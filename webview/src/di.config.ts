@@ -1,16 +1,17 @@
 import { Container, ContainerModule } from 'inversify';
+import { LibavoidRouter, LibavoidDiamondAnchor, LibavoidEllipseAnchor, LibavoidRectangleAnchor, RouteType } from 'sprotty-routing-libavoid';
 import 'sprotty/css/sprotty.css';
 import 'sprotty/css/command-palette.css';
 import '../css/diagram.css';
 import '../css/popup.css';
 import {
-    configureModelElement, HtmlRoot, HtmlRootView, overrideViewerOptions, PreRenderedElement, PreRenderedView, SEdge,
+    configureModelElement, HtmlRoot, HtmlRootView, overrideViewerOptions, PreRenderedElement, PreRenderedView,
     SRoutingHandle, SRoutingHandleView, TYPES, loadDefaultModules, ConsoleLogger, LogLevel, SCompartmentView,
     SCompartment, editLabelFeature, labelEditUiModule, SModelRoot, SLabel, ExpandButtonHandler,
-    SButton, expandFeature, SLabelView, CreateElementCommand, configureCommand, ExpandButtonView
+    SButton, expandFeature, SLabelView, CreateElementCommand, configureCommand, ExpandButtonView, editFeature
 } from 'sprotty';
 import { InheritanceEdgeView, ERModelView, EntityNodeView, RelationshipNodeView, NotationEdgeView } from './views';
-import { EntityNode, ERModel, MultiplicityLabel, NotationEdge, RelationshipNode } from './model';
+import { EntityNode, ERModel, MultiplicityLabel, NotationEdge, RelationshipNode, InheritanceEdge } from './model';
 
 /**
  * Sprotty Dependency Injection container
@@ -18,6 +19,13 @@ import { EntityNode, ERModel, MultiplicityLabel, NotationEdge, RelationshipNode 
 const DiagramModule = new ContainerModule((bind, unbind, isBound, rebind) => {
     rebind(TYPES.ILogger).to(ConsoleLogger).inSingletonScope();
     rebind(TYPES.LogLevel).toConstantValue(LogLevel.warn);
+    // Router
+    bind(LibavoidRouter).toSelf().inSingletonScope();
+    bind(TYPES.IEdgeRouter).toService(LibavoidRouter);
+    bind(TYPES.IAnchorComputer).to(LibavoidDiamondAnchor).inSingletonScope();
+    bind(TYPES.IAnchorComputer).to(LibavoidEllipseAnchor).inSingletonScope();
+    bind(TYPES.IAnchorComputer).to(LibavoidRectangleAnchor).inSingletonScope();
+
     // change animation speed to 400ms
     rebind(TYPES.CommandStackOptions).toConstantValue({
         defaultDuration: 400,
@@ -34,8 +42,8 @@ const DiagramModule = new ContainerModule((bind, unbind, isBound, rebind) => {
     configureModelElement(context, 'comp:attributes', SCompartment, SCompartmentView);
     configureModelElement(context, 'comp:attribute-row', SCompartment, SCompartmentView);
     // Edges
-    configureModelElement(context, 'edge', NotationEdge, NotationEdgeView);
-    configureModelElement(context, 'edge:inheritance', SEdge, InheritanceEdgeView);
+    configureModelElement(context, 'edge', NotationEdge, NotationEdgeView, { disable: [editFeature] });
+    configureModelElement(context, 'edge:inheritance', InheritanceEdge, InheritanceEdgeView);
     // Labels
     configureModelElement(context, 'label:header', SLabel, SLabelView, { enable: [editLabelFeature] });
     configureModelElement(context, 'label:relationship', SLabel, SLabelView, { enable: [editLabelFeature] });
@@ -70,5 +78,18 @@ export function createDiagramContainer(widgetId: string): Container {
         hiddenDiv: widgetId + '_hidden',
         popupOpenDelay: 0
     });
+
+    // Router options
+    const router = container.get(LibavoidRouter);
+    router.setOptions({
+        routingType: RouteType.Orthogonal,
+        segmentPenalty: 50,
+        idealNudgingDistance: 10,
+        shapeBufferDistance: 6,
+        nudgeOrthogonalSegmentsConnectedToShapes: true,
+        // allow or disallow moving edge end from center
+        nudgeOrthogonalTouchingColinearSegments: false,
+    });
+
     return container;
 }
