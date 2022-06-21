@@ -21,7 +21,7 @@
   "dependencies": {
     "reflect-metadata": "^0.1.13",
     "sprotty": "~0.11.1",
-    "sprotty-routing-libavoid": "^1.0.32",
+    "sprotty-routing-libavoid": "^1.0.35",
     "sprotty-vscode-webview": "^0.2.0"
   },
   "devDependencies": {
