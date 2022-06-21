@@ -1710,10 +1710,10 @@ sprotty-protocol@~0.11.0:
   resolved "https://registry.yarnpkg.com/sprotty-protocol/-/sprotty-protocol-0.11.0.tgz#f8ff89121155520b4e32ea0c05927e7a56173b99"
   integrity sha512-OxRKrKx8mNOxX8CBKsP4epu7YGjT4XvaGwNfAwtVQVh2OPQq98t78A86XGjJThw9axm950QX0KQWGbrzX7FJuQ==
 
-sprotty-routing-libavoid@^1.0.31:
-  version "1.0.31"
-  resolved "https://registry.yarnpkg.com/sprotty-routing-libavoid/-/sprotty-routing-libavoid-1.0.31.tgz#6d709d369646af5eac234b592d348fd561d09b7f"
-  integrity sha512-HgaOgHFLO5X/mcVTb6GPQ4YkMbcD1HMBf9WcAp207vpXLfpnyrAC//4pFKwiCm1+WyNnixqdUOwEGy9Wgy6vJQ==
+sprotty-routing-libavoid@^1.0.32:
+  version "1.0.32"
+  resolved "https://registry.yarnpkg.com/sprotty-routing-libavoid/-/sprotty-routing-libavoid-1.0.32.tgz#9f24c5237c8bce34c85a788e5ce9b7208584c7a4"
+  integrity sha512-gagD/d14+HDZXFJBgKUMA27i9vdJe+wUiUNeG2Yk6FQd9XrND3h8Ldl2WpCa5qtw/g8xI0ZhMgtnj3+Or/qEgA==
   dependencies:
     inversify "^5.0.1"
     libavoid-js "^0.1.17"

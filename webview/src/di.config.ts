@@ -84,12 +84,11 @@ export function createDiagramContainer(widgetId: string): Container {
     router.setOptions({
         routingType: RouteType.Orthogonal,
         segmentPenalty: 50,
-        idealNudgingDistance: 16,
-        shapeBufferDistance: 16,
-        nudgeOrthogonalSegmentsConnectedToShapes: false,
-        nudgeOrthogonalTouchingColinearSegments: true,
-        penaliseOrthogonalSharedPathsAtConnEnds: true,
-        nudgeSharedPathsWithCommonEndPoint: true,
+        idealNudgingDistance: 10,
+        shapeBufferDistance: 6,
+        nudgeOrthogonalSegmentsConnectedToShapes: true,
+        // allow or disallow moving edge end from center
+        nudgeOrthogonalTouchingColinearSegments: false,
     });
 
     return container;

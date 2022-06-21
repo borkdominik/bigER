@@ -1,6 +1,6 @@
 import { injectable } from "inversify";
 import { DiamondNode, EdgeLayoutable, EdgePlacement, PreRenderedElement, RectangularNode, SGraph, SLabel } from 'sprotty';
-import { LibavoidRouter, LibavoidEdge } from 'sprotty-routing-libavoid';
+import { LibavoidEdge } from 'sprotty-routing-libavoid';
 
 
 export class ERModel extends SGraph {
@@ -19,7 +19,6 @@ export class RelationshipNode extends DiamondNode {
 }
 
 export class NotationEdge extends LibavoidEdge {
-    public readonly routerKind = LibavoidRouter.KIND;
     isSource: boolean;
     showRelationship: boolean;
     notation: string;
@@ -39,8 +38,6 @@ export class MultiplicityLabel extends SLabel implements EdgeLayoutable {
 
 @injectable()
 export class InheritanceEdge extends LibavoidEdge {
-    public readonly targetAnchorCorrection = Math.sqrt(5);
-    public readonly routerKind = LibavoidRouter.KIND;
 }
 
 export class PopupButton extends PreRenderedElement {
