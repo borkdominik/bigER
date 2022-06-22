@@ -5,3 +5,4 @@ dist/**
 src/** 
 **/webpack.config.js
 **/tsconfig.json
+.vscode-test/**

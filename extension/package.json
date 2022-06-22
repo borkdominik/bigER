@@ -5,7 +5,7 @@
 	"version": "0.1.0",
 	"publisher": "BIGModelingTools",
 	"categories": [
-		"Programming Languages",
+        "Programming Languages",
 		"Visualization",
 		"Snippets"
 	],
@@ -204,19 +204,10 @@
 	},
 	"scripts": {
 		"prepare": "yarn run clean && yarn run build && yarn run lint",
-		"clean": "rimraf dist",
 		"build": "webpack --mode=development",
-		"watch": "webpack --mode=development --watch",
+		"build:tests": "tsc -p . --outDir dist",
+		"clean": "rimraf dist",
 		"lint": "eslint './src/**'",
-		"build-tests": "tsc -p . --outDir dist",
-		"watch-tests": "tsc -p . -w --outDir dist",
-		"pretest": "yarn run build-tests && yarn run build",
-		"test": "node ./dist/test/runTest.js"
-	},
-	"__metadata": {
-		"id": "61c5684f-95b4-4813-9d1f-04dc437f4c1f",
-		"publisherDisplayName": "BIGModelingTools",
-		"publisherId": "ed1fe8f3-70ff-4450-95ed-7fb754a6d567",
-		"isPreReleaseVersion": false
+		"watch": "webpack --mode=development --watch"
 	}
 }
