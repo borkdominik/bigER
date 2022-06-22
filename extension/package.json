@@ -1,208 +1,213 @@
 {
-    "name": "erdiagram",
-    "displayName": "bigER Modeling Tool",
-    "description": "Entity Relationship Diagrams with a textual editor and SQL code generation.",
-    "version": "0.1.0",
-    "publisher": "BIGModelingTools",
-    "categories": [
+	"name": "erdiagram",
+	"displayName": "bigER Modeling Tool",
+	"description": "Entity Relationship Diagrams with a textual editor and SQL code generation.",
+	"version": "0.1.0",
+	"publisher": "BIGModelingTools",
+	"categories": [
         "Programming Languages",
-        "Visualization",
-        "Snippets"
-    ],
-    "keywords": [
-        "Entity Relationship",
-        "Data Modeling",
-        "Diagram",
-        "Language Server",
-        "ERD"
-    ],
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/borkdominik/bigER"
-    },
-    "license": "MIT",
-    "engines": {
-        "vscode": "^1.46.0"
-    },
-    "icon": "media/logo.png",
-    "galleryBanner": {
-        "color": "#1d1d1d",
-        "theme": "dark"
-    },
-    "main": "./pack/main",
-    "activationEvents": [
-        "onLanguage:erdiagram",
-        "onCommand:erdiagram.diagram.open",
-        "onCommand:erdiagram.model.new"
-    ],
-    "files": [
-        "dist",
-        "extension",
-        "server",
-        "syntaxes",
-        "webview",
-        "media"
-    ],
-    "contributes": {
-        "languages": [
-            {
-                "id": "erdiagram",
-                "aliases": [
-                    "erdiagram",
-                    "erd"
-                ],
-                "extensions": [
-                    ".erd"
-                ],
-                "configuration": "./language-configuration.json"
-            }
-        ],
-        "grammars": [
-            {
-                "language": "erdiagram",
-                "scopeName": "source.erd",
-                "path": "./syntaxes/erdiagram.tmLanguage.json"
-            }
-        ],
-        "snippets": [
-            {
-                "language": "erdiagram",
-                "path": "./snippets.json"
-            }
-        ],
-        "commands": [
-            {
-                "command": "erdiagram.diagram.open",
-                "title": "Open ER Diagram",
-                "icon": "$(type-hierarchy-super)",
-                "category": "bigER"
-            },
-            {
-                "command": "erdiagram.diagram.fit",
-                "title": "Fit to Screen",
-                "category": "bigER"
-            },
-            {
-                "command": "erdiagram.diagram.center",
-                "title": "Center selection",
-                "category": "bigER"
-            },
-            {
-                "command": "erdiagram.diagram.export",
-                "title": "Export diagram to SVG",
-                "category": "bigER"
-            },
-            {
-                "command": "erdiagram.diagram.delete",
-                "title": "Delete selected element",
-                "category": "bigER"
-            },
-            {
-                "command": "erdiagram.model.new",
-                "title": "New ER Model",
-                "category": "bigER"
-            }
-        ],
-        "menus": {
-            "editor/title": [
-                {
-                    "command": "erdiagram.diagram.open",
-                    "when": "editorLangId == 'erdiagram'",
-                    "group": "navigation"
-                }
-            ],
-            "editor/context": [
-                {
-                    "command": "erdiagram.diagram.open",
-                    "when": "editorLangId == 'erdiagram'",
-                    "group": "navigation"
-                }
-            ],
-            "explorer/context": [
-                {
-                    "command": "erdiagram.diagram.open",
-                    "when": "resourceExtname == '.erd'",
-                    "group": "navigation"
-                }
-            ],
-            "file/newFile": [
-                {
-                    "command": "erdiagram.model.new",
-                    "group": "file"
-                }
-            ],
-            "commandPalette": [
-                {
-                    "command": "erdiagram.diagram.open",
-                    "when": "editorLangId == 'erdiagram'"
-                },
-                {
-                    "command": "erdiagram.diagram.fit",
-                    "when": "erdiagram-diagram-focused"
-                },
-                {
-                    "command": "erdiagram.diagram.center",
-                    "when": "erdiagram-diagram-focused"
-                },
-                {
-                    "command": "erdiagram.diagram.delete",
-                    "when": "erdiagram-diagram-focused"
-                },
-                {
-                    "command": "erdiagram.diagram.export",
-                    "when": "erdiagram-diagram-focused"
-                },
-                {
-                    "command": "erdiagram.model.new"
-                }
-            ]
-        },
-        "keybindings": [
-            {
-                "command": "erdiagram.diagram.open",
-                "key": "ctrl+o",
-                "mac": "cmd+o",
-                "when": "resourceExtname == '.erd'"
-            },
-            {
-                "command": "erdiagram.diagram.delete",
-                "key": "ctrl+backspace",
-                "mac": "cmd+backspace",
-                "when": "erdiagram-diagram-focused"
-            },
-            {
-                "command": "erdiagram.diagram.fit",
-                "key": "ctrl+f",
-                "mac": "cmd+f",
-                "when": "erdiagram-diagram-focused"
-            }
-        ]
-    },
-    "dependencies": {
-        "sprotty-vscode": "^0.2.0",
-        "sprotty-vscode-webview": "^0.2.0",
-        "vscode-languageclient": "^7.0.0"
-    },
-    "devDependencies": {
-        "@types/node": "^12.12.6",
-        "@types/vscode": "1.46.0",
-        "@typescript-eslint/eslint-plugin": "^5.28.0",
-        "@typescript-eslint/parser": "^5.28.0",
-        "@vscode/webview-ui-toolkit": "^1.0.0",
-        "eslint": "^8.18.0",
-        "latest": "^0.2.0",
-        "rimraf": "^3.0.2",
-        "source-map-loader": "^3.0.0",
-        "ts-loader": "^9.2.6",
-        "typescript": "~4.6.2",
-        "webpack": "^5.64.2",
-        "webpack-cli": "^4.9.1"
-    },
-    "scripts": {
-        "prepare": "yarn run clean && yarn run build",
-        "clean": "rimraf extension/dist extension/pack",
-        "build": "webpack --mode=development",
-        "watch": "webpack --mode=development --watch",
-        "lint": "eslint './src/**'"
-    }
+		"Visualization",
+		"Snippets"
+	],
+	"keywords": [
+		"Entity Relationship",
+		"Data Modeling",
+		"Diagram",
+		"Language Server",
+		"ERD"
+	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/borkdominik/bigER"
+	},
+	"license": "MIT",
+	"engines": {
+		"vscode": "^1.46.0"
+	},
+	"icon": "media/logo.png",
+	"galleryBanner": {
+		"color": "#1d1d1d",
+		"theme": "dark"
+	},
+	"main": "./pack/main",
+	"activationEvents": [
+		"onLanguage:erdiagram",
+		"onCommand:erdiagram.diagram.open",
+		"onCommand:erdiagram.model.new"
+	],
+	"files": [
+		"dist",
+		"extension",
+		"server",
+		"syntaxes",
+		"webview",
+		"media"
+	],
+	"contributes": {
+		"languages": [
+			{
+				"id": "erdiagram",
+				"aliases": [
+					"erdiagram",
+					"erd"
+				],
+				"extensions": [
+					".erd"
+				],
+				"configuration": "./language-configuration.json"
+			}
+		],
+		"grammars": [
+			{
+				"language": "erdiagram",
+				"scopeName": "source.erd",
+				"path": "./syntaxes/erdiagram.tmLanguage.json"
+			}
+		],
+		"snippets": [
+			{
+				"language": "erdiagram",
+				"path": "./snippets.json"
+			}
+		],
+		"commands": [
+			{
+				"command": "erdiagram.diagram.open",
+				"title": "Open ER Diagram",
+				"icon": "$(type-hierarchy-super)",
+				"category": "bigER"
+			},
+			{
+				"command": "erdiagram.diagram.fit",
+				"title": "Fit to Screen",
+				"category": "bigER"
+			},
+			{
+				"command": "erdiagram.diagram.center",
+				"title": "Center selection",
+				"category": "bigER"
+			},
+			{
+				"command": "erdiagram.diagram.export",
+				"title": "Export diagram to SVG",
+				"category": "bigER"
+			},
+			{
+				"command": "erdiagram.diagram.delete",
+				"title": "Delete selected element",
+				"category": "bigER"
+			},
+			{
+				"command": "erdiagram.model.new",
+				"title": "New ER Model",
+				"category": "bigER"
+			}
+		],
+		"menus": {
+			"editor/title": [
+				{
+					"command": "erdiagram.diagram.open",
+					"when": "editorLangId == 'erdiagram'",
+					"group": "navigation"
+				}
+			],
+			"editor/context": [
+				{
+					"command": "erdiagram.diagram.open",
+					"when": "editorLangId == 'erdiagram'",
+					"group": "navigation"
+				}
+			],
+			"explorer/context": [
+				{
+					"command": "erdiagram.diagram.open",
+					"when": "resourceExtname == '.erd'",
+					"group": "navigation"
+				}
+			],
+			"file/newFile": [
+				{
+					"command": "erdiagram.model.new",
+					"group": "file"
+				}
+			],
+			"commandPalette": [
+				{
+					"command": "erdiagram.diagram.open",
+					"when": "editorLangId == 'erdiagram'"
+				},
+				{
+					"command": "erdiagram.diagram.fit",
+					"when": "erdiagram-diagram-focused"
+				},
+				{
+					"command": "erdiagram.diagram.center",
+					"when": "erdiagram-diagram-focused"
+				},
+				{
+					"command": "erdiagram.diagram.delete",
+					"when": "erdiagram-diagram-focused"
+				},
+				{
+					"command": "erdiagram.diagram.export",
+					"when": "erdiagram-diagram-focused"
+				},
+				{
+					"command": "erdiagram.model.new"
+				}
+			]
+		},
+		"keybindings": [
+			{
+				"command": "erdiagram.diagram.open",
+				"key": "ctrl+o",
+				"mac": "cmd+o",
+				"when": "resourceExtname == '.erd'"
+			},
+			{
+				"command": "erdiagram.diagram.delete",
+				"key": "ctrl+backspace",
+				"mac": "cmd+backspace",
+				"when": "erdiagram-diagram-focused"
+			},
+			{
+				"command": "erdiagram.diagram.fit",
+				"key": "ctrl+f",
+				"mac": "cmd+f",
+				"when": "erdiagram-diagram-focused"
+			}
+		]
+	},
+	"dependencies": {
+		"sprotty-vscode": "^0.2.0",
+		"sprotty-vscode-webview": "^0.2.0",
+		"vscode-languageclient": "^7.0.0"
+	},
+	"devDependencies": {
+		"@types/glob": "^7.2.0",
+		"@types/mocha": "^9.1.1",
+		"@types/node": "^12.12.6",
+		"@types/vscode": "1.46.0",
+		"@typescript-eslint/eslint-plugin": "^5.28.0",
+		"@typescript-eslint/parser": "^5.28.0",
+		"@vscode/test-electron": "^2.1.4",
+		"@vscode/webview-ui-toolkit": "^1.0.0",
+		"eslint": "^8.18.0",
+		"latest": "^0.2.0",
+		"mocha": "^10.0.0",
+		"rimraf": "^3.0.2",
+		"source-map-loader": "^3.0.0",
+		"ts-loader": "^9.2.6",
+		"typescript": "~4.6.2",
+		"webpack": "^5.64.2",
+		"webpack-cli": "^4.9.1"
+	},
+	"scripts": {
+		"prepare": "yarn run clean && yarn run build && yarn run lint",
+		"build": "webpack --mode=development",
+		"build:tests": "tsc -p . --outDir dist",
+		"clean": "rimraf dist",
+		"lint": "eslint './src/**'",
+		"watch": "webpack --mode=development --watch"
+	}
 }
