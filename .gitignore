@@ -18,6 +18,7 @@ org.eclipse.buildship.core.prefs
 src-gen/
 lib
 dist
+.vscode-test
 
 
 # macOS
