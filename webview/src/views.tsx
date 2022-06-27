@@ -165,21 +165,20 @@ export class NotationEdgeView extends PolylineEdgeView {
                 {this.renderAdditionalsNew(edge, route, true, showRelationship, context)}
                 {this.renderAdditionalsNew(edge, route, false, showRelationship, context)}
             </g>;
-        } else if (showRelationship) {
+        }
+        if (!showRelationship) {
+            isSource = false;
+        }
+        if (showLabel) {
             return <g class-sprotty-edge={true} class-mouseover={edge.hoverFeedback}>
                 {this.renderLine(edge, route, context, args)}
                 {this.renderAdditionalsNew(edge, route, isSource, showRelationship, context)}
-            </g>;
-        } else if (showLabel) {
-            return <g class-sprotty-edge={true} class-mouseover={edge.hoverFeedback}>
-                {this.renderLine(edge, route, context, args)}
-                {this.renderAdditionalsNew(edge, route, false, showRelationship, context)}
                 {context.renderChildren(edge, { route })}
             </g>;
         } else {
             return <g class-sprotty-edge={true} class-mouseover={edge.hoverFeedback}>
             {this.renderLine(edge, route, context, args)}
-            {this.renderAdditionalsNew(edge, route, false, showRelationship, context)}
+            {this.renderAdditionalsNew(edge, route, isSource, showRelationship, context)}
         </g>;
         }
     }
