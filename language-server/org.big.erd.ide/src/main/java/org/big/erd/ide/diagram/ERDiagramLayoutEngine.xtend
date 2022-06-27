@@ -15,32 +15,38 @@ class ERDiagramLayoutEngine extends ElkLayoutEngine {
 
 	static val LOG = Logger.getLogger(ERDiagramLayoutEngine)
 
-	// TODO: Layout improvement
 	override layout(SModelRoot root, Action cause) {
+		
 		if (root instanceof ERModel) {
-			LOG.info("Applying macro layout for ERModel with id '" + root.id + "'")
+			LOG.info("Applying macro layout for model with id: '" + root.id + "'")
 			val configurator = new SprottyLayoutConfigurator
 
-			configurator.configureByType('graph').setProperty(CoreOptions.DIRECTION, Direction.RIGHT).setProperty(
-				CoreOptions.SPACING_NODE_NODE, 40.0).setProperty(LayeredOptions.SPACING_NODE_NODE_BETWEEN_LAYERS, 40.0).
-				setProperty(CoreOptions.SPACING_PORT_PORT, 30.0)
-
-			configurator.configureByType('node').setProperty(CoreOptions.PORT_ALIGNMENT_DEFAULT, PortAlignment.CENTER).
-				setProperty(CoreOptions.PORT_CONSTRAINTS, PortConstraints.FIXED_SIDE).setProperty(
-					CoreOptions.SPACING_PORT_PORT, 30.0)
-
-			configurator.configureByType('node:relationship').setProperty(CoreOptions.PORT_ALIGNMENT_DEFAULT,
-				PortAlignment.CENTER).setProperty(CoreOptions.PORT_CONSTRAINTS, PortConstraints.FIXED_SIDE)
-
-			configurator.configureByType('node:weak-relationship').setProperty(CoreOptions.PORT_ALIGNMENT_DEFAULT,
-				PortAlignment.CENTER).setProperty(CoreOptions.PORT_CONSTRAINTS, PortConstraints.FIXED_SIDE)
-
+			configurator.configureByType('graph')
+				.setProperty(CoreOptions.DIRECTION, Direction.RIGHT)
+				.setProperty(CoreOptions.SPACING_NODE_NODE, 40.0)
+				.setProperty(LayeredOptions.SPACING_NODE_NODE_BETWEEN_LAYERS, 40.0)
+				.setProperty(CoreOptions.SPACING_PORT_PORT, 30.0)
+			
 			if (root.notation === 'crowsfoot') {
-				configurator.configureByType('graph').setProperty(LayeredOptions.SPACING_NODE_NODE_BETWEEN_LAYERS,
-					120.0)
+				configurator.configureByType('graph')
+					.setProperty(LayeredOptions.SPACING_NODE_NODE_BETWEEN_LAYERS, 120.0)
 			}
+			
+			configurator.configureByType('node:entity')
+				.setProperty(CoreOptions.PORT_ALIGNMENT_DEFAULT, PortAlignment.CENTER)
+				.setProperty(CoreOptions.PORT_CONSTRAINTS, PortConstraints.FIXED_SIDE)
+				.setProperty(CoreOptions.SPACING_PORT_PORT, 30.0)
+			
+			configurator.configureByType('node:relationship')
+				.setProperty(CoreOptions.PORT_ALIGNMENT_DEFAULT, PortAlignment.CENTER)
+				.setProperty(CoreOptions.PORT_CONSTRAINTS, PortConstraints.FIXED_SIDE)
+
+			configurator.configureByType('node:weak-relationship')
+				.setProperty(CoreOptions.PORT_ALIGNMENT_DEFAULT, PortAlignment.CENTER)
+				.setProperty(CoreOptions.PORT_CONSTRAINTS, PortConstraints.FIXED_SIDE)
 
 			layout(root, configurator, cause)
+			LOG.info("Finished computing macro layout.")
 		}
 	}
 

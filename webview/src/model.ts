@@ -1,7 +1,6 @@
 import { injectable } from "inversify";
-import { DiamondNode, EdgeLayoutable, EdgePlacement, PreRenderedElement, RectangularNode, SGraph, SLabel } from 'sprotty';
+import { DiamondNode, EdgePlacement, PreRenderedElement, RectangularNode, SGraph, SLabel } from 'sprotty';
 import { LibavoidEdge } from 'sprotty-routing-libavoid';
-
 
 export class ERModel extends SGraph {
     name: string;
@@ -27,7 +26,7 @@ export class NotationEdge extends LibavoidEdge {
 
 
 @injectable()
-export class MultiplicityLabel extends SLabel implements EdgeLayoutable {
+export class MultiplicityLabel extends SLabel {
     edgePlacement = <EdgePlacement> {
         position: 0.5,
         side: 'top',

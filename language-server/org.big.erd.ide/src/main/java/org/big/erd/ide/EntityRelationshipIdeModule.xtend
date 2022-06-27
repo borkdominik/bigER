@@ -7,6 +7,10 @@ import org.eclipse.xtext.ide.server.codeActions.ICodeActionService2
 import org.eclipse.xtext.ide.server.hover.HoverService
 import org.big.erd.ide.hover.ERDHoverService
 import org.big.erd.ide.codeActions.ERDCodeActionService
+import org.big.erd.ide.symbol.ErDocumentSymbolNameProvider
+import org.eclipse.xtext.ide.server.symbol.DocumentSymbolMapper.DocumentSymbolNameProvider
+import org.big.erd.ide.symbol.ErDocumentSymbolKindProvider
+import org.eclipse.xtext.ide.server.symbol.DocumentSymbolMapper.DocumentSymbolKindProvider
 
 /**
  * Editor components are registered here
@@ -19,6 +23,14 @@ class EntityRelationshipIdeModule extends AbstractEntityRelationshipIdeModule {
 
 	def Class<? extends HoverService> bindHoverService() {
 		ERDHoverService
+	}
+	
+	def Class<? extends DocumentSymbolNameProvider> bindDocumentSymbolNameProvider() {
+		return typeof(ErDocumentSymbolNameProvider);
+	}
+	
+	def Class<? extends DocumentSymbolKindProvider> bindDocumentSymbolKindProvider() {
+		return typeof(ErDocumentSymbolKindProvider);
 	}
 
 }
