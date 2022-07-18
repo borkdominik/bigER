@@ -20,7 +20,7 @@
   ],
   "dependencies": {
     "sprotty": "^0.11.1",
-    "sprotty-routing-libavoid": "^1.0.35",
+    "sprotty-routing-libavoid": "^1.0.36",
     "sprotty-vscode-protocol": "^0.2.0",
     "sprotty-vscode-webview": "^0.2.0"
   },
