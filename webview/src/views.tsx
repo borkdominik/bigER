@@ -272,9 +272,9 @@ export class NotationEdgeView extends PolylineEdgeView {
             xRectCorrected -= 1;
         }
         if (point.y <= next.y) {
-            yText += 25;
+            yText += 15;
         } else {
-            yText -= 30;
+            yText -= 20;
         }
         if (type === 'comp') {
             return [<svg>
