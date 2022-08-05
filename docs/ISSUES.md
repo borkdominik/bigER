@@ -23,7 +23,7 @@ The image below illustrates how issues transition between the different states, 
 
 Newly created issues are in a `Pending` state and require to be verified and labeled by a code owner. If the issue turns out the be invalid (see [Types of Issues](#type-of-issues) for possible reasons) it is closed. Otherwise, valid issues transition to the `Open` state. 
 
-Open issues are ready to be worked on by a developer and set to `In Progress`. If the developer decides to stop working on the issue it becomes open again. By submitting a Pull Request (PR) the issue is ready for review with the `Review` status. 
+Open issues are ready to be worked on by a developer and when started it is set to `In Progress`. If the developer decides to stop working on the issue it becomes open again. By submitting a Pull Request (PR) the issue is ready for review with the `Review` status. 
 
 Again, a code owner reviews the submitted PR and decides whether the issue is *NOT OK* and set back to `Open`, or it is *OK*, and in this case receives the status `Done` and can be closed.
 
