@@ -32,17 +32,15 @@ Again, a code owner reviews the submitted PR and decides whether the issue is *N
 ## Type of Issues
 
 Besides the status label, issues are also classified based on their **type**. Currently we use the following labels for classification:
-- `bug` 
-- `build`
-- `docs`
-- `feature`
-- `question`
-- `other`
-
-Additionally, invalid issues can receive the labels:
+- `bug` - Problems related to bugs
+- `discussion` - Discussion or question
+- `dev` - Improvements to the development experience
+- `docs` - Improvements or additions to documentation
 - `duplicate` - Duplicate of an existing issue
-- `won't do` - Issue is considered currently out of scope and will not be worked on
-- `needs more info` - Some information is missing to become a valid issue
+- `feature` - Request new changes
+- `help` - Support needed
+- `needs more info` - Missing information to be valid
+- `won't do` - Currently cosidered out of scope and will not be worked on
 
 
 
