@@ -1,10 +1,11 @@
-# Issues
+# Issue Management
 
 This page describes the issue management process of [bigER](https://github.com/borkdominik/bigER). 
 
 **Table of Contents**
 1. [Status Workflow](#status-workflow)
 2. [Type of Issues](#type-of-issues)
+3. [Milestones](#milestones)
 
 See all currently [open](https://github.com/borkdominik/bigER/issues) and [closed](https://github.com/borkdominik/bigER/issues?q=is%3Aissue+is%3Aclosed) issues of the project.
 
@@ -42,5 +43,11 @@ Besides the status label, issues are also classified based on their **type**. Cu
 - `needs more info` - Missing information to be valid
 - `won't do` - Currently cosidered out of scope and will not be worked on
 
+
+## Milestones
+
+Milestones are created for new releases and are used for tracking which version fixes an issue. In case no milestone is set, fixes regarding the issue are not considered to be included in the next release.
+
+See the [current list of milestones](https://github.com/borkdominik/bigER/milestones).
 
 
