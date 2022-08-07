@@ -4,8 +4,6 @@ This page describes the issue management process of [bigER](https://github.com/b
 
 See currently [open](https://github.com/borkdominik/bigER/issues) and [closed](https://github.com/borkdominik/bigER/issues?q=is%3Aissue+is%3Aclosed) issues of the project.
 
----
-
 <!-- TABLE OF CONTENTS -->
 <details>
   <summary><strong>Table of Contents</strong></summary>
@@ -43,7 +41,7 @@ Again, a code owner reviews the PR and decides whether the submitted changes sol
 
 
 <!-- TYPES OF ISSUES -->
-## Type of Issues
+## Types of Issues
 
 Besides the status label, issues are also classified based on their **type**. Currently we use the following labels for classification:
 - `bug` - Problems related to bugs
