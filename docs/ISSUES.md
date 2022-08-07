@@ -1,12 +1,12 @@
-# Issue Management
+# Issue Tracking
 
-This page describes the issue management process of [bigER](https://github.com/borkdominik/bigER). 
+This page describes the issue tracking process of [bigER](https://github.com/borkdominik/bigER). 
 
 See currently [open](https://github.com/borkdominik/bigER/issues) and [closed](https://github.com/borkdominik/bigER/issues?q=is%3Aissue+is%3Aclosed) issues of the project.
 
 <!-- TABLE OF CONTENTS -->
 <details>
-  <summary><strong>Table of Contents</strong></summary>
+  <summary><strong>Table of Contents</strong> <em>(click to open)</em></summary>
   <ol>
     <li><a href="#status-workflow">Status Workflow</a></li>
     <li><a href="#types-of-issues">Types of Issues</a></li>
@@ -20,24 +20,21 @@ See currently [open](https://github.com/borkdominik/bigER/issues) and [closed](h
 ## Status Workflow
 
 All open issues receive a label to indicate the current **status**. The status label can have the following values:
-- `Open` 
-- `In Progress`
-- `Review`
-- `Done`
+- `Open` - Verified and open for implementation
+- `In Progress` - Already worked on by a developer
+- `Review` - Ready for review
+- `Done` - All tasks completed
 
-The image below illustrates how issues transition between the different states, a description of the image is found below.
+The image illustrates how issues transition between the different states, see below for a description.
 
-<br>
 
 ![Issue Workflow](../docs/img/issue-workflow.png)
 
-<br>
+New issues are verified and labeled by a code owner. Valid issues become `Open` for implementation, otherwise invalid issues get closed (see [Types of Issues](#type-of-issues) for reasons). 
 
-Newly created issues are in a `Pending` state and remain unlabeled until verified and labeled by a code owner. Valid issues transition to `Open` and are ready to be worked on. Otheriwse, if invalid (see [Types of Issues](#type-of-issues) for possible reasons), the issue gets closed.
+When a developer starts working on an open issue, it is set to `In Progress`. If they decide to stop working on the issue, it goes back to an open state. 
 
-Open issues are set to `In Progress` when started by a developer. If the developer decides to stop working on the issue it becomes open again. By submitting a Pull Request (PR) the issue is ready for review with the `Review` status label. 
-
-Again, a code owner reviews the PR and decides whether the submitted changes solve the issue. If the review is *OK*, the issue receives the `Done` status label and can be closed, otherwise, when *NOT OK* it goes back to `Open`.
+Issues are ready for review when a Pull Request (PR) is submitted, receiving the `Review` status label. Again, a code owner reviews the PR and decides whether the submitted changes solve the issue. If the review is *OK*, the issue receives the `Done` status label and can be closed, otherwise when *NOT OK* it goes back to `Open`.
 
 
 <!-- TYPES OF ISSUES -->
@@ -58,8 +55,6 @@ Besides the status label, issues are also classified based on their **type**. Cu
 <!-- MILESTONES -->
 ## Milestones
 
-Milestones are created for new releases and are used for tracking which version fixes an issue. In case no milestone is set, fixes regarding the issue are not considered to be included in the next release.
-
-See the [current list of milestones](https://github.com/borkdominik/bigER/milestones).
+[Milestones](https://github.com/borkdominik/bigER/milestones) are created for new releases and are used for tracking which version fixes an issue. In case no milestone is specified, fixes regarding the issue are not considered to be included in the next release.
 
 
