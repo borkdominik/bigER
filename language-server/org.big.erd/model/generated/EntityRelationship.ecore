@@ -64,13 +64,14 @@
     <eLiterals name="MULTIVALUED" value="5" literal="multivalued"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="CardinalityType">
-    <eLiterals name="ONE" literal="1"/>
-    <eLiterals name="MANY" value="1" literal="N"/>
-    <eLiterals name="MANY_CHEN" value="2" literal="M"/>
-    <eLiterals name="ZERO" value="3" literal="0"/>
-    <eLiterals name="ONE_OR_MORE" value="4" literal="1+"/>
-    <eLiterals name="ZERO_OR_MORE" value="5" literal="0+"/>
-    <eLiterals name="ZERO_OR_ONE" value="6" literal="?"/>
+    <eLiterals name="NONE" literal="NONE"/>
+    <eLiterals name="ONE" value="1" literal="1"/>
+    <eLiterals name="MANY" value="2" literal="N"/>
+    <eLiterals name="MANY_CHEN" value="3" literal="M"/>
+    <eLiterals name="ZERO" value="4" literal="0"/>
+    <eLiterals name="ONE_OR_MORE" value="5" literal="1+"/>
+    <eLiterals name="ZERO_OR_MORE" value="6" literal="0+"/>
+    <eLiterals name="ZERO_OR_ONE" value="7" literal="?"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="GenerateOptionType">
     <eLiterals name="OFF" literal="off"/>

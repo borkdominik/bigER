@@ -181,8 +181,22 @@ class ERDiagramGenerator implements IDiagramGenerator {
 			case NotationType.CROWSFOOT: return getCrowsFootsCardinality(relationEntity.cardinality)
 			case NotationType.MINMAX: return relationEntity.minMax ?: ''
 			case NotationType.UML: return relationEntity.uml ?: relationEntity.cardinality.toString()
-			default: return relationEntity.customMultiplicity ?: relationEntity.cardinality.toString()
+			default: return getDefaultCardinality(relationEntity)
 		}
+	}
+
+	def String getDefaultCardinality(RelationEntity relationEntity) {
+		if (relationEntity.customMultiplicity !== null) {
+			return relationEntity.customMultiplicity
+		} else if (relationEntity.cardinality !== null) {
+			if (relationEntity.cardinality === CardinalityType.NONE) {
+				return " ";
+			} 
+			return relationEntity.cardinality.toString();
+		} else {
+			return " ";
+		}
+
 	}
 
 	def String getChenCardinality(CardinalityType cardinality) {
