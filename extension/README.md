@@ -1,27 +1,26 @@
-# bigER - VS Code Extension
+# bigER VS Code Extension
 
-Tool to conceptualize Entity-Relationship (ER) models and create diagrams in VS Code with a textual language. 
+Entity-Relationship (ER) modeling tool supporting hybrid, textual- and graphical editing, multiple notations, and SQL code generation.
 
-<!-- DEMO GIF -->
-<img src="https://raw.githubusercontent.com/borkdominik/bigER/main/extension/media/example.gif" width="75%"/>
 
-## Features
+<p align="center">
+  <img src="https://raw.githubusercontent.com/borkdominik/bigER/pre-release/docs/img/tool-screenshot.png" alt="Demo" width="800" />
+</p>
 
-- 📝 **Textual Language** to specify model elements and apply ER concepts 
-- 🧠 **Smart Editing** features for the language such as Syntax Highlighting or Auto Complete
-- 📊 **Diagram View** synchronized with textual changes and elements are laid out automatically
-- 🎨 **Graphical Interactions** to customize the diagram or modify the underlying model
-- 🖨️ **Code Generation** to generate SQL statements
+**Features:**
+
+- 📝 **Textual Language** for ER modeling with rich-text editing support through the [Language Server Protocol](https://microsoft.github.io/language-server-protocol/).
+- 📊 **Diagram View** that is fully synchronized with the textual model, including automatic layout, multi-notation support and an interactive toolbar.
+- 🖨️ **Code Generation** for generating SQL tables from the specified ER model and integrate with existing databases.
 
 
 ## Getting Started
 
-Open a file ending in `.erd` and refer to the basic example below to specify a new ER model. The diagram view can then be opened with the button in the editor or from the context menu of the file. 
+After installation, new ER models can be created in `.erd` files. Refer to the example below to specify a basic ER Model consisting of two entities and a one-to-many relationship.
 
-*example.erd*
-```
+```java
 erdiagram Example
-generateSql
+generate=sql
 
 entity Customer {
     id: int key
@@ -38,18 +37,9 @@ relationship Places {
 }
 ```
 
-> The first line always has to include the `erdiagram` keyword followed by a name.
+The diagram can be opened through the button in the editor or right-clicking on the .erd file. See the file at `src-gen/Example.sql` for the generated SQL code.
 
-The `generateSql` keyword in line 2 is optional and can be used to generate SQL statements. The ER model has to be valid and a *src-gen* folder will be created containing the generated code. 
-
-A more complete example can be found [here](https://github.com/borkdominik/bigER/blob/main/examples/university.erd).
 
 ## Learn more
 
-See the [GitHub repository](https://github.com/borkdominik/bigER) for more information.
-
-
-The [Wiki](https://github.com/borkdominik/bigER/wiki) includes the following topics:
-
-- [🏷️ Feature Overview](https://github.com/borkdominik/bigER/wiki/%F0%9F%8F%B7%EF%B8%8F-Feature-Overview)
-- [📖 Language Documentation](https://github.com/borkdominik/bigER/wiki/%F0%9F%93%96-Language-Documentation) 
+See the [GitHub Repository](https://github.com/borkdominik/bigER) and documentation in the [bigER Wiki](https://github.com/borkdominik/bigER/wiki/) to learn more. 

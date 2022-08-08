@@ -15,6 +15,7 @@
       <genEnumLiterals ecoreEnumLiteral="EntityRelationship.ecore#//AttributeType/MULTIVALUED"/>
     </genEnums>
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="EntityRelationship.ecore#//CardinalityType">
+      <genEnumLiterals ecoreEnumLiteral="EntityRelationship.ecore#//CardinalityType/NONE"/>
       <genEnumLiterals ecoreEnumLiteral="EntityRelationship.ecore#//CardinalityType/ONE"/>
       <genEnumLiterals ecoreEnumLiteral="EntityRelationship.ecore#//CardinalityType/MANY"/>
       <genEnumLiterals ecoreEnumLiteral="EntityRelationship.ecore#//CardinalityType/MANY_CHEN"/>

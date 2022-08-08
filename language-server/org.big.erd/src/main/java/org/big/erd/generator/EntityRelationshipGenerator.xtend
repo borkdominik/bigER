@@ -15,6 +15,7 @@ import org.big.erd.entityRelationship.AttributeType
 import org.big.erd.entityRelationship.Relationship
 import java.util.Set
 import org.eclipse.xtext.util.RuntimeIOException
+import org.big.erd.entityRelationship.NotationType
 
 /**
  * Generates code from your model files on save.
@@ -22,13 +23,17 @@ import org.eclipse.xtext.util.RuntimeIOException
  * See https://www.eclipse.org/Xtext/documentation/303_runtime_concepts.html#code-generation
  */
 class EntityRelationshipGenerator extends AbstractGenerator {
-
+	
 	override void doGenerate(Resource resource, IFileSystemAccess2 fsa, IGeneratorContext context) {
 		
 		val diagram = resource.contents.get(0) as Model
 		
 		// Check whether the generate option is set
 		if (diagram.generateOption === null || diagram.generateOption.generateOptionType.toString === 'off') {
+			return;
+		}
+		// only default notation is supported
+		if (diagram.notation !== null && diagram.notation.notationType !== NotationType.DEFAULT) {
 			return;
 		}
 		
