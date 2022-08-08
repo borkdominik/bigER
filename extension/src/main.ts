@@ -16,7 +16,7 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.window.showInformationMessage('ER Extension is active.', ...[openHelp])
         .then((selection) => {
             if (selection === openHelp) {
-                vscode.env.openExternal(vscode.Uri.parse('https://github.com/borkdominik/bigER/wiki/Language-Documentation'));
+                vscode.env.openExternal(vscode.Uri.parse('https://github.com/borkdominik/bigER/wiki/Language'));
             }
         });
 }
