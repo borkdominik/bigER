@@ -1,72 +1,70 @@
-<!-- HEADER -->
-<div align="center">
-	<a href="https://github.com/othneildrew/Best-README-Template">
-    	<img src="./extension/media/logo.png" alt="Logo" width="150" height="150">
-	</a>
-	<h3 align="center">bigER Modeling Tool</h3>
-	<p align="center">
-    	VS Code Extension for creating Entity-Relationship (ER) diagrams with a textual language and SQL code generation
-		</br>
-    	<a href="https://marketplace.visualstudio.com/items?itemName=BIGModelingTools.erdiagram">
-			<strong>Download from Marketplace</strong>
-		</a>
-	<br />
-    <br />
-   	<a href="https://github.com/borkdominik/bigER/wiki">Read Wiki</a> |
-    <a href="https://github.com/borkdominik/bigER/issues">Report Bug</a> |
-    <a href="https://github.com/borkdominik/bigER/issues">Request Feature</a>
-  </p>
-</div>
-
----
-
-<!-- TABLE OF CONTENTS -->
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li><a href="#about-the-project">About the Project</a></li>
-    <li><a href="#getting-started">Getting Started</a></li>
-    <li><a href="#example">Example</a></li>
-    <li><a href="#build-instructions">Build Instructions</a></li>
-    <li><a href="#issues">Issues</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-	<li><a href="#license">License</a></li>
-  </ol>
-</details>
-
-
-<!-- FEATURES -->
-## About the Project
-
 <p align="center">
- <img src="https://raw.githubusercontent.com/borkdominik/bigER/main/extension/media/example.gif" width="75%"/>
+  <img src="./extension/media/logo.png" alt="Logo" width="150" height="150" />
 </p>
 
-**Features**:
-- 📝 **Textual Language** to specify model elements through ER concepts.
-- 🧠 **Smart Editing** features for the textual editor such as, code completion or refactorings.
-- 📊 **Diagram View** synchronized with textual changes and automatic layout.
-- 🎨 **Graphical Interactions** on the diagram to modify the underlying model.  
-- 🖨️ **Code Generation** to generate SQL tables from the specified ER model.  
+<h1 align="center">bigER Modeling Tool</h1>
+
+<!-- TODO: add more badges -->
+<p align="center">
+<img alt="Visual Studio Marketplace Installs" src="https://img.shields.io/visual-studio-marketplace/i/BIGModelingTools.erdiagram?style=flat-square" height="20"/>
+<img alt="Visual Studio Marketplace Version" src="https://img.shields.io/visual-studio-marketplace/v/BIGModelingTools.erdiagram?style=flat-square" height="20"/>
+<img alt="Visual Studio Marketplace Last Updated" src="https://img.shields.io/visual-studio-marketplace/last-updated/BIGModelingTools.erdiagram?color=blue&style=flat-square" height="20"/>
+<img alt="GitHub contributors" src="https://img.shields.io/github/contributors/borkdominik/bigER?color=lightgrey&style=flat-square" height="20"/>
+</p>
+
+<p align="center">
+  <b>ER modeling tool for VS Code supporting hybrid, textual- and graphical editing, multiple notations, and SQL code generation!</b></br>
+  <sub><a href="https://marketplace.visualstudio.com/items?itemName=BIGModelingTools.erdiagram">➜ Download for VS Code</a><sub>
+</p>
+
+<br />
+
+<!-- TODO: Demo -->
+<p align="center">
+  <img src="../bigER/docs/img/tool-screenshot.png" alt="Demo" width="800" />
+</p>
+	
+<br />
+
+- 📝 **Textual Language** for ER modeling with *rich-text editing* support through the [Language Server Protocol (LSP)](https://microsoft.github.io/language-server-protocol/). 
+- 📊 **Diagram View** that is *fully synchronized* with the model in the textual editor and includes *automatic layout* of elements, *multi-notation support* and a *toolbar* for modifying the diagram representation or underlying model.
+- 🖨️ **Code Generation** for *generating SQL tables* from the specified ER model and integrate with existing databases.  
+
+<br />	
+
+**📖 Table of Contents**
+1. [About the Project](#about-the-project)
+2. [Usage](#usage)
+3. [Build Instructions](#build-instructions)
+4. [Issues](#issues)
+5. [Contributing](#contributing)
+6. [License](#license)
+
+<br />	
+
+
+## About the Project
 
 The tool uses a language server for the ER modeling language which communicates its language features through the [Language Server Protocol (LSP)](https://microsoft.github.io/language-server-protocol/). This makes bigER highly reusable, increases perfomance and simplifies implementation for other editors that also use the LSP. 
 
-
 The language and editor features are realized with the [Xtext](https://www.eclipse.org/Xtext/) language workbench, while [Sprotty](https://github.com/eclipse/sprotty) with a [Sprotty-enhanced Graphical Language Server](https://github.com/eclipse/sprotty-server) is used for rendering the diagrams. All of this is integrated with VS Code by implementing a [Sprotty VS Code Extension](https://github.com/eclipse/sprotty-vscode).
 
-<p align="right">(<a href="#top">back to top</a>)</p>
 
+<!-- USAGE -->
+## Usage
 
+**Installation**
 
-<!-- GETTING STARTED -->
-## Getting Started
+Download and install the extension from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=BIGModelingTools.erdiagram). For more information regarding installation see the [Extension Marketplace](https://code.visualstudio.com/docs/editor/extension-marketplace) guide for VS Code.
 
-To start using the tool, download the extension from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=BIGModelingTools.erdiagram) or clone this repository (see [Build Instructions](#build-instructions)). 
+Once the extension is installed a new ER model can be created.
 
-Open a file ending in `.erd` and refer to the minimal example below to specify a new ER model. The diagram view can then be opened with the button in the editor or from the context menu of the file. 
+**Textual Model**
 
-*example.erd*
-```
+ER models are created in `.erd` files. Refer to the example below to specify a basic model consisting of two entities and a *one-to-many* relationship.
+
+```java
+// File: example.erd
 erdiagram Example
 generate=sql
 
@@ -85,162 +83,51 @@ relationship Places {
 }
 ```
 
-> The first line always has to include the `erdiagram` keyword followed by a name.
-
-The `generate=sql` statement in line 2 is optional and can be used to generate SQL statements. When the specified ER model is valid a new *src-gen* folder is created in the current workspace that contains the file with the generated SQL tables. 
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-
-
-<!-- EXAMPLE -->
-## Example 
-
-**Textual**
-
-<details>
-	<summary><i>university.erd</i> (click to expand)</summary>
-
-```
-erdiagram University
-generateSql
-
-entity Person {
-    full_name: string key
-    birthday: datetime
-    age: int derived
-}
-
-entity Student extends Person {
-    matr_nr: int key
-    undergraduate: boolean
-}
-
-entity Course {
-    course_id: int key
-    title: string
-}
-
-weak entity Lecture {
-    lect_nr: int partial-key
-}
-
-weak relationship contains {
-    Course[1] -> Lecture[N]
-}
-
-entity Professor extends Person {
-    pers_nr: int key
-}
-
-entity Publication {
-    pub_id: int key
-    title: string
-    research_area: string optional
-}
-
-relationship takes_exam {
-    Course[N] -> Professor[1] -> Student[N]
-    points: double
-}
-
-relationship publishes {
-    Publication[N] -> Professor[N]
-}
-```
-</details>
-
 **Diagram**
 
-<p align="left">
-	<img src="https://user-images.githubusercontent.com/39776671/129263384-6f14718f-efc2-40d8-a398-d9586f033b64.png" width="70%" height="100%"/>
-</p>
+Open the diagram through the button in the editor or by right-clicking on the `.erd` file. 
 
-**Generated SQL Code**
+<img src="../bigER/docs/img/basic-example.png" width="800"/>
+
+
+**Code Generator**
+
+Code generation is controlled through the `generate` keyword. Since we specified the `sql` value, SQL code generation is enabled and contained in the generated `src-gen/Example.sql` file.
+
 
 <details>
-	<summary><i>university.sql</i> (click to expand)</summary>
+  <summary><strong>Generated SQL</strong> <em>(click to open)</em></summary>
 
-```sql
-CREATE TABLE Person (
-	full_name varchar(255) NOT NULL, 		
-	birthday datetime NOT NULL		
-	
-	PRIMARY KEY (full_name)
+  ```sql
+CREATE TABLE Customer(
+	id int,
+	name string,
+	PRIMARY KEY (id)
 );
 
-CREATE TABLE Student (
-	undergraduate bit NOT NULL, 		
-	matr_nr int NOT NULL		
-	full_name varchar(255)
-	
-	PRIMARY KEY (matr_nr)
-	FOREIGN KEY (full_name) REFERENCES Person(full_name)
+CREATE TABLE Order(
+	price double,
+	order_number int,
+	PRIMARY KEY (order_number)
 );
 
-CREATE TABLE Course (
-	title varchar(255) NOT NULL, 		
-	course_id int NOT NULL		
-	
-	PRIMARY KEY (course_id)
-);
-
-CREATE TABLE Professor (
-	pers_nr int NOT NULL		
-	full_name varchar(255)
-	
-	PRIMARY KEY (pers_nr)
-	FOREIGN KEY (full_name) REFERENCES Person(full_name)
-);
-
-CREATE TABLE Publication (
-	title varchar(255) NOT NULL, 		
-	research_area varchar(255),  		
-	pub_id int NOT NULL		
-	
-	PRIMARY KEY (pub_id)
-);
-
-CREATE TABLE Lecture ( 
-	lect_nr int NOT NULL		
-	course_id int NOT NULL
-	
-	PRIMARY KEY (lect_nr, course_id)
-	FOREIGN KEY (course_id) REFERENCES Course(course_id) 
-		ON DELETE CASCADE
-);
-
-CREATE TABLE takes_exam (
-	course_id int,
-	CONSTRAINT fk_course_id FOREIGN KEY (course_id)
-		REFERENCES Course(course_id),
-	pers_nr int,
-	CONSTRAINT fk_pers_nr FOREIGN KEY (pers_nr)
-		REFERENCES Professor(pers_nr)
-	matr_nr int,
-	CONSTRAINT fk_matr_nr FOREIGN KEY (matr_nr)
-		REFERENCES Student(matr_nr)
-);
-
-CREATE TABLE publishes (
-	pub_id int,
-	CONSTRAINT fk_pub_id FOREIGN KEY (pub_id)
-		REFERENCES Publication(pub_id),
-	pers_nr int,
-	CONSTRAINT fk_pers_nr FOREIGN KEY (pers_nr)
-		REFERENCES Professor(pers_nr)
+CREATE TABLE Places(
+	id int references Customer(id),
+	order_number int references Order(order_number),
+	PRIMARY KEY (id, order_number)
 );
 ```
-</details>
+</details> 
 
-<p align="right">(<a href="#top">back to top</a>)</p>
+
+
 
 
 
 <!-- BUILD INSTRUCTIONS -->
 ## Build Instructions
 
-The minimum requirements to to build and run the project are:
+**Prerequisites**
 
 - [Node.js](https://nodejs.org/en/) runtime
 - [yarn](https://yarnpkg.com/) package manager
@@ -256,22 +143,17 @@ yarn --cwd webview
 yarn --cwd extension
 ```
 
-This builds the code for the language server, the webview and the extension. The fastest way to run the extension is to press <kbd>F5</kbd> (or in the menu: <kbd>Run -> Start Debugging</kbd>). This starts a new extension host with the launch configuration provided in `.vscode/launch.json`.
+After building the project, the extension can be run in VS Code by pressing <kbd>F5</kbd> or through <kbd>Run -> Start Debugging</kbd> from the menu
 
+
+<!-- TODO: Add to Wiki
 The code is split into a **client side** (extension with webview) and a **server side** (language with LSP and diagram server). It is recommended to use  **VS Code** for the client code, written in *TypeScript* and **Eclipse** for the server side, based on *Java*. Eclipse must be compatible with Xtext and Xtend (e.g. [Eclipse IDE for Java and DSL Developers](https://www.eclipse.org/downloads/packages/release/juno/sr2/eclipse-ide-java-and-dsl-developers)) and create a new workspace to avoid configuration issues. Import the language server as a Gradle project (<kbd>File -> Import -> Existing Gradle Project</kbd>) and override the workspace settings.
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-
+-->
 
 <!-- ISSUES -->
 ## Issues
 
-Project issues are managed on GitHub, see currently [Open Issues](https://github.com/borkdominik/bigER/issues) for more information. Do not hesitate to [report a bug]() or [request a feature]() through the offered issue templates. 
-
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
+Project issues are managed on GitHub, see [Open Issues](https://github.com/borkdominik/bigER/issues) for the currently tracked issues. Do not hesitate to [report a bug]() or [request a feature]() through the offered issue templates. 
 
 
 <!-- CONTRIBUTING -->
@@ -280,19 +162,15 @@ Project issues are managed on GitHub, see currently [Open Issues](https://github
 Contributions to the project are always welcome! See the [Contribution Guidelines]() for more information.
 
 **Contributers**:
-- [Philipp-Lorenz Glaser](https://github.com/plglaser) (Main developer)   
-- [Georg Hammerschmied](https://github.com/SchmiedHammer)  
+- [Philipp-Lorenz Glaser](https://github.com/plglaser) (main developer)   
+- [Georg Hammerschmied](https://github.com/SchmiedHammer)  (multi-notation support)
+- [Hnatiuk Vladyslav](https://github.com/Aksem) (improved edge router)
 - [Dominik Bork](https://github.com/borkdominik)
 
-[See All Contributors](https://github.com/borkdominik/bigER/graphs/contributors)
 
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-
+See [All Contributors](https://github.com/borkdominik/bigER/graphs/contributors).
 
 <!-- LICENSE -->
 ## License 
 
-The project is distributed under the MIT License. See [License]() for more details.
-
-<p align="right">(<a href="#top">back to top</a>)</p>
+The project is distributed under the MIT License. See [License](https://github.com/borkdominik/bigER/blob/main/LICENSE) for more details.
