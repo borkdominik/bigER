@@ -26,11 +26,11 @@ class EntityRelationshipIdeModule extends AbstractEntityRelationshipIdeModule {
 	}
 	
 	def Class<? extends DocumentSymbolNameProvider> bindDocumentSymbolNameProvider() {
-		return typeof(ErDocumentSymbolNameProvider);
+		ErDocumentSymbolNameProvider
 	}
 	
 	def Class<? extends DocumentSymbolKindProvider> bindDocumentSymbolKindProvider() {
-		return typeof(ErDocumentSymbolKindProvider);
+		ErDocumentSymbolKindProvider;
 	}
 
 }

@@ -1,8 +1,9 @@
 .vscode/**
 *.vsix
-node_modules
 dist/**
-src/** 
+src/**
+**/*.map
+**/*.ts
 **/webpack.config.js
 **/tsconfig.json
 .vscode-test/**

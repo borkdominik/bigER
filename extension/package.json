@@ -181,7 +181,8 @@
 	"dependencies": {
 		"sprotty-vscode": "^0.2.0",
 		"sprotty-vscode-webview": "^0.2.0",
-		"vscode-languageclient": "^7.0.0"
+		"vscode-languageclient": "^7.0.0",
+		"@vscode/webview-ui-toolkit": "^1.0.0"
 	},
 	"devDependencies": {
 		"@types/glob": "^7.2.0",
@@ -191,7 +192,6 @@
 		"@typescript-eslint/eslint-plugin": "^5.28.0",
 		"@typescript-eslint/parser": "^5.28.0",
 		"@vscode/test-electron": "^2.1.4",
-		"@vscode/webview-ui-toolkit": "^1.0.0",
 		"eslint": "^8.18.0",
 		"latest": "^0.2.0",
 		"mocha": "^10.0.0",

@@ -13,7 +13,7 @@ export class ERDiagramWebview extends SprottyLspWebview {
     protected initializeWebview(webview: vscode.Webview, title?: string) {
         const extensionUri = this.extension.context.extensionUri;
         const codiconsUri = webview.asWebviewUri(vscode.Uri.joinPath(extensionUri, 'node_modules', '@vscode/codicons', 'dist', 'codicon.css'));
-        const toolkitUri = this.getUri(webview, extensionUri, 'node_modules', '@vscode', 'webview-ui-toolkit', 'dist', 'toolkit.js');
+        const toolkitUri = webview.asWebviewUri(vscode.Uri.joinPath(extensionUri, 'node_modules', '@vscode', 'webview-ui-toolkit', 'dist', 'toolkit.js'));
         webview.html = `
             <!DOCTYPE html>
             <html lang="en">
@@ -26,7 +26,7 @@ export class ERDiagramWebview extends SprottyLspWebview {
                         integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
                         crossorigin="anonymous">
                     <link href="${codiconsUri}" rel="stylesheet" />    
-                    <script type="module" src="${webview.asWebviewUri(toolkitUri).toString()}"></script>
+                    <script type="module" src="${toolkitUri}"></script>
                 </head>
                 <body>
                     <div id="${this.diagramIdentifier.clientId}_container" style="height: 100%;"></div>
