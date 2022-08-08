@@ -19,7 +19,7 @@
 
 <!-- TODO: Demo -->
 <p align="center">
-  <img src="https://raw.githubusercontent.com/borkdominik/bigER/pre-release/docs/img/tool-screenshot.png" alt="Demo" width="800" />
+  <img src="https://raw.githubusercontent.com/borkdominik/bigER/main/docs/img/tool-screenshot.png" alt="Demo" width="800" />
 </p>
 
 **Main features:**
@@ -87,7 +87,7 @@ relationship Places {
 
 Open the diagram through the button in the editor or by right-clicking on the `.erd` file.
 
-<img src="https://raw.githubusercontent.com/borkdominik/bigER/pre-release/docs/img/basic-example.png" width="600"/>
+<img src="https://github.com/borkdominik/bigER/blob/main/docs/img/basic-example.png" width="600"/>
 
 **Code Generator**
 
@@ -142,13 +142,13 @@ The code is split into a **client side** (extension with webview) and a **server
 <!-- ISSUES -->
 ## Issues
 
-Project issues are managed on GitHub, see [Open Issues](https://github.com/borkdominik/bigER/issues) for the currently tracked issues. Do not hesitate to [report a bug]() or [request a feature]() through the offered issue templates. 
+Project issues are managed on GitHub, see [Open Issues](https://github.com/borkdominik/bigER/blob/main/docs/ISSUES.md) for the currently tracked issues. Do not hesitate to report a bug or request a feature through the offered [Issue Templates](https://github.com/borkdominik/bigER/issues/new/choose). For questions, simply use a blank issue.
 
 
 <!-- CONTRIBUTING -->
 ## Contributing
 
-Contributions to the project are always welcome! See the [Contribution Guidelines]() for more information.
+Contributions to the project are always welcome! See the [Contribution Guidelines](https://github.com/borkdominik/bigER/blob/main/docs/CONTRIBUTING.md) for more information.
 
 **Contributers**:
 - [Philipp-Lorenz Glaser](https://github.com/plglaser) (main developer)   
