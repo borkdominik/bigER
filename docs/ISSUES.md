@@ -2,19 +2,16 @@
 
 This page describes the issue tracking process of [bigER](https://github.com/borkdominik/bigER). 
 
-See currently [open](https://github.com/borkdominik/bigER/issues) and [closed](https://github.com/borkdominik/bigER/issues?q=is%3Aissue+is%3Aclosed) issues of the project.
+<!-- See currently [open](https://github.com/borkdominik/bigER/issues) and [closed](https://github.com/borkdominik/bigER/issues?q=is%3Aissue+is%3Aclosed) issues of the project. -->
+
 
 <!-- TABLE OF CONTENTS -->
-<details>
-  <summary><strong>Table of Contents</strong> <em>(click to open)</em></summary>
-  <ol>
-    <li><a href="#status-workflow">Status Workflow</a></li>
-    <li><a href="#types-of-issues">Types of Issues</a></li>
-    <li><a href="#milestones">Milestones</a></li>
-  </ol>
-</details>
-<br>
+**📖 Table of Contents**
+1. [Status Workflow](#status-workflow)
+2. [Types of Issues](#types-of-issues)
+3. [Milestones](#milestones)
 
+<br>
 
 <!-- STATUS WORKFLOW -->
 ## Status Workflow

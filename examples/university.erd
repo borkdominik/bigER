@@ -1,8 +1,11 @@
+// ER Model
 erdiagram University
-//notation=default
-//generate=sql
 
-// -- Entities --
+// Options
+notation=default
+generate=sql
+
+// Entities
 entity Student {
     id: INT key
     name: VARCHAR(255)
@@ -34,7 +37,7 @@ entity Building {
     address: VARCHAR(255)
 }
 
-// -- Relationships-- 
+// Relationships
 relationship Exam {
     Student[1]  -> Course[N] -> Instructor[N]
     points: DOUBLE

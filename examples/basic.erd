@@ -1,0 +1,17 @@
+erdiagram BasicExample // ER model
+generate=sql // enables SQL code generator
+
+// entities
+entity Customer {
+    id: int key
+    name: string
+}
+entity Order {
+    order_number: int key
+    price: double
+}
+
+// one-to-many relationship
+relationship Places {
+    Customer[1] -> Order[N] 
+}
