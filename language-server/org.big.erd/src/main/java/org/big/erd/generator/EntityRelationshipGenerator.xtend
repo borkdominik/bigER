@@ -15,7 +15,6 @@ import org.big.erd.entityRelationship.AttributeType
 import org.big.erd.entityRelationship.Relationship
 import java.util.Set
 import org.eclipse.xtext.util.RuntimeIOException
-import org.big.erd.entityRelationship.NotationType
 
 /**
  * Generates code from your model files on save.
@@ -30,10 +29,6 @@ class EntityRelationshipGenerator extends AbstractGenerator {
 		
 		// Check whether the generate option is set
 		if (diagram.generateOption === null || diagram.generateOption.generateOptionType.toString === 'off') {
-			return;
-		}
-		// only default notation is supported
-		if (diagram.notation !== null && diagram.notation.notationType !== NotationType.DEFAULT) {
 			return;
 		}
 		
@@ -117,8 +112,10 @@ class EntityRelationshipGenerator extends AbstractGenerator {
 
 	private def primaryKey(Entity entity) {
 		val keyAttributes = entity.attributes?.filter[it.type === AttributeType.KEY]
-		if (keyAttributes.nullOrEmpty)
+		if (keyAttributes.nullOrEmpty) {
 			return entity.attributes.get(0)
+		}
+			
 		return keyAttributes.get(0)
 	}
 	

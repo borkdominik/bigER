@@ -9,6 +9,7 @@ import org.big.erd.entityRelationship.Model
 import org.big.erd.entityRelationship.GenerateOption
 import org.big.erd.entityRelationship.NotationOption
 
+
 class ErDocumentSymbolNameProvider extends DocumentSymbolNameProvider {
 	
 	override getName(EObject object) {

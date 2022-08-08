@@ -155,13 +155,9 @@ text {
 
 .sprotty-status {
     position: absolute;
-    bottom: 10px;
-	left: 20px;
-    display: flex;
-	font-size: 18px;
+    top: 100px;
+	font-size: 15px;
 	z-index: 1;
-    align-items: center;
-	font-family: "Trebuchet MS", Helvetica, sans-serif;
 }
 .sprotty-status .error {
     color: orangered;

@@ -4,7 +4,7 @@ Entity-Relationship (ER) modeling tool supporting hybrid, textual- and graphical
 
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/borkdominik/bigER/pre-release/docs/img/tool-screenshot.png" alt="Demo" width="800" />
+  <img src="https://raw.githubusercontent.com/borkdominik/bigER/main/docs/img/tool-screenshot.png" alt="Demo" width="800" />
 </p>
 
 **Features:**
@@ -37,7 +37,7 @@ relationship Places {
 }
 ```
 
-The diagram can be opened through the button in the editor or right-clicking on the .erd file. See the file at `src-gen/Example.sql` for the generated SQL code.
+The diagram can be opened through the button in the editor or right-clicking on the .erd file. See the file at `/src-gen/Example.sql` for the generated SQL code.
 
 
 ## Learn more

@@ -19,7 +19,7 @@ This document describes various ways on how you can contribute to the project.
 
 ## Issue Tracking
 
-Before starting with a contribution, read the [Issue Tracking](../docs/ISSUES.md) document to get familiar with the issue management process of the project. 
+Before starting with a contribution, read the [Issue Tracking](https://github.com/borkdominik/bigER/blob/main/docs/ISSUES.md) document to get familiar with the issue management process of the project. 
 
 **Creating an Issue**
 

@@ -22,7 +22,8 @@
     "sprotty": "^0.11.1",
     "sprotty-routing-libavoid": "^1.0.38",
     "sprotty-vscode-protocol": "^0.2.0",
-    "sprotty-vscode-webview": "^0.2.0"
+    "sprotty-vscode-webview": "^0.2.0",
+    "@vscode/webview-ui-toolkit": "^1.0.0"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.28.0",
