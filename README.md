@@ -17,18 +17,17 @@
   <sub><a href="https://marketplace.visualstudio.com/items?itemName=BIGModelingTools.erdiagram">➜ Download for VS Code</a><sub>
 </p>
 
-<br />
-
 <!-- TODO: Demo -->
 <p align="center">
-  <img src="../bigER/docs/img/tool-screenshot.png" alt="Demo" width="800" />
+  <img src="https://raw.githubusercontent.com/borkdominik/bigER/pre-release/docs/img/tool-screenshot.png" alt="Demo" width="800" />
 </p>
-	
-<br />
 
+**Main features:**
 - 📝 **Textual Language** for ER modeling with *rich-text editing* support through the [Language Server Protocol (LSP)](https://microsoft.github.io/language-server-protocol/). 
 - 📊 **Diagram View** that is *fully synchronized* with the model in the textual editor and includes *automatic layout* of elements, *multi-notation support* and a *toolbar* for modifying the diagram representation or underlying model.
 - 🖨️ **Code Generation** for *generating SQL tables* from the specified ER model and integrate with existing databases.  
+
+---
 
 <br />	
 
@@ -53,15 +52,16 @@ The language and editor features are realized with the [Xtext](https://www.eclip
 <!-- USAGE -->
 ## Usage
 
+In the following we describe the basic usage of the tool based on a simple example. See the documentation in the [bigER Wiki](https://github.com/borkdominik/bigER/wiki/) or check out other [Examples](https://github.com/borkdominik/bigER/tree/main/examples) to learn more.
+
 **Installation**
 
 Download and install the extension from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=BIGModelingTools.erdiagram). For more information regarding installation see the [Extension Marketplace](https://code.visualstudio.com/docs/editor/extension-marketplace) guide for VS Code.
 
-Once the extension is installed a new ER model can be created.
 
 **Textual Model**
 
-ER models are created in `.erd` files. Refer to the example below to specify a basic model consisting of two entities and a *one-to-many* relationship.
+Once the extension is installed a new ER model can be created. Models are created in `.erd` files, refer to the example below to specify a basic model consisting of two entities and a *one-to-many* relationship. 
 
 ```java
 // File: example.erd
@@ -85,20 +85,15 @@ relationship Places {
 
 **Diagram**
 
-Open the diagram through the button in the editor or by right-clicking on the `.erd` file. 
+Open the diagram through the button in the editor or by right-clicking on the `.erd` file.
 
-<img src="../bigER/docs/img/basic-example.png" width="800"/>
-
+<img src="https://raw.githubusercontent.com/borkdominik/bigER/pre-release/docs/img/basic-example.png" width="600"/>
 
 **Code Generator**
 
-Code generation is controlled through the `generate` keyword. Since we specified the `sql` value, SQL code generation is enabled and contained in the generated `src-gen/Example.sql` file.
+Code generation is controlled through the `generate` keyword. Since we specified the `sql` value, the SQL code generator is enabled and the generated code contained in the newly created `src-gen/Example.sql` file.
 
-
-<details>
-  <summary><strong>Generated SQL</strong> <em>(click to open)</em></summary>
-
-  ```sql
+```sql
 CREATE TABLE Customer(
 	id int,
 	name string,
@@ -117,12 +112,6 @@ CREATE TABLE Places(
 	PRIMARY KEY (id, order_number)
 );
 ```
-</details> 
-
-
-
-
-
 
 <!-- BUILD INSTRUCTIONS -->
 ## Build Instructions
