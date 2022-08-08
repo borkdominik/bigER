@@ -1,0 +1,17 @@
+name: 🚀 Feature Request
+description: Request a new feature
+labels: [feature]
+body:
+  - type: textarea
+    attributes:
+      label: Description
+      description: Provide a concise description of the feature
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Additional Information
+      description: |
+        Additional information to describe the feature, for example: sketches, screenshots, links, etc.
+    validations:
+      required: false

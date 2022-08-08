@@ -1,0 +1,48 @@
+name: ⛔️ Bug Report
+description: Report a new bug
+labels: [bug]
+body:
+- type: textarea
+  attributes:
+    label: Description
+    description: Provide a concise description of the problem
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: Current Behavior
+  validations:
+    required: false
+- type: textarea
+  attributes:
+    label: Expected Behavior
+  validations:
+    required: false
+- type: textarea
+  attributes:
+    label: Steps to Reproduce
+    description: Specify the actions that lead to the problem 
+    placeholder: |
+      1. Go to ...
+      2. Click on ...
+      3. See Error
+  validations:
+    required: false
+- type: textarea
+  attributes:
+    label: Environment
+    description: |
+      Provide information about your environment such as: used OS, VS Code Version, Java JDK, etc.
+    placeholder: |
+        - OS: macOS Monterey v12.5
+        - VS Code: v1.69.2
+        - Java: JDK 11
+  validations:
+    required: false
+- type: textarea
+  attributes:
+    label: Additional Information
+    description: |
+      Additional information to describe the problem, for example: screenshots, logs, `.erd` file, etc.
+  validations:
+    required: false
