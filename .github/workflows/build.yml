@@ -26,6 +26,7 @@ jobs:
         with:
           java-version: ${{ matrix.Java }}
           distribution: 'temurin'
+      - run: language-server/gradlew -p language-server/ clean
       - run: language-server/gradlew -p language-server/ build
   # builds the client using yarn on ubuntu, macos, windows with Node.js 16
   build-client:
