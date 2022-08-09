@@ -98,8 +98,13 @@
 				"category": "bigER"
 			},
 			{
-				"command": "erdiagram.model.new",
-				"title": "New ER Model",
+				"command": "erdiagram.model.newEmpty",
+				"title": "New empty ER Model",
+				"category": "bigER"
+			},
+			{
+				"command": "erdiagram.model.newSample",
+				"title": "New sample ER Model",
 				"category": "bigER"
 			}
 		],

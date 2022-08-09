@@ -47,7 +47,7 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
                         <span class="tooltiptext">Code Generator</span>
                     </vscode-button>
                     <vscode-button appearance="icon" class="tooltip" id="notation-button">
-                        <span class="codicon codicon-symbol-color"></span>
+                        <span class="codicon codicon-settings"></span>
                         <span class="tooltiptext">Notation</span>
                     </vscode-button>
                     <div class="vertical-seperator"></div>
