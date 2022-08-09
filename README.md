@@ -1,27 +1,32 @@
+<!-- LOGO -->
 <p align="center">
   <img src="./extension/media/logo.png" alt="Logo" width="150" height="150" />
 </p>
 
+<!-- TITLE -->
 <h1 align="center">bigER Modeling Tool</h1>
 
-<!-- TODO: add more badges -->
+<!-- BADGES -->
 <p align="center">
-<img alt="Visual Studio Marketplace Installs" src="https://img.shields.io/visual-studio-marketplace/i/BIGModelingTools.erdiagram?style=flat-square" height="20"/>
-<img alt="Visual Studio Marketplace Version" src="https://img.shields.io/visual-studio-marketplace/v/BIGModelingTools.erdiagram?style=flat-square" height="20"/>
-<img alt="Visual Studio Marketplace Last Updated" src="https://img.shields.io/visual-studio-marketplace/last-updated/BIGModelingTools.erdiagram?color=blue&style=flat-square" height="20"/>
-<img alt="GitHub contributors" src="https://img.shields.io/github/contributors/borkdominik/bigER?color=lightgrey&style=flat-square" height="20"/>
+  <img alt="GitHub Build" src="https://img.shields.io/github/workflow/status/borkdominik/bigER/Build" height="20"/>
+  <img alt="Visual Studio Marketplace Installs" src="https://img.shields.io/visual-studio-marketplace/i/BIGModelingTools.erdiagram?color=9cf" height="20"/>
+  <img alt="Visual Studio Marketplace Version" src="https://img.shields.io/visual-studio-marketplace/v/BIGModelingTools.erdiagram" height="20"/>
+  <img alt="Visual Studio Marketplace Last Updated" src="https://img.shields.io/visual-studio-marketplace/last-updated/BIGModelingTools.erdiagram?color=blue" height="20"/>
+  <img alt="GitHub contributors" src="https://img.shields.io/github/contributors/borkdominik/bigER?color=lightgrey" height="20"/>
 </p>
 
+<!-- DESCRIPTION -->
 <p align="center">
   <b>ER modeling tool for VS Code supporting hybrid, textual- and graphical editing, multiple notations, and SQL code generation!</b></br>
   <sub><a href="https://marketplace.visualstudio.com/items?itemName=BIGModelingTools.erdiagram">➜ Download for VS Code</a><sub>
 </p>
 
-<!-- TODO: Demo -->
+<!-- DEMO -->
 <p align="center">
   <img src="https://raw.githubusercontent.com/borkdominik/bigER/main/docs/img/tool-screenshot.png" alt="Demo" width="800" />
 </p>
 
+<!-- FEATURES -->
 **Main features:**
 - 📝 **Textual Language** for ER modeling with *rich-text editing* support through the [Language Server Protocol (LSP)](https://microsoft.github.io/language-server-protocol/). 
 - 📊 **Diagram View** that is *fully synchronized* with the model in the textual editor and includes *automatic layout* of elements, *multi-notation support* and a *toolbar* for modifying the diagram representation or underlying model.
@@ -40,7 +45,6 @@
 6. [License](#license)
 
 <br />	
-
 
 ## About the Project
 
