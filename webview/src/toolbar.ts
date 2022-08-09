@@ -1,9 +1,9 @@
 import { postConstruct, inject, injectable } from 'inversify';
 import { VscodeDiagramWidget } from 'sprotty-vscode-webview';
 import { SprottyDiagramIdentifier } from 'sprotty-vscode-protocol';
-import { IActionDispatcher, ILogger, TYPES } from 'sprotty';
+import { DiagramServerProxy, IActionDispatcher, ILogger, ModelSource, TYPES } from 'sprotty';
 import { CollapseExpandAllAction, FitToScreenAction } from 'sprotty-protocol';
-import { AddEntityAction, AddRelationshipAction, ChangeNotationAction, CodeGenerateAction } from './actions';
+import { ChangeNotationAction, CodeGenerateAction, CreateElementEditAction } from './actions';
 
 @injectable()
 export class ERDiagramWidget extends VscodeDiagramWidget {
@@ -11,16 +11,27 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
     @inject(TYPES.IActionDispatcher) actionDispatcher: IActionDispatcher;
     @inject(SprottyDiagramIdentifier) diagramIdentifier: SprottyDiagramIdentifier;
     @inject(TYPES.ILogger) protected logger: ILogger;
+    @inject(TYPES.ModelSource) modelSource: ModelSource;
 
     constructor() {
         super();
     }
 
     @postConstruct()
-    initialize(): void {
+    override initialize(): void {
         super.initialize();
         this.addToolbar();
         this.addEventHandlers();
+    }
+
+    protected override initializeSprotty(): void {
+        if (this.modelSource instanceof DiagramServerProxy) {
+            this.modelSource.clientId = this.diagramIdentifier.clientId;
+        }
+        const model = this.requestModel();
+        model.then(res => {
+            this.actionDispatcher.dispatch(FitToScreenAction.create([]));
+        });
     }
 
     /**
@@ -44,17 +55,22 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
                     <div class="vertical-seperator"></div>
                     <vscode-button appearance="icon" class="tooltip" id="options-button">
                         <span class="codicon codicon-file-code"></span>
-                        <span class="tooltiptext">Code Generator</span>
+                        <span class="tooltiptext">Select Code Generator</span>
                     </vscode-button>
+                    <div class="vertical-seperator"></div>
                     <vscode-button appearance="icon" class="tooltip" id="notation-button">
                         <span class="codicon codicon-settings"></span>
-                        <span class="tooltiptext">Notation</span>
+                        <span class="tooltiptext">Select ER Notation</span>
                     </vscode-button>
                     <div class="vertical-seperator"></div>
                     <p id="toolbar-modelName"></p>
                 </div>
                 <div id="toolbar-right">
                     <div class="vertical-seperator"></div>
+                    <vscode-button appearance="icon" id="refresh-button" class="tooltip">
+                        <span class="codicon codicon-refresh"></span>
+                        <span class="tooltiptext">Refresh Diagram</span>
+                    </vscode-button>
                     <vscode-button appearance="icon" id="fit-button" class="tooltip">
                         <span class="codicon codicon-screen-full"></span>
                         <span class="tooltiptext">Fit to Screen</span>
@@ -63,7 +79,7 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
                         <span class="codicon codicon-collapse-all"></span>
                         <span class="tooltiptext">Collapse All</span>
                     </vscode-button>
-                    <vscode-button appearance="icon" id="expandAll-button" class="tooltip">
+                    <vscode-button appearance="icon" id="expandAll-button" class="tooltip-help">
                         <span class="codicon codicon-expand-all"></span>
                         <span class="tooltiptext">Expand All</span>
                     </vscode-button>
@@ -112,13 +128,18 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
      */
     protected addEventHandlers(): void {
         (document.getElementById('add-entity-button') as HTMLElement).addEventListener('click', async () => {
-            await this.actionDispatcher.dispatch({kind: AddEntityAction.KIND});
+            this.actionDispatcher.dispatch(CreateElementEditAction.create('entity'));
         });
         (document.getElementById('add-relationship-button') as HTMLElement).addEventListener('click', async () => {
-            await this.actionDispatcher.dispatch({kind: AddRelationshipAction.KIND});
+            this.actionDispatcher.dispatch(CreateElementEditAction.create('relationship'));
         });
         (document.getElementById('fit-button') as HTMLElement).addEventListener('click', async () => {
-            await this.actionDispatcher.dispatch(FitToScreenAction.create([]));
+            this.actionDispatcher.dispatch(FitToScreenAction.create([]));
+        });
+        (document.getElementById('refresh-button') as HTMLElement).addEventListener('click', async () => {
+            await this.requestModel().then(res => {
+                this.actionDispatcher.dispatch(FitToScreenAction.create([]));
+            });
         });
         (document.getElementById('expandAll-button') as HTMLElement).addEventListener('click', async () => {
             await this.actionDispatcher.dispatch(CollapseExpandAllAction.create({expand: true}));

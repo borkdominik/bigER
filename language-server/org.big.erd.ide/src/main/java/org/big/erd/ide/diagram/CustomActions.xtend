@@ -15,8 +15,8 @@ class CustomActionTypeAdapterFactory extends EditActionTypeAdapterFactory {
 	new() {
 		addActionKind(ChangeNotationAction.KIND, ChangeNotationAction)
 		addActionKind(CodeGenerateAction.KIND, CodeGenerateAction)
+		addActionKind(CreateElementEditAction.KIND, CreateElementEditAction)
 	}
-
 }
 
 /**
@@ -31,13 +31,11 @@ class ChangeNotationAction implements Action {
 	String kind = KIND
 	String notation
 
-	new() {
-	}
+	new() { }
 
 	new(Consumer<ChangeNotationAction> initializer) {
 		initializer.accept(this)
 	}
-
 }
 
 /**
@@ -52,11 +50,25 @@ class CodeGenerateAction implements Action {
 	String kind = KIND
 	String generateType
 
-	new() {
-	}
+	new() { }
 
 	new(Consumer<CodeGenerateAction> initializer) {
 		initializer.accept(this)
 	}
+}
 
+@Accessors
+@EqualsHashCode
+@ToString(skipNulls=true)
+class CreateElementEditAction implements Action {
+
+	public static val KIND = 'createElementEdit'
+	String kind = KIND
+	String elementType
+
+	new() { }
+
+	new(Consumer<CreateElementEditAction> initializer) {
+		initializer.accept(this)
+	}
 }

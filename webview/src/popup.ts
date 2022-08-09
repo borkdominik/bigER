@@ -17,7 +17,7 @@ export class PopupButtonListener extends MouseListener {
                 case 'delete': {
                     const elementIds: string[] = [];
                     elementIds.push(target.target);
-                    // deselect all elements and only re-select current element
+                    // deselect all elements and only re-select current element to assure single deletion
                     this.actionDispatcher.dispatch(SelectAllAction.create({ select: false }));
                     this.actionDispatcher.dispatch(SelectAction.create({ selectedElementsIDs: elementIds }));
                     this.actionDispatcher.dispatch({ kind: DeleteWithWorkspaceEditAction.KIND });

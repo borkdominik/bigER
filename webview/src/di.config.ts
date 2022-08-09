@@ -6,9 +6,9 @@ import '../css/diagram.css';
 import '../css/popup.css';
 import {
     configureModelElement, HtmlRoot, HtmlRootView, overrideViewerOptions, PreRenderedElement, PreRenderedView,
-    SRoutingHandle, SRoutingHandleView, TYPES, loadDefaultModules, ConsoleLogger, LogLevel, SCompartmentView,
-    SCompartment, editLabelFeature, labelEditUiModule, SModelRoot, SLabel, ExpandButtonHandler,
-    SButton, expandFeature, SLabelView, CreateElementCommand, configureCommand, ExpandButtonView, editFeature
+    TYPES, loadDefaultModules, ConsoleLogger, LogLevel, SCompartmentView, SCompartment, editLabelFeature,
+    labelEditUiModule, SModelRoot, SLabel, ExpandButtonHandler, SButton, expandFeature, SLabelView, ExpandButtonView,
+    editFeature
 } from 'sprotty';
 import { InheritanceEdgeView, ERModelView, EntityNodeView, RelationshipNodeView, NotationEdgeView } from './views';
 import { EntityNode, ERModel, MultiplicityLabel, NotationEdge, RelationshipNode, InheritanceEdge } from './model';
@@ -31,9 +31,9 @@ const DiagramModule = new ContainerModule((bind, unbind, isBound, rebind) => {
     bind(BigerEdgeLayoutPostprocessor).toSelf().inSingletonScope();
     bind(TYPES.IVNodePostprocessor).toService(BigerEdgeLayoutPostprocessor);
 
-    // change animation speed to 400ms
+    // change animation speed to 300ms
     rebind(TYPES.CommandStackOptions).toConstantValue({
-        defaultDuration: 400,
+        defaultDuration: 300,
         undoHistoryLimit: 50
     });
     // Model element bindings
@@ -61,17 +61,13 @@ const DiagramModule = new ContainerModule((bind, unbind, isBound, rebind) => {
     configureModelElement(context, 'html', HtmlRoot, HtmlRootView);
     configureModelElement(context, 'palette', SModelRoot, HtmlRootView);
     configureModelElement(context, 'pre-rendered', PreRenderedElement, PreRenderedView);
-    configureModelElement(context, 'routing-point', SRoutingHandle, SRoutingHandleView);
-    configureModelElement(context, 'volatile-routing-point', SRoutingHandle, SRoutingHandleView);
     configureModelElement(context, ExpandButtonHandler.TYPE, SButton, ExpandButtonView);
-    configureCommand(context, CreateElementCommand);
 });
 
 /**
  * Creates the container, loads the default Sprotty modules and adds ViewerOptions
  */
 export function createDiagramContainer(widgetId: string): Container {
-
     const container = new Container();
     // use labelEditUi from VS Code
     loadDefaultModules(container, { exclude: [labelEditUiModule] });

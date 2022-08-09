@@ -8,8 +8,7 @@ import { SprottyDiagramIdentifier } from 'sprotty-vscode-protocol';
 import { VscodeDiagramServer, VscodeDiagramWidget } from 'sprotty-vscode-webview';
 import { load as loadLibavoidRouter } from 'sprotty-routing-libavoid';
 import { ERDiagramWidget } from './toolbar';
-import { configureCommand, configureModelElement, TYPES } from 'sprotty';
-import { AddEntityCommand, AddRelationshipCommand } from './actions';
+import { configureModelElement, TYPES } from 'sprotty';
 import { BigERDiagramServer } from './diagram-server';
 import { PopupButton } from './model';
 import { PopupButtonView } from './views';
@@ -29,8 +28,6 @@ export class ERDiagramSprottyStarter extends SprottyLspEditStarter {
         container.bind(TYPES.PopupMouseListener).to(PopupButtonListener);
         configureModelElement(container, 'button:delete', PopupButton, PopupButtonView);
         configureModelElement(container, 'button:edit', PopupButton, PopupButtonView);
-        configureCommand(container, AddEntityCommand);
-        configureCommand(container, AddRelationshipCommand);
     }
 }
 

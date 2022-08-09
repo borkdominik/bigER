@@ -12,11 +12,9 @@ class ERModel extends SGraph {
 	String generateType
 	String notation
 
-	new() {
-	}
-
-	new((ERModel)=>void initializer) {
-		initializer.apply(this)
+	new() { }
+	new((ERModel) => void initializer) {
+		initializer.apply(this);
 	}
 }
 
@@ -25,10 +23,8 @@ class EntityNode extends SNode {
 	boolean expanded
 	boolean weak
 
-	new() {
-	}
-
-	new((EntityNode)=>void initializer) {
+	new() { }
+	new((EntityNode) => void initializer) {
 		initializer.apply(this)
 	}
 }
@@ -37,10 +33,8 @@ class EntityNode extends SNode {
 class RelationshipNode extends SNode {
 	boolean weak
 
-	new() {
-	}
-
-	new((RelationshipNode)=>void initializer) {
+	new() { }
+	new((RelationshipNode) => void initializer) {
 		initializer.apply(this)
 	}
 }
@@ -52,10 +46,8 @@ class NotationEdge extends SEdge {
 	Boolean showRelationship
 	String relationshipCardinality
 
-	new() {
-	}
-
-	new((NotationEdge)=>void initializer) {
+	new() { }
+	new((NotationEdge) => void initializer) {
 		initializer.apply(this)
 	}
 }
@@ -65,10 +57,8 @@ class PopupButton extends PreRenderedElement {
 	String target
 	String kind
 
-	new() {
-	}
-
-	new((PopupButton)=>void initializer) {
+	new() { }
+	new((PopupButton) => void initializer) {
 		initializer.apply(this)
 	}
 }
