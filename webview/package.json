@@ -7,10 +7,10 @@
   },
   "license": "MIT",
   "scripts": {
-    "prepare": "yarn run clean && yarn run build",
+    "prepare": "yarn run clean && yarn run build && yarn run lint",
     "clean": "rimraf out",
     "build": "webpack --mode=development",
-    "lint": "eslint './src/**'",
+    "lint": "eslint \"./src/**\"",
     "watch:": "webpack --mode=development --watch"
   },
   "files": [

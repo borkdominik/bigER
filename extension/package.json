@@ -220,7 +220,7 @@
 		"build": "webpack --mode=development",
 		"build:tests": "tsc -p . --outDir dist",
 		"clean": "rimraf dist",
-		"lint": "eslint './src/**'",
+		"lint": "eslint \"./src/**\"",
 		"watch": "webpack --mode=development --watch"
 	}
 }

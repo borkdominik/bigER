@@ -16,12 +16,10 @@ export class ERDiagramLspVscodeExtension extends SprottyLspEditVscodeExtension {
 
     protected registerCommands() {
         super.registerCommands();
-        this.context.subscriptions.push(vscode.commands.registerCommand('erdiagram.model.newEmpty',
-            (...commandArgs: any[]) => {
+        this.context.subscriptions.push(vscode.commands.registerCommand('erdiagram.model.newEmpty', (...commandArgs: any[]) => {
                 newEmptyModel();
             }));
-        this.context.subscriptions.push(vscode.commands.registerCommand('erdiagram.model.newSample',
-            (...commandArgs: any[]) => {
+        this.context.subscriptions.push(vscode.commands.registerCommand('erdiagram.model.newSample', (...commandArgs: any[]) => {
                 newSampleModel();
             }));
     }
