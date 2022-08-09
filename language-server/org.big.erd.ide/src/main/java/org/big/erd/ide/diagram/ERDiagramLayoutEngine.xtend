@@ -18,7 +18,7 @@ class ERDiagramLayoutEngine extends ElkLayoutEngine {
 	override layout(SModelRoot root, Action cause) {
 		
 		if (root instanceof ERModel) {
-			LOG.info("Applying macro layout for model with id: '" + root.id + "'")
+			LOG.debug("Applying macro layout for model with id: '" + root.id + "'")
 			val configurator = new SprottyLayoutConfigurator
 
 			configurator.configureByType('graph')
@@ -46,7 +46,7 @@ class ERDiagramLayoutEngine extends ElkLayoutEngine {
 				.setProperty(CoreOptions.PORT_CONSTRAINTS, PortConstraints.FIXED_SIDE)
 
 			layout(root, configurator, cause)
-			LOG.info("Finished computing macro layout.")
+			LOG.debug("Finished computing macro layout.")
 		}
 	}
 

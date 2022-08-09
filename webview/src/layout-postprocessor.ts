@@ -30,9 +30,7 @@ export class BigerEdgeLayoutPostprocessor extends EdgeLayoutPostprocessor {
         let transform = "";
         if (pointOnEdge && derivativeOnEdge) {
           transform += `translate(${pointOnEdge.x}, ${pointOnEdge.y})`;
-          const angle = toDegrees(
-            Math.atan2(derivativeOnEdge.y, derivativeOnEdge.x)
-          );
+          const angle = toDegrees(Math.atan2(derivativeOnEdge.y, derivativeOnEdge.x));
           if (placement.rotate) {
             let flippedAngle = angle;
             if (Math.abs(angle) > 90) {

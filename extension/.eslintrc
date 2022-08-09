@@ -41,7 +41,7 @@
       "operator-linebreak": ["error", "after"],
       "no-multi-assign": "error",
       "no-dupe-class-members": "error",
-      "function-paren-newline": ["error", "never"],
+      "function-paren-newline": ["error", "multiline"],
       "@typescript-eslint/no-explicit-any": "off",
       "no-duplicate-imports": "error",
       "no-alert": "error",
