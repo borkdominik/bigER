@@ -33,7 +33,8 @@
 	"activationEvents": [
 		"onLanguage:erdiagram",
 		"onCommand:erdiagram.diagram.open",
-		"onCommand:erdiagram.model.new"
+		"onCommand:erdiagram.model.newEmpty",
+		"onCommand:erdiagram.model.newSample"
 	],
 	"files": [
 		"dist",
@@ -98,8 +99,13 @@
 				"category": "bigER"
 			},
 			{
-				"command": "erdiagram.model.new",
-				"title": "New ER Model",
+				"command": "erdiagram.model.newEmpty",
+				"title": "New empty ER Model",
+				"category": "bigER"
+			},
+			{
+				"command": "erdiagram.model.newSample",
+				"title": "New sample ER Model",
 				"category": "bigER"
 			}
 		],
@@ -127,7 +133,11 @@
 			],
 			"file/newFile": [
 				{
-					"command": "erdiagram.model.new",
+					"command": "erdiagram.model.newEmpty",
+					"group": "file"
+				},
+				{
+					"command": "erdiagram.model.newSample",
 					"group": "file"
 				}
 			],
@@ -153,7 +163,10 @@
 					"when": "erdiagram-diagram-focused"
 				},
 				{
-					"command": "erdiagram.model.new"
+					"command": "erdiagram.model.newEmpty"
+				},
+				{
+					"command": "erdiagram.model.newSample"
 				}
 			]
 		},
@@ -207,7 +220,7 @@
 		"build": "webpack --mode=development",
 		"build:tests": "tsc -p . --outDir dist",
 		"clean": "rimraf dist",
-		"lint": "eslint './src/**'",
+		"lint": "eslint \"./src/**\"",
 		"watch": "webpack --mode=development --watch"
 	}
 }

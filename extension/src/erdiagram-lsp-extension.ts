@@ -5,7 +5,8 @@ import { LanguageClient, ServerOptions, LanguageClientOptions } from "vscode-lan
 import { SprottyWebview } from "sprotty-vscode/lib/sprotty-webview";
 import { SprottyDiagramIdentifier, SprottyLspWebview } from "sprotty-vscode/lib/lsp";
 import { ERDiagramWebview } from './erdiagram-webview';
-import newModel from './commands/new-model';
+import newEmptyModel from './commands/new-empty-model';
+import newSampleModel from './commands/new-sample-model';
 
 export class ERDiagramLspVscodeExtension extends SprottyLspEditVscodeExtension {
 
@@ -15,9 +16,12 @@ export class ERDiagramLspVscodeExtension extends SprottyLspEditVscodeExtension {
 
     protected registerCommands() {
         super.registerCommands();
-        this.context.subscriptions.push(vscode.commands.registerCommand('erdiagram.model.new', (...commandArgs: any[]) => {
-                newModel();
-        }));
+        this.context.subscriptions.push(vscode.commands.registerCommand('erdiagram.model.newEmpty', (...commandArgs: any[]) => {
+                newEmptyModel();
+            }));
+        this.context.subscriptions.push(vscode.commands.registerCommand('erdiagram.model.newSample', (...commandArgs: any[]) => {
+                newSampleModel();
+            }));
     }
 
     protected getDiagramType(commandArgs: any[]): string | undefined {

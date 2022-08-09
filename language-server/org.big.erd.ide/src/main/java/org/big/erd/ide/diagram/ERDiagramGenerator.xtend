@@ -59,7 +59,7 @@ class ERDiagramGenerator implements IDiagramGenerator {
 		this.state = context.state
 		val contentHead = context.resource.contents.head
 		if (contentHead instanceof Model) {
-			LOG.info("Generating diagram for model with URI '" + context.resource.URI.lastSegment + "'")
+			LOG.debug("Generating diagram for model with URI '" + context.resource.URI.lastSegment + "'")
 			model = contentHead
 			toSGraph(model, context)
 		}
@@ -104,7 +104,7 @@ class ERDiagramGenerator implements IDiagramGenerator {
 			}
 		]
 
-		LOG.info("Generated Graph: " + graph)
+		LOG.debug("Generated Graph: " + graph)
 	}
 
 	def RelationshipNode relationshipNodes(Relationship relationship, extension Context context) {

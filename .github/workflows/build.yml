@@ -1,0 +1,45 @@
+# matrix build of server (Java) and client (Node)
+name: Build
+
+# run workflow on pushes/pull requests to main or manually
+on: 
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  # builds the server using Gradle on ubuntu, macos, windows with java 11, 17
+  build-server:
+    strategy:
+      matrix:
+        java: [11, 17]
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    name: ${{ matrix.os }} with Java ${{ matrix.Java }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          java-version: ${{ matrix.Java }}
+          distribution: 'temurin'
+      - run: language-server/gradlew -p language-server/ clean
+      - run: language-server/gradlew -p language-server/ build
+  # builds the client using yarn on ubuntu, macos, windows with Node.js 16
+  build-client:
+    strategy:
+      matrix:
+        node: ['16']
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    name: ${{ matrix.os }} with Node ${{ matrix.node }}
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node }}
+    - run: yarn --cwd webview
+    - run: yarn --cwd extension
