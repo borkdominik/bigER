@@ -33,7 +33,8 @@
 	"activationEvents": [
 		"onLanguage:erdiagram",
 		"onCommand:erdiagram.diagram.open",
-		"onCommand:erdiagram.model.new"
+		"onCommand:erdiagram.model.newEmpty",
+		"onCommand:erdiagram.model.newSample"
 	],
 	"files": [
 		"dist",
@@ -132,7 +133,11 @@
 			],
 			"file/newFile": [
 				{
-					"command": "erdiagram.model.new",
+					"command": "erdiagram.model.newEmpty",
+					"group": "file"
+				},
+				{
+					"command": "erdiagram.model.newSample",
 					"group": "file"
 				}
 			],
@@ -158,7 +163,10 @@
 					"when": "erdiagram-diagram-focused"
 				},
 				{
-					"command": "erdiagram.model.new"
+					"command": "erdiagram.model.newEmpty"
+				},
+				{
+					"command": "erdiagram.model.newSample"
 				}
 			]
 		},
