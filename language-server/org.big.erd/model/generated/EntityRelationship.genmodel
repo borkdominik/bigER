@@ -31,7 +31,6 @@
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="EntityRelationship.ecore#//NotationType">
       <genEnumLiterals ecoreEnumLiteral="EntityRelationship.ecore#//NotationType/DEFAULT"/>
       <genEnumLiterals ecoreEnumLiteral="EntityRelationship.ecore#//NotationType/CHEN"/>
-      <genEnumLiterals ecoreEnumLiteral="EntityRelationship.ecore#//NotationType/MINMAX"/>
       <genEnumLiterals ecoreEnumLiteral="EntityRelationship.ecore#//NotationType/BACHMAN"/>
       <genEnumLiterals ecoreEnumLiteral="EntityRelationship.ecore#//NotationType/CROWSFOOT"/>
       <genEnumLiterals ecoreEnumLiteral="EntityRelationship.ecore#//NotationType/UML"/>

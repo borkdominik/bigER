@@ -46,6 +46,27 @@ class EntityRelationshipValidator extends AbstractEntityRelationshipValidator {
 	}
 	
 	@Check
+	def checkRelationEntity(RelationEntity relation) {
+		if (relation.minMax !== null) {
+			val model = relation.eContainer.eContainer as Model
+			if (model.generateOption !== null && model.generateOption.generateOptionType === GenerateOptionType.SQL) {
+				error('''SQL code generation is not supported for min-max relationships!''', relation, EntityRelationshipPackage.Literals.RELATION_ENTITY__MIN_MAX);
+			}
+			
+			val values = relation.minMax.split(",");
+			if (values.length != 2) {
+				error('''Incorrect usage of min-max! Use: [min,max] or [min,*]''', relation, EntityRelationshipPackage.Literals.RELATION_ENTITY__MIN_MAX);
+			} else {
+				if (values.get(0).matches("\\d+") && values.get(1).matches("\\d+") 
+					&& (Integer.parseInt(values.get(0)) > Integer.parseInt(values.get(1)))
+				) {
+					info('''Min is greater than max! Usage: [min,max] min <= max''', relation, EntityRelationshipPackage.Literals.RELATION_ENTITY__MIN_MAX)
+				}
+			}
+		}
+	}
+	
+	@Check
 	def checkUppercaseName(Entity entity) {
 		if (!Character.isUpperCase(entity.name.charAt(0))) {
 			info('''Entity name '«entity.name»' should start with an upper-case letter''', EntityRelationshipPackage.Literals.ENTITY__NAME, LOWERCASE_ENTITY_NAME)
@@ -57,7 +78,7 @@ class EntityRelationshipValidator extends AbstractEntityRelationshipValidator {
 		val model = attribute.eContainer.eContainer as Model
 		if (model.generateOption !== null && model.generateOption.generateOptionType.toString === 'sql') {
 			if (attribute.datatype === null || attribute.datatype.toString.nullOrEmpty) {
-				warning('''Missing datatype for attribute''', EntityRelationshipPackage.Literals.ATTRIBUTE__DATATYPE, MISSING_ATTRIBUTE_DATATYPE)
+				error('''Missing datatype for attribute''', EntityRelationshipPackage.Literals.ATTRIBUTE__DATATYPE, MISSING_ATTRIBUTE_DATATYPE)
 			}
 		}
 	}
@@ -144,31 +165,26 @@ class EntityRelationshipValidator extends AbstractEntityRelationshipValidator {
 			val secondElement = r.second
 			val thirdElement = r.third
 			
-			if(model.notation.notationType.equals(NotationType.BACHMAN)){
+			if (model.notation.notationType.equals(NotationType.BACHMAN)) {
 				checkBachmanCardinality(firstElement, r, EntityRelationshipPackage.Literals.RELATIONSHIP__FIRST)
 				checkBachmanCardinality(secondElement, r, EntityRelationshipPackage.Literals.RELATIONSHIP__SECOND)
 				checkBachmanCardinality(thirdElement, r, EntityRelationshipPackage.Literals.RELATIONSHIP__THIRD)
 				
-			}else if(model.notation.notationType.equals(NotationType.CHEN)){
+			} else if (model.notation.notationType.equals(NotationType.CHEN)) {
 				checkChenCardinality(firstElement, r, EntityRelationshipPackage.Literals.RELATIONSHIP__FIRST)
 				checkChenCardinality(secondElement, r, EntityRelationshipPackage.Literals.RELATIONSHIP__SECOND)
 				checkChenCardinality(thirdElement, r, EntityRelationshipPackage.Literals.RELATIONSHIP__THIRD)
 				
-			}else if(model.notation.notationType.equals(NotationType.CROWSFOOT)){
-				if(secondElement === null){
+			} else if (model.notation.notationType.equals(NotationType.CROWSFOOT)) {
+				if (secondElement === null) {
 					info('''Relationship: Second element of relation required.''', r, EntityRelationshipPackage.Literals.RELATIONSHIP__FIRST)
-				} else if(thirdElement !== null){
+				} else if (thirdElement !== null){
 					info('''Relationship: No third element allowed.''', r, EntityRelationshipPackage.Literals.RELATIONSHIP__THIRD)
 				}else{
 					checkCrowsFootCardinality(firstElement, r, EntityRelationshipPackage.Literals.RELATIONSHIP__FIRST)
 					checkCrowsFootCardinality(secondElement, r, EntityRelationshipPackage.Literals.RELATIONSHIP__SECOND)
 				}
-			}else if(model.notation.notationType.equals(NotationType.MINMAX)){
-				checkMinMaxCardinality(firstElement, r, EntityRelationshipPackage.Literals.RELATIONSHIP__FIRST)
-				checkMinMaxCardinality(secondElement, r, EntityRelationshipPackage.Literals.RELATIONSHIP__SECOND)
-				checkMinMaxCardinality(thirdElement, r, EntityRelationshipPackage.Literals.RELATIONSHIP__THIRD)
-				
-			}else if(model.notation.notationType.equals(NotationType.UML)){
+			} else if (model.notation.notationType.equals(NotationType.UML)) {
 				checkUmlCardinality(firstElement, r, EntityRelationshipPackage.Literals.RELATIONSHIP__FIRST)
 				checkUmlCardinality(secondElement, r, EntityRelationshipPackage.Literals.RELATIONSHIP__SECOND)
 				checkUmlCardinality(thirdElement, r, EntityRelationshipPackage.Literals.RELATIONSHIP__THIRD)
@@ -211,22 +227,6 @@ class EntityRelationshipValidator extends AbstractEntityRelationshipValidator {
 		}
     }
     
-    def checkMinMaxCardinality(RelationEntity relationEntity, Relationship relationship, EStructuralFeature feature) {
-		if (relationEntity !== null) {
-			if (relationEntity.minMax === null || relationEntity.minMax.length < 3) {
-				info('''Wrong cardinality.Usage: [min,max] or [min,*]''', relationship, feature)
-			}
-			if (relationEntity.minMax.toString.length === 3) {
-				var n1 = relationEntity.minMax.toString.substring(0, 1);
-				var n2 = relationEntity.minMax.toString.substring(2, 3);
-
-				if (n1.matches("\\d+") && n2.matches("\\d+") && Integer.parseInt(n1) > Integer.parseInt(n2)) {
-					info('''Wrong cardinality. Usage: [min,max] min <= max''', relationship, feature)
-				}
-			}
-		}
-	}
-	
 	def checkUmlCardinality(RelationEntity relationEntity, Relationship relationship, EStructuralFeature feature) {
 		if (relationEntity !== null) {
 			if(relationEntity.customMultiplicity !== null || relationEntity.minMax !== null ||

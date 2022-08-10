@@ -112,7 +112,6 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
                     <vscode-option value="bachman">Bachman</vscode-option>
                     <vscode-option value="chen">Chen</vscode-option>
                     <vscode-option value="crowsfoot">Crows Foot</vscode-option>
-                    <vscode-option value="minmax">Min Max</vscode-option>
                     <vscode-option value="uml">UML</vscode-option>
                 </vscode-dropdown>
             `;
