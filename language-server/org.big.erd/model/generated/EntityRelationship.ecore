@@ -80,9 +80,8 @@
   <eClassifiers xsi:type="ecore:EEnum" name="NotationType">
     <eLiterals name="DEFAULT" literal="default"/>
     <eLiterals name="CHEN" value="1" literal="chen"/>
-    <eLiterals name="MINMAX" value="2" literal="minmax"/>
-    <eLiterals name="BACHMAN" value="3" literal="bachman"/>
-    <eLiterals name="CROWSFOOT" value="4" literal="crowsfoot"/>
-    <eLiterals name="UML" value="5" literal="uml"/>
+    <eLiterals name="BACHMAN" value="2" literal="bachman"/>
+    <eLiterals name="CROWSFOOT" value="3" literal="crowsfoot"/>
+    <eLiterals name="UML" value="4" literal="uml"/>
   </eClassifiers>
 </ecore:EPackage>

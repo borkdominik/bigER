@@ -36,18 +36,6 @@ export class ERModelView<IRenderingArgs> extends SGraphView<IRenderingArgs> {
     }
 }
 
-/*
-function convertNotationString(model: Readonly<ERModel>):string{
-    switch(model.notation){
-        case 'bachman'   : return 'Bachman';
-        case 'chen'      : return 'Chen';
-        case 'crowsfoot' : return 'Crows Foot';
-        case 'minmax'    : return 'Min Max';
-        case 'uml'       : return 'UML';
-        default : return '';
-    }
-}*/
-
 @injectable()
 export class EntityNodeView extends RectangularNodeView {
     render(node: Readonly<EntityNode>, context: RenderingContext): VNode | undefined {
