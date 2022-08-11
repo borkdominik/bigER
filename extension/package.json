@@ -7,20 +7,25 @@
 	"categories": [
         "Programming Languages",
 		"Visualization",
-		"Snippets"
+		"Education"
 	],
 	"keywords": [
 		"Entity Relationship",
+		"ER Diagram",
+		"Modeling Tool",
 		"Data Modeling",
-		"Diagram",
 		"Language Server",
-		"ERD"
+		"DSL"
 	],
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/borkdominik/bigER"
 	},
-	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/borkdominik/bigER/issues"
+	},
+	"license": "SEE LICENSE IN LICENSE",
+	"preview": false,
 	"engines": {
 		"vscode": "^1.46.0"
 	},
@@ -85,27 +90,27 @@
 			},
 			{
 				"command": "erdiagram.diagram.center",
-				"title": "Center selection",
+				"title": "Center Selection",
 				"category": "bigER"
 			},
 			{
 				"command": "erdiagram.diagram.export",
-				"title": "Export diagram to SVG",
+				"title": "Export Diagram to SVG",
 				"category": "bigER"
 			},
 			{
 				"command": "erdiagram.diagram.delete",
-				"title": "Delete selected element",
+				"title": "Delete Selected Element",
 				"category": "bigER"
 			},
 			{
 				"command": "erdiagram.model.newEmpty",
-				"title": "New empty ER Model",
+				"title": "New Empty ER Model",
 				"category": "bigER"
 			},
 			{
 				"command": "erdiagram.model.newSample",
-				"title": "New sample ER Model",
+				"title": "New Sample ER Model",
 				"category": "bigER"
 			}
 		],

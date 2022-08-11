@@ -1,7 +1,7 @@
 {
   "name": "erdiagram-sprotty-webview",
   "version": "0.1.0",
-  "description": "Webview package for the bigER Modeling Tool",
+  "description": "Webview package of the bigER Modeling Tool",
   "author": {
     "name": "Philipp-Lorenz Glaser"
   },
