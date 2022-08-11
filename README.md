@@ -17,20 +17,20 @@
 
 <!-- DESCRIPTION -->
 <p align="center">
-  <b>ER modeling tool for VS Code supporting hybrid, textual- and graphical editing, multiple notations, and SQL code generation!</b></br>
-  <sub><a href="https://marketplace.visualstudio.com/items?itemName=BIGModelingTools.erdiagram">➜ Download for VS Code</a><sub>
+  <b>Open-source ER modeling tool for VS Code supporting hybrid, textual- and graphical editing, multiple notations, and SQL code generation!</b></br>
+  <sub><a href="https://marketplace.visualstudio.com/items?itemName=BIGModelingTools.erdiagram">➜ Download the VS Code Extension</a><sub>
 </p>
 
 <!-- DEMO -->
 <p align="center">
-  <img src="https://raw.githubusercontent.com/borkdominik/bigER/main/docs/img/tool-screenshot.png" alt="Demo" width="800" />
+  <img src="https://raw.githubusercontent.com/borkdominik/bigER/main/docs/img/demo.gif" alt="Demo" width="800" />
 </p>
 
 <!-- FEATURES -->
 **Main features:**
-- 📝 **Textual Language** for ER modeling with *rich-text editing* support through the [Language Server Protocol (LSP)](https://microsoft.github.io/language-server-protocol/). 
-- 📊 **Diagram View** that is *fully synchronized* with the model in the textual editor and includes *automatic layout* of elements, *multi-notation support* and a *toolbar* for modifying the diagram representation or underlying model.
-- 🖨️ **Code Generation** for *generating SQL tables* from the specified ER model and integrate with existing databases.  
+- **📝 Textual Language** for the specification of ER models in the textual editor. Assistive *validation* and *rich-text editing* support, enabled with the [Language Server Protocol](https://microsoft.github.io/language-server-protocol/), allows to quickly get familiar with the available language constructs.
+- 📊 **Diagram View** that is fully synchronized with the textual model and automatically updates on changes. Also offers an interactive toolbar with *graphical editing actions*, *layout mechanisms*, and *multi-notation support*.
+- 🖨️ **Code Generation** to *generate SQL tables* out of the specified ER models and integrate with existing databases.  
 
 ---
 
@@ -48,84 +48,59 @@
 
 ## About the Project
 
-The tool uses a language server for the ER modeling language which communicates its language features through the [Language Server Protocol (LSP)](https://microsoft.github.io/language-server-protocol/). This makes bigER highly reusable, increases perfomance and simplifies implementation for other editors that also use the LSP. 
+Entity-Relationship (ER) modeling is the de-facto standard for data modeling, offering powerful concepts to visualize data in (relational) databases. Various tools for ER modeling are available, however, often they are inflexible, proprietary, or constrained to specific platforms. 
 
-The language and editor features are realized with the [Xtext](https://www.eclipse.org/Xtext/) language workbench, while [Sprotty](https://github.com/eclipse/sprotty) with a [Sprotty-enhanced Graphical Language Server](https://github.com/eclipse/sprotty-server) is used for rendering the diagrams. All of this is integrated with VS Code by implementing a [Sprotty VS Code Extension](https://github.com/eclipse/sprotty-vscode).
+The bigER tool aims to provide an open-source and modern solution for ER by making use of the [Language Server Protocol (LSP)](https://microsoft.github.io/language-server-protocol/). The protocol is used for communicating textual language features to the VS Code client and is further extended to also support graphical editing, making it one of the first *hybrid modeling tools* based on the LSP.
+
+**Built With**
+
+The Java-based language server is realized with [Xtext](https://www.eclipse.org/Xtext/) and [Xtend](https://www.eclipse.org/xtend/), while the diagramming capabilities are based on [Sprotty](https://github.com/eclipse/sprotty). Sprotty enhances the server with graphical language features (using [`sprotty-server`](https://github.com/eclipse/sprotty-server)) and integrates with VS Code through [Sprotty VS Code Extensions](https://github.com/eclipse/sprotty-vscode). 
+
 
 
 <!-- USAGE -->
 ## Usage
 
-In the following we describe the basic usage of the tool based on a simple example. See the documentation in the [bigER Wiki](https://github.com/borkdominik/bigER/wiki/) or check out other [Examples](https://github.com/borkdominik/bigER/tree/main/examples) to learn more.
+Download and install the extension from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=BIGModelingTools.erdiagram). Information regarding installation, can be found in the [Extension Marketplace Guide](https://code.visualstudio.com/docs/editor/extension-marketplace) of VS Code.
 
-**Installation**
+**New ER Model**
 
-Download and install the extension from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=BIGModelingTools.erdiagram). For more information regarding installation see the [Extension Marketplace](https://code.visualstudio.com/docs/editor/extension-marketplace) guide for VS Code.
-
-
-**Textual Model**
-
-Once the extension is installed a new ER model can be created. Models are created in `.erd` files, refer to the example below to specify a basic model consisting of two entities and a *one-to-many* relationship. 
+After installation, ER models can be created in `.erd` files. Use the `New Sample ER Model` command in the Command Palette or refer to the example below to get started with a basic model.
 
 ```java
-// File: example.erd
-erdiagram Example
-generate=sql
+erdiagram Model
 
-entity Customer {
-    id: int key
-    name: string
+notation=default
+generate=off
+
+entity A {
+   id key
 }
-
-entity Order {
-    order_number: int key
-    price: double
+entity B {
+   id key
 }
-
-relationship Places {
-    Customer[1] -> Order[N]
+relationship Rel {
+   A -> B
 }
 ```
 
-**Diagram**
+**Open the Diagram**
 
-Open the diagram through the button in the editor or by right-clicking on the `.erd` file.
+The corresponding *ER Diagram* can be opened by using the button in the editor toolbar, the context menu when right-clicking the file, or by pressing <kbd>Ctrl</kbd>/<kbd>⌘</kbd> + <kbd>O</kbd>.
 
-<img src="https://github.com/borkdominik/bigER/blob/main/docs/img/basic-example.png" width="600"/>
+**Learn More**
 
-**Code Generator**
-
-Code generation is controlled through the `generate` keyword. Since we specified the `sql` value, the SQL code generator is enabled and the generated code contained in the newly created `src-gen/Example.sql` file.
-
-```sql
-CREATE TABLE Customer(
-	id int,
-	name string,
-	PRIMARY KEY (id)
-);
-
-CREATE TABLE Order(
-	price double,
-	order_number int,
-	PRIMARY KEY (order_number)
-);
-
-CREATE TABLE Places(
-	id int references Customer(id),
-	order_number int references Order(order_number),
-	PRIMARY KEY (id, order_number)
-);
-```
+For more information on how to use the tool, see the [bigER Wiki](https://github.com/borkdominik/bigER/wiki/).
 
 <!-- BUILD INSTRUCTIONS -->
 ## Build Instructions
 
 **Prerequisites**
 
-- [Node.js](https://nodejs.org/en/) runtime
-- [yarn](https://yarnpkg.com/) package manager
-- [Java](http://jdk.java.net/) (11+)
-- [VS Code](https://code.visualstudio.com/) (v1.50+)
+- [Node.js](https://nodejs.org/en/) 16 or above
+- [Java](http://jdk.java.net/) JDK 11 or above 
+- [VS Code](https://code.visualstudio.com/) v1.46 or above
+- [yarn](https://yarnpkg.com/)
 
 
 Download or clone the repository and in the root folder of the project execute the following commands:
@@ -136,7 +111,7 @@ yarn --cwd webview
 yarn --cwd extension
 ```
 
-After building the project, the extension can be run in VS Code by pressing <kbd>F5</kbd> or through <kbd>Run -> Start Debugging</kbd> from the menu
+After building the project, the extension can be run in VS Code by pressing <kbd>F5</kbd> or selecting `Run ➜ Start Debugging` from the menu.
 
 
 <!-- TODO: Add to Wiki
@@ -154,9 +129,9 @@ Project issues are managed on GitHub, see [Open Issues](https://github.com/borkd
 
 Contributions to the project are always welcome! See the [Contribution Guidelines](https://github.com/borkdominik/bigER/blob/main/docs/CONTRIBUTING.md) for more information.
 
-**Contributers**:
+**Contributors**:
 - [Philipp-Lorenz Glaser](https://github.com/plglaser) (main developer)   
-- [Georg Hammerschmied](https://github.com/SchmiedHammer)  (multi-notation support)
+- [Georg Hammerschmied](https://github.com/SchmiedHammer) (multi-notation support)
 - [Hnatiuk Vladyslav](https://github.com/Aksem) (improved edge router)
 - [Dominik Bork](https://github.com/borkdominik)
 
