@@ -26,13 +26,13 @@ class GenerateSqlValidator extends AbstractEntityRelationshipValidator {
         		error('''Code Generator does not support Generalization. Remove `extends` from entity '«e.name»'.''', e, EntityRelationshipPackage.Literals.ENTITY__NAME)
         	]
         	// check non-weak entities for primary key
-			model.entities?.filter[!it.weak].forEach [ e |
+			model.entities?.filter[!it.weak].forEach[ e |
 				if (e.attributes?.filter[it.type === AttributeType.KEY].isNullOrEmpty) {
 					error('''Missing primary key for entity''', e, EntityRelationshipPackage.Literals.ENTITY__NAME);
 				}
 			]
 			// check weak entities for partial-key
-			model.entities?.filter[it.weak].forEach [ e |
+			model.entities?.filter[it.weak].forEach[ e |
 				if (e.attributes?.filter[it.type == AttributeType.PARTIAL_KEY].isNullOrEmpty) {
 					error('''Missing partial-key for entity''', e, EntityRelationshipPackage.Literals.ENTITY__NAME);
 				}

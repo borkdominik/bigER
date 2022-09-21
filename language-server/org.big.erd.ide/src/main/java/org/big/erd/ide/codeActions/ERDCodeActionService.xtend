@@ -16,6 +16,8 @@ import org.big.erd.validation.NamingValidator
 import org.eclipse.lsp4j.CodeActionKind
 import com.google.inject.Inject
 import org.eclipse.xtext.resource.ILocationInFileProvider
+import org.eclipse.lsp4j.Range
+import org.eclipse.lsp4j.Position
 
 class ERDCodeActionService implements ICodeActionService2 {
 
@@ -34,14 +36,14 @@ class ERDCodeActionService implements ICodeActionService2 {
 		
 		// provide quick fixes for validation issues as code actions
 		for (d : params.context.diagnostics) {
-			if (d.code?.getLeft == NamingValidator.MISSING_MODEL_HEADER) {
+			if (d.code?.getLeft == NamingValidator.MISSING_MODEL_NAME) {
 				val text = '''erdiagram ModelName«'\n'»'''
 				result.add(Either.forRight(new CodeAction => [
 					kind = CodeActionKind.QuickFix
 					title = "Insert model header"
 					edit = new WorkspaceEdit() => [
 						addTextEdit(model.eResource.URI, new TextEdit => [
-							range = params.range
+							range = new Range(new Position(0,0), new Position(1,0))
 							newText = text
 						])
 					]
