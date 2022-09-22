@@ -3,6 +3,7 @@ import { inject } from "inversify";
 import { PopupButton } from "./model";
 import { Action, SelectAction, SelectAllAction, SetPopupModelAction, SModelElement } from "sprotty-protocol";
 import { DeleteWithWorkspaceEditAction } from 'sprotty-vscode-protocol/lib/lsp/editing';
+import { AddAttributeAction } from "./actions";
 
 
 export class PopupButtonListener extends MouseListener {
@@ -25,6 +26,10 @@ export class PopupButtonListener extends MouseListener {
                 }
                 case 'edit': {
                     actions.push(EditLabelAction.create(target.target));
+                    break;
+                }
+                case 'addAttribute': {
+                    actions.push(AddAttributeAction.create(target.target));
                     break;
                 }
             }

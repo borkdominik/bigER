@@ -28,6 +28,7 @@ export class ERDiagramSprottyStarter extends SprottyLspEditStarter {
         container.bind(TYPES.PopupMouseListener).to(PopupButtonListener);
         configureModelElement(container, 'button:delete', PopupButton, PopupButtonView);
         configureModelElement(container, 'button:edit', PopupButton, PopupButtonView);
+        configureModelElement(container, 'button:addAttribute', PopupButton, PopupButtonView);
     }
 }
 

@@ -27,7 +27,6 @@
     padding: 10px;
 }
 
-
 .popup-tag {
     margin-right: 5px;
     margin-left: 5px;
@@ -38,7 +37,6 @@
     flex-direction: column;
 }
 
-
 .sprotty-infoRow {
     font-size: small;
     margin: 0px;
@@ -47,17 +45,7 @@
     padding: 5px;
 }
 
-.popup-edit-button {
-    color: white;
-    /*background: var(--vscode-charts-blue);*/
-    width: 100%;
-    background-color: none;
-    padding: 0px;
-    font-size: x-small;
-    text-align: left;
-
-}
-.popup-delete-button {
+.popup-button {
     color: white;
     /*background: var(--vscode-charts-red);*/
     width: 100%;

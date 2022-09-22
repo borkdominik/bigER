@@ -58,3 +58,19 @@ export namespace ChangeNotationAction {
         };
     }
 }
+
+export interface AddAttributeAction {
+    kind: typeof AddAttributeAction.KIND
+    elementId: string
+}
+
+export namespace AddAttributeAction {
+    export const KIND = 'addAttribute';
+
+    export function create(elementId: string): AddAttributeAction {
+        return {
+            kind: KIND,
+            elementId
+        };
+    }
+}

@@ -11,6 +11,7 @@ class ERDiagramServer extends LanguageAwareDiagramServer {
 	@Inject GenerateHandler generateHandler
 	@Inject NotationHandler notationHandler
 	@Inject CreateElementHandler createElementHandler
+	@Inject AddAttributeHandler addAttributeHandler
 
 	override protected handleAction(Action action) {
 		if (action.kind === ReconnectAction.KIND) {
@@ -21,6 +22,8 @@ class ERDiagramServer extends LanguageAwareDiagramServer {
 			generateHandler.handle(action as CodeGenerateAction, this)
 		} else if (action.kind === CreateElementEditAction.KIND) {
 			createElementHandler.handle(action as CreateElementEditAction, this)
+		} else if (action.kind === AddAttributeAction.KIND) {
+			addAttributeHandler.handle(action as AddAttributeAction, this)
 		} else {
 			super.handleAction(action)
 		}

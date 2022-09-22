@@ -101,7 +101,7 @@ class PopupModelFactory implements IPopupModelFactory {
 					target = element.id + '.label'
 					kind = 'edit'
 					code = '''
-						<vscode-button class="popup-edit-button" appearance="secondary">
+						<vscode-button class="popup-button" appearance="secondary">
 							Rename
 							<span slot="start" class="codicon codicon-edit"></span>
 						</vscode-button>
@@ -113,9 +113,21 @@ class PopupModelFactory implements IPopupModelFactory {
 					target = element.id
 					kind = 'delete'
 					code = '''
-						<vscode-button class="popup-delete-button" appearance="secondary">
+						<vscode-button class="popup-button" appearance="secondary">
 							Delete
 							<span slot="start" class="codicon codicon-trash"></span>
+						</vscode-button>
+					'''
+				],
+				new PopupButton [
+					id = popupId + '-addAttributeButton'
+					type = 'button:addAttribute'
+					target = element.id
+					kind = 'addAttribute'
+					code = '''
+						<vscode-button class="popup-button" appearance="secondary">
+							Add Attribute
+							<span slot="start" class="codicon codicon-add"></span>
 						</vscode-button>
 					'''
 				]
