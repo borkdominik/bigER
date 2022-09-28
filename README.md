@@ -138,7 +138,7 @@ Contributions to the project are always welcome! See the [Contribution Guideline
 
 See [All Contributors](https://github.com/borkdominik/bigER/graphs/contributors).
 
-If you like our work, please feel free to [buy me a coffee](https://www.buymeacoffee.com/bigERtool) ☕️
+If you like our work, please feel free to [buy us a coffee](https://www.buymeacoffee.com/bigERtool) ☕️
 
 <a href="https://www.buymeacoffee.com/bigERtool" target="_blank">
   <img src="https://www.buymeacoffee.com/assets/img/custom_images/yellow_img.png" alt="Logo" >
