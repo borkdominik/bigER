@@ -64,10 +64,10 @@ class ERDHoverService extends HoverService {
     
     def elementCountInfo(Model model) {
     	'''
-    	«IF model.entities.length === 1»«model.entities.length» Entity, «ENDIF»
-    	«IF model.entities.length !== 1»«model.entities.length» Entities, «ENDIF»
-    	«IF model.relationships.length === 1»«model.relationships.length» Relationship«ENDIF»
-    	«IF model.relationships.length !== 1»«model.relationships.length» Relationships«ENDIF»
+    		«IF model.entities.length === 1»«model.entities.length» Entity, «ENDIF»
+    		«IF model.entities.length !== 1»«model.entities.length» Entities, «ENDIF»
+    		«IF model.relationships.length === 1»«model.relationships.length» Relationship«ENDIF»
+    		«IF model.relationships.length !== 1»«model.relationships.length» Relationships«ENDIF»
     	'''
     }
     

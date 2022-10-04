@@ -1,26 +1,36 @@
+ext.title = 'ER Language Server with Diagram'
+description = 'Language server infrastructure with IDE components and diagram extension'
+
+apply plugin: 'application'
+
 dependencies {
 	implementation project(':org.big.erd')
 	implementation "org.eclipse.xtext:org.eclipse.xtext.ide:${xtextVersion}"
-	implementation "org.eclipse.xtext:org.eclipse.xtext.xbase.ide:${xtextVersion}"
-
 	implementation "org.eclipse.sprotty:org.eclipse.sprotty.server:${sprottyVersion}"
 	implementation "org.eclipse.sprotty:org.eclipse.sprotty.xtext:${sprottyVersion}"
 	implementation "org.eclipse.sprotty:org.eclipse.sprotty.layout:${sprottyVersion}"
-	
 	implementation "org.eclipse.elk:org.eclipse.elk.alg.layered:${elkVersion}"
 	
+	testImplementation "junit:junit:${junit4Version}"
+	testImplementation "org.eclipse.xtext:org.eclipse.xtext.testing:${xtextVersion}"
 }
 
-apply plugin: 'application'
-mainClassName = "org.big.erd.ide.launch.ERDiagramServerLauncher"
+mainClassName = 'org.big.erd.ide.launch.ERDiagramServerLauncher'
 applicationName = 'erdiagram-language-server'
 
-task unzipServer(type: Copy, dependsOn: distZip) {
+task unzipLanguageServer(type: Copy, dependsOn: distZip) {
+	group = 'Distribution'
+	description = 'Unzip the language server jar with dependencies to the extension'
+	
+	dependsOn(distZip)
 	def zipFile = file("${buildDir}/distributions/erdiagram-language-server.zip")
 	def outputDir = file("${buildDir}/../../../extension/server")
-
 	from zipTree(zipFile)
 	into outputDir
 }
 
-build.dependsOn unzipServer
+build.dependsOn(unzipLanguageServer)
+
+test {
+	useJUnit()
+}

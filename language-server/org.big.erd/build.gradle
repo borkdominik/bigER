@@ -1,10 +1,6 @@
-dependencies {
-	testImplementation 'org.junit.jupiter:junit-jupiter-api'
-	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
-	testImplementation "org.eclipse.xtext:org.eclipse.xtext.testing:${xtextVersion}"
-	implementation "org.eclipse.xtext:org.eclipse.xtext:${xtextVersion}"
-	implementation "org.eclipse.xtext:org.eclipse.xtext.xbase:${xtextVersion}"
-}
+ext.title = 'ER Language'
+description = 'Core language infrastructure'
+
 configurations {
 	mwe2 {
 		extendsFrom implementation
@@ -12,6 +8,14 @@ configurations {
 }
 
 dependencies {
+	implementation "org.eclipse.xtext:org.eclipse.xtext:${xtextVersion}"
+	implementation "org.eclipse.xtext:org.eclipse.xtext.xbase:${xtextVersion}"
+	
+	testImplementation "org.junit.jupiter:junit-jupiter-api:${junit5Version}"
+	testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junit5Version}"
+	testImplementation "org.eclipse.xtext:org.eclipse.xtext.testing:${xtextVersion}"
+	testImplementation "org.eclipse.xtext:org.eclipse.xtext.xbase.testing:${xtextVersion}"
+	
 	mwe2 'org.eclipse.emf:org.eclipse.emf.mwe2.launch'
 	mwe2 "org.eclipse.xtext:org.eclipse.xtext.common.types:${xtextVersion}"
 	mwe2 "org.eclipse.xtext:org.eclipse.xtext.xtext.generator:${xtextVersion}"
@@ -32,6 +36,7 @@ task generateXtextLanguage(type: JavaExec) {
 test {
 	useJUnitPlatform()
 }
+
 processResources.dependsOn(generateXtextLanguage)
 generateXtext.dependsOn(generateXtextLanguage)
 clean.dependsOn(cleanGenerateXtextLanguage)

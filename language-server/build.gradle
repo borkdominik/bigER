@@ -11,9 +11,12 @@ buildscript {
 subprojects {
 	group = 'org.big.erd'
 	//version = '0.1.0-SNAPSHOT'
+	
 	ext.xtextVersion = '2.27.0'
 	ext.sprottyVersion = '0.12.0'
 	ext.elkVersion = '0.7.1'
+	ext.junit4Version = '4.13'
+	ext.junit5Version = '5.8.1'
 	
 	repositories {
 		mavenCentral()
