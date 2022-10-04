@@ -1,38 +1,35 @@
-lib
-out
-bin
-pack
-target
-.metadata
-*.vsix
-
-build/
-bin/
-xtext-gen/
-xtend-gen/
-.gradle/
-.project
-org.eclipse.buildship.core.prefs
-.classpath
-/.metadata/
-src-gen/
-lib
-dist
-.vscode-test
-
-
 # macOS
 .DS_Store
 
-# Logs
+# npm/yarn
+node_modules/
+package-lock.json
+yarn.lock
+.yarn-integrity
+
+# logs
 logs
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Modules
-node_modules/
-package-lock.json
-yarn.lock
-.yarn-integrity
+# generated build files
+build/
+bin/
+xtext-gen/
+xtend-gen/
+.gradle/
+/.metadata/
+src-gen/
+lib
+dist
+.vscode-test
+out
+pack
+
+# other files/folders
+org.eclipse.buildship.core.prefs
+target
+.metadata
+*.vsix
