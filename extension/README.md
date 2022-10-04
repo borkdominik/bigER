@@ -74,3 +74,9 @@ The corresponding *ER Diagram* can be opened by using the button in the editor t
 For more information on how to use the tool, see the [bigER Wiki](https://github.com/borkdominik/bigER/wiki/).
 
 Also check out the [GitHub repository](https://github.com/borkdominik/bigER) and available [examples](https://github.com/borkdominik/bigER/tree/main/examples).
+
+If you like our work, please feel free to [buy us a coffee](https://www.buymeacoffee.com/bigERtool) ☕️
+
+<a href="https://www.buymeacoffee.com/bigERtool" target="_blank">
+  <img src="https://www.buymeacoffee.com/assets/img/custom_images/yellow_img.png" alt="Logo" >
+</a>
