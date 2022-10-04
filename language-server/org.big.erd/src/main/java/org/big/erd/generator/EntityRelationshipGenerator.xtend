@@ -7,13 +7,11 @@ import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.generator.AbstractGenerator
 import org.eclipse.xtext.generator.IFileSystemAccess2
 import org.eclipse.xtext.generator.IGeneratorContext
-import org.big.erd.entityRelationship.Attribute
 import org.big.erd.entityRelationship.Model
 import org.big.erd.entityRelationship.Entity
 import org.big.erd.entityRelationship.DataType
 import org.big.erd.entityRelationship.AttributeType
 import org.big.erd.entityRelationship.Relationship
-import java.util.Set
 import org.eclipse.xtext.util.RuntimeIOException
 
 /**
@@ -32,7 +30,6 @@ class EntityRelationshipGenerator extends AbstractGenerator {
 			return;
 		}
 		
-
 		val name = (diagram.name ?: 'output') + '.sql'
 		try {
 			fsa.generateFile(name, '''
@@ -45,7 +42,6 @@ class EntityRelationshipGenerator extends AbstractGenerator {
 				«FOR relationship : diagram.relationships.reject[it.isWeak]»
 					«relationship.toTable»
 				«ENDFOR»
-				
 			'''
 			)
 		} catch (RuntimeIOException e) {
@@ -56,11 +52,11 @@ class EntityRelationshipGenerator extends AbstractGenerator {
 	private def toTable(Entity entity) {
 		return ''' 
 			CREATE TABLE «entity.name»(
-			«FOR attribute : entity.allAttributes.reject[it.type === AttributeType.DERIVED]»
+			«FOR attribute : entity.attributes.reject[it.type === AttributeType.DERIVED]»
 				«'\t'»«attribute.name» «attribute.datatype.transformDataType»,
 			«ENDFOR»
 			«'\t'»PRIMARY KEY («entity.primaryKey.name»)
-			);«'\n'»«'\n'»
+			);«'\n'»
 		'''
 	}
 	
@@ -71,12 +67,12 @@ class EntityRelationshipGenerator extends AbstractGenerator {
 			CREATE TABLE «relationship.name»(
 			«relationship.first.target.foreignKeyRef»
 			«relationship.second.target.foreignKeyRef»
-			«IF relationship.third?.target !== null», «relationship.third.target.foreignKeyRef»«ENDIF»
+			«IF relationship.third?.target !== null»«relationship.third.target.foreignKeyRef»«ENDIF»
 			«FOR attribute : relationship.attributes»
 				«'\t'»«attribute.name» «attribute.datatype.transformDataType»,
 			«ENDFOR»
 			«'\t'»PRIMARY KEY («keySource.name», «keyTarget.name»«IF relationship.third?.target !== null», «relationship.third.target.primaryKey.name»«ENDIF»)
-			);«'\n'»«'\n'»
+			);«'\n'»
 		'''
 	}
 	
@@ -85,7 +81,7 @@ class EntityRelationshipGenerator extends AbstractGenerator {
 		val weak = getWeakEntity(relationship)
 		return ''' 
 			CREATE TABLE «weak.name»(
-			«FOR attribute : weak.allAttributes.reject[it.type === AttributeType.DERIVED]»
+			«FOR attribute : weak.attributes.reject[it.type === AttributeType.DERIVED]»
 				«'\t'»«attribute.name» «attribute.datatype.transformDataType»,
 			«ENDFOR»
 			«FOR attribute : relationship.attributes»
@@ -94,10 +90,9 @@ class EntityRelationshipGenerator extends AbstractGenerator {
 			«'\t'»«strong.primaryKey.name» «strong.primaryKey.datatype.transformDataType»,
 			«'\t'»PRIMARY KEY («weak.partialKey.name», «strong.primaryKey.name»),
 			«'\t'»FOREIGN KEY («strong.primaryKey.name») references «strong.name» ON DELETE CASCASE
-			);«'\n'»«'\n'»
+			);«'\n'»
 		'''
 	}
-	
 	
 	private def foreignKeyRef(Entity entity) {
 		val key = entity.attributes.filter[a | a.type === AttributeType.KEY]
@@ -156,12 +151,6 @@ class EntityRelationshipGenerator extends AbstractGenerator {
 		} else {
 			return r.second.target
 		}
-	}
-
-	private def Set<Attribute> getAllAttributes(Entity entity) {
-		val attributes = newHashSet
-		attributes += entity.attributes
-		return attributes
 	}
 	
 	
