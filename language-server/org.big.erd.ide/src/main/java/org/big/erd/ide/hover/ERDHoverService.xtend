@@ -18,6 +18,7 @@ class ERDHoverService extends HoverService {
 	@Inject INameLabelProvider nameLabelProvider
 
 	override String getContents(EObject element) {
+		if (element === null) return null
 		element.toText.toString
 	}
 
@@ -77,14 +78,14 @@ class ERDHoverService extends HoverService {
     			a.type.equals(AttributeType.PARTIAL_KEY)
     		]
     		if (partialKey.size > 0) {
-    			return '''🗝«partialKey.get(0).name»'''
+    			return '''Partial Key: «partialKey.get(0).name»'''
     		}
     	} else {
     		val key = entity.attributes.filter[a | 
     			a.type.equals(AttributeType.KEY)
     		]
     		if (key.size > 0) {
-    			return '''🔑   «key.get(0).name»'''
+    			return '''Key:   «key.get(0).name»'''
     		}
     	}
     	

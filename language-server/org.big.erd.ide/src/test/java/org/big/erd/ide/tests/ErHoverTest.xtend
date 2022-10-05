@@ -31,4 +31,35 @@ class ErHoverTest extends AbstractIdeTest {
 			'''
 		]
 	}
+	
+	def void testModelWithElements() {
+		testHover[
+			model = '''
+				erdiagram Model
+				generate=sql
+				entity A { }
+				entity B { }
+				entity C { }
+				relationship Rel { A -> B }
+			'''
+			line = 0
+			column = 10
+			expectedHover = '''
+				[[0, 10] .. [0, 15]]
+				kind: markdown
+				value: **ER Model** Model
+				
+				---
+				
+				Notation: `default`
+				
+				Generator: `sql`
+				
+				---
+				
+				3 Entities, 
+				1 Relationships
+			'''
+		]
+	}
 }
