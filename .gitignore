@@ -30,6 +30,8 @@ pack
 
 # other files/folders
 org.eclipse.buildship.core.prefs
+org.eclipse.xtend.core.Xtend.prefs
+org.eclipse.xtext.java.Java.prefs
 target
 .metadata
 *.vsix
