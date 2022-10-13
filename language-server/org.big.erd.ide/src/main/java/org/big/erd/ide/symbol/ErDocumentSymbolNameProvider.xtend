@@ -14,13 +14,20 @@ class ErDocumentSymbolNameProvider extends DocumentSymbolNameProvider {
 	
 	override getName(EObject object) {
 		switch object {
-			Model: return object.name
-			NotationOption: return 'Notation: ' + object.notationType.toString
-			GenerateOption: return 'Generator: ' + object.generateOptionType.toString
-			Entity: return object.name
-			Relationship: return object.name
-			Attribute: return object.name
-			default: return super.getName(object)
+			Model: 
+				return object.name
+			NotationOption: 
+				return object.notationType.toString
+			GenerateOption: 
+				return object.generateOptionType.toString
+			Entity: 
+				return object.name
+			Relationship: 
+				return object.name
+			Attribute: 
+				return object.name
+			default: 
+				return super.getName(object)
 		}
 	}
 	
