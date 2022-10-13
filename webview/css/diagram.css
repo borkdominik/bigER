@@ -21,6 +21,8 @@ text {
 
 }
 
+
+
 .sprotty-node {
     stroke-width: 1;
     fill: rgb(219,218,235);
@@ -43,6 +45,11 @@ text {
 
 .relationship > .sprotty-node {
     fill: white;
+}
+
+.sprotty-edge.partial {
+    stroke-opacity: 60%;
+    stroke-dasharray: 8;
 }
 
 .header {
@@ -103,20 +110,23 @@ text {
 .top.sprotty-label {
     fill: var(--vscode-foreground);
 }
+.bottom.sprotty-label {
+    fill: var(--vscode-foreground);
+}
 
 .sprotty-edge {
     fill: none;
     stroke: var(--vscode-editorActiveLineNumber-foreground);
-    stroke-width: 4;
+    stroke-width: 3;
 }
 
 .sprotty-edge.mouseover:not(.selected) {
-    stroke-width: 7;
+    stroke-width: 6;
 }
 
 .sprotty-edge.selected {
     stroke: yellow;
-    stroke-width: 6;
+    stroke-width: 5;
 }
 
 .sprotty-button {

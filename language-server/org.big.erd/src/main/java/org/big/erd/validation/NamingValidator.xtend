@@ -9,11 +9,11 @@ import org.eclipse.xtext.validation.EValidatorRegistrar
 
 class NamingValidator extends AbstractEntityRelationshipValidator {
 	
-	public static String MISSING_MODEL_NAME = "missingModelHeader";
-	public static String DUPLICATE_ENTITY_NAME = "duplicateEntityName";
-	public static String DUPLICATE_RELATIONSHIP_NAME = "duplicateRelationshipName";
-	public static String DUPLICATE_ATTRIBUTE_NAME = "duplicateAttributeName";
-	public static String LOWERCASE_ENTITY_NAME = "lowercaseEntityName";
+	public static final String MISSING_MODEL_NAME = "missingModelHeader";
+	public static final String DUPLICATE_ENTITY_NAME = "duplicateEntityName";
+	public static final String DUPLICATE_RELATIONSHIP_NAME = "duplicateRelationshipName";
+	public static final String DUPLICATE_ATTRIBUTE_NAME = "duplicateAttributeName";
+	public static final String LOWERCASE_ENTITY_NAME = "lowercaseEntityName";
 	
 	@Check
 	def checkModel(Model model) {

@@ -16,13 +16,10 @@
     </genEnums>
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="EntityRelationship.ecore#//CardinalityType">
       <genEnumLiterals ecoreEnumLiteral="EntityRelationship.ecore#//CardinalityType/NONE"/>
+      <genEnumLiterals ecoreEnumLiteral="EntityRelationship.ecore#//CardinalityType/ZERO_OR_ONE"/>
+      <genEnumLiterals ecoreEnumLiteral="EntityRelationship.ecore#//CardinalityType/ZERO_OR_MORE"/>
       <genEnumLiterals ecoreEnumLiteral="EntityRelationship.ecore#//CardinalityType/ONE"/>
       <genEnumLiterals ecoreEnumLiteral="EntityRelationship.ecore#//CardinalityType/MANY"/>
-      <genEnumLiterals ecoreEnumLiteral="EntityRelationship.ecore#//CardinalityType/MANY_CHEN"/>
-      <genEnumLiterals ecoreEnumLiteral="EntityRelationship.ecore#//CardinalityType/ZERO"/>
-      <genEnumLiterals ecoreEnumLiteral="EntityRelationship.ecore#//CardinalityType/ONE_OR_MORE"/>
-      <genEnumLiterals ecoreEnumLiteral="EntityRelationship.ecore#//CardinalityType/ZERO_OR_MORE"/>
-      <genEnumLiterals ecoreEnumLiteral="EntityRelationship.ecore#//CardinalityType/ZERO_OR_ONE"/>
     </genEnums>
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="EntityRelationship.ecore#//GenerateOptionType">
       <genEnumLiterals ecoreEnumLiteral="EntityRelationship.ecore#//GenerateOptionType/OFF"/>
@@ -33,7 +30,6 @@
       <genEnumLiterals ecoreEnumLiteral="EntityRelationship.ecore#//NotationType/CHEN"/>
       <genEnumLiterals ecoreEnumLiteral="EntityRelationship.ecore#//NotationType/BACHMAN"/>
       <genEnumLiterals ecoreEnumLiteral="EntityRelationship.ecore#//NotationType/CROWSFOOT"/>
-      <genEnumLiterals ecoreEnumLiteral="EntityRelationship.ecore#//NotationType/UML"/>
     </genEnums>
     <genClasses ecoreClass="EntityRelationship.ecore#//Model">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute EntityRelationship.ecore#//Model/name"/>
@@ -65,9 +61,7 @@
     <genClasses ecoreClass="EntityRelationship.ecore#//RelationEntity">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference EntityRelationship.ecore#//RelationEntity/target"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute EntityRelationship.ecore#//RelationEntity/cardinality"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute EntityRelationship.ecore#//RelationEntity/customMultiplicity"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute EntityRelationship.ecore#//RelationEntity/minMax"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute EntityRelationship.ecore#//RelationEntity/uml"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute EntityRelationship.ecore#//RelationEntity/role"/>
     </genClasses>
     <genClasses ecoreClass="EntityRelationship.ecore#//Attribute">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute EntityRelationship.ecore#//Attribute/name"/>

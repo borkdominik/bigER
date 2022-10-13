@@ -8,10 +8,11 @@ import {
     configureModelElement, HtmlRoot, HtmlRootView, overrideViewerOptions, PreRenderedElement, PreRenderedView,
     TYPES, loadDefaultModules, ConsoleLogger, LogLevel, SCompartmentView, SCompartment, editLabelFeature,
     labelEditUiModule, SModelRoot, SLabel, ExpandButtonHandler, SButton, expandFeature, SLabelView, ExpandButtonView,
-    editFeature
+    editFeature,
+    edgeLayoutFeature
 } from 'sprotty';
 import { InheritanceEdgeView, ERModelView, EntityNodeView, RelationshipNodeView, NotationEdgeView } from './views';
-import { EntityNode, ERModel, MultiplicityLabel, NotationEdge, RelationshipNode, InheritanceEdge } from './model';
+import { EntityNode, ERModel, NotationEdge, RelationshipNode, InheritanceEdge, RoleLabel, CardinalityLabel } from './model';
 import { BigerEdgeLayoutPostprocessor } from './layout-postprocessor';
 
 /**
@@ -30,6 +31,7 @@ const DiagramModule = new ContainerModule((bind, unbind, isBound, rebind) => {
     // custom edge layout postprocessor
     bind(BigerEdgeLayoutPostprocessor).toSelf().inSingletonScope();
     bind(TYPES.IVNodePostprocessor).toService(BigerEdgeLayoutPostprocessor);
+    bind(TYPES.HiddenVNodePostprocessor).toService(BigerEdgeLayoutPostprocessor);
 
     // change animation speed to 300ms
     rebind(TYPES.CommandStackOptions).toConstantValue({
@@ -48,11 +50,13 @@ const DiagramModule = new ContainerModule((bind, unbind, isBound, rebind) => {
     configureModelElement(context, 'comp:attribute-row', SCompartment, SCompartmentView);
     // Edges
     configureModelElement(context, 'edge', NotationEdge, NotationEdgeView, { disable: [editFeature] });
-    configureModelElement(context, 'edge:inheritance', InheritanceEdge, InheritanceEdgeView);
+    configureModelElement(context, 'edge:inheritance', InheritanceEdge, InheritanceEdgeView, { disable: [editFeature] });
+    configureModelElement(context, 'edge:partial', NotationEdge, NotationEdgeView, { disable: [editFeature] });
     // Labels
     configureModelElement(context, 'label:header', SLabel, SLabelView, { enable: [editLabelFeature] });
     configureModelElement(context, 'label:relationship', SLabel, SLabelView, { enable: [editLabelFeature] });
-    configureModelElement(context, 'label:top', MultiplicityLabel, SLabelView);
+    configureModelElement(context, 'label:top', CardinalityLabel, SLabelView, { enable: [edgeLayoutFeature] });
+    configureModelElement(context, 'label:bottom', RoleLabel, SLabelView, { enable: [edgeLayoutFeature] });
     configureModelElement(context, 'label:text', SLabel, SLabelView, { enable: [editLabelFeature] });
     configureModelElement(context, 'label:key', SLabel, SLabelView, { enable: [editLabelFeature] });
     configureModelElement(context, 'label:partial-key', SLabel, SLabelView, { enable: [editLabelFeature] });

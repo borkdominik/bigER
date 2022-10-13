@@ -41,9 +41,7 @@
   <eClassifiers xsi:type="ecore:EClass" name="RelationEntity">
     <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="#//Entity"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="cardinality" eType="#//CardinalityType"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="customMultiplicity" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="minMax" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="uml" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="role" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Attribute">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -65,13 +63,10 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="CardinalityType">
     <eLiterals name="NONE" literal="NONE"/>
-    <eLiterals name="ONE" value="1" literal="1"/>
-    <eLiterals name="MANY" value="2" literal="N"/>
-    <eLiterals name="MANY_CHEN" value="3" literal="M"/>
-    <eLiterals name="ZERO" value="4" literal="0"/>
-    <eLiterals name="ONE_OR_MORE" value="5" literal="1+"/>
-    <eLiterals name="ZERO_OR_MORE" value="6" literal="0+"/>
-    <eLiterals name="ZERO_OR_ONE" value="7" literal="?"/>
+    <eLiterals name="ZERO_OR_ONE" value="1" literal="0..1"/>
+    <eLiterals name="ZERO_OR_MORE" value="2" literal="0..N"/>
+    <eLiterals name="ONE" value="3" literal="1"/>
+    <eLiterals name="MANY" value="4" literal="N"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="GenerateOptionType">
     <eLiterals name="OFF" literal="off"/>
@@ -82,6 +77,5 @@
     <eLiterals name="CHEN" value="1" literal="chen"/>
     <eLiterals name="BACHMAN" value="2" literal="bachman"/>
     <eLiterals name="CROWSFOOT" value="3" literal="crowsfoot"/>
-    <eLiterals name="UML" value="4" literal="uml"/>
   </eClassifiers>
 </ecore:EPackage>
