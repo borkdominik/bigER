@@ -112,10 +112,8 @@ export class PopupButtonView extends PreRenderedView {
 @injectable()
 export class NotationEdgeView extends PolylineEdgeView {
 
-    @inject(EdgeRouterRegistry) edgeRouterRegistry: EdgeRouterRegistry;
-
     render(edge: Readonly<NotationEdge>, context: RenderingContext, args?: IViewArgs): VNode | undefined {
-        const route = this.edgeRouterRegistry.route(edge, args);
+        const route = this.edgeRouterRegistry.route(edge, { args });
         if (route.length === 0) {
             return this.renderDanglingEdge("Cannot compute route", edge, context);
         }
@@ -128,12 +126,12 @@ export class NotationEdgeView extends PolylineEdgeView {
 
         return <g class-sprotty-edge={true} class-mouseover={edge.hoverFeedback}>
                 {this.renderLine(edge, route, context, args)}
-                {this.renderAdditionals2(edge, route, context)}
+                {this.renderAdditionals(edge, route, context)}
                 {context.renderChildren(edge, { route })}
         </g>;
     }
 
-    protected renderAdditionals2(edge: NotationEdge, segments: Point[], context: RenderingContext): VNode[] {
+    protected override renderAdditionals(edge: NotationEdge, segments: Point[], context: RenderingContext): VNode[] {
         const source = segments[0];
         const target = segments[segments.length - 1];
         const penultimateElem = segments[segments.length - 2];

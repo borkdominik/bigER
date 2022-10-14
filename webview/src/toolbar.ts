@@ -19,11 +19,14 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
         this.addEventHandlers();
     }
 
-    override initializeSprotty(): void {
+    protected override initializeSprotty(): void {
         if (this.modelSource instanceof DiagramServerProxy) {
             this.modelSource.clientId = this.diagramIdentifier.clientId;
         }
-        this.requestModel();
+        const model = this.requestModel();
+        model.then(res => {
+            this.actionDispatcher.dispatch(FitToScreenAction.create([]));
+        });
     }
 
     /**
