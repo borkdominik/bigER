@@ -21,7 +21,7 @@ export class ERDiagramSprottyStarter extends SprottyLspEditStarter {
         return createDiagramContainer(diagramIdentifier.clientId);
     }
 
-    protected addVscodeBindings(container: Container, diagramIdentifier: SprottyDiagramIdentifier): void {
+    override addVscodeBindings(container: Container, diagramIdentifier: SprottyDiagramIdentifier): void {
         super.addVscodeBindings(container, diagramIdentifier);
         container.rebind(VscodeDiagramServer).to(BigERDiagramServer);
         container.rebind(VscodeDiagramWidget).to(ERDiagramWidget).inSingletonScope();

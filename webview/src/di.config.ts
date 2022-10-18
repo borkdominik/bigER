@@ -8,6 +8,8 @@ import {
     configureModelElement, HtmlRoot, HtmlRootView, overrideViewerOptions, PreRenderedElement, PreRenderedView,
     TYPES, loadDefaultModules, ConsoleLogger, LogLevel, SCompartmentView, SCompartment, editLabelFeature,
     labelEditUiModule, SModelRoot, SLabel, ExpandButtonHandler, SButton, expandFeature, SLabelView, ExpandButtonView,
+    SRoutingHandle,
+    SRoutingHandleView,
     editFeature,
 } from 'sprotty';
 import { InheritanceEdgeView, ERModelView, EntityNodeView, RelationshipNodeView, NotationEdgeView } from './views';
@@ -65,6 +67,8 @@ const DiagramModule = new ContainerModule((bind, unbind, isBound, rebind) => {
     configureModelElement(context, 'palette', SModelRoot, HtmlRootView);
     configureModelElement(context, 'pre-rendered', PreRenderedElement, PreRenderedView);
     configureModelElement(context, ExpandButtonHandler.TYPE, SButton, ExpandButtonView);
+    configureModelElement(context, 'routing-point', SRoutingHandle, SRoutingHandleView);
+    configureModelElement(context, 'volatile-routing-point', SRoutingHandle, SRoutingHandleView);
 });
 
 /**

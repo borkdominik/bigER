@@ -1,8 +1,8 @@
 /** @jsx svg */
 import { VNode } from "snabbdom";
 import { RenderingContext, svg, RectangularNodeView, SEdge, PolylineEdgeView, // eslint-disable-line @typescript-eslint/no-unused-vars
-         SPort, SGraphView, IViewArgs, Hoverable, Selectable, DiamondNodeView, Diamond, SNode, PreRenderedView, EdgeRouterRegistry } from 'sprotty';
-import { inject, injectable} from 'inversify';
+         SPort, SGraphView, IViewArgs, Hoverable, Selectable, DiamondNodeView, Diamond, SNode, PreRenderedView } from 'sprotty';
+import { injectable} from 'inversify';
 import { toDegrees, Point } from 'sprotty-protocol';
 import { EntityNode, ERModel, NotationEdge, PopupButton, RelationshipNode } from "./model";
 import { DiagramTypes } from "./utils";
@@ -11,9 +11,9 @@ import { DiagramTypes } from "./utils";
 @injectable()
 export class ERModelView<IRenderingArgs> extends SGraphView<IRenderingArgs> {
 
-    @inject(EdgeRouterRegistry) edgeRouterRegistry: EdgeRouterRegistry;
+    // @inject(EdgeRouterRegistry) edgeRouterRegistry: EdgeRouterRegistry;
 
-    render(model: Readonly<ERModel>, context: RenderingContext, args?: IRenderingArgs): VNode {
+    override render(model: Readonly<ERModel>, context: RenderingContext, args?: IRenderingArgs): VNode {
         // set model name in toolbar
         const menuModelName = document.getElementById('toolbar-modelName');
         if (menuModelName) {
@@ -41,7 +41,7 @@ export class ERModelView<IRenderingArgs> extends SGraphView<IRenderingArgs> {
 
 @injectable()
 export class EntityNodeView extends RectangularNodeView {
-    render(node: Readonly<EntityNode>, context: RenderingContext): VNode | undefined {
+    override render(node: Readonly<EntityNode>, context: RenderingContext): VNode | undefined {
         if (!this.isVisible(node, context)) {
             return undefined;
         }
@@ -61,7 +61,7 @@ export class EntityNodeView extends RectangularNodeView {
 
 @injectable()
 export class RelationshipNodeView extends DiamondNodeView {
-    render(node: Readonly<RelationshipNode & Hoverable & Selectable>, context: RenderingContext, args?: IViewArgs): VNode | undefined {
+    override render(node: Readonly<RelationshipNode & Hoverable & Selectable>, context: RenderingContext, args?: IViewArgs): VNode | undefined {
         if (!this.isVisible(node, context)) {
             return undefined;
         }
@@ -87,7 +87,7 @@ function svgStr(point: Point) {
 
 @injectable()
 export class InheritanceEdgeView extends PolylineEdgeView {
-    protected renderAdditionals(edge: SEdge, segments: Point[], context: RenderingContext): VNode[] {
+    override renderAdditionals(edge: SEdge, segments: Point[], context: RenderingContext): VNode[] {
         const p1 = segments[segments.length - 2];
         const p2 = segments[segments.length - 1];
         return [
@@ -103,7 +103,7 @@ export function angle(x0: Point, x1: Point): number {
 
 @injectable()
 export class PopupButtonView extends PreRenderedView {
-    render(model: Readonly<PopupButton>, context: RenderingContext): VNode | undefined {
+    override render(model: Readonly<PopupButton>, context: RenderingContext): VNode | undefined {
         const node = super.render(model, context);
         return node;
     }
@@ -111,8 +111,7 @@ export class PopupButtonView extends PreRenderedView {
 
 @injectable()
 export class NotationEdgeView extends PolylineEdgeView {
-
-    render(edge: Readonly<NotationEdge>, context: RenderingContext, args?: IViewArgs): VNode | undefined {
+    override render(edge: Readonly<NotationEdge>, context: RenderingContext, args?: IViewArgs): VNode | undefined {
         const route = this.edgeRouterRegistry.route(edge, { args });
         if (route.length === 0) {
             return this.renderDanglingEdge("Cannot compute route", edge, context);
@@ -131,7 +130,7 @@ export class NotationEdgeView extends PolylineEdgeView {
         </g>;
     }
 
-    protected override renderAdditionals(edge: NotationEdge, segments: Point[], context: RenderingContext): VNode[] {
+    override renderAdditionals(edge: NotationEdge, segments: Point[], context: RenderingContext): VNode[] {
         const source = segments[0];
         const target = segments[segments.length - 1];
         const penultimateElem = segments[segments.length - 2];
@@ -165,7 +164,7 @@ export class NotationEdgeView extends PolylineEdgeView {
                 return this.createCrowsFootZeroOrOne(source, secondElem, arrowSourceX);
             }
             return this.createCrowsFootZeroOrOne(target, penultimateElem, arrowTargetX);
-        } else if (cardinality === '1') {
+        } else if (cardinality === '1' || cardinality === '1..1') {
             if (isSource) {
                 return this.createCrowsFootOne(source, secondElem, arrowSourceX);
             }
@@ -175,7 +174,7 @@ export class NotationEdgeView extends PolylineEdgeView {
                 return this.createCrowsFootZeroOrMany(source, secondElem, arrowSourceX);
             }
             return this.createCrowsFootZeroOrMany(target, penultimateElem, arrowTargetX);
-        } else if (cardinality === 'N') {
+        } else if (cardinality === 'N' || cardinality === '1..N') {
             if (isSource) {
                 return this.createCrowsFootMany(source, secondElem, arrowSourceX);
             }

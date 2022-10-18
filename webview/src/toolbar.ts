@@ -5,6 +5,7 @@ import { CollapseExpandAllAction, FitToScreenAction } from 'sprotty-protocol';
 import { ChangeNotationAction, CodeGenerateAction, CreateElementEditAction } from './actions';
 import { DiagramTypes } from './utils';
 
+
 @injectable()
 export class ERDiagramWidget extends VscodeDiagramWidget {
 

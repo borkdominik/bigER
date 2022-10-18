@@ -18,7 +18,7 @@ export class BigerEdgeLayoutPostprocessor extends EdgeLayoutPostprocessor {
    * edge segment the label is placed over edge and is also unreadable.
    * In this case labels are placed on the right side instead.
    */
-  decorate(vnode: VNode, element: SModelElement): VNode {
+  override decorate(vnode: VNode, element: SModelElement): VNode {
     if (isEdgeLayoutable(element) && element.parent instanceof SEdge) {
       if (element.bounds !== Bounds.EMPTY) {
         const placement = this.getEdgePlacement(element);

@@ -5,19 +5,27 @@
         "downlevelIteration": true,
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
+        "jsx": "react",
         "lib": [
-            "es6"
+            "ES2017", 
+            "dom" 
         ],
         "module": "commonjs",
         "moduleResolution": "node",
+        "noImplicitAny": true,
+        "noImplicitOverride": true,
+        "noImplicitReturns": true,
+        "noImplicitThis": true,
         "noUnusedLocals": true,
+        "resolveJsonModule": true,
         "skipLibCheck": true,
         "sourceMap": true,
         "strict": true, 
+        "strictNullChecks": true,
         "strictPropertyInitialization": false,             
-        "target": "es5"
-    },
-    "exclude": [
-        ".vscode-test"
-    ]
+        "target": "ES2017",
+        "types": [ 
+            "node"
+        ]
+    }
 }  

@@ -23,7 +23,7 @@ export class NotationEdge extends LibavoidEdge {
 }
 
 export class CardinalityLabel extends SLabel {
-    edgePlacement = <EdgePlacement> {
+    override edgePlacement = <EdgePlacement> {
         position: 0.5,
         side: 'top',
         rotate: false,
@@ -33,7 +33,7 @@ export class CardinalityLabel extends SLabel {
 
 // TODO: Fix Role label
 export class RoleLabel extends SLabel {
-    edgePlacement = <EdgePlacement> {
+    override edgePlacement = <EdgePlacement> {
         position: 0.5,
         side: 'top',
         rotate: true,
