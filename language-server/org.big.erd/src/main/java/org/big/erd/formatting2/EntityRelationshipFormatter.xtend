@@ -7,63 +7,94 @@ import org.big.erd.entityRelationship.Entity
 import org.big.erd.entityRelationship.Model
 import org.eclipse.xtext.formatting2.AbstractFormatter2
 import org.eclipse.xtext.formatting2.IFormattableDocument
-
-import static org.big.erd.entityRelationship.EntityRelationshipPackage.Literals.*
 import org.big.erd.entityRelationship.Relationship
+import org.big.erd.entityRelationship.Attribute
+import org.big.erd.entityRelationship.RelationEntity
+import static org.big.erd.entityRelationship.EntityRelationshipPackage.Literals.*
+
 
 class EntityRelationshipFormatter extends AbstractFormatter2 {
 	
-	//@Inject extension EntityRelationshipGrammarAccess
-
 	def dispatch void format(Model model, extension IFormattableDocument document) {
-		// Model header
-		model.regionFor.feature(MODEL__NAME).surround[oneSpace]
+		// model header
+		model.regionFor.keyword("erdiagram").append[oneSpace]
 		model.regionFor.feature(MODEL__NAME).append[setNewLines(1, 1, 2)]
 		
-		// Options
+		// model options
 		model.generateOption.append[setNewLines(1, 1, 2)]
+		model.generateOption.regionFor.keyword("=").surround[noSpace]
 		model.notation.append[setNewLines(1, 1, 2)]
+		model.notation.regionFor.keyword("=").surround[noSpace]
 		
-		// Entity
+		// entities and relationships
 		for (entity : model.entities) {
 			entity.format
 		}
-		// Relationship
 		for (relationship : model.relationships) {
 			relationship.format
 		}
 	}
 
 	def dispatch void format(Entity entity, extension IFormattableDocument document) {
+		entity.regionFor.keyword("weak").append[oneSpace]
+		entity.regionFor.keyword("entity").prepend[noSpace]
 		entity.regionFor.feature(ENTITY__NAME).surround[oneSpace]
+		
+		if (entity.extends !== null) {
+			entity.regionFor.keyword("extends").surround[oneSpace]
+			entity.regionFor.feature(ENTITY__EXTENDS).surround[oneSpace]
+		}
 		
 		val open = entity.regionFor.keyword("{")
 		val close = entity.regionFor.keyword("}")
-		if (entity.attributes.length > 0) {
+		if (entity.attributes.size > 0) {
 			open.append[newLine]
+			close.prepend[noSpace]
 		}
-		interior(open, close)[indent]
+		
+		interior(open, close, [indent])
 		
 		for (attribute : entity.attributes) {
-			attribute.append[setNewLines(1, 1, 2)]
+			attribute.format
+			attribute.append[newLine]
 		}
+		
+		close.append[setNewLines(1, 1, 2)]	
 	}
 	
 	def dispatch void format(Relationship relationship, extension IFormattableDocument document) {
+		relationship.regionFor.keyword("weak").append[oneSpace]
+		relationship.regionFor.keyword("relationship").prepend[noSpace]
 		relationship.regionFor.feature(RELATIONSHIP__NAME).surround[oneSpace]
 		
-		val open = relationship.regionFor.keyword("{")
-		val close = relationship.regionFor.keyword("}")
-		if (relationship.attributes.length > 0 || relationship.first !== null) {
-			open.append[newLine]
-		}
-		interior(open, close)[indent]
+		relationship.first?.format
+		relationship.second?.format
+		relationship.third?.format
 		
 		for (attribute : relationship.attributes) {
-			attribute.append[setNewLines(1, 1, 2)]
+			relationship.first.prepend[indent]
+			attribute.format
+			attribute.append[newLine]
 		}
 		
-		val relation = relationship.regionFor.keyword("->")
-		relation.surround[oneSpace]
+		relationship.regionFor.keyword("}").append[setNewLines(1, 1, 2)]
+	}
+	
+	def dispatch void format(Attribute attribute, extension IFormattableDocument document) {
+		attribute.regionFor.keyword(":").append[oneSpace]
+		attribute.regionFor.keyword(":").prepend[noSpace]
+		if (attribute.datatype !== null) {
+			attribute.datatype.regionFor.keyword("(").prepend[noSpace]
+			attribute.datatype.regionFor.feature(DATA_TYPE__SIZE).surround[noSpace]
+		}
+		if (attribute.type !== null) {
+			attribute.regionFor.feature(ATTRIBUTE__TYPE).prepend[oneSpace]
+		}
+	}
+	
+	def dispatch void format(RelationEntity relation, extension IFormattableDocument document) {
+		relation.regionFor.keyword("|").surround[oneSpace]
+		relation.regionFor.keyword("[").surround[noSpace]
+		relation.regionFor.keyword("]").prepend[noSpace]
 	}
 }

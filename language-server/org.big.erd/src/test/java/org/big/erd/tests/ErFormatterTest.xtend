@@ -19,52 +19,89 @@ class ErFormatterTest {
 	@Inject extension ISerializer
 	@Inject extension ParseHelper<Model>
 	
-	
-	@Test
-	def void testFormatModel() throws Exception {
+	@Test def void testFormatModel() {
 		val String source = '''
-			erdiagram  Model
+			erdiagram  Model    generate =  off notation = default
+			
+			entity  Entity1{ } entity Entity2   extends  Entity1  { }
+			weak  entity WeakEntity { }
+			
+			relationship  Rel1 { }
+			weak  relationship  Rel2{}
 		''';
-		
-		val String expected = '''
-			erdiagram Model
-		''';
-		assertEquals(expected, format(source));
-	}
-	
-	@Test
-	def void testFormatOptions() throws Exception {
-		val String source = '''
-			erdiagram Model generate=off notation=default
-		''';
-		
 		val String expected = '''
 			erdiagram Model
 			generate=off
 			notation=default
+			
+			entity Entity1 { }
+			entity Entity2 extends Entity1 { }
+			weak entity WeakEntity { }
+			
+			relationship Rel1 { }
+			weak relationship Rel2 {}
 		''';
 		assertEquals(expected, format(source));
 	}
 	
-	@Test
-	def void testFormatEntity() throws Exception {
+	@Test def void testFormatAttributes() {
 		val String source = '''
 			erdiagram Model
 			
-			entity  Name  { attr1 attr2 }
-		''';
-		
+			entity Entity1 { 
+			attr1 : int  key
+				attr2 :  varchar(255)
+			attr3: varchar (  255 )
+				attr3  derived
+					attr4
+			}
+		''';	
 		val String expected = '''
 			erdiagram Model
 			
-			entity Name {
-				attr1
-				attr2
+			entity Entity1 {
+				attr1: int key
+				attr2: varchar(255)
+				attr3: varchar(255)
+				attr3 derived
+				attr4
 			}
 		''';
 		assertEquals(expected, format(source));
 	}
 	
+	@Test def void testFormatRelations() {
+		val String source = '''
+			erdiagram  Model
+			
+			entity Entity1 {} 
+			entity Entity2 {}
+			entity Entity3 {}
+			
+			relationship Rel1 {
+				Entity1 [ 1 ] -> Entity2[  N  ]
+			}
+			relationship Rel2 {
+				Entity1[ 0..1] -> Entity2  [ 0..N ] -> Entity3[1]
+			}
+		''';
+		
+		val String expected = '''
+			erdiagram Model
+			
+			entity Entity1 {}
+			entity Entity2 {}
+			entity Entity3 {}
+			
+			relationship Rel1 {
+				Entity1[1] -> Entity2[N]
+			}
+			relationship Rel2 {
+				Entity1[0..1] -> Entity2[0..N] -> Entity3[1]
+			}
+		''';
+		assertEquals(expected, format(source));
+	}
 	
 	
 	def private String format(String text) {
