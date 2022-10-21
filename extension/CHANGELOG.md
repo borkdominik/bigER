@@ -1,5 +1,23 @@
 # Changelog
+
 All notable changes to this project will be documented in this file. The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
+
+
+## v0.2.0 - *10-2022*
+
+### Added
+- Support for participation constraints in the textual model. Can be specified by adding `[0..1]` (zero or one) or `[0..N]` (zero or more) to referenced entities in the relationship.
+- `Add Attribute` action to diagram popup when hovering over elements. 
+- Formatter for `.erd` files. Can be executed, e.g., from the command palette by searching for the `Format Document` command.
+- Various code improvements and tests.
+
+### Changed
+- Improvements to multi-notation support, enabled through the newly introduced participation constraints. See the [Notation page in the Wiki](https://github.com/borkdominik/bigER/wiki/Notations) for more details.
+
+
+### Removed
+- UML notation removed, as it will be reworked and available again in a future release. 
+
 
 ## v0.1.0 - *08-2022*
 
@@ -9,7 +27,7 @@ All notable changes to this project will be documented in this file. The format 
 - Custom datatype for attributes.
 
 
-#### Changed
+### Changed
 - Improved the outline view with icons and better representation of element names
 - Option to enable the code generator from `generateSql` to `generate=sql`
 

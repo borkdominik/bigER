@@ -2,7 +2,7 @@
 	"name": "erdiagram",
 	"displayName": "bigER Modeling Tool",
 	"description": "Entity Relationship Diagrams with a textual editor and SQL code generation.",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"publisher": "BIGModelingTools",
 	"categories": [
         "Programming Languages",
@@ -203,6 +203,7 @@
 		"@vscode/webview-ui-toolkit": "^1.0.0"
 	},
 	"devDependencies": {
+		"@types/chai": "^4.2.12",
 		"@types/glob": "^7.2.0",
 		"@types/mocha": "^9.1.1",
 		"@types/node": "^12.12.6",
@@ -210,6 +211,7 @@
 		"@typescript-eslint/eslint-plugin": "^5.28.0",
 		"@typescript-eslint/parser": "^5.28.0",
 		"@vscode/test-electron": "^2.1.4",
+		"chai": "^4.2.0",
 		"eslint": "^8.18.0",
 		"latest": "^0.2.0",
 		"mocha": "^10.0.0",
@@ -217,15 +219,18 @@
 		"source-map-loader": "^3.0.0",
 		"ts-loader": "^9.2.6",
 		"typescript": "~4.6.2",
+		"vscode-extension-tester": "^5.0.0",
+		"vscode-uitests-tooling": "^2.3.3",
 		"webpack": "^5.64.2",
 		"webpack-cli": "^4.9.1"
 	},
 	"scripts": {
 		"prepare": "yarn run clean && yarn run build && yarn run lint",
 		"build": "webpack --mode=development",
-		"build:tests": "tsc -p . --outDir dist",
+		"build:tests": "tsc -p ./ --outDir dist",
 		"clean": "rimraf dist",
 		"lint": "eslint \"./src/**\"",
-		"watch": "webpack --mode=development --watch"
+		"watch": "webpack --mode=development --watch",
+		"ui-test": "extest setup-and-run ./dist/ui-test/extension-test.js -y"
 	}
 }
