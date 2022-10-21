@@ -14,7 +14,7 @@ export class ERDiagramLspVscodeExtension extends SprottyLspEditVscodeExtension {
         super('erdiagram', context);
     }
 
-    protected registerCommands() {
+    override registerCommands() {
         super.registerCommands();
         this.context.subscriptions.push(vscode.commands.registerCommand('erdiagram.model.newEmpty', (...commandArgs: any[]) => {
                 newEmptyModel();
@@ -28,6 +28,7 @@ export class ERDiagramLspVscodeExtension extends SprottyLspEditVscodeExtension {
         if (commandArgs.length === 0 || (commandArgs[0] instanceof vscode.Uri && commandArgs[0].path.endsWith('.erd'))) {
             return 'erdiagram-diagram';
         }
+        return undefined;
     }
 
     createWebView(identifier: SprottyDiagramIdentifier): SprottyWebview {

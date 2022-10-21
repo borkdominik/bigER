@@ -8,10 +8,12 @@ import {
     configureModelElement, HtmlRoot, HtmlRootView, overrideViewerOptions, PreRenderedElement, PreRenderedView,
     TYPES, loadDefaultModules, ConsoleLogger, LogLevel, SCompartmentView, SCompartment, editLabelFeature,
     labelEditUiModule, SModelRoot, SLabel, ExpandButtonHandler, SButton, expandFeature, SLabelView, ExpandButtonView,
-    editFeature
+    SRoutingHandle,
+    SRoutingHandleView,
+    editFeature,
 } from 'sprotty';
 import { InheritanceEdgeView, ERModelView, EntityNodeView, RelationshipNodeView, NotationEdgeView } from './views';
-import { EntityNode, ERModel, MultiplicityLabel, NotationEdge, RelationshipNode, InheritanceEdge } from './model';
+import { EntityNode, ERModel, NotationEdge, RelationshipNode, InheritanceEdge, CardinalityLabel, RoleLabel } from './model';
 import { BigerEdgeLayoutPostprocessor } from './layout-postprocessor';
 
 /**
@@ -33,9 +35,10 @@ const DiagramModule = new ContainerModule((bind, unbind, isBound, rebind) => {
 
     // change animation speed to 300ms
     rebind(TYPES.CommandStackOptions).toConstantValue({
-        defaultDuration: 300,
+        defaultDuration: 400,
         undoHistoryLimit: 50
     });
+
     // Model element bindings
     const context = { bind, unbind, isBound, rebind };
     configureModelElement(context, 'graph', ERModel, ERModelView);
@@ -48,11 +51,13 @@ const DiagramModule = new ContainerModule((bind, unbind, isBound, rebind) => {
     configureModelElement(context, 'comp:attribute-row', SCompartment, SCompartmentView);
     // Edges
     configureModelElement(context, 'edge', NotationEdge, NotationEdgeView, { disable: [editFeature] });
-    configureModelElement(context, 'edge:inheritance', InheritanceEdge, InheritanceEdgeView);
+    configureModelElement(context, 'edge:inheritance', InheritanceEdge, InheritanceEdgeView, { disable: [editFeature] });
+    configureModelElement(context, 'edge:partial', NotationEdge, NotationEdgeView, { disable: [editFeature] });
     // Labels
     configureModelElement(context, 'label:header', SLabel, SLabelView, { enable: [editLabelFeature] });
     configureModelElement(context, 'label:relationship', SLabel, SLabelView, { enable: [editLabelFeature] });
-    configureModelElement(context, 'label:top', MultiplicityLabel, SLabelView);
+    configureModelElement(context, 'label:top', CardinalityLabel, SLabelView);
+    configureModelElement(context, 'label:bottom', RoleLabel, SLabelView);
     configureModelElement(context, 'label:text', SLabel, SLabelView, { enable: [editLabelFeature] });
     configureModelElement(context, 'label:key', SLabel, SLabelView, { enable: [editLabelFeature] });
     configureModelElement(context, 'label:partial-key', SLabel, SLabelView, { enable: [editLabelFeature] });
@@ -62,6 +67,8 @@ const DiagramModule = new ContainerModule((bind, unbind, isBound, rebind) => {
     configureModelElement(context, 'palette', SModelRoot, HtmlRootView);
     configureModelElement(context, 'pre-rendered', PreRenderedElement, PreRenderedView);
     configureModelElement(context, ExpandButtonHandler.TYPE, SButton, ExpandButtonView);
+    configureModelElement(context, 'routing-point', SRoutingHandle, SRoutingHandleView);
+    configureModelElement(context, 'volatile-routing-point', SRoutingHandle, SRoutingHandleView);
 });
 
 /**

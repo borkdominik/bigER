@@ -42,9 +42,8 @@ class RelationshipNode extends SNode {
 @Accessors
 class NotationEdge extends SEdge {
 	Boolean isSource
+	String connectivity
 	String notation
-	Boolean showRelationship
-	String relationshipCardinality
 
 	new() { }
 	new((NotationEdge) => void initializer) {

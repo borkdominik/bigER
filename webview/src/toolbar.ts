@@ -1,17 +1,13 @@
-import { postConstruct, inject, injectable } from 'inversify';
+import { postConstruct, injectable } from 'inversify';
 import { VscodeDiagramWidget } from 'sprotty-vscode-webview';
-import { SprottyDiagramIdentifier } from 'sprotty-vscode-protocol';
-import { DiagramServerProxy, IActionDispatcher, ILogger, ModelSource, TYPES } from 'sprotty';
+import { DiagramServerProxy } from 'sprotty';
 import { CollapseExpandAllAction, FitToScreenAction } from 'sprotty-protocol';
 import { ChangeNotationAction, CodeGenerateAction, CreateElementEditAction } from './actions';
+import { DiagramTypes } from './utils';
+
 
 @injectable()
 export class ERDiagramWidget extends VscodeDiagramWidget {
-
-    @inject(TYPES.IActionDispatcher) actionDispatcher: IActionDispatcher;
-    @inject(SprottyDiagramIdentifier) diagramIdentifier: SprottyDiagramIdentifier;
-    @inject(TYPES.ILogger) protected logger: ILogger;
-    @inject(TYPES.ModelSource) modelSource: ModelSource;
 
     constructor() {
         super();
@@ -36,6 +32,7 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
 
     /**
      * Adds a toolbar to the Sprotty container
+     * TODO: Refactor to {@link AbstractUiExtension} ?
      */
     protected addToolbar(): void {
         const containerDiv = document.getElementById(this.diagramIdentifier.clientId + '_container');
@@ -112,7 +109,6 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
                     <vscode-option value="bachman">Bachman</vscode-option>
                     <vscode-option value="chen">Chen</vscode-option>
                     <vscode-option value="crowsfoot">Crows Foot</vscode-option>
-                    <vscode-option value="uml">UML</vscode-option>
                 </vscode-dropdown>
             `;
 
@@ -165,7 +161,9 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
             const select = document.getElementById('select-notation') as HTMLSelectElement;
             if (select) {
                 const value = select.options[select.selectedIndex].value;
-                if (value === 'default' || value === 'chen' || value === 'minmax' || value === 'bachman' || value === 'crowsfoot' || value === 'uml') {
+                if (value === DiagramTypes.DEFAULT_NOTATION || value === DiagramTypes.BACHMAN_NOTATION ||
+                    value === DiagramTypes.CHEN_NOTATION || value === DiagramTypes.CROWSFOOT_NOTATION
+                ) {
                     await this.actionDispatcher.dispatch(ChangeNotationAction.create(value));
                 }
             }

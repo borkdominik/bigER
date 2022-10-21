@@ -1,0 +1,11 @@
+{
+    "private":"true",
+    "license": "MIT",
+    "scripts": {
+        "prepare": "yarn build",
+        "build": "yarn build:server && yarn build:webview && yarn build:extension",
+        "build:extension":"yarn --cwd extension",
+        "build:server": "language-server/gradlew -p language-server/ build",
+        "build:webview": "yarn --cwd webview"
+    }
+}

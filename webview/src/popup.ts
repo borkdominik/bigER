@@ -11,7 +11,7 @@ export class PopupButtonListener extends MouseListener {
     @inject(TYPES.ILogger) protected logger: ILogger;
     @inject(TYPES.IActionDispatcher) actionDispatcher: IActionDispatcher;
 
-    mouseDown(target: SModelElement, event: MouseEvent): (Action | Promise<Action>)[] {
+    override mouseDown(target: SModelElement, event: MouseEvent): (Action | Promise<Action>)[] {
         const actions: Action[] = [];
         if (target instanceof PopupButton) {
             switch (target.kind) {
@@ -33,7 +33,6 @@ export class PopupButtonListener extends MouseListener {
                     break;
                 }
             }
-            // return [this.getWorkspaceEditAction(target)];
             actions.push(SetPopupModelAction.create(EMPTY_ROOT));
             return actions;
         }

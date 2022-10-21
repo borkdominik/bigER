@@ -5,10 +5,12 @@ package org.big.erd.ide;
 
 import org.big.erd.ide.codeActions.ERDCodeActionService;
 import org.big.erd.ide.hover.ERDHoverService;
+import org.big.erd.ide.symbol.ErDocumentSymbolDetailsProvider;
 import org.big.erd.ide.symbol.ErDocumentSymbolKindProvider;
 import org.big.erd.ide.symbol.ErDocumentSymbolNameProvider;
 import org.eclipse.xtext.ide.server.codeActions.ICodeActionService2;
 import org.eclipse.xtext.ide.server.hover.HoverService;
+import org.eclipse.xtext.ide.server.symbol.DocumentSymbolMapper.DocumentSymbolDetailsProvider;
 import org.eclipse.xtext.ide.server.symbol.DocumentSymbolMapper.DocumentSymbolKindProvider;
 import org.eclipse.xtext.ide.server.symbol.DocumentSymbolMapper.DocumentSymbolNameProvider;
 
@@ -31,5 +33,9 @@ public class EntityRelationshipIdeModule extends AbstractEntityRelationshipIdeMo
 	
 	public Class<? extends DocumentSymbolKindProvider> bindDocumentSymbolKindProvider() {
 		return ErDocumentSymbolKindProvider.class;
+	}
+	
+	public Class<? extends DocumentSymbolDetailsProvider> bindDocumentSymbolDetailsProvider() {
+		return ErDocumentSymbolDetailsProvider.class;
 	}
 }

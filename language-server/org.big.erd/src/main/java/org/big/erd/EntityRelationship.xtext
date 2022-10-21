@@ -27,7 +27,7 @@ Relationship:
 
 RelationEntity:
 	target=[Entity] ('[' 
-		(cardinality=CardinalityType | customMultiplicity=STRING | minMax=MIN_MAX | uml=Uml)?
+		cardinality=CardinalityType ('|' role=STRING)?
 	']')?;
 
 Attribute:
@@ -39,12 +39,6 @@ DataType:
 @Override	
 terminal INT returns ecore::EInt:
     ('0'..'9')+;
-    
-terminal MIN_MAX:
-	 ('0'..'9')*','(('0'..'9')* | ('*'));
-	 
-terminal Uml:
-	 ('comp ')?('agg ')?('0'..'9')+('..'('0'..'9')+)?('..''*')?;
 
 enum AttributeType:
 	NONE = 'none' | 
@@ -55,11 +49,19 @@ enum AttributeType:
 	MULTIVALUED = 'multivalued';
 
 enum CardinalityType:
-	NONE = 'NONE' | ONE = '1' | MANY = 'N' | MANY_CHEN = 'M' | ZERO = '0' | ONE_OR_MORE = '1+' | ZERO_OR_MORE = '0+' | ZERO_OR_ONE = '?';
+	NONE = 'NONE' | 
+	ZERO_OR_ONE = '0..1' | 
+	ZERO_OR_MORE = '0..N' | 
+	// ignore warning - same enum assignment is intentional to support both notations
+	ONE = '1' | ONE = '1..1' |
+	MANY = 'N' | MANY = '1..N';
 
 enum GenerateOptionType:
 	OFF = 'off' | 
 	SQL = 'sql';
 
 enum NotationType:
-    DEFAULT='default' | CHEN='chen' | BACHMAN='bachman' | CROWSFOOT='crowsfoot'| UML='uml';   
+    DEFAULT='default' | 
+    CHEN='chen' | 
+    BACHMAN='bachman' | 
+    CROWSFOOT='crowsfoot'; 

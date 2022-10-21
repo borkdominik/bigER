@@ -11,8 +11,8 @@ import org.big.erd.entityRelationship.AttributeType
 
 class GenerateSqlValidator extends AbstractEntityRelationshipValidator {
 	
-	public static String UNSUPPORTED_GENERATOR_FOR_NOTATION = "unsupportedGeneratedForNotation";
-	public static String MISSING_ATTRIBUTE_DATATYPE = "missingAttributeDatatype";
+	public static final String UNSUPPORTED_GENERATOR_FOR_NOTATION = "unsupportedGeneratedForNotation";
+	public static final String MISSING_ATTRIBUTE_DATATYPE = "missingAttributeDatatype";
 	
 	@Check
 	def checkModel(Model model) {
