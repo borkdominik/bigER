@@ -23,7 +23,7 @@
 
 <!-- DEMO -->
 <p align="center">
-  <img src="https://raw.githubusercontent.com/borkdominik/bigER/main/docs/img/demo.gif" alt="Demo" width="800" />
+  <img src="https://user-images.githubusercontent.com/39776671/197230584-f045bee2-0d5a-4120-b0cf-3ad7ae7675d8.gif" alt="Demo" width="800" />
 </p>
 
 <!-- FEATURES -->
