@@ -28,8 +28,8 @@ export class BigERDiagramServer extends VscodeLspEditDiagramServer {
             return true;
         } else if (isAction(AddAttributeAction.KIND)) {
             return true;
+        } else {
+            return super.handleLocally(action);
         }
-
-        return super.handleLocally(action);
     }
 }
