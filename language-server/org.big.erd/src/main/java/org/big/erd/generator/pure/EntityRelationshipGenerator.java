@@ -55,19 +55,24 @@ public class EntityRelationshipGenerator extends AbstractGenerator {
 			}
 		}
 		
-		// relationships
+		// weak relationships
 		for (final Relationship relationship : diagram.getRelationships()) {
 			if (relationship.isWeak()) {
 				String weakTable = this.weakToTable(relationship);
 				fileContent.append(weakTable);
-			} else {
-				String table = this.toTable(relationship);
-				fileContent.append(table);
+				fileContent.newLineIfNotEmpty();
 			}
-			fileContent.newLineIfNotEmpty();
 		}
 		
-		fileContent.newLine();
+		// strong relationships
+		for (final Relationship relationship : diagram.getRelationships()) {
+			if (!relationship.isWeak()) {
+				String table = this.toTable(relationship);
+				fileContent.append(table);
+				fileContent.newLineIfNotEmpty();
+			}
+		}
+		
 		return fileContent;
 	}
 
