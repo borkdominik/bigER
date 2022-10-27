@@ -1,4 +1,4 @@
-package org.big.erd.generator.pure;
+package org.big.erd.generator.sql;
 
 import java.util.Collections;
 import java.util.List;
@@ -21,7 +21,7 @@ import org.eclipse.xtext.xbase.lib.Exceptions;
 /**
  * Generates SQL in various dialects from the ER model.
  */
-public class EntityRelationshipGenerator extends AbstractGenerator {
+public class SqlGenerator extends AbstractGenerator {
 
 	@Override
 	public void doGenerate(final Resource resource, final IFileSystemAccess2 fsa, final IGeneratorContext context) {
