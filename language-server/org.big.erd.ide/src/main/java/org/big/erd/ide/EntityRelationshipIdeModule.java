@@ -4,11 +4,13 @@
 package org.big.erd.ide;
 
 import org.big.erd.ide.codeActions.ERDCodeActionService;
+import org.big.erd.ide.commands.ErCommandService;
 import org.big.erd.ide.hover.ERDHoverService;
 import org.big.erd.ide.symbol.ErDocumentSymbolDetailsProvider;
 import org.big.erd.ide.symbol.ErDocumentSymbolKindProvider;
 import org.big.erd.ide.symbol.ErDocumentSymbolNameProvider;
 import org.eclipse.xtext.ide.server.codeActions.ICodeActionService2;
+import org.eclipse.xtext.ide.server.commands.IExecutableCommandService;
 import org.eclipse.xtext.ide.server.hover.HoverService;
 import org.eclipse.xtext.ide.server.symbol.DocumentSymbolMapper.DocumentSymbolDetailsProvider;
 import org.eclipse.xtext.ide.server.symbol.DocumentSymbolMapper.DocumentSymbolKindProvider;
@@ -21,6 +23,10 @@ public class EntityRelationshipIdeModule extends AbstractEntityRelationshipIdeMo
 	
 	public Class<? extends ICodeActionService2> bindICodeActionService2() {
 		return ERDCodeActionService.class;
+	}
+	
+	public Class<? extends IExecutableCommandService> bindIExectuableCommandService() {
+		return ErCommandService.class;
 	}
 	
 	public Class<? extends HoverService> bindHoverService() {

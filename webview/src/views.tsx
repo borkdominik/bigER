@@ -19,11 +19,6 @@ export class ERModelView<IRenderingArgs> extends SGraphView<IRenderingArgs> {
         if (menuModelName) {
             menuModelName.innerText = model.name;
         }
-        // set generator option panel
-        const generateSelect = document.getElementById('select-generate') as HTMLSelectElement;
-        if (generateSelect) {
-            generateSelect.value = model.generateType;
-        }
         // set notation option panel
         const notationSelect = document.getElementById('select-notation') as HTMLSelectElement;
         if (notationSelect) {

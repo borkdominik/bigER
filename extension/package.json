@@ -70,13 +70,12 @@
 				"path": "./syntaxes/erdiagram.tmLanguage.json"
 			}
 		],
-		"snippets": [
-			{
-				"language": "erdiagram",
-				"path": "./snippets.json"
-			}
-		],
 		"commands": [
+			{
+                "command": "erdiagram.generate.sql.proxy",
+                "title": "Generate SQL",
+                "category": "bigER"
+            },
 			{
 				"command": "erdiagram.diagram.open",
 				"title": "Open ER Diagram",
@@ -147,6 +146,10 @@
 				}
 			],
 			"commandPalette": [
+				{
+					"command": "erdiagram.generate.sql.proxy",
+					"when": "editorLangId == 'erdiagram'"
+				},
 				{
 					"command": "erdiagram.diagram.open",
 					"when": "editorLangId == 'erdiagram'"
