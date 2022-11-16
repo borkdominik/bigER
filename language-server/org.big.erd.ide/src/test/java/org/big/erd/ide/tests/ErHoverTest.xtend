@@ -22,8 +22,6 @@ class ErHoverTest extends AbstractIdeTest {
 				
 				Notation: `default`
 				
-				Generator: `off`
-				
 				---
 				
 				0 Entities, 
@@ -36,7 +34,6 @@ class ErHoverTest extends AbstractIdeTest {
 		testHover[
 			model = '''
 				erdiagram Model
-				generate=sql
 				entity A { }
 				entity B { }
 				entity C { }
@@ -52,8 +49,6 @@ class ErHoverTest extends AbstractIdeTest {
 				---
 				
 				Notation: `default`
-				
-				Generator: `sql`
 				
 				---
 				

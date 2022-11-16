@@ -6,7 +6,6 @@ import org.big.erd.entityRelationship.Entity
 import org.big.erd.entityRelationship.Relationship
 import org.big.erd.entityRelationship.Attribute
 import org.big.erd.entityRelationship.Model
-import org.big.erd.entityRelationship.GenerateOption
 import org.big.erd.entityRelationship.NotationOption
 
 
@@ -18,8 +17,6 @@ class ErDocumentSymbolNameProvider extends DocumentSymbolNameProvider {
 				return object.name
 			NotationOption: 
 				return object.notationType.toString
-			GenerateOption: 
-				return object.generateOptionType.toString
 			Entity: 
 				return object.name
 			Relationship: 

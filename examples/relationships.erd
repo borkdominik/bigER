@@ -1,7 +1,6 @@
 erdiagram Model
 
 notation=default
-generate=off
 
 entity Entity1 { id key }
 entity Entity2 { id key }

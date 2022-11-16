@@ -12,7 +12,6 @@ export default async function newSampleModel() {
         const sampleModel = [
             "erdiagram Model\n",
             "notation=default",
-            "generate=off\n",
             "entity A {",
             "   id key",
             "}\n",

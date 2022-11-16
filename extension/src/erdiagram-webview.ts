@@ -1,7 +1,8 @@
 import * as vscode from 'vscode';
 import { Uri, Webview } from "vscode";
 import { SprottyLspWebview } from "sprotty-vscode/lib/lsp";
-import { hasOwnProperty } from 'sprotty-protocol';
+import { hasOwnProperty } from "sprotty-protocol";
+import { handleGenerateMessage } from './commands/generate';
 
 
 export class ERDiagramWebview extends SprottyLspWebview {
@@ -37,20 +38,9 @@ export class ERDiagramWebview extends SprottyLspWebview {
 
     override receiveFromWebview(message: any): Promise<boolean> {
         if (isGenerateMessage(message)) {
-            this.generate(message.generateKind);
+            handleGenerateMessage(message.generateKind, vscode.Uri.parse(this.diagramIdentifier.uri));
         }
         return super.receiveFromWebview(message);
-    }
-
-    protected async generate(generateKind: string) {
-        const response: string | undefined = await vscode.commands.executeCommand('erdiagram.generate.' + generateKind, this.diagramIdentifier.uri);
-        if (response) {
-            if (response.startsWith('Error')) {
-                vscode.window.showErrorMessage(response);
-            } else {
-                vscode.window.showInformationMessage(response);
-            }
-        }
     }
 }
 

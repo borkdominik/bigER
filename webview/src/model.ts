@@ -3,7 +3,6 @@ import { LibavoidEdge } from 'sprotty-routing-libavoid';
 
 export class ERModel extends SGraph {
     name: string;
-    generateType: string;
     notation: string;
 }
 

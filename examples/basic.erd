@@ -1,5 +1,4 @@
 erdiagram BasicExample // ER model
-generate=sql // enables SQL code generator
 
 // entities
 entity Customer {

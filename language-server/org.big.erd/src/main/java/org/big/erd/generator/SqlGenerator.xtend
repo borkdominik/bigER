@@ -1,42 +1,35 @@
 package org.big.erd.generator
 
-import org.eclipse.emf.ecore.resource.Resource
-import org.eclipse.xtext.generator.IFileSystemAccess2
-import org.eclipse.xtext.generator.IGeneratorContext
 import org.big.erd.entityRelationship.Model
 import org.big.erd.entityRelationship.Entity
 import org.big.erd.entityRelationship.DataType
 import org.big.erd.entityRelationship.AttributeType
 import org.big.erd.entityRelationship.Relationship
-import org.eclipse.xtext.util.RuntimeIOException
-import org.eclipse.xtext.generator.IGenerator2
+import org.eclipse.emf.ecore.resource.Resource
+import org.eclipse.xtext.generator.IFileSystemAccess2
+import org.eclipse.xtext.generator.IGeneratorContext
 
-class SqlGenerator implements IGenerator2 {
+class SqlGenerator implements IErGenerator {
 	
+	override void generate(Resource resource, IFileSystemAccess2 fsa, IGeneratorContext context) {
+		val model = resource.contents.get(0) as Model
+		validate(resource, model)
+		val fileName = (model.name ?: 'output') + ".sql"
+		fsa.generateFile(fileName, generate(model))
+	}
 	
-	override void doGenerate(Resource resource, IFileSystemAccess2 fsa, IGeneratorContext context) {
-		
-		val diagram = resource.contents.get(0) as Model
-		
-		// TODO Validate
-		
-		val name = (diagram.name ?: 'output') + '.sql'
-		try {
-			fsa.generateFile(name, '''
-				«FOR entity : diagram.entities.reject[it.isWeak]»
-					«entity.toTable»
-				«ENDFOR»
-				«FOR relationship : diagram.relationships.reject[!it.isWeak]»
-					«relationship.weakToTable»
-				«ENDFOR»
-				«FOR relationship : diagram.relationships.reject[it.isWeak]»
-					«relationship.toTable»
-				«ENDFOR»
-			'''
-			)
-		} catch (RuntimeIOException e) {
-			throw new Error("Could not generate file. Did you open a folder?")
-		}
+	def String generate(Model model) {
+		'''
+			«FOR entity : model.entities.reject[it.isWeak]»
+				«entity.toTable»
+			«ENDFOR»
+			«FOR relationship : model.relationships.reject[!it.isWeak]»
+				«relationship.weakToTable»
+			«ENDFOR»
+			«FOR relationship : model.relationships.reject[it.isWeak]»
+				«relationship.toTable»
+			«ENDFOR»
+		'''
 	}
 	
 	private def toTable(Entity entity) {
@@ -97,6 +90,7 @@ class SqlGenerator implements IGenerator2 {
 
 	private def primaryKey(Entity entity) {
 		val keyAttributes = entity.attributes?.filter[it.type === AttributeType.KEY]
+		// TODO: Fix this
 		if (keyAttributes.nullOrEmpty) {
 			return entity.attributes.get(0)
 		}
@@ -106,6 +100,7 @@ class SqlGenerator implements IGenerator2 {
 	
 	private def partialKey(Entity entity) {
 		val keyAttributes = entity.attributes?.filter[a | a.type === AttributeType.PARTIAL_KEY]
+		// TODO: Fix this
 		if (keyAttributes.nullOrEmpty)
 			return entity.attributes.get(0)
 		return keyAttributes.get(0)
@@ -143,12 +138,10 @@ class SqlGenerator implements IGenerator2 {
 		}
 	}
 	
-	override afterGenerate(Resource input, IFileSystemAccess2 fsa, IGeneratorContext context) {
-		
+	private def validate(Resource resource, Model model) {
+		// additional validation check, since generalization is not supported
+		if (!model.entities?.filter[it.extends !== null].isNullOrEmpty) {
+			throw new IllegalArgumentException("SQL Generator does not support generalization, remove the 'extends' keyword")
+		}
 	}
-	
-	override beforeGenerate(Resource input, IFileSystemAccess2 fsa, IGeneratorContext context) {
-		
-	}
-	
 }

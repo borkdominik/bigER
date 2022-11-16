@@ -21,7 +21,7 @@ class ErFormatterTest {
 	
 	@Test def void testFormatModel() {
 		val String source = '''
-			erdiagram  Model    generate =  off notation = default
+			erdiagram  Model    notation = default
 			
 			entity  Entity1{ } entity Entity2   extends  Entity1  { }
 			weak  entity WeakEntity { }
@@ -31,7 +31,6 @@ class ErFormatterTest {
 		''';
 		val String expected = '''
 			erdiagram Model
-			generate=off
 			notation=default
 			
 			entity Entity1 { }

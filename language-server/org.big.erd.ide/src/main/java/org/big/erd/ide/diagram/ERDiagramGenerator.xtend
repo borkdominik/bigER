@@ -27,7 +27,6 @@ import org.eclipse.sprotty.xtext.SIssueMarkerDecorator
 import org.eclipse.sprotty.SCompartment
 import org.big.erd.entityRelationship.CardinalityType
 import org.big.erd.entityRelationship.NotationType
-import org.big.erd.entityRelationship.GenerateOptionType
 
 import static org.big.erd.entityRelationship.EntityRelationshipPackage.Literals.*
 
@@ -54,14 +53,12 @@ class ERDiagramGenerator implements IDiagramGenerator {
 	}
 
 	def ERModel toSGraph(Model m, extension Context context) {
-		val genOption = m.generateOption?.generateOptionType ?: GenerateOptionType.OFF
 		val notationType = m.notation?.notationType ?: NotationType.DEFAULT
 		val graph = new ERModel => [
 			id = idCache.uniqueId(m, 'root')
 			type = DiagramTypes.GRAPH
 			name = m.name
 			notation = notationType.toString
-			generateType = genOption !== null ? genOption.toString : 'off'
 			children = new ArrayList<SModelElement>
 		]
 
@@ -99,28 +96,27 @@ class ERDiagramGenerator implements IDiagramGenerator {
 		]).traceAndMark(relationship, context)
 	}
 	
-	def List<NotationEdge> addRelationEdges(Relationship relationship, extension Context context) {
-		val edges = new ArrayList<NotationEdge>
+	def List<SModelElement> addRelationEdges(Relationship relationship, extension Context context) {
+		val edges = new ArrayList<SModelElement>
 		
 		// for each RelationEntity create an edge that connects the entity with the relationship node
 		if (relationship.first !== null) {
 			val source = idCache.getId(relationship.first.target)
 			val target = idCache.getId(relationship)
 			edges.add(createEdgeAndAddToGraph(relationship.first, source, target, context))
-		}
+		} 
 		
 		if (relationship.second !== null) {
 			val source = idCache.getId(relationship)
 			val target = idCache.getId(relationship.second.target)
 			edges.add(createEdgeAndAddToGraph(relationship.second, source, target, context))
-		}
+		} 
 		
 		if (relationship.third !== null) {
 			val source = idCache.getId(relationship)
 			val target = idCache.getId(relationship.third.target)
 			edges.add(createEdgeAndAddToGraph(relationship.third, source, target, context))
-		}
-		
+		} 
 		return edges
 	}
 

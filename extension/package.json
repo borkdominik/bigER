@@ -126,6 +126,11 @@
 					"command": "erdiagram.diagram.open",
 					"when": "editorLangId == 'erdiagram'",
 					"group": "navigation"
+				},
+				{
+					"command": "erdiagram.generate.sql.proxy",
+					"when": "editorLangId == erdiagram",
+					"group": "1_modification"
 				}
 			],
 			"explorer/context": [
@@ -133,6 +138,11 @@
 					"command": "erdiagram.diagram.open",
 					"when": "resourceExtname == '.erd'",
 					"group": "navigation"
+				},
+				{
+					"command": "erdiagram.generate.sql.proxy",
+					"when": "resourceExtname == '.erd'",
+					"group": "2_workspace"
 				}
 			],
 			"file/newFile": [
@@ -147,12 +157,8 @@
 			],
 			"commandPalette": [
 				{
-					"command": "erdiagram.generate.sql.proxy",
-					"when": "editorLangId == 'erdiagram'"
-				},
-				{
 					"command": "erdiagram.diagram.open",
-					"when": "editorLangId == 'erdiagram'"
+					"when": "editorLangId == erdiagram"
 				},
 				{
 					"command": "erdiagram.diagram.fit",

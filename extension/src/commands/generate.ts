@@ -1,30 +1,24 @@
 import { window, Uri, commands } from "vscode";
 
-export async function generateSql(uri?: Uri) {
-    // TODO: Merge with generate() function in erdiagram-webview.ts or improve this
-    if (uri) {
-        const response: string | undefined = await commands.executeCommand('erdiagram.generate.sql', uri.toString());
-        if (response) {
-            if (response.startsWith('Error')) {
-                window.showErrorMessage(response);
-            } else {
-                window.showInformationMessage(response);
-            }
-        }
+export const sqlKind = "sql";
+export const generateSqlServerCommand = "erdiagram.generate.sql";
+
+export const handleGenerateMessage = async (generateKind: string, fileUri: Uri) => {
+    if (generateKind === sqlKind) {
+        generateSqlHandler(fileUri);
     } else {
-        const activeEditor = window.activeTextEditor;
-        if (activeEditor && activeEditor.document && activeEditor.document.languageId === 'erdiagram') {
-            const uri = activeEditor.document.uri;
-            if (uri instanceof Uri) {
-                const response: string | undefined = await commands.executeCommand('erdiagram.generate.sql', uri.toString());
-                if (response) {
-                    if (response.startsWith('Error')) {
-                        window.showErrorMessage(response);
-                    } else {
-                        window.showInformationMessage(response);
-                    }
-                }
-            }
+        window.showErrorMessage("Unknown generateType '" + generateKind + "' in message.");
+    }
+};
+
+export const generateSqlHandler = async (fileUri: Uri) => {
+    const response: string | undefined = await commands.executeCommand(generateSqlServerCommand, fileUri.toString());
+    if (response) {
+        if (response.startsWith('Error')) {
+            window.showErrorMessage(response);
+        } else {
+            // TODO: Check if generated file exists in folder and provide button to open file in info message
+            window.showInformationMessage(response);
         }
     }
-}
+};

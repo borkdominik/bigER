@@ -51,10 +51,15 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
                         <span class="tooltiptext">New Relationship</span>
                     </vscode-button>
                     <div class="vertical-seperator"></div>
-                    <vscode-button id="generate-sql-button" class="tooltip" appearance="icon">
-                        <span class="codicon codicon-file-code"></span>
-                        <span class="tooltiptext">Generate SQL</span>
-                    </vscode-button>
+                    <div class="generate-dropdown">
+                        <vscode-button id="generate-dropdown-button" appearance="icon">
+                            <span class="codicon codicon-file-code"></span>
+                            <span class="codicon codicon-chevron-down"></span>
+                        </vscode-button>
+                        <div class="dropdown-content">
+                            <vscode-button id="generate-sql-button" appearance="secondary">Generate SQL</vscode-button>
+                        </div>
+                    </div>
                     <div class="vertical-seperator"></div>
                     <vscode-button appearance="icon" class="tooltip" id="notation-button">
                         <span class="codicon codicon-settings"></span>

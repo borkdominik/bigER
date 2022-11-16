@@ -26,17 +26,11 @@ class ErDocumentSymbolsTest extends AbstractIdeTest {
 			model = '''
 				erdiagram Model
 				notation=default
-				generate=off
 			'''
 			expectedSymbols = '''
 				symbol "Model" {
 					kind: 5
 					location: MyModel.erd [[0, 10] .. [0, 15]]
-				}
-				symbol "off" {
-					kind: 7
-					location: MyModel.erd [[2, 0] .. [2, 8]]
-					container: "Model"
 				}
 				symbol "default" {
 					kind: 7

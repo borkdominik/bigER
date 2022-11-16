@@ -21,25 +21,12 @@ class NamingValidatorTest {
 	@Inject ValidationTestHelper validationTestHelper
 	
 	@Test
-	def void testMissingModelName(){
-		val model = parseHelper.parse('''
-			erdiagram 
-			generate=off
-		''')
-		validationTestHelper.assertError(
-			model.eResource(), 
-			EntityRelationshipPackage.Literals.MODEL, 
-			NamingValidator.MISSING_MODEL_NAME
-		)
-	}
-	
-	@Test
 	def void testDuplicateEntities() {
 		val model = parseHelper.parse('''
 			erdiagram Model
-			entity A { }
-			entity B { }
-			entity A { }
+			entity A { id key }
+			entity B { id key }
+			entity A { id key }
 		''')
 		validationTestHelper.assertError(
 			model.eResource(), 
@@ -52,8 +39,8 @@ class NamingValidatorTest {
 	def void testDuplicateRelationships() {
 		val model = parseHelper.parse('''
 			erdiagram Model
-			entity A { }
-			entity B { }
+			entity A { id key }
+			entity B { id key }
 			relationship Rel { }
 			relationship Rel { }
 		''')
@@ -93,4 +80,17 @@ class NamingValidatorTest {
 			Severity.INFO
 		)
 	}
+	
+	/* 
+	@Test
+	def void testMissingModelName(){
+		val model = parseHelper.parse('''
+			erdiagram 
+		''')
+		validationTestHelper.assertError(
+			model.eResource(), 
+			EntityRelationshipPackage.Literals.MODEL, 
+			NamingValidator.MISSING_MODEL_NAME
+		)
+	}*/
 }
