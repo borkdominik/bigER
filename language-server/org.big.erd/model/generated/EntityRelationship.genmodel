@@ -33,7 +33,6 @@
     </genEnums>
     <genClasses ecoreClass="EntityRelationship.ecore#//Model">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute EntityRelationship.ecore#//Model/name"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference EntityRelationship.ecore#//Model/generateOption"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference EntityRelationship.ecore#//Model/notation"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference EntityRelationship.ecore#//Model/entities"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference EntityRelationship.ecore#//Model/relationships"/>

@@ -5,7 +5,7 @@ generate entityRelationship "http://www.big.org/erd/EntityRelationship"
 
 Model:
 	'erdiagram' name=ID
-	(generateOption=GenerateOption? & notation=NotationOption?)
+	(notation=NotationOption?)
 	(entities+=Entity | relationships+=Relationship)*;
 
 GenerateOption:

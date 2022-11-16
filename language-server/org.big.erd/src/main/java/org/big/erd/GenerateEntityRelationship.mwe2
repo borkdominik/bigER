@@ -41,7 +41,7 @@ Workflow {
 				generateXtendStub = true
 			}
 			generator = {
-				generateXtendStub = true
+				generateStub = false
 			}
 			scopeProvider = {
 				generateXtendStub = true

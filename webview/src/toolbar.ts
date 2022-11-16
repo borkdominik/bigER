@@ -2,8 +2,9 @@ import { postConstruct, injectable } from 'inversify';
 import { VscodeDiagramWidget } from 'sprotty-vscode-webview';
 import { DiagramServerProxy } from 'sprotty';
 import { CollapseExpandAllAction, FitToScreenAction } from 'sprotty-protocol';
-import { ChangeNotationAction, CodeGenerateAction, CreateElementEditAction } from './actions';
+import { ChangeNotationAction, CreateElementEditAction } from './actions';
 import { DiagramTypes } from './utils';
+import { vscodeApi } from 'sprotty-vscode-webview/lib/vscode-api';
 
 
 @injectable()
@@ -50,10 +51,15 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
                         <span class="tooltiptext">New Relationship</span>
                     </vscode-button>
                     <div class="vertical-seperator"></div>
-                    <vscode-button appearance="icon" class="tooltip" id="options-button">
-                        <span class="codicon codicon-file-code"></span>
-                        <span class="tooltiptext">Select Code Generator</span>
-                    </vscode-button>
+                    <div class="generate-dropdown">
+                        <vscode-button id="generate-dropdown-button" appearance="icon">
+                            <span class="codicon codicon-file-code"></span>
+                            <span class="codicon codicon-chevron-down"></span>
+                        </vscode-button>
+                        <div class="dropdown-content">
+                            <vscode-button id="generate-sql-button" appearance="secondary">Generate SQL</vscode-button>
+                        </div>
+                    </div>
                     <div class="vertical-seperator"></div>
                     <vscode-button appearance="icon" class="tooltip" id="notation-button">
                         <span class="codicon codicon-settings"></span>
@@ -89,16 +95,6 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
                     </vscode-link>
                 </div>`;
 
-            const optionsPanel = document.createElement("div");
-            optionsPanel.id = "toolbar-options-panel";
-            optionsPanel.style.display = "none";
-            optionsPanel.innerHTML = `
-                <label style="margin: 5px 5px 5px 5px;">Generate:</label>
-                <vscode-dropdown id="select-generate" position="below" style="height: 90%; margin: 5px 5px;">
-                    <vscode-option value="off">off</vscode-option>
-                    <vscode-option value="sql">sql</vscode-option>
-                </vscode-dropdown>
-            `;
             const notationPanel = document.createElement("div");
             notationPanel.id = "toolbar-notation-panel";
             notationPanel.style.display = "none";
@@ -113,7 +109,6 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
             `;
 
             containerDiv.append(menu);
-            containerDiv.append(optionsPanel);
             containerDiv.append(notationPanel);
         }
     }
@@ -128,6 +123,9 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
         (document.getElementById('add-relationship-button') as HTMLElement).addEventListener('click', async () => {
             this.actionDispatcher.dispatch(CreateElementEditAction.create('relationship'));
         });
+        (document.getElementById('generate-sql-button') as HTMLElement).addEventListener('click', async () => {
+            await vscodeApi.postMessage({ generateKind: 'sql' });
+        });
         (document.getElementById('fit-button') as HTMLElement).addEventListener('click', async () => {
             this.actionDispatcher.dispatch(FitToScreenAction.create([]));
         });
@@ -141,18 +139,6 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
         });
         (document.getElementById('collapseAll-button') as HTMLElement).addEventListener('click', async () => {
             await this.actionDispatcher.dispatch(CollapseExpandAllAction.create({expand: false}));
-        });
-        (document.getElementById('options-button') as HTMLElement).addEventListener('click', async () => {
-            this.togglePanel('toolbar-options-panel');
-        });
-        (document.getElementById('select-generate') as HTMLElement).addEventListener('change', async () => {
-            const select = document.getElementById('select-generate') as HTMLSelectElement;
-            if (select) {
-                const value = select.options[select.selectedIndex].value;
-                if (value === 'off' || value === 'sql') {
-                    await this.actionDispatcher.dispatch(CodeGenerateAction.create(value));
-                }
-            }
         });
         (document.getElementById('notation-button') as HTMLElement).addEventListener('click', async () => {
             this.togglePanel('toolbar-notation-panel');

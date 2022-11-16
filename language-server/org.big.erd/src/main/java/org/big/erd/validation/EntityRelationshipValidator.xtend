@@ -11,6 +11,8 @@ import org.big.erd.entityRelationship.RelationEntity
 import org.big.erd.entityRelationship.Relationship
 import org.big.erd.entityRelationship.NotationType
 import org.eclipse.xtext.validation.ComposedChecks
+import org.big.erd.entityRelationship.Entity
+import org.big.erd.entityRelationship.AttributeType
 
 /**
  * Custom ValidationRules with composed checks 
@@ -18,11 +20,23 @@ import org.eclipse.xtext.validation.ComposedChecks
  * See https://www.eclipse.org/Xtext/documentation/303_runtime_concepts.html#validation for documentation
  */
 @ComposedChecks(validators=#[
-	NamingValidator,
-	GenerateSqlValidator
+	NamingValidator
 ])
 class EntityRelationshipValidator extends AbstractEntityRelationshipValidator {
 
+	@Check
+	def checkKeys(Entity entity) {
+		if (entity.weak) {
+			if (entity.attributes?.filter[it.type === AttributeType.PARTIAL_KEY].isNullOrEmpty) {
+				info('''Missing partial key for weak entity''', entity, EntityRelationshipPackage.Literals.ENTITY__NAME)
+			}
+		} else {
+			if (entity.attributes?.filter[it.type === AttributeType.KEY].isNullOrEmpty) {
+				info('''Missing primary key for entity''', entity, EntityRelationshipPackage.Literals.ENTITY__NAME)
+			}
+		}
+	}
+	
 	@Check
 	def checkRelationEntity(RelationEntity relation) {
 		val model = relation.eContainer.eContainer

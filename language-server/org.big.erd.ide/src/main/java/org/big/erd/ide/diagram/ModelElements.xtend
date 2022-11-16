@@ -9,7 +9,6 @@ import org.eclipse.sprotty.PreRenderedElement
 @Accessors
 class ERModel extends SGraph {
 	String name
-	String generateType
 	String notation
 
 	new() { }

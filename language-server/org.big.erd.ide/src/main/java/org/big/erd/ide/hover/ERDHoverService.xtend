@@ -8,7 +8,6 @@ import org.big.erd.entityRelationship.Entity
 import org.big.erd.entityRelationship.AttributeType
 import org.big.erd.entityRelationship.Model
 import org.big.erd.entityRelationship.NotationType
-import org.big.erd.entityRelationship.GenerateOptionType
 
 /**
  * Provides hover information when hovering over model elements in the textual editor.
@@ -58,8 +57,6 @@ class ERDHoverService extends HoverService {
     def optionsInfo(Model model) {
     	'''
     	Notation: `«model.notation !== null ? model.notation.notationType.toString : NotationType.DEFAULT.toString»`
-    	
-    	Generator: `«model.generateOption !== null ? model.generateOption.generateOptionType.toString : GenerateOptionType.OFF.toString»`
     	'''
     }
     

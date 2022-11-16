@@ -1,14 +1,14 @@
 import { Action } from "sprotty-protocol";
 
 /**
- * Adds a model element graphically through LSP. elementType property controls the type of element to create.
+ * Adds a model element graphically through LSP edits.
+ * elementType property controls the type of element to create.
  * Supported values are: 'entity' and 'relationship'.
  */
 export interface CreateElementEditAction extends Action {
     kind: typeof CreateElementEditAction.KIND
     elementType: string
 }
-
 export namespace CreateElementEditAction {
     export const KIND = 'createElementEdit';
 
@@ -21,33 +21,12 @@ export namespace CreateElementEditAction {
 }
 
 /**
- * Changes the code generator value
- */
-export interface CodeGenerateAction {
-    kind: typeof CodeGenerateAction.KIND
-    generateType: string
-}
-
-export namespace CodeGenerateAction {
-    export const KIND = 'codeGenerate';
-
-    export function create(generateType: string): CodeGenerateAction {
-        return {
-            kind: KIND,
-            generateType
-        };
-    }
-}
-
-
-/**
  * Changes the notation value
  */
 export interface ChangeNotationAction {
     kind: typeof ChangeNotationAction.KIND
     notation: string
 }
-
 export namespace ChangeNotationAction {
     export const KIND = 'changeNotation';
 
@@ -63,7 +42,6 @@ export interface AddAttributeAction {
     kind: typeof AddAttributeAction.KIND
     elementId: string
 }
-
 export namespace AddAttributeAction {
     export const KIND = 'addAttribute';
 

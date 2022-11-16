@@ -21,8 +21,6 @@ class EntityRelationshipFormatter extends AbstractFormatter2 {
 		model.regionFor.feature(MODEL__NAME).append[setNewLines(1, 1, 2)]
 		
 		// model options
-		model.generateOption.append[setNewLines(1, 1, 2)]
-		model.generateOption.regionFor.keyword("=").surround[noSpace]
 		model.notation.append[setNewLines(1, 1, 2)]
 		model.notation.regionFor.keyword("=").surround[noSpace]
 		

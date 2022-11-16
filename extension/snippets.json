@@ -1,7 +1,0 @@
-{
-    "Header": {
-        "prefix": ["erd", "er"],
-        "body": ["erdiagram $TM_FILENAME_BASE"],
-        "description": "Create a header with a name."
-    }
-}

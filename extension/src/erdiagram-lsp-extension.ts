@@ -3,10 +3,11 @@ import * as vscode from 'vscode';
 import { LspLabelEditActionHandler, SprottyLspEditVscodeExtension, WorkspaceEditActionHandler } from "sprotty-vscode/lib/lsp/editing";
 import { LanguageClient, ServerOptions, LanguageClientOptions } from "vscode-languageclient/node";
 import { SprottyWebview } from "sprotty-vscode/lib/sprotty-webview";
-import { SprottyDiagramIdentifier, SprottyLspWebview } from "sprotty-vscode/lib/lsp";
+import { SprottyDiagramIdentifier } from "sprotty-vscode/lib/lsp";
 import { ERDiagramWebview } from './erdiagram-webview';
 import newEmptyModel from './commands/new-empty-model';
 import newSampleModel from './commands/new-sample-model';
+import { generateSqlHandler } from './commands/generate';
 
 export class ERDiagramLspVscodeExtension extends SprottyLspEditVscodeExtension {
 
@@ -16,17 +17,18 @@ export class ERDiagramLspVscodeExtension extends SprottyLspEditVscodeExtension {
 
     override registerCommands() {
         super.registerCommands();
-        this.context.subscriptions.push(vscode.commands.registerCommand('erdiagram.model.newEmpty', (...commandArgs: any[]) => {
+        this.context.subscriptions.push(vscode.commands.registerCommand("erdiagram.model.newEmpty", (...commandArgs: any[]) => {
                 newEmptyModel();
             }));
-        this.context.subscriptions.push(vscode.commands.registerCommand('erdiagram.model.newSample', (...commandArgs: any[]) => {
+        this.context.subscriptions.push(vscode.commands.registerCommand("erdiagram.model.newSample", (...commandArgs: any[]) => {
                 newSampleModel();
             }));
+        this.context.subscriptions.push(vscode.commands.registerCommand("erdiagram.generate.sql.proxy", generateSqlHandler));
     }
 
     protected getDiagramType(commandArgs: any[]): string | undefined {
         if (commandArgs.length === 0 || (commandArgs[0] instanceof vscode.Uri && commandArgs[0].path.endsWith('.erd'))) {
-            return 'erdiagram-diagram';
+            return "erdiagram-diagram";
         }
         return undefined;
     }
@@ -37,10 +39,11 @@ export class ERDiagramLspVscodeExtension extends SprottyLspEditVscodeExtension {
             identifier,
             localResourceRoots: [this.getExtensionFileUri('pack'), this.getExtensionFileUri('node_modules')],
             scriptUri: this.getExtensionFileUri('pack', 'webview.js'),
-            singleton: false
-        }) as SprottyLspWebview;
+            singleton: true
+        });
         webview.addActionHandler(WorkspaceEditActionHandler);
         webview.addActionHandler(LspLabelEditActionHandler);
+        this.singleton = webview;
         return webview;
     }
 
@@ -62,7 +65,10 @@ export class ERDiagramLspVscodeExtension extends SprottyLspEditVscodeExtension {
             documentSelector: [{
                 scheme: 'file',
                 language: 'erdiagram'
-            }]
+            }],
+            synchronize: {
+                fileEvents: vscode.workspace.createFileSystemWatcher('**/*.erd')
+            }
         };
         const languageClient = new LanguageClient('erdiagramLanguageClient', 'ERDiagram Language Server', serverOptions, clientOptions);
         context.subscriptions.push(languageClient.start());

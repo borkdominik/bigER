@@ -3,7 +3,6 @@ erdiagram University
 
 // Options
 notation=default
-generate=sql
 
 // Entities
 entity Student {
