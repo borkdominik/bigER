@@ -279,6 +279,17 @@ public class SqlGenerator extends AbstractGenerator {
 		}
 		tableContent.append(") references ");
 		tableContent.append(refEntity);
+		tableContent.append(" (");
+		isFirst = true;
+		for (Attribute a : key) {
+			if (!isFirst) {
+				tableContent.append(", ");
+			} else {
+				isFirst = false;
+			}
+			tableContent.append(a.getName());
+		}
+		tableContent.append(")");
 		tableContent.append(" ON DELETE CASCADE");
 		if (!isLastContent) {
 			tableContent.append(",");
