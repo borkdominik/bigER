@@ -2,7 +2,9 @@ package org.big.erd.generator.sql;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.big.erd.entityRelationship.Attribute;
 import org.big.erd.entityRelationship.AttributeType;
@@ -23,6 +25,8 @@ import org.eclipse.xtext.xbase.lib.Exceptions;
  * Generates SQL in various dialects from the ER model.
  */
 public class SqlGenerator extends AbstractGenerator {
+	
+	private Map<String, List<Attribute>> effectivePrimaryKeys = new HashMap<>();
 
 	@Override
 	public void doGenerate(final Resource resource, final IFileSystemAccess2 fsa, final IGeneratorContext context) {
@@ -82,7 +86,7 @@ public class SqlGenerator extends AbstractGenerator {
 		startTable(tableContent, entity.getName());
 		addAttributes(tableContent, entity.getAttributes());
 		
-		addPrimaryKeys(tableContent, Arrays.asList(this.primaryKey(entity)));
+		addPrimaryKeys(tableContent, entity.getName(), Arrays.asList(this.primaryKey(entity)));
 		
 		endTable(tableContent);
 		return tableContent.toString();
@@ -92,12 +96,12 @@ public class SqlGenerator extends AbstractGenerator {
 		Entity firstEntity = relationship.getFirst().getTarget();
 		List<Attribute> firstKey = null;
 		if (firstEntity != null) {
-			firstKey = this.primaryKey(firstEntity);
+			firstKey = this.effectivePrimaryKey(firstEntity);
 		}
 		Entity secondEntity = relationship.getSecond().getTarget();
 		List<Attribute> secondKey = null;
 		if (secondEntity != null) {
-			secondKey = this.primaryKey(secondEntity);
+			secondKey = this.effectivePrimaryKey(secondEntity);
 		}
 		RelationEntity third = relationship.getThird();
 		Entity thirdEntity = null;
@@ -106,20 +110,25 @@ public class SqlGenerator extends AbstractGenerator {
 		}
 		List<Attribute> thirdKey = null;
 		if (thirdEntity != null) {
-			thirdKey = this.primaryKey(thirdEntity);
+			thirdKey = this.effectivePrimaryKey(thirdEntity);
 		}
 		
 		StringConcatenation tableContent = new StringConcatenation();
 		startTable(tableContent, relationship.getName());
-
-		// foreign key
-		addForeignKeyRefs(tableContent, Arrays.asList(firstEntity, secondEntity, thirdEntity));
 		
 		// attributes
+		List<List<Attribute>> keyList = Arrays.asList(firstKey, secondKey, thirdKey);
+		List<Attribute> flatKeyList = flattenKeys(keyList);
+		addAttributes(tableContent, flatKeyList);
 		addAttributes(tableContent, relationship.getAttributes());
 		
 		// primary key
-		addPrimaryKeys(tableContent, Arrays.asList(firstKey, secondKey, thirdKey));
+		addPrimaryKeys(tableContent, false, relationship.getName(), keyList);
+
+		// foreign key
+		addForeignKey(tableContent, secondKey == null && thirdKey == null, firstKey, firstEntity);
+		addForeignKey(tableContent, thirdKey == null, secondKey, secondEntity);
+		addForeignKey(tableContent, thirdKey, thirdEntity);
 		
 		endTable(tableContent);
 		return tableContent.toString();
@@ -137,12 +146,12 @@ public class SqlGenerator extends AbstractGenerator {
 		addAttributes(tableContent, relationship.getAttributes());
 
 		// primary key
-		List<Attribute> primaryKey = this.primaryKey(strong);
+		List<Attribute> primaryKey = this.effectivePrimaryKey(strong);
 		addAttributes(tableContent, primaryKey);
-		addPrimaryKey(tableContent, false, Arrays.asList(this.partialKey(weak), primaryKey));
+		addPrimaryKeys(tableContent, false, weak.getName(), Arrays.asList(this.partialKey(weak), primaryKey));
 
 		// foreign key
-		addForeignKey(tableContent, primaryKey, strong.getName());
+		addForeignKey(tableContent, primaryKey, strong);
 		
 		endTable(tableContent);
 		return tableContent.toString();
@@ -177,15 +186,19 @@ public class SqlGenerator extends AbstractGenerator {
 	}
 
 	private String transformDataType(final DataType dataType) {
-		if ((dataType == null)) {
+		if (dataType == null) {
 			return "CHAR(20)";
 		}
-		final String type = dataType.getType();
+		final String type = getDataType(dataType);
 		int size = dataType.getSize();
 		if (size != 0) {
 			return type + "(" + Integer.valueOf(size) + ")";
 		}
 		return type;
+	}
+
+	protected String getDataType(final DataType dataType) {
+		return dataType.getType();
 	}
 
 	private Entity getStrongEntity(final Relationship r) {
@@ -232,11 +245,11 @@ public class SqlGenerator extends AbstractGenerator {
 		}
 	}
 
-	private void addPrimaryKeys(StringConcatenation tableContent, List<List<Attribute>> keys) {
-		addPrimaryKey(tableContent, true, keys);
+	private void addPrimaryKeys(StringConcatenation tableContent, String entityName, List<List<Attribute>> keys) {
+		addPrimaryKeys(tableContent, true, entityName, keys);
 	}
 
-	private void addPrimaryKey(StringConcatenation tableContent, boolean isLastContent, List<List<Attribute>> keys) {
+	private void addPrimaryKeys(StringConcatenation tableContent, boolean isLastContent, String entityName, List<List<Attribute>> keys) {
 		tableContent.append("\t");
 		tableContent.append("PRIMARY KEY (");
 		
@@ -259,62 +272,65 @@ public class SqlGenerator extends AbstractGenerator {
 			tableContent.append(",");
 		}
 		tableContent.newLineIfNotEmpty();
+
+		effectivePrimaryKeys.put(entityName, flattenKeys(keys));
 	}
 
-	private void addForeignKey(StringConcatenation tableContent, List<Attribute> key, String refEntity) {
+	private void addForeignKey(StringConcatenation tableContent, List<Attribute> key, Entity refEntity) {
 		addForeignKey(tableContent, true, key, refEntity);
 	}
 
-	private void addForeignKey(StringConcatenation tableContent, boolean isLastContent, List<Attribute> key, String refEntity) {
-		tableContent.append("\t");
-		tableContent.append("FOREIGN KEY (");
-		boolean isFirst = true;
-		for (Attribute a : key) {
-			if (!isFirst) {
-				tableContent.append(", ");
-			} else {
-				isFirst = false;
+	private void addForeignKey(StringConcatenation tableContent, boolean isLastContent, List<Attribute> key, Entity refEntity) {
+		if (key != null && refEntity != null) {
+			tableContent.append("\t");
+			tableContent.append("FOREIGN KEY (");
+			boolean isFirst = true;
+			for (Attribute a : key) {
+				if (!isFirst) {
+					tableContent.append(", ");
+				} else {
+					isFirst = false;
+				}
+				tableContent.append(a.getName());
 			}
-			tableContent.append(a.getName());
-		}
-		tableContent.append(") references ");
-		tableContent.append(refEntity);
-		tableContent.append(" (");
-		isFirst = true;
-		for (Attribute a : key) {
-			if (!isFirst) {
-				tableContent.append(", ");
-			} else {
-				isFirst = false;
+			tableContent.append(") references ");
+			tableContent.append(refEntity.getName());
+			tableContent.append(" (");
+			isFirst = true;
+			for (Attribute a : key) {
+				if (!isFirst) {
+					tableContent.append(", ");
+				} else {
+					isFirst = false;
+				}
+				tableContent.append(a.getName());
 			}
-			tableContent.append(a.getName());
+			tableContent.append(")");
+			tableContent.append(" ON DELETE CASCADE");
+			if (!isLastContent) {
+				tableContent.append(",");
+			}
+			tableContent.newLineIfNotEmpty();
 		}
-		tableContent.append(")");
-		tableContent.append(" ON DELETE CASCADE");
-		if (!isLastContent) {
-			tableContent.append(",");
-		}
-		tableContent.newLineIfNotEmpty();
 	}
-
-	private void addForeignKeyRefs(StringConcatenation tableContent, List<Entity> entities) {
-		for (Entity entity : entities) {
-			if (entity != null) {
-				List<Attribute> primaryKey = this.primaryKey(entity);
-				for (Attribute a : primaryKey) {
-					tableContent.append("\t");
-					tableContent.append(a.getName());
-					tableContent.append(" ");
-					String transformedDataType = this.transformDataType(a.getDatatype());
-					tableContent.append(transformedDataType);
-					tableContent.append(" references ");
-					tableContent.append(entity.getName());
-					tableContent.append("(");
-					tableContent.append(a.getName());
-					tableContent.append("),");
-					tableContent.newLineIfNotEmpty();
+	
+	private List<Attribute> flattenKeys(final List<List<Attribute>> keys) {
+		List<Attribute> list = new ArrayList<>();
+		for (List<Attribute> key : keys) {
+			if (key != null) {
+				for (Attribute a : key) {
+					list.add(a);
 				}
 			}
 		}
+		return list;
+	}
+
+	private List<Attribute> effectivePrimaryKey(final Entity entity) {
+		String name = entity.getName();
+		if (!effectivePrimaryKeys.containsKey(name)) {
+			throw new IllegalArgumentException("Entity" + name + " not yet processed.");
+		}
+		return effectivePrimaryKeys.get(name);
 	}
 }
