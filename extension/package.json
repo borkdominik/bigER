@@ -249,7 +249,6 @@
 	"scripts": {
 		"prepare": "yarn run clean && yarn run build && yarn run lint",
 		"build": "webpack --mode=development",
-		"build:tests": "tsc -p \"./src/test/\"",
 		"clean": "rimraf out",
 		"lint": "eslint \"./src/**\"",
 		"watch": "webpack --mode=development --watch"
