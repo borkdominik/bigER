@@ -18,7 +18,7 @@ class SqlGenerator implements IErGenerator {
 		fsa.generateFile(fileName, generate(model))
 	}
 	
-	def String generate(Model model) {
+	def generate(Model model) {
 		'''
 			«FOR entity : model.entities.reject[it.isWeak]»
 				«entity.toTable»

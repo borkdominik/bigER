@@ -3,39 +3,51 @@ package org.big.erd.tests
 import org.junit.jupiter.api.^extension.ExtendWith
 import org.eclipse.xtext.testing.extensions.InjectionExtension
 import org.eclipse.xtext.testing.InjectWith
-
+import org.eclipse.xtext.testing.util.ParseHelper
+import com.google.inject.Inject
+import org.junit.jupiter.api.Test
+import org.big.erd.entityRelationship.Model
+import org.big.erd.generator.SqlGenerator
+import org.junit.jupiter.api.BeforeEach
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(InjectionExtension)
 @InjectWith(EntityRelationshipInjectorProvider)
 class SqlGeneratorTest {
 	
+	// TODO: test .sql file created
+	// TODO: add more tests
 	
-	// TODO: add tests for SqlGenerator
+	@Inject ParseHelper<Model> parseHelper
+	SqlGenerator generator
 	
+	@BeforeEach
+	def void setup() {
+		generator = new SqlGenerator()
+	}
 	
-	/* 
-	@Test 
+	@Test
 	def void testEntityToTable() {
-		'''
+		val model = parseHelper.parse('''
 			erdiagram Model
-			generate=sql
 			
 			entity A {
 				id: INT key
 			}
-     	'''.assertCompilesTo('''
+     	''')
+     	val generated = generator.generate(model)
+     	assertEquals('''
      		CREATE TABLE A(
      			id INT,
      			PRIMARY KEY (id)
      		);
-     	''');
+     	'''.toString, generated.toString)
 	}
-     
+	
 	@Test 
 	def void testAttributes() {
-		'''
+		val model = parseHelper.parse('''
 			erdiagram Model
-			generate=sql
 			
 			entity A {
 				id: INT key
@@ -43,21 +55,22 @@ class SqlGeneratorTest {
 				birthday: DATETIME
 				age: INT derived
 			}
-     	'''.assertCompilesTo('''
+     	''')
+     	val generated = generator.generate(model)
+     	assertEquals('''
      		CREATE TABLE A(
      			id INT,
      			name VARCHAR(80),
      			birthday DATETIME,
      			PRIMARY KEY (id)
      		);
-     	''');
+     	'''.toString, generated.toString)
      }
      
 	@Test 
 	def void testRelationship() {
-		'''
+		val model = parseHelper.parse('''
 			erdiagram Model
-			generate=sql
 			
 			entity A { id1: int key }
 			entity B { id2: int key }
@@ -65,7 +78,9 @@ class SqlGeneratorTest {
 				A -> B
 				attr: string
 			}
-     	'''.assertCompilesTo('''
+     	''')
+     	val generated = generator.generate(model)
+     	assertEquals('''
      		CREATE TABLE A(
      			id1 int,
      			PRIMARY KEY (id1)
@@ -80,7 +95,7 @@ class SqlGeneratorTest {
      			attr string,
      			PRIMARY KEY (id1, id2)
      		);
-     	''');
+     	'''.toString, generated.toString)
      }
-     */
+     
 }
