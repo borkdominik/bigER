@@ -5,7 +5,7 @@
 	"version": "0.2.1",
 	"publisher": "BIGModelingTools",
 	"categories": [
-        "Programming Languages",
+		"Programming Languages",
 		"Visualization",
 		"Education"
 	],
@@ -60,9 +60,25 @@
 				"extensions": [
 					".erd"
 				],
-				"configuration": "./language-configuration.json"
+				"configuration": "./language-configuration.json",
+				"icon": {
+					"light": "./media/file-icon-light.png",
+					"dark": "./media/file-icon-dark.png"
+				}
 			}
 		],
+		"colors": [
+			{
+			  "id": "erdiagram.entity",
+			  "description": "Color for entites in the diagram.",
+			  "defaults": {
+				"dark": "errorForeground",
+				"light": "errorForeground",
+				"highContrast": "errorForeground",
+				"highContrastLght": "errorForeground"
+			  }
+			}
+		  ],
 		"grammars": [
 			{
 				"language": "erdiagram",
@@ -72,10 +88,10 @@
 		],
 		"commands": [
 			{
-                "command": "erdiagram.generate.sql.proxy",
-                "title": "Generate SQL",
-                "category": "bigER"
-            },
+				"command": "erdiagram.generate.sql.proxy",
+				"title": "Generate SQL",
+				"category": "bigER"
+			},
 			{
 				"command": "erdiagram.diagram.open",
 				"title": "Open ER Diagram",
@@ -206,40 +222,36 @@
 		]
 	},
 	"dependencies": {
+		"@vscode/webview-ui-toolkit": "^1.0.0",
 		"sprotty-vscode": "^0.2.0",
 		"sprotty-vscode-webview": "^0.2.0",
-		"vscode-languageclient": "^7.0.0",
-		"@vscode/webview-ui-toolkit": "^1.0.0"
+		"vscode-languageclient": "^7.0.0"
 	},
 	"devDependencies": {
-		"@types/chai": "^4.2.12",
 		"@types/glob": "^7.2.0",
-		"@types/mocha": "^9.1.1",
+		"@types/mocha": "^5.2.6",
 		"@types/node": "^12.12.6",
 		"@types/vscode": "1.46.0",
 		"@typescript-eslint/eslint-plugin": "^5.28.0",
 		"@typescript-eslint/parser": "^5.28.0",
 		"@vscode/test-electron": "^2.1.4",
-		"chai": "^4.2.0",
 		"eslint": "^8.18.0",
-		"latest": "^0.2.0",
-		"mocha": "^10.0.0",
+		"eslint-config-prettier": "^8.5.0",
+		"eslint-plugin-prettier": "^4.2.1",
+		"mocha": "^6.1.4",
 		"rimraf": "^3.0.2",
 		"source-map-loader": "^3.0.0",
 		"ts-loader": "^9.2.6",
 		"typescript": "~4.6.2",
-		"vscode-extension-tester": "^5.0.0",
-		"vscode-uitests-tooling": "^2.3.3",
 		"webpack": "^5.64.2",
 		"webpack-cli": "^4.9.1"
 	},
 	"scripts": {
 		"prepare": "yarn run clean && yarn run build && yarn run lint",
 		"build": "webpack --mode=development",
-		"build:tests": "tsc -p ./ --outDir dist",
-		"clean": "rimraf dist",
+		"build:tests": "tsc -p \"./src/test/\"",
+		"clean": "rimraf out",
 		"lint": "eslint \"./src/**\"",
-		"watch": "webpack --mode=development --watch",
-		"ui-test": "extest setup-and-run ./dist/ui-test/extension-test.js -y"
+		"watch": "webpack --mode=development --watch"
 	}
 }
