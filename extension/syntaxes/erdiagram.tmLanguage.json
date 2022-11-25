@@ -18,16 +18,16 @@
 			"match": "\\b(erdiagram)\\b"
 		}, {
             "name": "storage.type.erdiagram",
-			"match": "\\b(generate|notation)\\b"
+			"match": "\\b(notation)\\b"
         }, {
             "name": "storage.modifier.erdiagram",
-			"match": "\\b(sql|off)\\b"
+			"match": "\\b(default|bachman|crowsfoot|chen)\\b"
         }, {
 			"name": "keyword.operator.erdiagram",
 			"match": "\\b(->|=|:)\\b"
 		}, {
 			"name": "entity.other.attribute-name.erdiagram",
-			"match": "\\b(key|derived|multivalued|foreign-key|optional|partial-key)\\b"
+			"match": "\\b(key|derived|multivalued|optional|partial-key)\\b"
 		}, {
             "name": "string.quoted.double.erdiagram",
             "begin": "\"",

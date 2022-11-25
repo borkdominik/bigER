@@ -67,18 +67,6 @@
 				}
 			}
 		],
-		"colors": [
-			{
-			  "id": "erdiagram.entity",
-			  "description": "Color for entites in the diagram.",
-			  "defaults": {
-				"dark": "errorForeground",
-				"light": "errorForeground",
-				"highContrast": "errorForeground",
-				"highContrastLght": "errorForeground"
-			  }
-			}
-		  ],
 		"grammars": [
 			{
 				"language": "erdiagram",
@@ -229,16 +217,11 @@
 	},
 	"devDependencies": {
 		"@types/glob": "^7.2.0",
-		"@types/mocha": "^5.2.6",
 		"@types/node": "^12.12.6",
 		"@types/vscode": "1.46.0",
 		"@typescript-eslint/eslint-plugin": "^5.28.0",
 		"@typescript-eslint/parser": "^5.28.0",
-		"@vscode/test-electron": "^2.1.4",
 		"eslint": "^8.18.0",
-		"eslint-config-prettier": "^8.5.0",
-		"eslint-plugin-prettier": "^4.2.1",
-		"mocha": "^6.1.4",
 		"rimraf": "^3.0.2",
 		"source-map-loader": "^3.0.0",
 		"ts-loader": "^9.2.6",
