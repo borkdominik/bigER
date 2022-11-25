@@ -21,10 +21,6 @@
       <genEnumLiterals ecoreEnumLiteral="EntityRelationship.ecore#//CardinalityType/ONE"/>
       <genEnumLiterals ecoreEnumLiteral="EntityRelationship.ecore#//CardinalityType/MANY"/>
     </genEnums>
-    <genEnums typeSafeEnumCompatible="false" ecoreEnum="EntityRelationship.ecore#//GenerateOptionType">
-      <genEnumLiterals ecoreEnumLiteral="EntityRelationship.ecore#//GenerateOptionType/OFF"/>
-      <genEnumLiterals ecoreEnumLiteral="EntityRelationship.ecore#//GenerateOptionType/SQL"/>
-    </genEnums>
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="EntityRelationship.ecore#//NotationType">
       <genEnumLiterals ecoreEnumLiteral="EntityRelationship.ecore#//NotationType/DEFAULT"/>
       <genEnumLiterals ecoreEnumLiteral="EntityRelationship.ecore#//NotationType/CHEN"/>
@@ -36,9 +32,6 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference EntityRelationship.ecore#//Model/notation"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference EntityRelationship.ecore#//Model/entities"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference EntityRelationship.ecore#//Model/relationships"/>
-    </genClasses>
-    <genClasses ecoreClass="EntityRelationship.ecore#//GenerateOption">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute EntityRelationship.ecore#//GenerateOption/generateOptionType"/>
     </genClasses>
     <genClasses ecoreClass="EntityRelationship.ecore#//NotationOption">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute EntityRelationship.ecore#//NotationOption/notationType"/>

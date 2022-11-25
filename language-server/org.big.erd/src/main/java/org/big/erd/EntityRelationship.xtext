@@ -8,9 +8,6 @@ Model:
 	(notation=NotationOption?)
 	(entities+=Entity | relationships+=Relationship)*;
 
-GenerateOption:
-	'generate' '=' generateOptionType=GenerateOptionType;
-
 NotationOption:
 	'notation' '=' notationType=NotationType;
 
@@ -55,10 +52,6 @@ enum CardinalityType:
 	// ignore warning - same enum assignment is intentional to support both notations
 	ONE = '1' | ONE = '1..1' |
 	MANY = 'N' | MANY = '1..N';
-
-enum GenerateOptionType:
-	OFF = 'off' | 
-	SQL = 'sql';
 
 enum NotationType:
     DEFAULT='default' | 

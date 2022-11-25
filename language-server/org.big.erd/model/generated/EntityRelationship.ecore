@@ -11,9 +11,6 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="relationships" upperBound="-1"
         eType="#//Relationship" containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="GenerateOption">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="generateOptionType" eType="#//GenerateOptionType"/>
-  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="NotationOption">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="notationType" eType="#//NotationType"/>
   </eClassifiers>
@@ -65,10 +62,6 @@
     <eLiterals name="ZERO_OR_MORE" value="2" literal="0..N"/>
     <eLiterals name="ONE" value="3" literal="1"/>
     <eLiterals name="MANY" value="4" literal="N"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EEnum" name="GenerateOptionType">
-    <eLiterals name="OFF" literal="off"/>
-    <eLiterals name="SQL" value="1" literal="sql"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="NotationType">
     <eLiterals name="DEFAULT" literal="default"/>
