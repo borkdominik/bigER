@@ -14,7 +14,7 @@ class MongoDbGenerator implements IErGenerator {
 	override void generate(Resource resource, IFileSystemAccess2 fsa, IGeneratorContext context) {
 		val model = resource.contents.get(0) as Model
 		validate(resource, model)
-		val fileName = (model.name ?: 'output') + ".sql"
+		val fileName = (model.name ?: 'output') + ".js"
 		fsa.generateFile(fileName, generate(model))
 	}
 	

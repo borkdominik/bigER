@@ -23,7 +23,7 @@ class ErCommandService implements IExecutableCommandService {
 	Map<String, IErGenerator> generators
 	static final String GENERATE_PREFIX = "erdiagram.generate"
 	static final String GENERATE_SQL_COMMAND = GENERATE_PREFIX + ".sql"
-	static final String GENERATE_MONGODB_COMMAND = GENERATE_PREFIX + ".js"
+	static final String GENERATE_MONGODB_COMMAND = GENERATE_PREFIX + ".mongodb"
 	
 	
 	override initialize() {
