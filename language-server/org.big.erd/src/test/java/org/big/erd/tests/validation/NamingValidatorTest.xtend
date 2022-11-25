@@ -9,9 +9,10 @@ import org.eclipse.xtext.testing.util.ParseHelper
 import org.big.erd.entityRelationship.Model
 import org.eclipse.xtext.testing.validation.ValidationTestHelper
 import org.big.erd.validation.NamingValidator
-import org.big.erd.entityRelationship.EntityRelationshipPackage
 import org.eclipse.xtext.diagnostics.Severity
 import org.big.erd.tests.EntityRelationshipInjectorProvider
+import static org.big.erd.entityRelationship.EntityRelationshipPackage.Literals.*
+
 
 @ExtendWith(InjectionExtension)
 @InjectWith(EntityRelationshipInjectorProvider)
@@ -30,7 +31,7 @@ class NamingValidatorTest {
 		''')
 		validationTestHelper.assertError(
 			model.eResource(), 
-			EntityRelationshipPackage.Literals.ENTITY, 
+			ENTITY, 
 			NamingValidator.DUPLICATE_ENTITY_NAME
 		)
 	}
@@ -46,7 +47,7 @@ class NamingValidatorTest {
 		''')
 		validationTestHelper.assertError(
 			model.eResource(), 
-			EntityRelationshipPackage.Literals.RELATIONSHIP, 
+			RELATIONSHIP, 
 			NamingValidator.DUPLICATE_RELATIONSHIP_NAME
 		)
 	}
@@ -62,7 +63,7 @@ class NamingValidatorTest {
 		''')
 		validationTestHelper.assertError(
 			model.eResource(), 
-			EntityRelationshipPackage.Literals.ATTRIBUTE, 
+			ATTRIBUTE, 
 			NamingValidator.DUPLICATE_ATTRIBUTE_NAME
 		)
 	}
@@ -75,7 +76,7 @@ class NamingValidatorTest {
 		''')
 		validationTestHelper.assertIssue(
 			model.eResource(), 
-			EntityRelationshipPackage.Literals.ENTITY, 
+			ENTITY, 
 			NamingValidator.LOWERCASE_ENTITY_NAME,
 			Severity.INFO
 		)

@@ -2,10 +2,11 @@ package org.big.erd.validation
 
 import org.eclipse.xtext.validation.Check
 import org.big.erd.entityRelationship.Model
-import org.big.erd.entityRelationship.EntityRelationshipPackage
 import com.google.common.collect.Multimaps
 import org.big.erd.entityRelationship.Entity
 import org.eclipse.xtext.validation.EValidatorRegistrar
+import static org.big.erd.entityRelationship.EntityRelationshipPackage.Literals.*
+
 
 class NamingValidator extends AbstractEntityRelationshipValidator {
 	
@@ -19,7 +20,7 @@ class NamingValidator extends AbstractEntityRelationshipValidator {
 	def checkModel(Model model) {
         // check model name exists
 		if (model.name === null || model.name.isBlank) {
-			error('''Missing model header 'erdiagram <name>' ''' , model, EntityRelationshipPackage.Literals.MODEL__NAME,  MISSING_MODEL_NAME)
+			error('''Missing model header 'erdiagram <name>' ''' , model, MODEL__NAME,  MISSING_MODEL_NAME)
 		}
         
         // check duplicate entities
@@ -28,7 +29,7 @@ class NamingValidator extends AbstractEntityRelationshipValidator {
         	val commonName = entityNames.get(name)
 			if (commonName.size > 1) 
 				commonName.forEach[
-					error('''Multiple entites named '«name»'«».''', it, EntityRelationshipPackage.Literals.ENTITY__NAME, DUPLICATE_ENTITY_NAME)
+					error('''Multiple entites named '«name»'«».''', it, ENTITY__NAME, DUPLICATE_ENTITY_NAME)
 			]
 		]
 		// check duplicate relationships
@@ -37,7 +38,7 @@ class NamingValidator extends AbstractEntityRelationshipValidator {
 			val commonName = relNames.get(name)
 			if (commonName.size > 1) 
 				commonName.forEach[
-					error('''Multiple relationships named '«name»'«».''', it, EntityRelationshipPackage.Literals.RELATIONSHIP__NAME, DUPLICATE_RELATIONSHIP_NAME)
+					error('''Multiple relationships named '«name»'«».''', it, RELATIONSHIP__NAME, DUPLICATE_RELATIONSHIP_NAME)
 			]
 		]
     }
@@ -50,7 +51,7 @@ class NamingValidator extends AbstractEntityRelationshipValidator {
 			val commonName = attributeNames.get(name)
 			if (commonName.size > 1) {
 				commonName.forEach[
-					error('''Multiple attributes named '«name»'«».''', it, EntityRelationshipPackage.Literals.ATTRIBUTE__NAME, DUPLICATE_ATTRIBUTE_NAME)
+					error('''Multiple attributes named '«name»'«».''', it, ATTRIBUTE__NAME, DUPLICATE_ATTRIBUTE_NAME)
 				]
 			}
 		]
@@ -61,7 +62,7 @@ class NamingValidator extends AbstractEntityRelationshipValidator {
 	def checkUppercaseName(Entity entity) {
 		// check entity names start with upper-case
 		if (!Character.isUpperCase(entity.name.charAt(0))) {
-			info('''Entity name '«entity.name»' should start with an upper-case letter''', EntityRelationshipPackage.Literals.ENTITY__NAME, LOWERCASE_ENTITY_NAME)
+			info('''Entity name '«entity.name»' should start with an upper-case letter''', ENTITY__NAME, LOWERCASE_ENTITY_NAME)
 		}
 	}
 	
