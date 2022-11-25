@@ -30,6 +30,7 @@ subprojects {
 	apply plugin: 'org.xtext.xtend'
 	apply from: "${rootDir}/gradle/source-layout.gradle"
 	apply plugin: 'eclipse'
+	apply plugin: 'jacoco'
 	
 	sourceCompatibility = '11'
 	targetCompatibility = '11'
@@ -37,4 +38,13 @@ subprojects {
 	configurations.all {
 		exclude group: 'asm'
 	}
+
+	test {
+    	finalizedBy jacocoTestReport // report is always generated after tests run
+	}
+	jacocoTestReport {
+    	dependsOn test // tests are required to run before generating the report
+	}
 }
+
+
