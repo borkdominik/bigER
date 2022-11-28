@@ -58,6 +58,9 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
                         </vscode-button>
                         <div class="dropdown-content">
                             <vscode-button id="generate-sql-button" appearance="secondary">Generate SQL</vscode-button>
+                            <vscode-button id="generate-mongodb-button" appearance="secondary">Generate MongoDb</vscode-button>
+                            <vscode-button id="generate-neo4j-button" appearance="secondary">Generate Neo4j</vscode-button>
+                            <vscode-button id="generate-cassandradb-button" appearance="secondary">Generate CassandraDb</vscode-button>
                         </div>
                     </div>
                     <div class="vertical-seperator"></div>
@@ -125,6 +128,15 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
         });
         (document.getElementById('generate-sql-button') as HTMLElement).addEventListener('click', async () => {
             await vscodeApi.postMessage({ generateKind: 'sql' });
+        });
+        (document.getElementById('generate-mongodb-button') as HTMLElement).addEventListener('click', async () => {
+            await vscodeApi.postMessage({ generateKind: 'mongodb' });
+        });
+        (document.getElementById('generate-neo4j-button') as HTMLElement).addEventListener('click', async () => {
+            await vscodeApi.postMessage({ generateKind: 'neo4j' });
+        });
+        (document.getElementById('generate-cassandradb-button') as HTMLElement).addEventListener('click', async () => {
+            await vscodeApi.postMessage({ generateKind: 'cassandradb' });
         });
         (document.getElementById('fit-button') as HTMLElement).addEventListener('click', async () => {
             this.actionDispatcher.dispatch(FitToScreenAction.create([]));

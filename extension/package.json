@@ -77,6 +77,21 @@
                 "category": "bigER"
             },
 			{
+                "command": "erdiagram.generate.mongodb.proxy",
+                "title": "Generate MongoDb",
+                "category": "bigER"
+            },
+			{
+                "command": "erdiagram.generate.neo4j.proxy",
+                "title": "Generate Neo4j",
+                "category": "bigER"
+            },
+			{
+                "command": "erdiagram.generate.cassandradb.proxy",
+                "title": "Generate Cassandra Db",
+                "category": "bigER"
+            },
+			{
 				"command": "erdiagram.diagram.open",
 				"title": "Open ER Diagram",
 				"icon": "$(type-hierarchy-super)",
@@ -131,6 +146,21 @@
 					"command": "erdiagram.generate.sql.proxy",
 					"when": "editorLangId == erdiagram",
 					"group": "1_modification"
+				},
+				{
+					"command": "erdiagram.generate.mongodb.proxy",
+					"when": "editorLangId == erdiagram",
+					"group": "1_modification"
+				},
+				{
+					"command": "erdiagram.generate.neo4j.proxy",
+					"when": "editorLangId == erdiagram",
+					"group": "1_modification"
+				},
+				{
+					"command": "erdiagram.generate.cassandradb.proxy",
+					"when": "editorLangId == erdiagram",
+					"group": "1_modification"
 				}
 			],
 			"explorer/context": [
@@ -143,6 +173,21 @@
 					"command": "erdiagram.generate.sql.proxy",
 					"when": "resourceExtname == '.erd'",
 					"group": "2_workspace"
+				},
+				{
+					"command": "erdiagram.generate.mongodb.proxy",
+					"when": "resourceExtname == '.erd'",
+					"group": "2_workspace"
+				},
+				{
+					"command": "erdiagram.generate.neo4j.proxy",
+					"when": "editorLangId == erdiagram",
+					"group": "1_modification"
+				},
+				{
+					"command": "erdiagram.generate.cassandradb.proxy",
+					"when": "editorLangId == erdiagram",
+					"group": "1_modification"
 				}
 			],
 			"file/newFile": [

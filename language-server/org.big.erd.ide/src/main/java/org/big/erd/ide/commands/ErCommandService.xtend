@@ -13,6 +13,8 @@ import java.util.Map
 import org.big.erd.generator.IErGenerator
 import org.big.erd.generator.SqlGenerator
 import org.big.erd.generator.MongoDbGenerator
+import org.big.erd.generator.CassandraDbGenerator
+import org.big.erd.generator.Neo4jGenerator
 import org.eclipse.xtext.validation.IResourceValidator
 import org.eclipse.xtext.validation.CheckMode
 
@@ -24,14 +26,19 @@ class ErCommandService implements IExecutableCommandService {
 	static final String GENERATE_PREFIX = "erdiagram.generate"
 	static final String GENERATE_SQL_COMMAND = GENERATE_PREFIX + ".sql"
 	static final String GENERATE_MONGODB_COMMAND = GENERATE_PREFIX + ".mongodb"
+	static final String GENERATE_NEO4J_COMMAND = GENERATE_PREFIX + ".neo4j"
+	static final String GENERATE_CASSANDRADB_COMMAND = GENERATE_PREFIX + ".cassandradb"
 	
 	
 	override initialize() {
 		generators = new HashMap
 		generators.put(GENERATE_SQL_COMMAND, new SqlGenerator)
 		generators.put(GENERATE_MONGODB_COMMAND, new MongoDbGenerator)
+		generators.put(GENERATE_NEO4J_COMMAND, new Neo4jGenerator)
+		generators.put(GENERATE_CASSANDRADB_COMMAND, new CassandraDbGenerator)
+
 		return #[ 
-			GENERATE_SQL_COMMAND, GENERATE_MONGODB_COMMAND
+			GENERATE_SQL_COMMAND, GENERATE_MONGODB_COMMAND, GENERATE_NEO4J_COMMAND, GENERATE_CASSANDRADB_COMMAND
 		]
 	}
 	
