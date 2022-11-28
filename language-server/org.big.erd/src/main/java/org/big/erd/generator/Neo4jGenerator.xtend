@@ -31,14 +31,14 @@ class Neo4jGenerator implements IErGenerator {
 	
 	private def toTable(Entity entity) {
 		return ''' 
-			CREATE («entity.name»:«entity.name» {«FOR attribute : entity.allAttributes.reject[it.type === AttributeType.DERIVED] SEPARATOR ','»«attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR»})«'\n'»
+			CREATE («entity.name»:«entity.name» {name: "«entity.name»"«FOR attribute : entity.allAttributes.reject[it.type === AttributeType.DERIVED] », attr_«attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR»})«'\n'»
 		'''
 	}
 	
 	private def toTable(Relationship relationship) {
 		return ''' 
-			«IF relationship.third?.target === null»CREATE («relationship.first.target.name»)-[«relationship.name»:«relationship.name»{«FOR attribute : relationship.attributes SEPARATOR ','»«attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR» }]->(«relationship.second.target.name»)«'\n'»«ENDIF»
-			«IF relationship.third?.target !== null»CREATE («relationship.name»:«relationship.name» {«FOR attribute : relationship.attributes SEPARATOR ','»«attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR»})«'\n'»«ENDIF»
+			«IF relationship.third?.target === null»CREATE («relationship.first.target.name»)-[«relationship.name»:«relationship.name»{name: "«relationship.name»"«FOR attribute : relationship.attributes», attr_«attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR» }]->(«relationship.second.target.name»)«'\n'»«ENDIF»
+			«IF relationship.third?.target !== null»CREATE («relationship.name»:«relationship.name»{name: "«relationship.name»"«FOR attribute : relationship.attributes», attr_«attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR»})«'\n'»«ENDIF»
 			«IF relationship.third?.target !== null»CREATE («relationship.name»)-[«relationship.name»_«relationship.first.target.name»:«relationship.name»_«relationship.first.target.name» {«FOR attribute : relationship.attributes SEPARATOR ','»«attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR» }]->(«relationship.first.target.name»)«'\n'»«ENDIF»
 			«IF relationship.third?.target !== null»CREATE («relationship.name»)-[«relationship.name»_«relationship.second.target.name»:«relationship.name»_«relationship.second.target.name» {«FOR attribute : relationship.attributes SEPARATOR ','»«attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR» }]->(«relationship.second.target.name»)«'\n'»«ENDIF»
 			«IF relationship.third?.target !== null»CREATE («relationship.name»)-[«relationship.name»_«relationship.third.target.name»:«relationship.name»_«relationship.third.target.name» {«FOR attribute : relationship.attributes SEPARATOR ','»«attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR» }]->(«relationship.third.target.name»)«'\n'»«ENDIF»
@@ -47,8 +47,8 @@ class Neo4jGenerator implements IErGenerator {
 	
 	private def weakToTable(Relationship relationship) {
 		return ''' 
-			«IF relationship.third?.target === null»CREATE («relationship.first.target.name»)-[«relationship.name»:«relationship.name»{«FOR attribute : relationship.attributes SEPARATOR ','»«attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR» }]->(«relationship.second.target.name»)«'\n'»«ENDIF»
-			«IF relationship.third?.target !== null»CREATE («relationship.name»:«relationship.name» {«FOR attribute : relationship.attributes SEPARATOR ','»«attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR»})«'\n'»«ENDIF»
+			«IF relationship.third?.target === null»CREATE («relationship.first.target.name»)-[«relationship.name»:«relationship.name»{name: "«relationship.name»"«FOR attribute : relationship.attributes», attr_«attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR» }]->(«relationship.second.target.name»)«'\n'»«ENDIF»
+			«IF relationship.third?.target !== null»CREATE («relationship.name»:«relationship.name» {name: "«relationship.name»"«FOR attribute : relationship.attributes», attr_«attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR»})«'\n'»«ENDIF»
 			«IF relationship.third?.target !== null»CREATE («relationship.name»)-[«relationship.name»_«relationship.first.target.name»:«relationship.name»_«relationship.first.target.name» {«FOR attribute : relationship.attributes SEPARATOR ','»«attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR» }]->(«relationship.first.target.name»)«'\n'»«ENDIF»
 			«IF relationship.third?.target !== null»CREATE («relationship.name»)-[«relationship.name»_«relationship.second.target.name»:«relationship.name»_«relationship.second.target.name» {«FOR attribute : relationship.attributes SEPARATOR ','»«attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR» }]->(«relationship.second.target.name»)«'\n'»«ENDIF»
 			«IF relationship.third?.target !== null»CREATE («relationship.name»)-[«relationship.name»_«relationship.third.target.name»:«relationship.name»_«relationship.third.target.name» {«FOR attribute : relationship.attributes SEPARATOR ','»«attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR» }]->(«relationship.third.target.name»)«'\n'»«ENDIF»
