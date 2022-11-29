@@ -1,0 +1,60 @@
+name: Create Release
+
+# run workflow on newly created tags including the prefix 'v', e.g. v1.0 or v2.10.5-pre
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  # Builds the project and creates a github release with a changelog and packages .vsix file
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v3
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: 'temurin'
+          cache: gradle
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: Setup Environment
+        run: node -e "console.log('PACKAGE_VERSION=' + require('./extension/package.json').version + '\nPACKAGE_NAME=erdiagram-' + require('./extension/package.json').version)" >> $GITHUB_ENV
+      - name: Verify version
+        run: node -e "if ('refs/tags/v' + '${{ env.PACKAGE_VERSION }}' !== '${{ github.ref }}') { console.log('::error' + 'Versions do not match. refs/tags/v' + '${{ env.PACKAGE_VERSION }}', '${{ github.ref }}'); throw Error('Version Mismatch')}"
+      - name: Build Server
+        run: language-server/gradlew -p language-server/ build --no-daemon
+      - name: Build Webview
+        run: yarn --cwd webview
+      - name: Build Extension
+        run: yarn --cwd extension
+      - name: Package Extension
+        run: yarn --cwd extension run package
+# TODO: Publish .vsix to vscode marketplace (if not suffix '-pre')
+#      - name: Publish
+#        run: yarn --cwd extension run vsce publish --packagePath ./${{ env.PACKAGE_NAME }}.vsix -p ${{ secrets.BIGER_VSCODE_MARKETPLACE_PAT }}
+      - name: Generate Changelog
+        id: changelog
+        uses: mindsers/changelog-reader-action@v2
+        with:
+          version: ${{ env.PACKAGE_VERSION }}
+          path: ./extension/CHANGELOG.md
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          name: v${{ env.PACKAGE_VERSION }}
+          body: ${{ steps.changelog.outputs.changes }}
+          draft: false
+          prerelease: false
+          files: ./extension/${{ env.PACKAGE_NAME }}.vsix
