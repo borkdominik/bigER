@@ -35,6 +35,13 @@ jobs:
           node-version: ${{ matrix.node }}
       - name: Build Language Server
         run: language-server/gradlew -p language-server/ build --no-daemon
+      - name: Test Report
+        uses: dorny/test-reporter@v1
+        if: success() || failure()
+        with:
+          name: JUnit Test Results (${{ matrix.os }} Java ${{ matrix.Java }})
+          path: language-server/org.big.erd/build/test-results/test/TEST-*.xml, language-server/org.big.erd.ide/build/test-results/test/TEST-*.xml
+          reporter: java-junit
       - name: Build Webview
         run: yarn --cwd webview
       - name: Build Extension
