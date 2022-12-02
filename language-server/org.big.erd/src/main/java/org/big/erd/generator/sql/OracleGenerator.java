@@ -3,7 +3,7 @@ package org.big.erd.generator.sql;
 import org.big.erd.entityRelationship.DataType;
 
 /**
- * Generates SQL for MS SQL Server from the ER model.
+ * Generates SQL for Oracle from the ER model.
  */
 public class OracleGenerator extends SqlGenerator {
 	

@@ -2,6 +2,7 @@ package org.big.erd.generator.sql;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +23,8 @@ import org.eclipse.xtext.util.RuntimeIOException;
 import org.eclipse.xtext.xbase.lib.Exceptions;
 
 /**
- * Generates SQL in various dialects from the ER model.
+ * Generates vendor-agnostic SQL from the ER model.
+ * Can be extended to provide vendor-specific dialects.
  */
 public class SqlGenerator extends AbstractGenerator {
 	
@@ -36,9 +38,12 @@ public class SqlGenerator extends AbstractGenerator {
 		}
 		String diagramName = diagram.getName();
 		final String fileName = (diagramName != null ? diagramName : "output") + ".sql";
+		final String fileNameDrop = (diagramName != null ? diagramName : "output") + "-drop.sql";
 		try {
-			StringConcatenation fileContent = generateFileContent(diagram);
+			StringConcatenation fileContent = generateFileContent(diagram, false);
 			fsa.generateFile(fileName, fileContent);
+			StringConcatenation fileContentDrop = generateFileContent(diagram, true);
+			fsa.generateFile(fileNameDrop, fileContentDrop);
 		} catch (final Throwable t) {
 			if (t instanceof RuntimeIOException) {
 				throw new Error("Could not generate file. Did you open a folder?");
@@ -48,51 +53,59 @@ public class SqlGenerator extends AbstractGenerator {
 		}
 	}
 
-	private StringConcatenation generateFileContent(final Model diagram) {
+	private StringConcatenation generateFileContent(final Model diagram, boolean drop) {
+		List<String> tables = new ArrayList<>();
 		StringConcatenation fileContent = new StringConcatenation();
 		
 		// entities
 		for (final Entity entity : diagram.getEntities()) {
 			if (!entity.isWeak()) {
-				String table = this.toTable(entity);
-				fileContent.append(table);
-				fileContent.newLineIfNotEmpty();
+				String table = this.toTable(entity, drop);
+				tables.add(table);
 			}
 		}
 		
 		// weak relationships
 		for (final Relationship relationship : diagram.getRelationships()) {
 			if (relationship.isWeak()) {
-				String weakTable = this.weakToTable(relationship);
-				fileContent.append(weakTable);
-				fileContent.newLineIfNotEmpty();
+				String weakTable = this.weakToTable(relationship, drop);
+				tables.add(weakTable);
 			}
 		}
 		
 		// strong relationships
 		for (final Relationship relationship : diagram.getRelationships()) {
 			if (!relationship.isWeak()) {
-				String table = this.toTable(relationship);
-				fileContent.append(table);
-				fileContent.newLineIfNotEmpty();
+				String table = this.toTable(relationship, drop);
+				tables.add(table);
 			}
+		}
+		
+		// create output
+		if (drop) {
+			Collections.reverse(tables);
+		}
+		for (final String table : tables) {
+			fileContent.append(table);
+			fileContent.newLineIfNotEmpty();
 		}
 		
 		return fileContent;
 	}
 
-	private String toTable(final Entity entity) {
+	private String toTable(final Entity entity, boolean drop) {
 		StringConcatenation tableContent = new StringConcatenation();
-		startTable(tableContent, entity.getName());
-		addAttributes(tableContent, entity.getAttributes());
-		
-		addPrimaryKeys(tableContent, entity.getName(), Arrays.asList(this.primaryKey(entity)));
-		
-		endTable(tableContent);
+		startTable(tableContent, entity.getName(), drop);
+		if (!drop) {
+			addAttributes(tableContent, entity.getAttributes());
+			
+			addPrimaryKeys(tableContent, entity.getName(), Arrays.asList(this.primaryKey(entity)));
+		}
+		endTable(tableContent, drop);
 		return tableContent.toString();
 	}
 
-	private String toTable(final Relationship relationship) {
+	private String toTable(final Relationship relationship, boolean drop) {
 		Entity firstEntity = relationship.getFirst().getTarget();
 		List<Attribute> firstKey = null;
 		if (firstEntity != null) {
@@ -114,46 +127,50 @@ public class SqlGenerator extends AbstractGenerator {
 		}
 		
 		StringConcatenation tableContent = new StringConcatenation();
-		startTable(tableContent, relationship.getName());
-		
-		// attributes
-		List<List<Attribute>> keyList = Arrays.asList(firstKey, secondKey, thirdKey);
-		List<Attribute> flatKeyList = flattenKeys(keyList);
-		addAttributes(tableContent, flatKeyList);
-		addAttributes(tableContent, relationship.getAttributes());
-		
-		// primary key
-		addPrimaryKeys(tableContent, false, relationship.getName(), keyList);
+		startTable(tableContent, relationship.getName(), drop);
 
-		// foreign key
-		addForeignKey(tableContent, secondKey == null && thirdKey == null, firstKey, firstEntity);
-		addForeignKey(tableContent, thirdKey == null, secondKey, secondEntity);
-		addForeignKey(tableContent, thirdKey, thirdEntity);
+		if (!drop) {
+			// attributes
+			List<List<Attribute>> keyList = Arrays.asList(firstKey, secondKey, thirdKey);
+			List<Attribute> flatKeyList = flattenKeys(keyList);
+			addAttributes(tableContent, flatKeyList);
+			addAttributes(tableContent, relationship.getAttributes());
+			
+			// primary key
+			addPrimaryKeys(tableContent, false, relationship.getName(), keyList);
+	
+			// foreign key
+			addForeignKey(tableContent, secondKey == null && thirdKey == null, firstKey, firstEntity);
+			addForeignKey(tableContent, thirdKey == null, secondKey, secondEntity);
+			addForeignKey(tableContent, thirdKey, thirdEntity);
+		}
 		
-		endTable(tableContent);
+		endTable(tableContent, drop);
 		return tableContent.toString();
 	}
 
-	private String weakToTable(final Relationship relationship) {
+	private String weakToTable(final Relationship relationship, boolean drop) {
 		final Entity strong = this.getStrongEntity(relationship);
 		final Entity weak = this.getWeakEntity(relationship);
 		
 		StringConcatenation tableContent = new StringConcatenation();
-		startTable(tableContent, weak.getName());
+		startTable(tableContent, weak.getName(), drop);
 
-		// attributes
-		addAttributes(tableContent, weak.getAttributes());
-		addAttributes(tableContent, relationship.getAttributes());
-
-		// primary key
-		List<Attribute> primaryKey = this.effectivePrimaryKey(strong);
-		addAttributes(tableContent, primaryKey);
-		addPrimaryKeys(tableContent, false, weak.getName(), Arrays.asList(this.partialKey(weak), primaryKey));
-
-		// foreign key
-		addForeignKey(tableContent, primaryKey, strong);
+		if (!drop) {
+			// attributes
+			addAttributes(tableContent, weak.getAttributes());
+			addAttributes(tableContent, relationship.getAttributes());
+	
+			// primary key
+			List<Attribute> primaryKey = this.effectivePrimaryKey(strong);
+			addAttributes(tableContent, primaryKey);
+			addPrimaryKeys(tableContent, false, weak.getName(), Arrays.asList(this.partialKey(weak), primaryKey));
+	
+			// foreign key
+			addForeignKey(tableContent, primaryKey, strong);
+		}
 		
-		endTable(tableContent);
+		endTable(tableContent, drop);
 		return tableContent.toString();
 	}
 
@@ -217,18 +234,28 @@ public class SqlGenerator extends AbstractGenerator {
 		}
 	}
 
-	private void startTable(StringConcatenation tableContent, String tableName) {
-		tableContent.append("CREATE TABLE ");
+	private void startTable(StringConcatenation tableContent, String tableName, boolean drop) {
+		if (!drop) {
+			tableContent.append("CREATE ");
+		} else {
+			tableContent.append("DROP ");
+		}
+		tableContent.append("TABLE ");
 		tableContent.append(tableName);
-		tableContent.append(" (");
-		tableContent.newLineIfNotEmpty();
+		if (!drop) {
+			tableContent.append(" (");
+			tableContent.newLineIfNotEmpty();
+		}
 	}
 
-	private void endTable(StringConcatenation tableContent) {
-		tableContent.append(");");
-		tableContent.append("\n");
-		tableContent.append("\n");
-		tableContent.newLineIfNotEmpty();
+	private void endTable(StringConcatenation tableContent, boolean drop) {
+		if (!drop) {
+			tableContent.append(")");
+		}
+		tableContent.append(";");
+		if (!drop) {
+			tableContent.newLineIfNotEmpty();
+		}
 	}
 
 	private void addAttributes(StringConcatenation tableContent, List<Attribute> attributes) {
