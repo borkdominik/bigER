@@ -11,6 +11,7 @@ public class DataTypes {
 		types.addAll(MsSqlGenerator.INTEGER_TYPES);
 		types.addAll(MySqlGenerator.INTEGER_TYPES);
 		types.addAll(PostgresGenerator.INTEGER_TYPES);
+		types.addAll(Db2Generator.INTEGER_TYPES);
 		return types;
 	}
 
@@ -20,6 +21,7 @@ public class DataTypes {
 		types.addAll(MsSqlGenerator.FLOAT_TYPES);
 		types.addAll(MySqlGenerator.FLOAT_TYPES);
 		types.addAll(PostgresGenerator.FLOAT_TYPES);
+		types.addAll(Db2Generator.FLOAT_TYPES);
 		return types;
 	}
 
@@ -29,6 +31,7 @@ public class DataTypes {
 		types.addAll(MsSqlGenerator.DECIMAL_TYPES);
 		types.addAll(MySqlGenerator.DECIMAL_TYPES);
 		types.addAll(PostgresGenerator.DECIMAL_TYPES);
+		types.addAll(Db2Generator.DECIMAL_TYPES);
 		return types;
 	}
 
@@ -38,6 +41,7 @@ public class DataTypes {
 		types.addAll(MsSqlGenerator.ALL_NUMERIC_TYPES);
 		types.addAll(MySqlGenerator.ALL_NUMERIC_TYPES);
 		types.addAll(PostgresGenerator.ALL_NUMERIC_TYPES);
+		types.addAll(Db2Generator.ALL_NUMERIC_TYPES);
 		return types;
 	}
 
@@ -47,6 +51,7 @@ public class DataTypes {
 		types.addAll(MsSqlGenerator.VARCHAR_TYPES);
 		types.addAll(MySqlGenerator.VARCHAR_TYPES);
 		types.addAll(PostgresGenerator.VARCHAR_TYPES);
+		types.addAll(Db2Generator.VARCHAR_TYPES);
 		return types;
 	}
 
@@ -56,6 +61,7 @@ public class DataTypes {
 		types.addAll(MsSqlGenerator.CHAR_TYPES);
 		types.addAll(MySqlGenerator.CHAR_TYPES);
 		types.addAll(PostgresGenerator.CHAR_TYPES);
+		types.addAll(Db2Generator.CHAR_TYPES);
 		return types;
 	}
 
@@ -65,6 +71,7 @@ public class DataTypes {
 		types.addAll(MsSqlGenerator.ALL_CHARACTER_TYPES);
 		types.addAll(MySqlGenerator.ALL_CHARACTER_TYPES);
 		types.addAll(PostgresGenerator.ALL_CHARACTER_TYPES);
+		types.addAll(Db2Generator.ALL_CHARACTER_TYPES);
 		return types;
 	}
 
@@ -74,6 +81,7 @@ public class DataTypes {
 		types.addAll(MsSqlGenerator.DATE_TYPES);
 		types.addAll(MySqlGenerator.DATE_TYPES);
 		types.addAll(PostgresGenerator.DATE_TYPES);
+		types.addAll(Db2Generator.DATE_TYPES);
 		return types;
 	}
 
@@ -83,6 +91,7 @@ public class DataTypes {
 		types.addAll(MsSqlGenerator.DATE_TIME_TYPES);
 		types.addAll(MySqlGenerator.DATE_TIME_TYPES);
 		types.addAll(PostgresGenerator.DATE_TIME_TYPES);
+		types.addAll(Db2Generator.DATE_TIME_TYPES);
 		return types;
 	}
 
@@ -92,6 +101,7 @@ public class DataTypes {
 		types.addAll(MsSqlGenerator.ALL_DATE_TYPES);
 		types.addAll(MySqlGenerator.ALL_DATE_TYPES);
 		types.addAll(PostgresGenerator.ALL_DATE_TYPES);
+		types.addAll(Db2Generator.ALL_DATE_TYPES);
 		return types;
 	}
 
@@ -101,6 +111,7 @@ public class DataTypes {
 		types.addAll(MsSqlGenerator.CLOB_TYPES);
 		types.addAll(MySqlGenerator.CLOB_TYPES);
 		types.addAll(PostgresGenerator.CLOB_TYPES);
+		types.addAll(Db2Generator.CLOB_TYPES);
 		return types;
 	}
 
@@ -110,6 +121,7 @@ public class DataTypes {
 		types.addAll(MsSqlGenerator.BLOB_TYPES);
 		types.addAll(MySqlGenerator.BLOB_TYPES);
 		types.addAll(PostgresGenerator.BLOB_TYPES);
+		types.addAll(Db2Generator.BLOB_TYPES);
 		return types;
 	}
 
@@ -119,6 +131,7 @@ public class DataTypes {
 		types.addAll(MsSqlGenerator.ALL_BINARY_TYPES);
 		types.addAll(MySqlGenerator.ALL_BINARY_TYPES);
 		types.addAll(PostgresGenerator.ALL_BINARY_TYPES);
+		types.addAll(Db2Generator.ALL_BINARY_TYPES);
 		return types;
 	}
 
