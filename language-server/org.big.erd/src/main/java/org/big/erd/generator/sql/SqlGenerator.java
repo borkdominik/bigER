@@ -202,20 +202,16 @@ public class SqlGenerator extends AbstractGenerator {
 		return key;
 	}
 
-	private String transformDataType(final DataType dataType) {
-		if (dataType == null) {
-			return "CHAR(20)";
-		}
-		final String type = getDataType(dataType);
+	private String transformDataType(final DataType dataType, final String mappedType) {
 		int size = dataType.getSize();
 		if (size != 0) {
-			return type + "(" + Integer.valueOf(size) + ")";
+			return mappedType + "(" + Integer.valueOf(size) + ")";
 		}
-		return type;
+		return mappedType;
 	}
 
-	protected String getDataType(final DataType dataType) {
-		return dataType.getType();
+	protected String mapDataType(String type) {
+		return type;
 	}
 
 	private Entity getStrongEntity(final Relationship r) {
@@ -264,9 +260,26 @@ public class SqlGenerator extends AbstractGenerator {
 				tableContent.append("\t");
 				tableContent.append(attribute.getName());
 				tableContent.append(" ");
-				String transformedDataType = this.transformDataType(attribute.getDatatype());
+				String comment = null;
+				String originalType = "";
+				if (attribute.getDatatype() != null) {
+					originalType = attribute.getDatatype().getType();
+				}
+				String mappedType = this.mapDataType(originalType);
+				if (mappedType == null) {
+					mappedType = originalType;
+					comment = "unknown type";
+				} else if (!mappedType.equals(originalType)) {
+					comment = "type mapped from: " + originalType;
+				}
+				String transformedDataType = this.transformDataType(attribute.getDatatype(), mappedType);
 				tableContent.append(transformedDataType);
 				tableContent.append(",");
+				if (comment != null) {
+					tableContent.append("\t");
+					tableContent.append("-- ");
+					tableContent.append(comment);
+				}
 				tableContent.newLineIfNotEmpty();
 			}
 		}
