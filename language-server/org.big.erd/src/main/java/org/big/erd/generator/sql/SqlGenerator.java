@@ -14,9 +14,9 @@ import org.big.erd.entityRelationship.Entity;
 import org.big.erd.entityRelationship.Model;
 import org.big.erd.entityRelationship.RelationEntity;
 import org.big.erd.entityRelationship.Relationship;
+import org.big.erd.generator.IErGenerator;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.xtend2.lib.StringConcatenation;
-import org.eclipse.xtext.generator.AbstractGenerator;
 import org.eclipse.xtext.generator.IFileSystemAccess2;
 import org.eclipse.xtext.generator.IGeneratorContext;
 import org.eclipse.xtext.util.RuntimeIOException;
@@ -26,16 +26,13 @@ import org.eclipse.xtext.xbase.lib.Exceptions;
  * Generates vendor-agnostic SQL from the ER model.
  * Can be extended to provide vendor-specific dialects.
  */
-public class SqlGenerator extends AbstractGenerator {
+public class SqlGenerator implements IErGenerator {
 	
 	private Map<String, List<Attribute>> effectivePrimaryKeys = new HashMap<>();
 
 	@Override
-	public void doGenerate(final Resource resource, final IFileSystemAccess2 fsa, final IGeneratorContext context) {
+	public void generate(final Resource resource, final IFileSystemAccess2 fsa, final IGeneratorContext context) {
 		final Model diagram = (Model) resource.getContents().get(0);
-		if (diagram.getGenerateOption() == null || "off".equals(diagram.getGenerateOption().getGenerateOptionType().toString())) {
-			return;
-		}
 		String diagramName = diagram.getName();
 		final String fileName = (diagramName != null ? diagramName : "output") + ".sql";
 		final String fileNameDrop = (diagramName != null ? diagramName : "output") + "-drop.sql";
