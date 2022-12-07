@@ -26,7 +26,7 @@ import org.eclipse.xtext.xbase.lib.Exceptions;
  */
 public class SqlImport implements IErGenerator {
 
-	private static final String ATTRIBUTE_PATTERN = "\\s*(\\S*) (.*\\(\\d+\\)|\\S*)[^,]*,\\s*(?:--(.*))?";
+	private static final String ATTRIBUTE_PATTERN = "\\s*(\\S*) (.*\\(\\d+\\)|\\S*)[^,\\)]*,?\\s*(?:--(.*))?";
 	private static final int ATTRIBUTE_NAME = 1;
 	private static final int ATTRIBUTE_TYPE = 2;
 	private static final int ATTRIBUTE_COMMENT = 3;
@@ -40,8 +40,8 @@ public class SqlImport implements IErGenerator {
 	private static final String PRIMARY_KEY_PATTERN = ".*PRIMARY KEY \\((.*)\\)";
 	private static final String TABLE_PATTERN =
 			"CREATE TABLE(?: IF NOT EXISTS)? (?:.+\\.)?(.+?)\\s*\\(((?:\r\n"
-			+ replaceCaptureGroups(ATTRIBUTE_PATTERN) + ")*)\r\n"
-			+ PRIMARY_KEY_PATTERN + "((?:,\r\n"
+			+ replaceCaptureGroups(ATTRIBUTE_PATTERN) + ")*)(?:\r\n"
+			+ PRIMARY_KEY_PATTERN + ")?((?:,\r\n"
 			+ replaceCaptureGroups(FOREIGN_KEY_PATTERN) + ")*)\r\n"
 			+ "\\);?";
 	private static final int TABLE_NAME = 1;
