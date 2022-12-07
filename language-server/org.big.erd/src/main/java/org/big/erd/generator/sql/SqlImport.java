@@ -26,7 +26,7 @@ import org.eclipse.xtext.xbase.lib.Exceptions;
  */
 public class SqlImport implements IErGenerator {
 
-	private static final String ATTRIBUTE_PATTERN = "\\s*(\\S*) (.*\\(\\d+\\)|\\S*)[^,\\)]*,?\\s*(?:--(.*))?";
+	private static final String ATTRIBUTE_PATTERN = "\\s*(\\S*) (.*\\(\\d+\\)|[^,\\s]+)[^,\\)]*,?\\s*(?:--(.*))?";
 	private static final int ATTRIBUTE_NAME = 1;
 	private static final int ATTRIBUTE_TYPE = 2;
 	private static final int ATTRIBUTE_COMMENT = 3;
@@ -38,29 +38,44 @@ public class SqlImport implements IErGenerator {
 	private static final int FOREIGN_KEY_KEYWORDS = 4;
 
 	private static final String PRIMARY_KEY_PATTERN = ".*PRIMARY KEY \\((.*)\\)";
-	
-	private static final String CREATE_TABLE_PATTERN =
-			"CREATE TABLE(?: IF NOT EXISTS)? (?:.+\\.)?(\\S+)\\s*\\(((?:\r\n"
-			+ replaceCaptureGroups(ATTRIBUTE_PATTERN) + ")*)(?:\r\n"
-			+ PRIMARY_KEY_PATTERN + ")?((?:,\r\n"
-			+ replaceCaptureGroups(FOREIGN_KEY_PATTERN) + ")*)\r\n"
-			+ "\\);?";
+
+	@SuppressWarnings("unused")
+	// for debugging
+	private static final String CREATE_TABLE_PATTERN_DEBUG = getCreateTablePattern(false);
+	private static final String CREATE_TABLE_PATTERN = getCreateTablePattern(true);
 	private static final int CREATE_TABLE_NAME = 1;
 	private static final int CREATE_TABLE_ATTRIBUTES = 2;
 	private static final int CREATE_TABLE_PRIMARY_KEY = 3;
 	private static final int CREATE_TABLE_FOREIGN_KEYS = 4;
-	
-	private static final String ALTER_TABLE_PATTERN =
-			"ALTER TABLE(?: ONLY)?(?: IF EXISTS)? (?:.+\\.)?(\\S+)(?:\r\n"
-			+ PRIMARY_KEY_PATTERN + ")?(\r\n"
-			+ replaceCaptureGroups(FOREIGN_KEY_PATTERN) + ")?;?";
+
+	@SuppressWarnings("unused")
+	// for debugging
+	private static final String ALTER_TABLE_PATTERN_DEBUG = getAlterTablePattern(false);
+	private static final String ALTER_TABLE_PATTERN = getAlterTablePattern(true);
 	private static final int ALTER_TABLE_NAME = 1;
 	private static final int ALTER_TABLE_PRIMARY_KEY = 2;
 	private static final int ALTER_TABLE_FOREIGN_KEYS = 3;
+
+	private static String getCreateTablePattern(boolean replace) {
+		return "CREATE TABLE(?: IF NOT EXISTS)? (?:.+\\.)?(\\S+)\\s*\\(((?:\r\n"
+				+ replaceCaptureGroups(ATTRIBUTE_PATTERN, replace) + ")*)(?:\r\n"
+				+ PRIMARY_KEY_PATTERN + ")?((?:,\r\n"
+				+ replaceCaptureGroups(FOREIGN_KEY_PATTERN, replace) + ")*)\r\n"
+				+ "\\);?";
+	}
+
+	private static String getAlterTablePattern(boolean isDebug) {
+		return "ALTER TABLE(?: ONLY)?(?: IF EXISTS)? (?:.+\\.)?(\\S+)(?:\r\n"
+				+ PRIMARY_KEY_PATTERN + ")?(\r\n"
+				+ replaceCaptureGroups(FOREIGN_KEY_PATTERN, isDebug) + ")?;?";
+	}
 	
-	private static String replaceCaptureGroups(String pattern) {
-		// replace the capturing groups (not escaped leading parenthesis, without ?) with non-capturing groups
-		return pattern.replaceAll("(?<!\\\\)\\((?!\\?)", "(?:");
+	private static String replaceCaptureGroups(String pattern, boolean replace) {
+		if (replace) {
+			// replace the capturing groups (not escaped leading parenthesis, without ?) with non-capturing groups
+			return pattern.replaceAll("(?<!\\\\)\\((?!\\?)", "(?:");
+		}
+		return pattern;
 	}
 
 	@Override
@@ -194,7 +209,7 @@ public class SqlImport implements IErGenerator {
 					fileContent.append("weak ");
 				}
 				fileContent.append("entity ");
-				fileContent.append(tableName);
+				fileContent.append(capitalize(tableName));
 				fileContent.append(" {");
 				fileContent.newLineIfNotEmpty();
 				
@@ -226,7 +241,7 @@ public class SqlImport implements IErGenerator {
 				fileContent.append(i);
 				i++;
 			} else {
-				fileContent.append(tableName);
+				fileContent.append(capitalize(tableName));
 			}
 			fileContent.append(" {");
 			fileContent.newLineIfNotEmpty();
@@ -238,7 +253,7 @@ public class SqlImport implements IErGenerator {
 				} else {
 					fileContent.append("\t");
 				}
-				fileContent.append(table);
+				fileContent.append(capitalize(table));
 				first = false;
 			}
 			fileContent.newLineIfNotEmpty();
@@ -251,13 +266,13 @@ public class SqlImport implements IErGenerator {
 		return fileContent;
 	}
 
-	protected void addAttributes(StringConcatenation fileContent, List<SqlAttribute> attributes, List<String> primaryKeyAttributes, boolean weak) {
+	private void addAttributes(StringConcatenation fileContent, List<SqlAttribute> attributes, List<String> primaryKeyAttributes, boolean weak) {
 		if (attributes != null) {
 			for (SqlAttribute attribute : attributes) {
 				fileContent.append("\t");
 				fileContent.append(attribute.getAttributeName());
 				fileContent.append(": ");
-				fileContent.append(attribute.getAttributeType());
+				fileContent.append(attribute.getAttributeType().replace(" ", ""));
 				if (primaryKeyAttributes != null && primaryKeyAttributes.contains(attribute.getAttributeName())) {
 					fileContent.append(" ");
 					if (weak) {
@@ -274,12 +289,19 @@ public class SqlImport implements IErGenerator {
 		}
 	}
 
-	protected List<String> splitAndTrim(String attributes) {
+	private List<String> splitAndTrim(String attributes) {
 		String[] arr = attributes.split(",");
 		List<String> attributeList = new ArrayList<>();
 		for (String id : arr) {
 			attributeList.add(id.trim());
 		}
 		return attributeList;
+	}
+	
+	private String capitalize(String str) {
+		if (str != null && !str.isEmpty()) {
+			str = str.substring(0, 1).toUpperCase() + str.substring(1);
+		}
+		return str;
 	}
 }
