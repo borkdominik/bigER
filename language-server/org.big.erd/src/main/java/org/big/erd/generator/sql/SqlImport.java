@@ -86,6 +86,8 @@ public class SqlImport implements IErGenerator {
 		fileContent.newLineIfNotEmpty();
 
 		Map<String, Map<String, String>> globalForeignKeys = new LinkedHashMap<>();
+		Map<String, List<SqlAttribute>> globalAttributes = new LinkedHashMap<>();
+		Map<String, Boolean> globalWeakMap = new LinkedHashMap<>();
 		Pattern p = Pattern.compile(TABLE_PATTERN);
 		Matcher m = p.matcher(text);
 		while (m.find()) {
@@ -111,10 +113,18 @@ public class SqlImport implements IErGenerator {
 					globalForeignKeys.put(tableName, foreignKeys);
 				}
 			}
-			
+
+			String[] pk = tablePrimaryKey.split(",");
+			List<String> primaryKeyAttributes = new ArrayList<>();
+			for (String id : pk) {
+				primaryKeyAttributes.add(id.trim());
+			}
+
 			List<SqlAttribute> attributes = new ArrayList<>();
 			Pattern pAtt = Pattern.compile(ATTRIBUTE_PATTERN);
 			Matcher mAtt = pAtt.matcher(tableAttributes);
+			boolean weak = false;
+			boolean isEntity = false;
 			while (mAtt.find()) {
 				String attributeName = mAtt.group(ATTRIBUTE_NAME);
 				String attributeType = mAtt.group(ATTRIBUTE_TYPE);
@@ -127,49 +137,55 @@ public class SqlImport implements IErGenerator {
 					attribute.setAttributeComment(attributeComment);
 					
 					attributes.add(attribute);
+					
+					if (primaryKeyAttributes.contains(attributeName)) {
+						isEntity = true;
+					}
+				} else if (primaryKeyAttributes.contains(attributeName)) {
+					weak = true;
 				}
 			}
-			
-			if (!attributes.isEmpty()) {
+			if (isEntity) {
+				if (weak) {
+					fileContent.append("weak ");
+				}
 				fileContent.append("entity ");
 				fileContent.append(tableName);
 				fileContent.append(" {");
 				fileContent.newLineIfNotEmpty();
 				
-				String[] pk = tablePrimaryKey.split(",");
-				List<String> primaryKeyAttributes = new ArrayList<>();
-				for (String id : pk) {
-					primaryKeyAttributes.add(id.trim());
-				}
+				addAttributes(fileContent, attributes, primaryKeyAttributes, weak);
 				
-				for (SqlAttribute attribute : attributes) {
-					fileContent.append("\t");
-					fileContent.append(attribute.getAttributeName());
-					fileContent.append(": ");
-					fileContent.append(attribute.getAttributeType());
-					if (primaryKeyAttributes.contains(attribute.getAttributeName())) {
-						fileContent.append(" key");
-					}
-					if (attribute.getAttributeComment() != null) {
-						fileContent.append(" //");
-						fileContent.append(attribute.getAttributeComment());
-					}
-					fileContent.newLineIfNotEmpty();
-				}
 				fileContent.append("}");
 				fileContent.newLineIfNotEmpty();
+			} else {
+				globalAttributes.put(tableName, attributes);
 			}
+			globalWeakMap.put(tableName, weak && isEntity);
 		}
+		int i = 1;
 		for (String tableName : globalForeignKeys.keySet()) {
 			Map<String, String> foreignKeys = globalForeignKeys.get(tableName);
-			
+			List<SqlAttribute> attributes = globalAttributes.get(tableName);
+			boolean weak = globalWeakMap.get(tableName);
+			Set<String> refTables = new LinkedHashSet<>(foreignKeys.values());
+
+			if (weak) {
+				refTables.add(tableName);
+				fileContent.append("weak ");
+			}
 			fileContent.append("relationship ");
-			fileContent.append(tableName);
+			if (weak) {
+				fileContent.append("weakRel");
+				fileContent.append(i);
+				i++;
+			} else {
+				fileContent.append(tableName);
+			}
 			fileContent.append(" {");
 			fileContent.newLineIfNotEmpty();
 			
 			boolean first = true;
-			Set<String> refTables = new LinkedHashSet<>(foreignKeys.values());
 			for (String table : refTables) {
 				if (!first) {
 					fileContent.append(" -> ");
@@ -180,11 +196,36 @@ public class SqlImport implements IErGenerator {
 				first = false;
 			}
 			fileContent.newLineIfNotEmpty();
+
+			addAttributes(fileContent, attributes, null, false);
 			
 			fileContent.append("}");
 			fileContent.newLineIfNotEmpty();
 		}
 		return fileContent;
+	}
+
+	protected void addAttributes(StringConcatenation fileContent, List<SqlAttribute> attributes, List<String> primaryKeyAttributes, boolean weak) {
+		if (attributes != null) {
+			for (SqlAttribute attribute : attributes) {
+				fileContent.append("\t");
+				fileContent.append(attribute.getAttributeName());
+				fileContent.append(": ");
+				fileContent.append(attribute.getAttributeType());
+				if (primaryKeyAttributes != null && primaryKeyAttributes.contains(attribute.getAttributeName())) {
+					fileContent.append(" ");
+					if (weak) {
+						fileContent.append("partial-");
+					}
+					fileContent.append("key");
+				}
+				if (attribute.getAttributeComment() != null) {
+					fileContent.append(" //");
+					fileContent.append(attribute.getAttributeComment());
+				}
+				fileContent.newLineIfNotEmpty();
+			}
+		}
 	}
 
 	protected List<String> splitAndTrim(String attributes) {
