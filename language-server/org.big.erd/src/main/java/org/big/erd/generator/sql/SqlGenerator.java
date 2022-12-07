@@ -330,7 +330,7 @@ public class SqlGenerator implements IErGenerator {
 				}
 				tableContent.append(a.getName());
 			}
-			tableContent.append(") references ");
+			tableContent.append(") REFERENCES ");
 			tableContent.append(refEntity.getName());
 			tableContent.append(" (");
 			isFirst = true;

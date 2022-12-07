@@ -26,24 +26,24 @@ import org.eclipse.xtext.xbase.lib.Exceptions;
  */
 public class SqlImport implements IErGenerator {
 
-	private static final String ATTRIBUTE_PATTERN = "\\s*(.*) (.*),\\s*(?:--(.*))?";
+	private static final String ATTRIBUTE_PATTERN = "\\s*(\\S*) (.*\\(\\d+\\)|\\S*)[^,]*,\\s*(?:--(.*))?";
 	private static final int ATTRIBUTE_NAME = 1;
 	private static final int ATTRIBUTE_TYPE = 2;
 	private static final int ATTRIBUTE_COMMENT = 3;
 	
-	private static final String FOREIGN_KEY_PATTERN = "\\s*FOREIGN KEY \\((.*)\\) references (.+) \\((.*)\\)( ON DELETE CASCADE)?";
+	private static final String FOREIGN_KEY_PATTERN = ".*FOREIGN KEY \\((.*)\\)\\s+REFERENCES (?:.+\\.)?(.+?) \\((.*)\\)([^,]*)";
 	private static final int FOREIGN_KEY_ATTRIBUTES = 1;
 	private static final int FOREIGN_KEY_REF_TABLE = 2;
 	private static final int FOREIGN_KEY_REF_ATTRIBUTES = 3;
-	private static final int FOREIGN_KEY_CASCADE_KEYWORD = 4;
+	private static final int FOREIGN_KEY_KEYWORDS = 4;
 
-	private static final String PRIMARY_KEY_PATTERN = "\\s*PRIMARY KEY \\((.*)\\)";
+	private static final String PRIMARY_KEY_PATTERN = ".*PRIMARY KEY \\((.*)\\)";
 	private static final String TABLE_PATTERN =
-			"CREATE TABLE (.+) \\(((?:\r\n"
+			"CREATE TABLE(?: IF NOT EXISTS)? (?:.+\\.)?(.+?)\\s*\\(((?:\r\n"
 			+ replaceCaptureGroups(ATTRIBUTE_PATTERN) + ")*)\r\n"
 			+ PRIMARY_KEY_PATTERN + "((?:,\r\n"
 			+ replaceCaptureGroups(FOREIGN_KEY_PATTERN) + ")*)\r\n"
-			+ "\\);";
+			+ "\\);?";
 	private static final int TABLE_NAME = 1;
 	private static final int TABLE_ATTRIBUTES = 2;
 	private static final int TABLE_PRIMARY_KEY = 3;
@@ -88,7 +88,7 @@ public class SqlImport implements IErGenerator {
 		Map<String, Map<String, String>> globalForeignKeys = new LinkedHashMap<>();
 		Map<String, List<SqlAttribute>> globalAttributes = new LinkedHashMap<>();
 		Map<String, Boolean> globalWeakMap = new LinkedHashMap<>();
-		Pattern p = Pattern.compile(TABLE_PATTERN);
+		Pattern p = Pattern.compile(TABLE_PATTERN, Pattern.CASE_INSENSITIVE);
 		Matcher m = p.matcher(text);
 		while (m.find()) {
 			String tableName = m.group(TABLE_NAME);
@@ -98,7 +98,7 @@ public class SqlImport implements IErGenerator {
 			
 			Map<String, String> foreignKeys = new LinkedHashMap<>();
 			if (tableForeignKeys != null) {
-				Pattern pFor = Pattern.compile(FOREIGN_KEY_PATTERN);
+				Pattern pFor = Pattern.compile(FOREIGN_KEY_PATTERN, Pattern.CASE_INSENSITIVE);
 				Matcher mFor = pFor.matcher(tableForeignKeys);
 				while (mFor.find()) {
 					String foreignKeyAttributes = mFor.group(FOREIGN_KEY_ATTRIBUTES);
@@ -106,7 +106,7 @@ public class SqlImport implements IErGenerator {
 					String foreignKeyRefTable = mFor.group(FOREIGN_KEY_REF_TABLE);
 					String foreignKeyRefAttributes = mFor.group(FOREIGN_KEY_REF_ATTRIBUTES);
 					List<String> foreignKeyRefAttributeList = splitAndTrim(foreignKeyRefAttributes);
-					String foreignKeyCascadeKeyword = mFor.group(FOREIGN_KEY_CASCADE_KEYWORD);
+					String foreignKeyKeywords = mFor.group(FOREIGN_KEY_KEYWORDS);
 					for (String id : foreignKeyAttributeList) {
 						foreignKeys.put(id, foreignKeyRefTable);
 					}
@@ -121,7 +121,7 @@ public class SqlImport implements IErGenerator {
 			}
 
 			List<SqlAttribute> attributes = new ArrayList<>();
-			Pattern pAtt = Pattern.compile(ATTRIBUTE_PATTERN);
+			Pattern pAtt = Pattern.compile(ATTRIBUTE_PATTERN, Pattern.CASE_INSENSITIVE);
 			Matcher mAtt = pAtt.matcher(tableAttributes);
 			boolean weak = false;
 			boolean isEntity = false;
