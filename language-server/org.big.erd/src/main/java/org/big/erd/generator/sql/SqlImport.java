@@ -31,23 +31,32 @@ public class SqlImport implements IErGenerator {
 	private static final int ATTRIBUTE_TYPE = 2;
 	private static final int ATTRIBUTE_COMMENT = 3;
 	
-	private static final String FOREIGN_KEY_PATTERN = ".*FOREIGN KEY \\((.*)\\)\\s+REFERENCES (?:.+\\.)?(.+?) \\((.*)\\)([^,]*)";
+	private static final String FOREIGN_KEY_PATTERN = ".*FOREIGN KEY \\((.*)\\)\\s+REFERENCES (?:.+\\.)?(\\S+) ?\\((.*)\\)([^,]*?)";
 	private static final int FOREIGN_KEY_ATTRIBUTES = 1;
 	private static final int FOREIGN_KEY_REF_TABLE = 2;
 	private static final int FOREIGN_KEY_REF_ATTRIBUTES = 3;
 	private static final int FOREIGN_KEY_KEYWORDS = 4;
 
 	private static final String PRIMARY_KEY_PATTERN = ".*PRIMARY KEY \\((.*)\\)";
-	private static final String TABLE_PATTERN =
-			"CREATE TABLE(?: IF NOT EXISTS)? (?:.+\\.)?(.+?)\\s*\\(((?:\r\n"
+	
+	private static final String CREATE_TABLE_PATTERN =
+			"CREATE TABLE(?: IF NOT EXISTS)? (?:.+\\.)?(\\S+)\\s*\\(((?:\r\n"
 			+ replaceCaptureGroups(ATTRIBUTE_PATTERN) + ")*)(?:\r\n"
 			+ PRIMARY_KEY_PATTERN + ")?((?:,\r\n"
 			+ replaceCaptureGroups(FOREIGN_KEY_PATTERN) + ")*)\r\n"
 			+ "\\);?";
-	private static final int TABLE_NAME = 1;
-	private static final int TABLE_ATTRIBUTES = 2;
-	private static final int TABLE_PRIMARY_KEY = 3;
-	private static final int TABLE_FOREIGN_KEYS = 4;
+	private static final int CREATE_TABLE_NAME = 1;
+	private static final int CREATE_TABLE_ATTRIBUTES = 2;
+	private static final int CREATE_TABLE_PRIMARY_KEY = 3;
+	private static final int CREATE_TABLE_FOREIGN_KEYS = 4;
+	
+	private static final String ALTER_TABLE_PATTERN =
+			"ALTER TABLE(?: ONLY)?(?: IF EXISTS)? (?:.+\\.)?(\\S+)(?:\r\n"
+			+ PRIMARY_KEY_PATTERN + ")?(\r\n"
+			+ replaceCaptureGroups(FOREIGN_KEY_PATTERN) + ")?;?";
+	private static final int ALTER_TABLE_NAME = 1;
+	private static final int ALTER_TABLE_PRIMARY_KEY = 2;
+	private static final int ALTER_TABLE_FOREIGN_KEYS = 3;
 	
 	private static String replaceCaptureGroups(String pattern) {
 		// replace the capturing groups (not escaped leading parenthesis, without ?) with non-capturing groups
@@ -85,18 +94,46 @@ public class SqlImport implements IErGenerator {
 		fileContent.append(diagramName);
 		fileContent.newLineIfNotEmpty();
 
+		Map<String, String> presetPrimaryKeys = new LinkedHashMap<>();
+		Map<String, String> presetForeignKeys = new LinkedHashMap<>();
 		Map<String, Map<String, String>> globalForeignKeys = new LinkedHashMap<>();
 		Map<String, List<SqlAttribute>> globalAttributes = new LinkedHashMap<>();
 		Map<String, Boolean> globalWeakMap = new LinkedHashMap<>();
-		Pattern p = Pattern.compile(TABLE_PATTERN, Pattern.CASE_INSENSITIVE);
+		
+		// collect primary and foreign keys
+		Pattern pPreset = Pattern.compile(ALTER_TABLE_PATTERN, Pattern.CASE_INSENSITIVE);
+		Matcher mPreset = pPreset.matcher(text);
+		while (mPreset.find()) {
+			String tableName = mPreset.group(ALTER_TABLE_NAME);
+			String tablePrimaryKey = mPreset.group(ALTER_TABLE_PRIMARY_KEY);
+			String tableForeignKeys = mPreset.group(ALTER_TABLE_FOREIGN_KEYS);
+			
+			if (tablePrimaryKey != null) {
+				presetPrimaryKeys.put(tableName, tablePrimaryKey);
+			}
+			if (tableForeignKeys != null) {
+				if (presetForeignKeys.containsKey(tableName)) {
+					presetForeignKeys.put(tableName, presetForeignKeys.get(tableName) + "," + tableForeignKeys);
+				} else {
+					presetForeignKeys.put(tableName, tableForeignKeys);
+				}
+			}
+		}
+		
+		// process tables
+		Pattern p = Pattern.compile(CREATE_TABLE_PATTERN, Pattern.CASE_INSENSITIVE);
 		Matcher m = p.matcher(text);
 		while (m.find()) {
-			String tableName = m.group(TABLE_NAME);
-			String tableAttributes = m.group(TABLE_ATTRIBUTES);
-			String tablePrimaryKey = m.group(TABLE_PRIMARY_KEY);
-			String tableForeignKeys = m.group(TABLE_FOREIGN_KEYS);
-			
+			String tableName = m.group(CREATE_TABLE_NAME);
+			String tableAttributes = m.group(CREATE_TABLE_ATTRIBUTES);
+			String tablePrimaryKey = m.group(CREATE_TABLE_PRIMARY_KEY);
+			String tableForeignKeys = m.group(CREATE_TABLE_FOREIGN_KEYS);
+
+			// process foreign keys
 			Map<String, String> foreignKeys = new LinkedHashMap<>();
+			if (tableForeignKeys == null || tableForeignKeys.isEmpty()) {
+				tableForeignKeys = presetForeignKeys.get(tableName);
+			}
 			if (tableForeignKeys != null) {
 				Pattern pFor = Pattern.compile(FOREIGN_KEY_PATTERN, Pattern.CASE_INSENSITIVE);
 				Matcher mFor = pFor.matcher(tableForeignKeys);
@@ -114,12 +151,17 @@ public class SqlImport implements IErGenerator {
 				}
 			}
 
+			// process primary keys
+			if (tablePrimaryKey == null) {
+				tablePrimaryKey = presetPrimaryKeys.get(tableName);
+			}
 			String[] pk = tablePrimaryKey.split(",");
 			List<String> primaryKeyAttributes = new ArrayList<>();
 			for (String id : pk) {
 				primaryKeyAttributes.add(id.trim());
 			}
 
+			// process attributes
 			List<SqlAttribute> attributes = new ArrayList<>();
 			Pattern pAtt = Pattern.compile(ATTRIBUTE_PATTERN, Pattern.CASE_INSENSITIVE);
 			Matcher mAtt = pAtt.matcher(tableAttributes);
@@ -145,7 +187,9 @@ public class SqlImport implements IErGenerator {
 					weak = true;
 				}
 			}
+			
 			if (isEntity) {
+				// generate entities
 				if (weak) {
 					fileContent.append("weak ");
 				}
@@ -163,6 +207,8 @@ public class SqlImport implements IErGenerator {
 			}
 			globalWeakMap.put(tableName, weak && isEntity);
 		}
+		
+		// generate relationships
 		int i = 1;
 		for (String tableName : globalForeignKeys.keySet()) {
 			Map<String, String> foreignKeys = globalForeignKeys.get(tableName);
