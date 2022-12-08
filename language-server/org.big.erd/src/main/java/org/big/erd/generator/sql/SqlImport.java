@@ -26,7 +26,12 @@ import org.eclipse.xtext.xbase.lib.Exceptions;
  */
 public class SqlImport implements IErGenerator {
 
-	private static final String ATTRIBUTE_PATTERN = "\\s*([^\\)\\s]*) (.*\\(\\d+\\)|[^,\\s]+)[^,\\)]*,?\\s*(?:--(.*))?";
+	private static final boolean REPLACE_NEWLINES = false;
+
+	private static final String SIZE_PATTERN = "\\((\\d+)";
+	private static final int SIZE_VALUE = 1;
+	
+	private static final String ATTRIBUTE_PATTERN = "\\s*([^\\)\\s]*) (.*\\(\\d+.*\\)|[^,\\s]+)[^,\\)]*,?\\s*(?:--(.*))?";
 	private static final int ATTRIBUTE_NAME = 1;
 	private static final int ATTRIBUTE_TYPE = 2;
 	private static final int ATTRIBUTE_COMMENT = 3;
@@ -37,7 +42,8 @@ public class SqlImport implements IErGenerator {
 	private static final int FOREIGN_KEY_REF_ATTRIBUTES = 3;
 	private static final int FOREIGN_KEY_KEYWORDS = 4;
 
-	private static final String PRIMARY_KEY_PATTERN = ".*PRIMARY KEY \\((.*)\\)";
+	private static final String PRIMARY_KEY_PATTERN = 
+			".*PRIMARY KEY(?: CLUSTERED)?\\s*\\((.*)\\)";
 
 	@SuppressWarnings("unused")
 	// for debugging
@@ -57,17 +63,25 @@ public class SqlImport implements IErGenerator {
 	private static final int ALTER_TABLE_FOREIGN_KEYS = 3;
 
 	private static String getCreateTablePattern(boolean replace) {
-		return "CREATE TABLE(?: IF NOT EXISTS)? (?:.+\\.)?(\\S+)\\s*\\(((?:\r\n"
+		String pattern = "CREATE TABLE(?: IF NOT EXISTS)? (?:.+\\.)?(\\S+)\\s*\\(((?:\r\n"
 				+ replaceCaptureGroups(ATTRIBUTE_PATTERN, replace) + ")*)(?:\r\n"
 				+ PRIMARY_KEY_PATTERN + ")?((?:,\r\n"
 				+ replaceCaptureGroups(FOREIGN_KEY_PATTERN, replace) + ")*)\r\n"
-				+ "\\)[^;]*;?";
+				+ "\\s*\\)[^;]*;?";
+		if (replace) {
+			pattern = removeNewlines(pattern);
+		}
+		return pattern;
 	}
 
-	private static String getAlterTablePattern(boolean isDebug) {
-		return "ALTER TABLE(?: ONLY)?(?: IF EXISTS)? (?:.+\\.)?(\\S+)(?:\r\n"
+	private static String getAlterTablePattern(boolean replace) {
+		String pattern = "ALTER TABLE(?: ONLY)?(?: IF EXISTS)? (?:.+\\.)?(\\S+)(?:\r\n"
 				+ PRIMARY_KEY_PATTERN + ")?(\r\n"
-				+ replaceCaptureGroups(FOREIGN_KEY_PATTERN, isDebug) + ")?;?";
+				+ replaceCaptureGroups(FOREIGN_KEY_PATTERN, replace) + ")?;?";
+		if (replace) {
+			pattern = removeNewlines(pattern);
+		}
+		return pattern;
 	}
 	
 	private static String replaceCaptureGroups(String pattern, boolean replace) {
@@ -117,7 +131,7 @@ public class SqlImport implements IErGenerator {
 		
 		// collect primary and foreign keys
 		Pattern pPreset = Pattern.compile(ALTER_TABLE_PATTERN, Pattern.CASE_INSENSITIVE);
-		Matcher mPreset = pPreset.matcher(text);
+		Matcher mPreset = pPreset.matcher(removeNewlines(text));
 		while (mPreset.find()) {
 			String tableName = mPreset.group(ALTER_TABLE_NAME);
 			String tablePrimaryKey = mPreset.group(ALTER_TABLE_PRIMARY_KEY);
@@ -137,7 +151,7 @@ public class SqlImport implements IErGenerator {
 		
 		// process tables
 		Pattern p = Pattern.compile(CREATE_TABLE_PATTERN, Pattern.CASE_INSENSITIVE);
-		Matcher m = p.matcher(text);
+		Matcher m = p.matcher(removeNewlines(text));
 		while (m.find()) {
 			String tableName = m.group(CREATE_TABLE_NAME);
 			String tableAttributes = m.group(CREATE_TABLE_ATTRIBUTES);
@@ -190,6 +204,17 @@ public class SqlImport implements IErGenerator {
 				String attributeComment = mAtt.group(ATTRIBUTE_COMMENT);
 
 				if (!foreignKeys.containsKey(attributeName)) {
+					int size = 0;
+					if (attributeType != null) {
+						Pattern pSize = Pattern.compile(SIZE_PATTERN);
+						Matcher mSize = pSize.matcher(attributeType);
+						if (mSize.find()) {
+							size = Integer.parseInt(mSize.group(SIZE_VALUE));
+						}
+					}
+					if (size > 0) {
+						attributeType = deQuote(attributeType.substring(0, attributeType.indexOf("(" + size))) + "(" + size + ")";
+					}
 					SqlAttribute attribute = new SqlAttribute();
 					attribute.setAttributeName(attributeName);
 					attribute.setAttributeType(attributeType);
@@ -311,14 +336,41 @@ public class SqlImport implements IErGenerator {
 		str = deQuote(str, "'");
 		str = deQuote(str, "\"");
 		str = deQuote(str, "`");
+		str = deQuote(str, "[", "]");
 		return str;
 	}
 	
 	private String deQuote(String str, String quoteChar) {
+		return deQuote(str, quoteChar, null);
+	}
+	
+	private String deQuote(String str, String quoteChar, String differentEndChar) {
 		if (str != null && str.length() > 1) {
-			if (str.startsWith(quoteChar) && str.endsWith(quoteChar)) {
-				str = str.substring(1, str.length() - 1);
+			if (differentEndChar == null) {
+				if (str.startsWith(quoteChar) && str.endsWith(quoteChar)) {
+					str = str.substring(1, str.length() - 1);
+				}
+			} else {
+				if (str.startsWith(quoteChar) && str.endsWith(differentEndChar)) {
+					str = str.substring(1, str.length() - 1);
+				}
 			}
+		}
+		return str;
+	}
+	
+	private static String removeNewlines(String str) {
+		if (REPLACE_NEWLINES) {
+			str = removeFromString(str, "\r\n");
+			str = removeFromString(str, "\r");
+			str = removeFromString(str, "\n");
+		}
+		return str;
+	}
+	
+	private static String removeFromString(String str, String search) {
+		if (str != null) {
+			return str.replace(search, "");
 		}
 		return str;
 	}
