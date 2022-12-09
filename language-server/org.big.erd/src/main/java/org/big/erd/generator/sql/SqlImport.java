@@ -33,7 +33,7 @@ public class SqlImport implements IErGenerator {
 	private static final String SIZE_PATTERN = "\\((\\d+|\\*)";
 	private static final int SIZE_VALUE = 1;
 	
-	private static final String ATTRIBUTE_PATTERN = "\\s*([^\\)\\s]*) (.*\\([\\d\\*]+.*\\)|[^,\\s]+)[^,\\)]*,?\\s*(?:--(.*))?";
+	private static final String ATTRIBUTE_PATTERN = "\\s*([^\\)\\s,]*)(?: (.*\\([\\d\\*]+.*\\)|[^,\\s]+))?[^,\\)]*,?\\s*(?:--(.*))?";
 	private static final int ATTRIBUTE_NAME = 1;
 	private static final int ATTRIBUTE_TYPE = 2;
 	private static final int ATTRIBUTE_COMMENT = 3;
@@ -46,7 +46,7 @@ public class SqlImport implements IErGenerator {
 	private static final int FOREIGN_KEY_KEYWORDS = 4;
 
 	private static final String PRIMARY_KEY_BASE_PATTERN = "PRIMARY KEY(?: CLUSTERED)?\\s*\\((.*?)\\)";
-	private static final String PRIMARY_KEY_PATTERN = ".*" + PRIMARY_KEY_BASE_PATTERN + "(?:WITH.+?\\(.*?\\))?[^,\\)]*";
+	private static final String PRIMARY_KEY_PATTERN = ".*" + PRIMARY_KEY_BASE_PATTERN + "(?:WITH.+?\\(.*?\\))?[^,\\)]*?";
 
 	@SuppressWarnings("unused")
 	// for debugging
@@ -353,8 +353,10 @@ public class SqlImport implements IErGenerator {
 			for (SqlAttribute attribute : attributes) {
 				fileContent.append("\t");
 				fileContent.append(deQuote(attribute.getAttributeName()));
-				fileContent.append(": ");
-				fileContent.append(deQuote(attribute.getAttributeType().replace(" ", "")));
+				if (attribute.getAttributeType() != null) {
+					fileContent.append(": ");
+					fileContent.append(deQuote(attribute.getAttributeType().replace(" ", "")));
+				}
 				if (primaryKeyAttributes != null && primaryKeyAttributes.contains(attribute.getAttributeName())) {
 					fileContent.append(" ");
 					if (weak) {
