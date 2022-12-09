@@ -36,14 +36,15 @@ public class SqlImport implements IErGenerator {
 	private static final int ATTRIBUTE_TYPE = 2;
 	private static final int ATTRIBUTE_COMMENT = 3;
 	
-	private static final String FOREIGN_KEY_PATTERN = ".*FOREIGN KEY \\((.*)\\)\\s+REFERENCES (?:.+\\.)?(\\S+) ?\\((.*)\\)([^,]*?)";
+	private static final String FOREIGN_KEY_BASE_PATTERN = "FOREIGN KEY\\s*\\((.*?)\\)\\s*REFERENCES (?:.+?\\.)?(\\S+) ?\\((.*?)\\)";
+	private static final String FOREIGN_KEY_PATTERN = ".*?" + FOREIGN_KEY_BASE_PATTERN + "([^,]*?)";
 	private static final int FOREIGN_KEY_ATTRIBUTES = 1;
 	private static final int FOREIGN_KEY_REF_TABLE = 2;
 	private static final int FOREIGN_KEY_REF_ATTRIBUTES = 3;
 	private static final int FOREIGN_KEY_KEYWORDS = 4;
 
-	private static final String PRIMARY_KEY_PATTERN = 
-			".*PRIMARY KEY(?: CLUSTERED)?\\s*\\((.*)\\)";
+	private static final String PRIMARY_KEY_BASE_PATTERN = "PRIMARY KEY(?: CLUSTERED)?\\s*\\((.*?)\\)";
+	private static final String PRIMARY_KEY_PATTERN = ".*" + PRIMARY_KEY_BASE_PATTERN + "(?:WITH.+?\\(.*?\\))?[^,\\)]*";
 
 	@SuppressWarnings("unused")
 	// for debugging
@@ -63,23 +64,23 @@ public class SqlImport implements IErGenerator {
 	private static final int ALTER_TABLE_FOREIGN_KEYS = 3;
 
 	private static String getCreateTablePattern(boolean replace) {
-		String pattern = "CREATE TABLE(?: IF NOT EXISTS)? (?:.+\\.)?(\\S+)\\s*\\(((?:\r\n"
+		String pattern = "CREATE TABLE(?: IF NOT EXISTS)? (?:.+?\\.)?(\\S+)\\s*\\(((?:\r\n"
 				+ replaceCaptureGroups(ATTRIBUTE_PATTERN, replace) + ")*)(?:\r\n"
 				+ PRIMARY_KEY_PATTERN + ")?((?:,\r\n"
 				+ replaceCaptureGroups(FOREIGN_KEY_PATTERN, replace) + ")*)\r\n"
-				+ "\\s*\\)[^;]*;?";
+				+ "\\s*\\)";
 		if (replace) {
-			pattern = removeNewlines(pattern);
+			pattern = removeNewlines(pattern, REPLACE_NEWLINES);
 		}
 		return pattern;
 	}
 
 	private static String getAlterTablePattern(boolean replace) {
-		String pattern = "ALTER TABLE(?: ONLY)?(?: IF EXISTS)? (?:.+\\.)?(\\S+)(?:\r\n"
-				+ PRIMARY_KEY_PATTERN + ")?(\r\n"
+		String pattern = "ALTER TABLE(?: ONLY)?(?: IF EXISTS)? (?:.+?\\.)?(\\S+)(?:\r\n"
+				+ PRIMARY_KEY_PATTERN + ")?(\r?\n?"
 				+ replaceCaptureGroups(FOREIGN_KEY_PATTERN, replace) + ")?;?";
 		if (replace) {
-			pattern = removeNewlines(pattern);
+			pattern = removeNewlines(pattern, REPLACE_NEWLINES);
 		}
 		return pattern;
 	}
@@ -118,6 +119,8 @@ public class SqlImport implements IErGenerator {
 	}
 
 	private StringConcatenation generateFileContent(String diagramName, String text) {
+		String preprocessedSql = preprocessSql(text);
+		
 		StringConcatenation fileContent = new StringConcatenation();
 		fileContent.append("erdiagram ");
 		fileContent.append(diagramName);
@@ -131,7 +134,7 @@ public class SqlImport implements IErGenerator {
 		
 		// collect primary and foreign keys
 		Pattern pPreset = Pattern.compile(ALTER_TABLE_PATTERN, Pattern.CASE_INSENSITIVE);
-		Matcher mPreset = pPreset.matcher(removeNewlines(text));
+		Matcher mPreset = pPreset.matcher(preprocessedSql);
 		while (mPreset.find()) {
 			String tableName = mPreset.group(ALTER_TABLE_NAME);
 			String tablePrimaryKey = mPreset.group(ALTER_TABLE_PRIMARY_KEY);
@@ -151,7 +154,7 @@ public class SqlImport implements IErGenerator {
 		
 		// process tables
 		Pattern p = Pattern.compile(CREATE_TABLE_PATTERN, Pattern.CASE_INSENSITIVE);
-		Matcher m = p.matcher(removeNewlines(text));
+		Matcher m = p.matcher(preprocessedSql);
 		while (m.find()) {
 			String tableName = m.group(CREATE_TABLE_NAME);
 			String tableAttributes = m.group(CREATE_TABLE_ATTRIBUTES);
@@ -188,7 +191,12 @@ public class SqlImport implements IErGenerator {
 			if (tablePrimaryKey != null) {
 				String[] pk = tablePrimaryKey.split(",");
 				for (String id : pk) {
-					primaryKeyAttributes.add(id.trim());
+					id = id.trim();
+					int index = id.indexOf(" ");
+					if (index > 0) {
+						id = id.substring(0, index);
+					}
+					primaryKeyAttributes.add(id);
 				}
 			}
 
@@ -293,13 +301,32 @@ public class SqlImport implements IErGenerator {
 		return fileContent;
 	}
 
+	private String preprocessSql(String text) {
+		// MsSql: combine primary key and foreign key clauses into a single line
+		Pattern pPrimaryKey = Pattern.compile(PRIMARY_KEY_BASE_PATTERN, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+		Matcher mPrimaryKey = pPrimaryKey.matcher(text);
+		while (mPrimaryKey.find()) {
+			String originalText = mPrimaryKey.group();
+			String replacedText = removeNewlines(originalText);
+			text = text.replace(originalText, replacedText);
+		}
+		Pattern pForeignKey = Pattern.compile(FOREIGN_KEY_BASE_PATTERN, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+		Matcher mForeignKey = pForeignKey.matcher(text);
+		while (mForeignKey.find()) {
+			String originalText = mForeignKey.group();
+			String replacedText = removeNewlines(originalText);
+			text = text.replace(originalText, replacedText);
+		}
+		return removeNewlines(text, REPLACE_NEWLINES);
+	}
+
 	private void addAttributes(StringConcatenation fileContent, List<SqlAttribute> attributes, List<String> primaryKeyAttributes, boolean weak) {
 		if (attributes != null) {
 			for (SqlAttribute attribute : attributes) {
 				fileContent.append("\t");
 				fileContent.append(deQuote(attribute.getAttributeName()));
 				fileContent.append(": ");
-				fileContent.append(attribute.getAttributeType().replace(" ", ""));
+				fileContent.append(deQuote(attribute.getAttributeType().replace(" ", "")));
 				if (primaryKeyAttributes != null && primaryKeyAttributes.contains(attribute.getAttributeName())) {
 					fileContent.append(" ");
 					if (weak) {
@@ -360,7 +387,11 @@ public class SqlImport implements IErGenerator {
 	}
 	
 	private static String removeNewlines(String str) {
-		if (REPLACE_NEWLINES) {
+		return removeNewlines(str, true);
+	}
+	
+	private static String removeNewlines(String str, boolean replace) {
+		if (replace) {
 			str = removeFromString(str, "\r\n");
 			str = removeFromString(str, "\r");
 			str = removeFromString(str, "\n");
