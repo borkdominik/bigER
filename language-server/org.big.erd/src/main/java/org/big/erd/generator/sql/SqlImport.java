@@ -1,6 +1,8 @@
 package org.big.erd.generator.sql;
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -28,10 +30,10 @@ public class SqlImport implements IErGenerator {
 
 	private static final boolean REPLACE_NEWLINES = false;
 
-	private static final String SIZE_PATTERN = "\\((\\d+)";
+	private static final String SIZE_PATTERN = "\\((\\d+|\\*)";
 	private static final int SIZE_VALUE = 1;
 	
-	private static final String ATTRIBUTE_PATTERN = "\\s*([^\\)\\s]*) (.*\\(\\d+.*\\)|[^,\\s]+)[^,\\)]*,?\\s*(?:--(.*))?";
+	private static final String ATTRIBUTE_PATTERN = "\\s*([^\\)\\s]*) (.*\\([\\d\\*]+.*\\)|[^,\\s]+)[^,\\)]*,?\\s*(?:--(.*))?";
 	private static final int ATTRIBUTE_NAME = 1;
 	private static final int ATTRIBUTE_TYPE = 2;
 	private static final int ATTRIBUTE_COMMENT = 3;
@@ -65,7 +67,7 @@ public class SqlImport implements IErGenerator {
 
 	private static String getCreateTablePattern(boolean replace) {
 		String pattern = "CREATE TABLE(?: IF NOT EXISTS)? (?:.+?\\.)?(\\S+)\\s*\\(((?:\r\n"
-				+ replaceCaptureGroups(ATTRIBUTE_PATTERN, replace) + ")*)(?:\r\n"
+				+ replaceCaptureGroups(ATTRIBUTE_PATTERN, replace) + ")*?)(?:\r\n"
 				+ PRIMARY_KEY_PATTERN + ")?((?:,\r\n"
 				+ replaceCaptureGroups(FOREIGN_KEY_PATTERN, replace) + ")*)\r\n"
 				+ "\\s*\\)";
@@ -76,7 +78,7 @@ public class SqlImport implements IErGenerator {
 	}
 
 	private static String getAlterTablePattern(boolean replace) {
-		String pattern = "ALTER TABLE(?: ONLY)?(?: IF EXISTS)? (?:.+?\\.)?(\\S+)(?:\r\n"
+		String pattern = "ALTER TABLE(?: ONLY)?(?: IF EXISTS)? (?:.+?\\.)?(\\S+)(?:\r?\n?"
 				+ PRIMARY_KEY_PATTERN + ")?(\r?\n?"
 				+ replaceCaptureGroups(FOREIGN_KEY_PATTERN, replace) + ")?;?";
 		if (replace) {
@@ -113,9 +115,26 @@ public class SqlImport implements IErGenerator {
 	}
 	
 	public static void main(String[] args) throws IOException {
-		byte[] content = new FileInputStream("d:\\Src\\bigER\\bigER\\examples\\generated\\University.sql").readAllBytes();
-		StringConcatenation fileContent = new SqlImport().generateFileContent("test", new String(content));
-		System.out.println(fileContent.toString());
+		File root = new File("D:\\Src\\bigER\\bigER\\language-server\\org.big.erd\\src\\main\\java\\org\\big\\erd\\generator\\sql\\input");
+		handleFile(root);
+	}
+	
+	private static void handleFile(File file) throws IOException {
+		if (file.isFile()) {
+			try (FileInputStream fis = new FileInputStream(file)) {
+				byte[] content = fis.readAllBytes();
+				StringConcatenation fileContent = new SqlImport().generateFileContent("test", new String(content));
+				File output = new File(new File(file.getParentFile().getParentFile(), "output"), file.getName());
+				try (FileOutputStream fos = new FileOutputStream(output)) {
+					fos.write(fileContent.toString().getBytes());
+				}
+	//			System.out.println(fileContent.toString());
+			}
+		} else if (file.isDirectory()) {
+			for (File f : file.listFiles()) {
+				handleFile(f);
+			}
+		}
 	}
 
 	private StringConcatenation generateFileContent(String diagramName, String text) {
@@ -217,11 +236,18 @@ public class SqlImport implements IErGenerator {
 						Pattern pSize = Pattern.compile(SIZE_PATTERN);
 						Matcher mSize = pSize.matcher(attributeType);
 						if (mSize.find()) {
-							size = Integer.parseInt(mSize.group(SIZE_VALUE));
+							String sizeValue = mSize.group(SIZE_VALUE);
+							if ("*".equals(sizeValue)) {
+								size = -1;
+							} else {
+								size = Integer.parseInt(sizeValue);
+							}
 						}
 					}
 					if (size > 0) {
 						attributeType = deQuote(attributeType.substring(0, attributeType.indexOf("(" + size))) + "(" + size + ")";
+					} else if (size < 0) {
+						attributeType = deQuote(attributeType.substring(0, attributeType.indexOf("(*")));
 					}
 					SqlAttribute attribute = new SqlAttribute();
 					attribute.setAttributeName(attributeName);
@@ -302,6 +328,8 @@ public class SqlImport implements IErGenerator {
 	}
 
 	private String preprocessSql(String text) {
+		// Oracle: insert line break
+		text = text.replace("(\t", "(\r\n\t");
 		// MsSql: combine primary key and foreign key clauses into a single line
 		Pattern pPrimaryKey = Pattern.compile(PRIMARY_KEY_BASE_PATTERN, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
 		Matcher mPrimaryKey = pPrimaryKey.matcher(text);
