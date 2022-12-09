@@ -50,6 +50,10 @@ public class SqlGenerator implements IErGenerator {
 		}
 	}
 
+	public String generate(final Model diagram) {
+		return generateFileContent(diagram, false).toString();
+	}
+
 	private StringConcatenation generateFileContent(final Model diagram, boolean drop) {
 		List<String> tables = new ArrayList<>();
 		StringConcatenation fileContent = new StringConcatenation();
@@ -200,9 +204,11 @@ public class SqlGenerator implements IErGenerator {
 	}
 
 	private String transformDataType(final DataType dataType, final String mappedType) {
-		int size = dataType.getSize();
-		if (size != 0) {
-			return mappedType + "(" + Integer.valueOf(size) + ")";
+		if (dataType != null) {
+			int size = dataType.getSize();
+			if (size != 0) {
+				return mappedType + "(" + Integer.valueOf(size) + ")";
+			}
 		}
 		return mappedType;
 	}
@@ -256,7 +262,6 @@ public class SqlGenerator implements IErGenerator {
 			if (attribute.getType() != AttributeType.DERIVED) {
 				tableContent.append("\t");
 				tableContent.append(attribute.getName());
-				tableContent.append(" ");
 				String comment = null;
 				String originalType = "";
 				if (attribute.getDatatype() != null) {
@@ -270,7 +275,10 @@ public class SqlGenerator implements IErGenerator {
 					comment = "type mapped from: " + originalType;
 				}
 				String transformedDataType = this.transformDataType(attribute.getDatatype(), mappedType);
-				tableContent.append(transformedDataType);
+				if (transformedDataType != null && !transformedDataType.isEmpty()) {
+					tableContent.append(" ");
+					tableContent.append(transformedDataType);
+				}
 				tableContent.append(",");
 				if (comment != null) {
 					tableContent.append("\t");
