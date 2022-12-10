@@ -203,9 +203,9 @@ public class SqlGenerator implements IErGenerator {
 		return key;
 	}
 
-	private String transformDataType(final DataType dataType, final String mappedType) {
-		if (dataType != null) {
-			int size = dataType.getSize();
+	protected String transformDataType(final Attribute attribute, final String mappedType) {
+		if (attribute.getDatatype() != null) {
+			int size = attribute.getDatatype().getSize();
 			if (size != 0) {
 				return mappedType + "(" + Integer.valueOf(size) + ")";
 			}
@@ -274,7 +274,7 @@ public class SqlGenerator implements IErGenerator {
 				} else if (!mappedType.equals(originalType)) {
 					comment = "type mapped from: " + originalType;
 				}
-				String transformedDataType = this.transformDataType(attribute.getDatatype(), mappedType);
+				String transformedDataType = this.transformDataType(attribute, mappedType);
 				if (transformedDataType != null && !transformedDataType.isEmpty()) {
 					tableContent.append(" ");
 					tableContent.append(transformedDataType);
