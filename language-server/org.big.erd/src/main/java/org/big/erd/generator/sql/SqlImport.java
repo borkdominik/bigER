@@ -124,11 +124,20 @@ public class SqlImport implements IErGenerator {
 			try (FileInputStream fis = new FileInputStream(file)) {
 				byte[] content = fis.readAllBytes();
 				StringConcatenation fileContent = new SqlImport().generateFileContent("test", new String(content));
+				String outputContent = fileContent.toString();
 				File output = new File(new File(file.getParentFile().getParentFile(), "output"), file.getName());
 				try (FileOutputStream fos = new FileOutputStream(output)) {
-					fos.write(fileContent.toString().getBytes());
+					fos.write(outputContent.getBytes());
 				}
-	//			System.out.println(fileContent.toString());
+				File expected = new File(new File(output.getParentFile(), "expected"), file.getName());
+				if (expected.isFile()) {
+					try (FileInputStream fisExpected = new FileInputStream(expected)) {
+						byte[] contentExpected = fisExpected.readAllBytes();
+						if (!new String(contentExpected).equals(outputContent)) {
+							System.out.println("unexpected output in file: " + output.getAbsolutePath());
+						}
+					}
+				}
 			}
 		} else if (file.isDirectory()) {
 			for (File f : file.listFiles()) {
