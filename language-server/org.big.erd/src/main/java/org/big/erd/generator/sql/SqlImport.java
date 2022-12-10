@@ -33,12 +33,12 @@ public class SqlImport implements IErGenerator {
 	private static final String SIZE_PATTERN = "\\((\\d+|\\*)";
 	private static final int SIZE_VALUE = 1;
 	
-	private static final String ATTRIBUTE_PATTERN = "\\s*([^\\)\\s,]*)(?: (.*\\([\\d\\*]+.*\\)|[^,\\s]+))?[^,\\)]*,?\\s*(?:--(.*))?";
+	private static final String ATTRIBUTE_PATTERN = "\\s*([^\\)\\s,]*)(?: (.*\\([\\d\\*]+.*?\\)|[^,\\s]+))?[^,\\)]*,?\\s*(?:--(.*))?";
 	private static final int ATTRIBUTE_NAME = 1;
 	private static final int ATTRIBUTE_TYPE = 2;
 	private static final int ATTRIBUTE_COMMENT = 3;
 	
-	private static final String FOREIGN_KEY_BASE_PATTERN = "FOREIGN KEY\\s*\\((.*?)\\)\\s*REFERENCES (?:.+?\\.)?(\\S+) ?\\((.*?)\\)";
+	private static final String FOREIGN_KEY_BASE_PATTERN = "FOREIGN KEY\\s*\\((.*?)\\)\\s*REFERENCES (?:.+?\\.)?(\\S+)\\s*\\((.*?)\\)";
 	private static final String FOREIGN_KEY_PATTERN = ".*?" + FOREIGN_KEY_BASE_PATTERN + "([^,]*?)";
 	private static final int FOREIGN_KEY_ATTRIBUTES = 1;
 	private static final int FOREIGN_KEY_REF_TABLE = 2;
@@ -69,7 +69,7 @@ public class SqlImport implements IErGenerator {
 		String pattern = "CREATE TABLE(?: IF NOT EXISTS)? (?:.+?\\.)?(\\S+)\\s*\\(((?:\r\n"
 				+ replaceCaptureGroups(ATTRIBUTE_PATTERN, replace) + ")*?)(?:\r\n"
 				+ PRIMARY_KEY_PATTERN + ")?((?:,\r\n"
-				+ replaceCaptureGroups(FOREIGN_KEY_PATTERN, replace) + ")*)\r\n"
+				+ replaceCaptureGroups(FOREIGN_KEY_PATTERN, replace) + ")*)\r?\n?"
 				+ "\\s*\\)";
 		if (replace) {
 			pattern = removeNewlines(pattern, REPLACE_NEWLINES);
@@ -78,7 +78,7 @@ public class SqlImport implements IErGenerator {
 	}
 
 	private static String getAlterTablePattern(boolean replace) {
-		String pattern = "ALTER TABLE(?: ONLY)?(?: IF EXISTS)? (?:.+?\\.)?(\\S+)(?:\r?\n?"
+		String pattern = "ALTER TABLE(?: ONLY)?(?: IF EXISTS)? (?:.+?\\.)?(\\S+)\\s*(?:\r?\n?"
 				+ PRIMARY_KEY_PATTERN + ")?(\r?\n?"
 				+ replaceCaptureGroups(FOREIGN_KEY_PATTERN, replace) + ")?;?";
 		if (replace) {
