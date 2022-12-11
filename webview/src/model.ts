@@ -30,7 +30,6 @@ export class CardinalityLabel extends SLabel {
     };
 }
 
-// TODO: Fix Role label
 export class RoleLabel extends SLabel {
     override edgePlacement = <EdgePlacement> {
         position: 0.5,
