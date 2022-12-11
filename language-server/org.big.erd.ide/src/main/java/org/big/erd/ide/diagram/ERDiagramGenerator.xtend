@@ -129,8 +129,7 @@ class ERDiagramGenerator implements IDiagramGenerator {
 
 	def NotationEdge createEdgeAndAddToGraph(RelationEntity relationEntity,
 											 RelationEntity targetRelationEntity,
-											 String source, String target, extension Context context
-	) {
+											 String source, String target, extension Context context) {
 		val notationType = model.notation?.notationType ?: NotationType.DEFAULT
 		val relationship = relationEntity.eContainer() as Relationship;
 		val edgeId = idCache.uniqueId(relationEntity, source + ":" + relationship.name + ":" + target)
@@ -141,6 +140,7 @@ class ERDiagramGenerator implements IDiagramGenerator {
 			sourceId = source
 			targetId = target
 			notation = notationType.toString
+			connectivity = getCardinality(relationEntity)
 			isSource = relationEntity.equals(relationship.first)
 			children = createLabels(relationEntity, targetRelationEntity, notationType, edgeId,context)
 		]).traceAndMark(relationEntity, context)
@@ -169,7 +169,7 @@ class ERDiagramGenerator implements IDiagramGenerator {
 			val relationship = relationEntity.eContainer() as Relationship;
 			
 			labels.set(2,(new SLabel [
-				id = idCache.uniqueId(edgeId + '.additionalLabel')
+				id = idCache.uniqueId(edgeId + '.relationName')
 				text = relationship.name
 				type = DiagramTypes.LABEL_TOP]).trace(relationEntity, RELATION_ENTITY__CARDINALITY, -1))
 			
