@@ -105,31 +105,32 @@ class ERDiagramGenerator implements IDiagramGenerator {
 		if(model.notation?.notationType.equals(NotationType.UML) && relationship.third === null){
 			val source = idCache.getId(relationship.first.target)
 			val target = idCache.getId(relationship.second.target)
-			edges.add(createEdgeAndAddToGraph(relationship.first,relationship.second, source, target, context))
+			edges.add(createEdgeAndAddToGraph(relationship.first, relationship.second, source, target, context))
 			return edges
 		}
 		// for each RelationEntity create an edge that connects the entity with the relationship node
 		if (relationship.first !== null) {
 			val source = idCache.getId(relationship.first.target)
 			val target = idCache.getId(relationship)
-			edges.add(createEdgeAndAddToGraph(relationship.first,null, source, target, context))
+			edges.add(createEdgeAndAddToGraph(relationship.first, null, source, target, context))
 		} 
 		if (relationship.second !== null) {
 			val source = idCache.getId(relationship)
 			val target = idCache.getId(relationship.second.target)
-			edges.add(createEdgeAndAddToGraph(relationship.second,null, source, target, context))
+			edges.add(createEdgeAndAddToGraph(relationship.second, null, source, target, context))
 		} 
 		if (relationship.third !== null) {
 			val source = idCache.getId(relationship)
 			val target = idCache.getId(relationship.third.target)
-			edges.add(createEdgeAndAddToGraph(relationship.third,null, source, target, context))
+			edges.add(createEdgeAndAddToGraph(relationship.third, null, source, target, context))
 		}
 		return edges
 	}
 
 	def NotationEdge createEdgeAndAddToGraph(RelationEntity relationEntity,
 											 RelationEntity targetRelationEntity,
-											 String source, String target, extension Context context) {
+											 String source,
+											 String target, extension Context context) {
 		val notationType = model.notation?.notationType ?: NotationType.DEFAULT
 		val relationship = relationEntity.eContainer() as Relationship;
 		val edgeId = idCache.uniqueId(relationEntity, source + ":" + relationship.name + ":" + target)
@@ -142,7 +143,7 @@ class ERDiagramGenerator implements IDiagramGenerator {
 			notation = notationType.toString
 			connectivity = getCardinality(relationEntity)
 			isSource = relationEntity.equals(relationship.first)
-			children = createLabels(relationEntity, targetRelationEntity, notationType, edgeId,context)
+			children = createLabels(relationEntity, targetRelationEntity, notationType, edgeId, context)
 		]).traceAndMark(relationEntity, context)
 	}
 	
@@ -150,20 +151,25 @@ class ERDiagramGenerator implements IDiagramGenerator {
 							  RelationEntity targetRelationEntity,
 							  NotationType notationType,
 							  String edgeId,extension Context contex){
-							
-		// initialize number of labels
+							  	
+		val typeCardinality = targetRelationEntity === null ? DiagramTypes.LABEL_TOP :
+															  DiagramTypes.LABEL_TOP_LEFT;
+															  
+		val typeRole = targetRelationEntity === null ? DiagramTypes.LABEL_BOTTOM :
+													   DiagramTypes.LABEL_BOTTOM_LEFT;
+		// determine number of labels
 		var size = targetRelationEntity === null ? 2 : 5
 		val SLabel[] labels = newArrayOfSize(size)
 							  
 		labels.set(0,(new SLabel [
 			id = idCache.uniqueId(edgeId + '.label')
 			text = getEdgeLabelText(notationType, getCardinality(relationEntity))
-			type = DiagramTypes.LABEL_TOP]).trace(relationEntity, RELATION_ENTITY__CARDINALITY, -1))
+			type = typeCardinality]).trace(relationEntity, RELATION_ENTITY__CARDINALITY, -1))
 				
 		labels.set(1,(new SLabel [
 			id = idCache.uniqueId(edgeId + '.roleLabel')
 			text = getRoleLabelText(relationEntity)
-			type = DiagramTypes.LABEL_BOTTOM]).trace(relationEntity, RELATION_ENTITY__ROLE, -1))
+			type = typeRole]).trace(relationEntity, RELATION_ENTITY__ROLE, -1))
 			
 		if(targetRelationEntity !== null){
 			val relationship = relationEntity.eContainer() as Relationship;
@@ -176,12 +182,12 @@ class ERDiagramGenerator implements IDiagramGenerator {
 			labels.set(3,(new SLabel [
 				id = idCache.uniqueId(edgeId + '.additionalLabel')
 				text = getEdgeLabelText(notationType, getCardinality(targetRelationEntity))
-				type = DiagramTypes.LABEL_TOP]).trace(relationEntity, RELATION_ENTITY__CARDINALITY, -1))
+				type = DiagramTypes.LABEL_TOP_RIGHT]).trace(relationEntity, RELATION_ENTITY__CARDINALITY, -1))
 				
 			labels.set(4,(new SLabel [
 				id = idCache.uniqueId(edgeId + '.additionalRoleLabel')
 				text = getRoleLabelText(targetRelationEntity)
-				type = DiagramTypes.LABEL_BOTTOM]).trace(relationEntity, RELATION_ENTITY__ROLE, -1))
+				type = DiagramTypes.LABEL_BOTTOM_RIGHT]).trace(relationEntity, RELATION_ENTITY__ROLE, -1))
 		}
 		return labels
 	}

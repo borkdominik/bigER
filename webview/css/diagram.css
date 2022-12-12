@@ -110,7 +110,24 @@ text {
 .top.sprotty-label {
     fill: var(--vscode-foreground);
 }
+
+.top-left.sprotty-label {
+    fill: var(--vscode-foreground);
+}
+
+.top-right.sprotty-label {
+    fill: var(--vscode-foreground);
+}
+
 .bottom.sprotty-label {
+    fill: var(--vscode-foreground);
+}
+
+.bottom-left.sprotty-label {
+    fill: var(--vscode-foreground);
+}
+
+.bottom-right.sprotty-label {
     fill: var(--vscode-foreground);
 }
 

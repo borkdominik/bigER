@@ -30,11 +30,47 @@ export class CardinalityLabel extends SLabel {
     };
 }
 
+export class LeftCardinalityLabel extends SLabel {
+    override edgePlacement = <EdgePlacement> {
+        position: 0.2,
+        side: 'top',
+        rotate: false,
+        offset: 10
+    };
+}
+
+export class RightCardinalityLabel extends SLabel {
+    override edgePlacement = <EdgePlacement> {
+        position: 0.8,
+        side: 'top',
+        rotate: false,
+        offset: 10
+    };
+}
+
 export class RoleLabel extends SLabel {
     override edgePlacement = <EdgePlacement> {
         position: 0.5,
-        side: 'top',
-        rotate: true,
+        side: 'bottom',
+        rotate: false,
+        offset: 10
+    };
+}
+
+export class LeftRoleLabel extends SLabel {
+    override edgePlacement = <EdgePlacement> {
+        position: 0.2,
+        side: 'bottom',
+        rotate: false,
+        offset: 10
+    };
+}
+
+export class RightRoleLabel extends SLabel {
+    override edgePlacement = <EdgePlacement> {
+        position: 0.8,
+        side: 'bottom',
+        rotate: false,
         offset: 10
     };
 }
