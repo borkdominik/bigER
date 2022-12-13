@@ -75,13 +75,13 @@ public class OracleGenerator extends SqlGenerator {
 		}
 		
 		// character types
-		if (DataTypes.getAllIntegerTypes().contains(upperType)) {
+		if (DataTypes.getAllVarcharTypes().contains(upperType)) {
 			return VARCHAR_TYPES.get(0);
 		}
-		if (DataTypes.getAllFloatTypes().contains(upperType)) {
+		if (DataTypes.getAllCharTypes().contains(upperType)) {
 			return CHAR_TYPES.get(0);
 		}
-		if (DataTypes.getAllNumericTypes().contains(upperType)) {
+		if (DataTypes.getAllCharacterTypes().contains(upperType)) {
 			return ALL_CHARACTER_TYPES.get(0);
 		}
 		
