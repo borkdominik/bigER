@@ -9,7 +9,6 @@ import java.util.Map;
 
 import org.big.erd.entityRelationship.Attribute;
 import org.big.erd.entityRelationship.AttributeType;
-import org.big.erd.entityRelationship.DataType;
 import org.big.erd.entityRelationship.Entity;
 import org.big.erd.entityRelationship.Model;
 import org.big.erd.entityRelationship.RelationEntity;
@@ -203,12 +202,9 @@ public class SqlGenerator implements IErGenerator {
 		return key;
 	}
 
-	protected String transformDataType(final Attribute attribute, final String mappedType) {
-		if (attribute.getDatatype() != null) {
-			int size = attribute.getDatatype().getSize();
-			if (size != 0) {
-				return mappedType + "(" + Integer.valueOf(size) + ")";
-			}
+	protected String transformDataType(Attribute attribute, String mappedType, int size, StringBuilder comment) {
+		if (size > 0) {
+			return mappedType + "(" + size + ")";
 		}
 		return mappedType;
 	}
@@ -262,25 +258,31 @@ public class SqlGenerator implements IErGenerator {
 			if (attribute.getType() != AttributeType.DERIVED) {
 				tableContent.append("\t");
 				tableContent.append(attribute.getName());
-				String comment = null;
+				StringBuilder comment = new StringBuilder();
 				String originalType = "";
+				int size;
 				if (attribute.getDatatype() != null) {
 					originalType = attribute.getDatatype().getType();
+					size = attribute.getDatatype().getSize();
+				} else {
+					originalType = "VARCHAR";
+					size = 255;
+					addComment(comment, "added default type");
 				}
 				String mappedType = this.mapDataType(originalType);
 				if (mappedType == null) {
 					mappedType = originalType;
-					comment = "unknown type";
+					addComment(comment, "unknown type");
 				} else if (!mappedType.equals(originalType)) {
-					comment = "type mapped from: " + originalType;
+					addComment(comment, "type mapped from: " + originalType);
 				}
-				String transformedDataType = this.transformDataType(attribute, mappedType);
+				String transformedDataType = this.transformDataType(attribute, mappedType, size, comment);
 				if (transformedDataType != null && !transformedDataType.isEmpty()) {
 					tableContent.append(" ");
 					tableContent.append(transformedDataType);
 				}
 				tableContent.append(",");
-				if (comment != null) {
+				if (comment.length() > 0) {
 					tableContent.append("\t");
 					tableContent.append("-- ");
 					tableContent.append(comment);
@@ -288,6 +290,13 @@ public class SqlGenerator implements IErGenerator {
 				tableContent.newLineIfNotEmpty();
 			}
 		}
+	}
+
+	protected void addComment(StringBuilder comment, String str) {
+		if (comment.length() > 0 && !str.isEmpty()) {
+			comment.append("; ");
+		}
+		comment.append(str);
 	}
 
 	private void addPrimaryKeys(StringConcatenation tableContent, String entityName, List<List<Attribute>> keys) {
