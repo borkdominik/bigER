@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -294,7 +295,7 @@ public class SqlImport implements IErGenerator {
 		}
 		
 		// generate relationships
-		int i = 1;
+		Set<String> usedNames = new HashSet<>();
 		for (String tableName : globalForeignKeys.keySet()) {
 			Map<String, String> foreignKeys = globalForeignKeys.get(tableName);
 			List<SqlAttribute> attributes = globalAttributes.get(tableName);
@@ -307,9 +308,12 @@ public class SqlImport implements IErGenerator {
 			}
 			fileContent.append("relationship ");
 			if (weak) {
-				fileContent.append("weakRel");
-				fileContent.append(i);
-				i++;
+				StringBuilder sb = new StringBuilder();
+				for (String table : refTables) {
+					sb.append(capitalize(deQuote(table)));
+				}
+				String name = GeneratorUtils.findUniqueName(sb.toString(), usedNames);
+				fileContent.append(name);
 			} else {
 				fileContent.append(capitalize(deQuote(tableName)));
 			}

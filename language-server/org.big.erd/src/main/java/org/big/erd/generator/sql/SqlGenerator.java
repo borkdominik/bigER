@@ -327,7 +327,6 @@ public class SqlGenerator implements IErGenerator {
 		for (Map<String, Attribute> key : keys) {
 			if (key != null) {
 				for (String name : key.keySet()) {
-					Attribute a = key.get(name);
 					if (!isFirst) {
 						tableContent.append(", ");
 					} else {
@@ -400,7 +399,7 @@ public class SqlGenerator implements IErGenerator {
 		if (attributes != null) {
 			for (Attribute a : attributes) {
 				String nameOriginal = a.getName();
-				String name = findUniqueName(nameOriginal, usedNames);
+				String name = GeneratorUtils.findUniqueName(nameOriginal, usedNames);
 				map.put(name, a);
 			}
 		}
@@ -412,21 +411,11 @@ public class SqlGenerator implements IErGenerator {
 		if (attributes != null) {
 			for (String nameOriginal : attributes.keySet()) {
 				Attribute a = attributes.get(nameOriginal);
-				String name = findUniqueName(nameOriginal, usedNames);
+				String name = GeneratorUtils.findUniqueName(nameOriginal, usedNames);
 				map.put(name, a);
 			}
 		}
 		return map;
-	}
-
-	private String findUniqueName(String nameOriginal, Set<String> usedNames) {
-		String name = nameOriginal;
-		int i = 2;
-		while (!usedNames.add(name)) {
-			name = nameOriginal + i;
-			i++;
-		}
-		return name;
 	}
 
 	private Map<String, Attribute> effectivePrimaryKey(final Entity entity) {
