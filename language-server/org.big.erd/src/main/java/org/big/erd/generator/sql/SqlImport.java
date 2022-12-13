@@ -328,7 +328,16 @@ public class SqlImport implements IErGenerator {
 					fileContent.append("\t");
 				}
 				fileContent.append(capitalize(deQuote(table)));
+				if (weak && first) {
+					fileContent.append("[1]");
+				} else {
+					fileContent.append("[N]");
+				}
 				first = false;
+			}
+			if (!weak) {
+				fileContent.append("\t");
+				fileContent.append("// default cardinalities");
 			}
 			fileContent.newLineIfNotEmpty();
 
@@ -378,7 +387,8 @@ public class SqlImport implements IErGenerator {
 					fileContent.append("key");
 				}
 				if (attribute.getAttributeComment() != null) {
-					fileContent.append(" //");
+					fileContent.append("\t");
+					fileContent.append("//");
 					fileContent.append(attribute.getAttributeComment());
 				}
 				fileContent.newLineIfNotEmpty();
