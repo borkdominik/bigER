@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.big.erd.entityRelationship.Attribute;
 import org.big.erd.entityRelationship.AttributeType;
@@ -27,7 +30,7 @@ import org.eclipse.xtext.xbase.lib.Exceptions;
  */
 public class SqlGenerator implements IErGenerator {
 	
-	private Map<String, List<Attribute>> effectivePrimaryKeys = new HashMap<>();
+	private Map<String, Map<String, Attribute>> effectivePrimaryKeys = new HashMap<>();
 
 	@Override
 	public void generate(final Resource resource, final IFileSystemAccess2 fsa, final IGeneratorContext context) {
@@ -97,9 +100,12 @@ public class SqlGenerator implements IErGenerator {
 		StringConcatenation tableContent = new StringConcatenation();
 		startTable(tableContent, entity.getName(), drop);
 		if (!drop) {
-			addAttributes(tableContent, entity.getAttributes());
+			Set<String> usedNames = new HashSet<>();
+			Map<String, Attribute> attributeMap = deduplicateAttributes(entity.getAttributes(), usedNames);
 			
-			addPrimaryKeys(tableContent, entity.getName(), Arrays.asList(this.primaryKey(entity)));
+			addAttributes(tableContent, attributeMap);
+			
+			addPrimaryKeys(tableContent, entity.getName(), Arrays.asList(this.primaryKey(attributeMap)));
 		}
 		endTable(tableContent, drop);
 		return tableContent.toString();
@@ -107,12 +113,12 @@ public class SqlGenerator implements IErGenerator {
 
 	private String toTable(final Relationship relationship, boolean drop) {
 		Entity firstEntity = relationship.getFirst().getTarget();
-		List<Attribute> firstKey = null;
+		Map<String, Attribute> firstKey = null;
 		if (firstEntity != null) {
 			firstKey = this.effectivePrimaryKey(firstEntity);
 		}
 		Entity secondEntity = relationship.getSecond().getTarget();
-		List<Attribute> secondKey = null;
+		Map<String, Attribute> secondKey = null;
 		if (secondEntity != null) {
 			secondKey = this.effectivePrimaryKey(secondEntity);
 		}
@@ -121,7 +127,7 @@ public class SqlGenerator implements IErGenerator {
 		if (third != null) {
 			thirdEntity = third.getTarget();
 		}
-		List<Attribute> thirdKey = null;
+		Map<String, Attribute> thirdKey = null;
 		if (thirdEntity != null) {
 			thirdKey = this.effectivePrimaryKey(thirdEntity);
 		}
@@ -131,18 +137,25 @@ public class SqlGenerator implements IErGenerator {
 
 		if (!drop) {
 			// attributes
-			List<List<Attribute>> keyList = Arrays.asList(firstKey, secondKey, thirdKey);
-			List<Attribute> flatKeyList = flattenKeys(keyList);
-			addAttributes(tableContent, flatKeyList);
-			addAttributes(tableContent, relationship.getAttributes());
+			Set<String> usedNames = new HashSet<>();
+			Map<String, Attribute> attributeMap = deduplicateAttributes(relationship.getAttributes(), usedNames);
+			Map<String, Attribute> firstKeyMap = deduplicateAttributes(firstKey, usedNames);
+			Map<String, Attribute> secondKeyMap = deduplicateAttributes(secondKey, usedNames);
+			Map<String, Attribute> thirdKeyMap = deduplicateAttributes(thirdKey, usedNames);
+
+			addAttributes(tableContent, firstKeyMap);
+			addAttributes(tableContent, secondKeyMap);
+			addAttributes(tableContent, thirdKeyMap);
+			addAttributes(tableContent, attributeMap);
 			
 			// primary key
+			List<Map<String, Attribute>> keyList = Arrays.asList(firstKeyMap, secondKeyMap, thirdKeyMap);
 			addPrimaryKeys(tableContent, false, relationship.getName(), keyList);
 	
 			// foreign key
-			addForeignKey(tableContent, secondKey == null && thirdKey == null, firstKey, firstEntity);
-			addForeignKey(tableContent, thirdKey == null, secondKey, secondEntity);
-			addForeignKey(tableContent, thirdKey, thirdEntity);
+			addForeignKey(tableContent, secondKey == null && thirdKey == null, firstKey, firstKeyMap, firstEntity);
+			addForeignKey(tableContent, thirdKey == null, secondKey, secondKeyMap, secondEntity);
+			addForeignKey(tableContent, thirdKey, thirdKeyMap, thirdEntity);
 		}
 		
 		endTable(tableContent, drop);
@@ -158,46 +171,45 @@ public class SqlGenerator implements IErGenerator {
 
 		if (!drop) {
 			// attributes
-			addAttributes(tableContent, weak.getAttributes());
-			addAttributes(tableContent, relationship.getAttributes());
+			Set<String> usedNames = new HashSet<>();
+			Map<String, Attribute> weakMap = deduplicateAttributes(weak.getAttributes(), usedNames);
+			Map<String, Attribute> relationshipMap = deduplicateAttributes(relationship.getAttributes(), usedNames);
+			Map<String, Attribute> primaryKey = this.effectivePrimaryKey(strong);
+			Map<String, Attribute> primaryKeyMap = deduplicateAttributes(primaryKey, usedNames);
+			
+			addAttributes(tableContent, weakMap);
+			addAttributes(tableContent, relationshipMap);
 	
 			// primary key
-			List<Attribute> primaryKey = this.effectivePrimaryKey(strong);
-			addAttributes(tableContent, primaryKey);
-			addPrimaryKeys(tableContent, false, weak.getName(), Arrays.asList(this.partialKey(weak), primaryKey));
+			addAttributes(tableContent, primaryKeyMap);
+			addPrimaryKeys(tableContent, false, weak.getName(), Arrays.asList(this.partialKey(weakMap), primaryKeyMap));
 	
 			// foreign key
-			addForeignKey(tableContent, primaryKey, strong);
+			addForeignKey(tableContent, primaryKey, primaryKeyMap, strong);
 		}
 		
 		endTable(tableContent, drop);
 		return tableContent.toString();
 	}
 
-	private List<Attribute> primaryKey(final Entity entity) {
-		List<Attribute> attributes = entity.getAttributes();
-		List<Attribute> key = new ArrayList<>();
-		for (final Attribute attribute : attributes) {
+	private Map<String, Attribute> primaryKey(final Map<String, Attribute> attributes) {
+		Map<String, Attribute> key = new LinkedHashMap<>();
+		for (final String name : attributes.keySet()) {
+			Attribute attribute = attributes.get(name);
 			if (attribute.getType() == AttributeType.KEY) {
-				key.add(attribute);
+				key.put(name, attribute);
 			}
-		}
-		if (key.size() == 0) {
-			key.add(attributes.get(0));
 		}
 		return key;
 	}
 
-	private List<Attribute> partialKey(final Entity entity) {
-		List<Attribute> attributes = entity.getAttributes();
-		List<Attribute> key = new ArrayList<>();
-		for (final Attribute attribute : attributes) {
+	private Map<String, Attribute> partialKey(final Map<String, Attribute> attributes) {
+		Map<String, Attribute> key = new LinkedHashMap<>();
+		for (final String name : attributes.keySet()) {
+			Attribute attribute = attributes.get(name);
 			if (attribute.getType() == AttributeType.PARTIAL_KEY) {
-				key.add(attribute);
+				key.put(name, attribute);
 			}
-		}
-		if (key.size() == 0) {
-			key.add(attributes.get(0));
 		}
 		return key;
 	}
@@ -253,12 +265,16 @@ public class SqlGenerator implements IErGenerator {
 		}
 	}
 
-	private void addAttributes(StringConcatenation tableContent, List<Attribute> attributes) {
-		for (final Attribute attribute : attributes) {
+	private void addAttributes(StringConcatenation tableContent, Map<String, Attribute> attributes) {
+		for (final String name : attributes.keySet()) {
+			final Attribute attribute = attributes.get(name);
 			if (attribute.getType() != AttributeType.DERIVED) {
 				tableContent.append("\t");
-				tableContent.append(attribute.getName());
+				tableContent.append(name);
 				StringBuilder comment = new StringBuilder();
+				if (!name.equals(attribute.getName())) {
+					addComment(comment, "renamed from: " + attribute.getName());
+				}
 				String originalType = "";
 				int size;
 				if (attribute.getDatatype() != null) {
@@ -299,24 +315,25 @@ public class SqlGenerator implements IErGenerator {
 		comment.append(str);
 	}
 
-	private void addPrimaryKeys(StringConcatenation tableContent, String entityName, List<List<Attribute>> keys) {
+	private void addPrimaryKeys(StringConcatenation tableContent, String entityName, List<Map<String, Attribute>> keys) {
 		addPrimaryKeys(tableContent, true, entityName, keys);
 	}
 
-	private void addPrimaryKeys(StringConcatenation tableContent, boolean isLastContent, String entityName, List<List<Attribute>> keys) {
+	private void addPrimaryKeys(StringConcatenation tableContent, boolean isLastContent, String entityName, List<Map<String, Attribute>> keys) {
 		tableContent.append("\t");
 		tableContent.append("PRIMARY KEY (");
 		
 		boolean isFirst = true;
-		for (List<Attribute> key : keys) {
+		for (Map<String, Attribute> key : keys) {
 			if (key != null) {
-				for (Attribute a : key) {
+				for (String name : key.keySet()) {
+					Attribute a = key.get(name);
 					if (!isFirst) {
 						tableContent.append(", ");
 					} else {
 						isFirst = false;
 					}
-					tableContent.append(a.getName());
+					tableContent.append(name);
 				}
 			}
 		}
@@ -327,37 +344,37 @@ public class SqlGenerator implements IErGenerator {
 		}
 		tableContent.newLineIfNotEmpty();
 
-		effectivePrimaryKeys.put(entityName, flattenKeys(keys));
+		effectivePrimaryKeys.put(entityName, mergeMaps(keys));
 	}
 
-	private void addForeignKey(StringConcatenation tableContent, List<Attribute> key, Entity refEntity) {
-		addForeignKey(tableContent, true, key, refEntity);
+	private void addForeignKey(StringConcatenation tableContent, Map<String, Attribute> key, Map<String, Attribute> keyDeduplicated, Entity refEntity) {
+		addForeignKey(tableContent, true, key, keyDeduplicated, refEntity);
 	}
 
-	private void addForeignKey(StringConcatenation tableContent, boolean isLastContent, List<Attribute> key, Entity refEntity) {
+	private void addForeignKey(StringConcatenation tableContent, boolean isLastContent, Map<String, Attribute> key, Map<String, Attribute> keyDeduplicated, Entity refEntity) {
 		if (key != null && refEntity != null) {
 			tableContent.append("\t");
 			tableContent.append("FOREIGN KEY (");
 			boolean isFirst = true;
-			for (Attribute a : key) {
+			for (String name : keyDeduplicated.keySet()) {
 				if (!isFirst) {
 					tableContent.append(", ");
 				} else {
 					isFirst = false;
 				}
-				tableContent.append(a.getName());
+				tableContent.append(name);
 			}
 			tableContent.append(") references ");
 			tableContent.append(refEntity.getName());
 			tableContent.append(" (");
 			isFirst = true;
-			for (Attribute a : key) {
+			for (String name : key.keySet()) {
 				if (!isFirst) {
 					tableContent.append(", ");
 				} else {
 					isFirst = false;
 				}
-				tableContent.append(a.getName());
+				tableContent.append(name);
 			}
 			tableContent.append(")");
 			tableContent.append(" ON DELETE CASCADE");
@@ -368,19 +385,51 @@ public class SqlGenerator implements IErGenerator {
 		}
 	}
 	
-	private List<Attribute> flattenKeys(final List<List<Attribute>> keys) {
-		List<Attribute> list = new ArrayList<>();
-		for (List<Attribute> key : keys) {
-			if (key != null) {
-				for (Attribute a : key) {
-					list.add(a);
-				}
+	private Map<String, Attribute> mergeMaps(final List<Map<String, Attribute>> list) {
+		Map<String, Attribute> result = new LinkedHashMap<>();
+		for (Map<String, Attribute> map : list) {
+			if (map != null) {
+				result.putAll(map);
 			}
 		}
-		return list;
+		return result;
+	}
+	
+	private Map<String, Attribute> deduplicateAttributes(final List<Attribute> attributes, Set<String> usedNames) {
+		Map<String, Attribute> map = new LinkedHashMap<>();
+		if (attributes != null) {
+			for (Attribute a : attributes) {
+				String nameOriginal = a.getName();
+				String name = findUniqueName(nameOriginal, usedNames);
+				map.put(name, a);
+			}
+		}
+		return map;
+	}
+	
+	private Map<String, Attribute> deduplicateAttributes(final Map<String, Attribute> attributes, Set<String> usedNames) {
+		Map<String, Attribute> map = new LinkedHashMap<>();
+		if (attributes != null) {
+			for (String nameOriginal : attributes.keySet()) {
+				Attribute a = attributes.get(nameOriginal);
+				String name = findUniqueName(nameOriginal, usedNames);
+				map.put(name, a);
+			}
+		}
+		return map;
 	}
 
-	private List<Attribute> effectivePrimaryKey(final Entity entity) {
+	private String findUniqueName(String nameOriginal, Set<String> usedNames) {
+		String name = nameOriginal;
+		int i = 2;
+		while (!usedNames.add(name)) {
+			name = nameOriginal + i;
+			i++;
+		}
+		return name;
+	}
+
+	private Map<String, Attribute> effectivePrimaryKey(final Entity entity) {
 		String name = entity.getName();
 		if (!effectivePrimaryKeys.containsKey(name)) {
 			throw new IllegalArgumentException("Entity" + name + " not yet processed.");
