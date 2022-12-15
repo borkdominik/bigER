@@ -43,6 +43,7 @@ class NotationEdge extends SEdge {
 	Boolean isSource
 	String connectivity
 	String notation
+	Integer relationshipType
 
 	new() { }
 	new((NotationEdge) => void initializer) {

@@ -29,7 +29,7 @@ import org.big.erd.entityRelationship.CardinalityType
 import org.big.erd.entityRelationship.NotationType
 
 import static org.big.erd.entityRelationship.EntityRelationshipPackage.Literals.*
-
+import org.big.erd.entityRelationship.RelationshipType
 
 class ERDiagramGenerator implements IDiagramGenerator {
 
@@ -105,24 +105,48 @@ class ERDiagramGenerator implements IDiagramGenerator {
 		if(model.notation?.notationType.equals(NotationType.UML) && relationship.third === null){
 			val source = idCache.getId(relationship.first.target)
 			val target = idCache.getId(relationship.second.target)
-			edges.add(createEdgeAndAddToGraph(relationship.first, relationship.second, source, target, context))
+			val relationshipType = relationship.firstType.value
+			edges.add(createEdgeAndAddToGraph(relationship.first, relationship.second, source, target, relationshipType, context))
 			return edges
 		}
 		// for each RelationEntity create an edge that connects the entity with the relationship node
 		if (relationship.first !== null) {
+			var relationshipType = 0;
+			if(relationship.firstType.equals(RelationshipType.AGGREGATION_LEFT) ||
+			   relationship.firstType.equals(RelationshipType.COMPOSITION_LEFT)
+			){
+				relationshipType = relationship.firstType.value
+			}
 			val source = idCache.getId(relationship.first.target)
 			val target = idCache.getId(relationship)
-			edges.add(createEdgeAndAddToGraph(relationship.first, null, source, target, context))
+			edges.add(createEdgeAndAddToGraph(relationship.first, null, source, target, relationshipType, context))
 		} 
 		if (relationship.second !== null) {
+			var relationshipType = 0;
+			if(relationship.firstType.equals(RelationshipType.AGGREGATION_RIGHT) ||
+			   relationship.firstType.equals(RelationshipType.COMPOSITION_RIGHT)
+			){
+				relationshipType = relationship.firstType.value
+			}
+			if(relationship.secondType.equals(RelationshipType.AGGREGATION_LEFT) ||
+			   relationship.secondType.equals(RelationshipType.COMPOSITION_LEFT)
+			){
+				relationshipType = relationship.secondType.value
+			}
 			val source = idCache.getId(relationship)
 			val target = idCache.getId(relationship.second.target)
-			edges.add(createEdgeAndAddToGraph(relationship.second, null, source, target, context))
+			edges.add(createEdgeAndAddToGraph(relationship.second, null, source, target, relationshipType, context))
 		} 
 		if (relationship.third !== null) {
+			var relationshipType = 0;
+			if(relationship.secondType.equals(RelationshipType.AGGREGATION_RIGHT) ||
+			   relationship.secondType.equals(RelationshipType.COMPOSITION_RIGHT)
+			){
+				relationshipType = relationship.secondType.value
+			}
 			val source = idCache.getId(relationship)
 			val target = idCache.getId(relationship.third.target)
-			edges.add(createEdgeAndAddToGraph(relationship.third, null, source, target, context))
+			edges.add(createEdgeAndAddToGraph(relationship.third, null, source, target, relationshipType, context))
 		}
 		return edges
 	}
@@ -130,11 +154,13 @@ class ERDiagramGenerator implements IDiagramGenerator {
 	def NotationEdge createEdgeAndAddToGraph(RelationEntity relationEntity,
 											 RelationEntity targetRelationEntity,
 											 String source,
-											 String target, extension Context context) {
+											 String target, 
+											 Integer relationtype,
+											 extension Context context) {
 		val notationType = model.notation?.notationType ?: NotationType.DEFAULT
 		val relationship = relationEntity.eContainer() as Relationship;
 		val edgeId = idCache.uniqueId(relationEntity, source + ":" + relationship.name + ":" + target)
-		
+
 		return (new NotationEdge [
 			id = edgeId
 			type = getEdgeType(relationEntity, notationType)
@@ -143,6 +169,7 @@ class ERDiagramGenerator implements IDiagramGenerator {
 			notation = notationType.toString
 			connectivity = getCardinality(relationEntity)
 			isSource = relationEntity.equals(relationship.first)
+			relationshipType = relationtype 
 			children = createLabels(relationEntity, targetRelationEntity, notationType, edgeId, context)
 		]).traceAndMark(relationEntity, context)
 	}

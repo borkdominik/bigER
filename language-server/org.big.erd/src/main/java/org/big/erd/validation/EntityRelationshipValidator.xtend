@@ -12,7 +12,8 @@ import org.eclipse.xtext.validation.ComposedChecks
 import org.big.erd.entityRelationship.Entity
 import org.big.erd.entityRelationship.AttributeType
 import static org.big.erd.entityRelationship.EntityRelationshipPackage.Literals.*
-
+import org.big.erd.entityRelationship.Relationship
+import org.big.erd.entityRelationship.RelationshipType
 
 /**
  * Custom ValidationRules with composed checks 
@@ -71,4 +72,31 @@ class EntityRelationshipValidator extends AbstractEntityRelationshipValidator {
     		)
     	}
 	}
+	
+	@Check
+	def checkAggregation(Relationship relationship) {
+		val model = relationship.eContainer
+		if (model instanceof Model) {
+			val notation = model.notation?.notationType
+			if(notation === null){
+				return
+			}
+			if (notation !== null) {
+				if(notation.equals(NotationType.UML)){
+					if(!relationship.firstType.equals(RelationshipType.DEFAULT) &&
+					   !relationship.secondType.equals(RelationshipType.DEFAULT)){
+						warning('''Aggregation only supported for UML''', relationship, RELATIONSHIP__SECOND_TYPE)
+					}
+				}else{
+					if(!relationship.firstType.equals(RelationshipType.DEFAULT)){
+						warning('''Aggregation only supported for UML''', relationship, RELATIONSHIP__FIRST_TYPE)
+					}
+					if(!relationship.secondType.equals(RelationshipType.DEFAULT)){
+						warning('''Aggregation only supported for UML''', relationship, RELATIONSHIP__SECOND_TYPE)
+					}
+				}
+			}
+		}
+	}
+	
 }

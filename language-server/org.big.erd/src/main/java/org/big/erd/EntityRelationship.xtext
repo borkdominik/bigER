@@ -18,7 +18,7 @@ Entity:
 
 Relationship:
 	(weak?='weak')? 'relationship' name=ID '{'
-		(first=RelationEntity (('->' second=RelationEntity) ('->' third=RelationEntity)?)?)?
+		(first=RelationEntity ((firstType=RelationshipType second=RelationEntity) (secondType=RelationshipType third=RelationEntity)?)?)?
 		(attributes += Attribute)*
 	'}';
 
@@ -59,3 +59,11 @@ enum NotationType:
     BACHMAN='bachman' | 
     CROWSFOOT='crowsfoot'|
     UML='uml'; 
+ 
+enum RelationshipType:
+	DEFAULT='->'|
+	AGGREGATION_LEFT='o-'|
+	AGGREGATION_RIGHT='-o'|
+	COMPOSITION_LEFT='*-'|
+	COMPOSITION_RIGHT='-*'; 
+ 
