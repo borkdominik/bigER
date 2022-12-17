@@ -67,6 +67,7 @@ public class DataTypes {
 
 	public static Set<String> getAllCharacterTypes() {
 		Set<String> types = new HashSet<>();
+		types.add("STRING");
 		types.addAll(OracleGenerator.ALL_CHARACTER_TYPES);
 		types.addAll(MsSqlGenerator.ALL_CHARACTER_TYPES);
 		types.addAll(MySqlGenerator.ALL_CHARACTER_TYPES);
