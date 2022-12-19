@@ -23,8 +23,13 @@ class Neo4jGenerator implements IErGenerator {
 			«FOR entity : model.entities»
 				«entity.toTable»
 			«ENDFOR»
+
 			«FOR relationship : model.relationships»
 				«relationship.toTable»
+			«ENDFOR»
+
+			«FOR entity : model.entities»
+				«entity.uniqueKeyConstraint»
 			«ENDFOR»
 		'''
 	}
@@ -32,6 +37,11 @@ class Neo4jGenerator implements IErGenerator {
 	private def toTable(Entity entity) {
 		return ''' 
 			CREATE («entity.name»:«entity.name» {name: "«entity.name»"«FOR attribute : entity.allAttributes.reject[it.type === AttributeType.DERIVED] », «entity.name»_«attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR»})«'\n'»
+		'''
+	}
+	private def uniqueKeyConstraint(Entity entity) {
+		return ''' 
+			CREATE CONSTRAINT IF NOT EXISTS FOR (x:«entity.name») REQUIRE x.«entity.name»_«entity.primaryKey.name» IS UNIQUE«'\n'»;
 		'''
 	}
 	
