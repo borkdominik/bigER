@@ -109,7 +109,10 @@ export class NotationEdgeView extends PolylineEdgeView {
     override render(edge: Readonly<NotationEdge>, context: RenderingContext, args?: IViewArgs): VNode | undefined {
         const route = this.edgeRouterRegistry.route(edge, { args });
         if (route.length === 0) {
-            return this.renderDanglingEdge("Cannot compute route", edge, context);
+            if (edge.children.length === 0) {
+                return undefined;
+            }
+            return <g>{context.renderChildren(edge, { route })}</g>;
         }
         if (!this.isVisible(edge, route, context)) {
             if (edge.children.length === 0) {
