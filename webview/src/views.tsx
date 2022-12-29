@@ -5,7 +5,7 @@ import { RenderingContext, svg, RectangularNodeView, SEdge, PolylineEdgeView, //
 import { injectable} from 'inversify';
 import { toDegrees, Point } from 'sprotty-protocol';
 import { EntityNode, ERModel, NotationEdge, PopupButton, RelationshipNode } from "./model";
-import { DiagramTypes } from "./utils";
+import { DiagramTypes, RelationshipTypes } from "./utils";
 
 
 @injectable()
@@ -140,11 +140,30 @@ export class NotationEdgeView extends PolylineEdgeView {
             case DiagramTypes.CROWSFOOT_NOTATION: {
                 return this.createCrowsFootEdge(source, target, secondElem, penultimateElem, edge.connectivity, edge.isSource);
             }
+            case DiagramTypes.UML: {
+                if (edge.relationshipType !== null && edge.relationshipType !== RelationshipTypes.DEFAULT) {
+                    return this.createUmlEdge(source, target, edge.relationshipType);
+                }
+                return [];
+            }
             default: {
                 // no additional renderings for other notations
                 return [];
             }
         }
+    }
+
+    private createUmlEdge(point:Point, next:Point, relationshipType:number):VNode[] {
+
+        const color = (relationshipType === RelationshipTypes.AGGREGATION_LEFT || relationshipType === RelationshipTypes.AGGREGATION_RIGHT) ? "var(--vscode-editorActiveLineNumber-foreground)" : "var(--vscode-editor-background)";
+        let string = (point.x + 2) + " " + point.y + "," + (point.x + 17) + " " + (point.y - 8) + "," + (point.x + 32) + " " + point.y + "," + (point.x + 17) + " " + (point.y + 8);
+
+        if (relationshipType === RelationshipTypes.AGGREGATION_RIGHT || relationshipType === RelationshipTypes.COMPOSITION_RIGHT) {
+            string = (next.x - 2) + " " + next.y + "," + (next.x - 17) + " " + (next.y + 8) + "," + (next.x - 32) + " " + next.y + "," + (next.x - 17) + " " + (next.y - 8);
+        }
+        return [<g>
+            <polygon points={string} fill={color}/>
+        </g>];
     }
 
     private createCrowsFootEdge(source: Point, target: Point, secondElem: Point, penultimateElem: Point, cardinality: string, isSource: boolean): VNode[] {

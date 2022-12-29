@@ -131,7 +131,8 @@ class ERDiagramGenerator implements IDiagramGenerator {
 			if(relationship.secondType.equals(RelationshipType.AGGREGATION_LEFT) ||
 			   relationship.secondType.equals(RelationshipType.COMPOSITION_LEFT)
 			){
-				relationshipType = relationship.secondType.value
+				// +1 to change the aggregation type from left to right
+				relationshipType = relationship.secondType.value + 1
 			}
 			val source = idCache.getId(relationship)
 			val target = idCache.getId(relationship.second.target)

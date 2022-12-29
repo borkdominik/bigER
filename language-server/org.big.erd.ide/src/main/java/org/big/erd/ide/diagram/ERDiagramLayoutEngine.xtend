@@ -23,7 +23,7 @@ class ERDiagramLayoutEngine extends ElkLayoutEngine {
 			configurator.configureByType('graph')
 				.setProperty(CoreOptions.DIRECTION, Direction.RIGHT)
 				.setProperty(CoreOptions.SPACING_NODE_NODE, 50.0)
-				.setProperty(LayeredOptions.SPACING_NODE_NODE_BETWEEN_LAYERS, 50.0)
+				.setProperty(LayeredOptions.SPACING_NODE_NODE_BETWEEN_LAYERS, 100.0)
 				.setProperty(CoreOptions.SPACING_PORT_PORT, 50.0)
 
 			layout(root, configurator, cause)

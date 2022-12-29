@@ -19,6 +19,7 @@ export class NotationEdge extends LibavoidEdge {
     isSource: boolean;
     notation: string;
     connectivity: string;
+    relationshipType: number;
 }
 
 export class CardinalityLabel extends SLabel {
