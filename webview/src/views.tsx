@@ -142,7 +142,7 @@ export class NotationEdgeView extends PolylineEdgeView {
             }
             case DiagramTypes.UML: {
                 if (edge.relationshipType !== null && edge.relationshipType !== RelationshipTypes.DEFAULT) {
-                    return this.createUmlEdge(source, target, edge.relationshipType);
+                    return this.createUmlEdge(source, target, edge.relationshipType, secondElem, penultimateElem, edge.isSource);
                 }
                 return [];
             }
@@ -153,16 +153,18 @@ export class NotationEdgeView extends PolylineEdgeView {
         }
     }
 
-    private createUmlEdge(point:Point, next:Point, relationshipType:number):VNode[] {
-
+    private createUmlEdge(point:Point, next:Point, relationshipType:number, secondElem: Point, penultimateElem: Point, isSource: boolean):VNode[] {
         const color = (relationshipType === RelationshipTypes.AGGREGATION_LEFT || relationshipType === RelationshipTypes.AGGREGATION_RIGHT) ? "var(--vscode-editorActiveLineNumber-foreground)" : "var(--vscode-editor-background)";
-        let string = (point.x + 2) + " " + point.y + "," + (point.x + 17) + " " + (point.y - 8) + "," + (point.x + 32) + " " + point.y + "," + (point.x + 17) + " " + (point.y + 8);
-
+        // source and target are required for the rotation
+        let source = point;
+        let target = secondElem;
         if (relationshipType === RelationshipTypes.AGGREGATION_RIGHT || relationshipType === RelationshipTypes.COMPOSITION_RIGHT) {
-            string = (next.x - 2) + " " + next.y + "," + (next.x - 17) + " " + (next.y + 8) + "," + (next.x - 32) + " " + next.y + "," + (next.x - 17) + " " + (next.y - 8);
+            source = next;
+            target = penultimateElem;
         }
+        const polygonPoints = (source.x + 2) + " " + source.y + "," + (source.x + 17) + " " + (source.y - 8) + "," + (source.x + 32) + " " + source.y + "," + (source.x + 17) + " " + (source.y + 8);
         return [<g>
-            <polygon points={string} fill={color}/>
+            <polygon points={polygonPoints} fill={color} transform={`rotate(${this.angle(source, target)} ${source.x} ${source.y})`}/>
         </g>];
     }
 
