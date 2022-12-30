@@ -14,6 +14,8 @@ import org.big.erd.entityRelationship.AttributeType
 import static org.big.erd.entityRelationship.EntityRelationshipPackage.Literals.*
 import org.big.erd.entityRelationship.Relationship
 import org.big.erd.entityRelationship.RelationshipType
+import org.big.erd.entityRelationship.VisibilityType
+import org.big.erd.entityRelationship.Attribute
 
 /**
  * Custom ValidationRules with composed checks 
@@ -99,4 +101,15 @@ class EntityRelationshipValidator extends AbstractEntityRelationshipValidator {
 		}
 	}
 	
+	@Check
+	def checkVisibility(Attribute attribute) {
+		val model = attribute.eContainer.eContainer
+		if (model instanceof Model) {
+			val notation = model.notation?.notationType
+			if(notation !== null && !notation.equals(NotationType.UML) && !attribute.visibility.equals(VisibilityType.NONE)){
+				warning('''Use visibility operators only for UML''', attribute, ATTRIBUTE__VISIBILITY)
+		
+			}
+		}
+	}
 }

@@ -28,7 +28,7 @@ RelationEntity:
 	']')?;
 
 Attribute:
-	name=ID (':' datatype=DataType)? (type=AttributeType)?;
+	(visibility=VisibilityType)? name=ID (':' datatype=DataType)? (type=AttributeType)?;
 
 DataType:
 	type=ID ('(' size=INT ')')?;  
@@ -65,5 +65,12 @@ enum RelationshipType:
 	AGGREGATION_LEFT='o-'|
 	AGGREGATION_RIGHT='-o'|
 	COMPOSITION_LEFT='*-'|
-	COMPOSITION_RIGHT='-*'; 
+	COMPOSITION_RIGHT='-*';
+	
+enum VisibilityType:
+	NONE='none' |
+	PUBLIC='+'|
+	PRIVATE='-'|
+	PROTECTED='#'|
+	PACKAGE='~'; 
  

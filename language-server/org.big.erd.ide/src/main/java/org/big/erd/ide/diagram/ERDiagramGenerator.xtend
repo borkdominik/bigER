@@ -4,6 +4,7 @@ import com.google.inject.Inject
 import org.big.erd.entityRelationship.Entity
 import org.big.erd.entityRelationship.Attribute
 import org.big.erd.entityRelationship.AttributeType
+import org.big.erd.entityRelationship.VisibilityType
 import org.big.erd.entityRelationship.EntityRelationshipPackage
 import org.big.erd.entityRelationship.Relationship
 import org.big.erd.entityRelationship.RelationEntity
@@ -246,6 +247,11 @@ class ERDiagramGenerator implements IDiagramGenerator {
 				(new SLabel [
 					id = idCache.uniqueId(entityId + '.label')
 					type = DiagramTypes.ENTITY_LABEL
+					text = '<<Entity>>'
+				]).trace(e, EntityRelationshipPackage.Literals.ENTITY__NAME, -1),
+				(new SLabel [
+					id = idCache.uniqueId(entityId + 'UML.label')
+					type = DiagramTypes.ENTITY_LABEL
 					text = e.name
 				]).trace(e, EntityRelationshipPackage.Literals.ENTITY__NAME, -1),
 				(new SButton [
@@ -281,6 +287,7 @@ class ERDiagramGenerator implements IDiagramGenerator {
 	def SCompartment createAttributeLabels(Attribute a, String entityId, extension Context context) {
 		val attributeId = idCache.uniqueId(a, entityId + '.' + a.name)
 		val labelType = getAttributeLabelType(a)
+		
 		return (new SCompartment => [
 			id = attributeId
 			type = DiagramTypes.COMP_ATTRIBUTE_ROW
@@ -289,7 +296,12 @@ class ERDiagramGenerator implements IDiagramGenerator {
 				VAlign = 'middle'
 				HGap = 5.0
 			]
-			children = #[
+			if (model.notation?.notationType.equals(NotationType.UML) && !a.visibility.equals(VisibilityType.NONE)) {
+				children = #[(new SLabel [
+					id = attributeId + '.visibility'
+					text = a.visibility.toString
+					type = labelType
+				]),
 				(new SLabel [
 					id = attributeId + '.name'
 					text = a.name
@@ -299,8 +311,19 @@ class ERDiagramGenerator implements IDiagramGenerator {
 					id = attributeId + ".datatype"
 					text = attributeDatatypeString(a)
 					type = labelType
-				])
-			]
+				])]
+			}else{
+				children = #[(new SLabel [
+					id = attributeId + '.name'
+					text = a.name
+					type = labelType
+				]).trace(a, ATTRIBUTE__NAME, -1),
+				(new SLabel [
+					id = attributeId + ".datatype"
+					text = attributeDatatypeString(a)
+					type = labelType
+				])]
+			}
 		]).traceAndMark(a, context)
 	}
 
