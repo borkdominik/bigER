@@ -103,7 +103,7 @@ class ERDiagramGenerator implements IDiagramGenerator {
 	def List<SModelElement> addRelationEdges(Relationship relationship, extension Context context) {
 		val edges = new ArrayList<SModelElement>
 
-		if(model.notation?.notationType.equals(NotationType.UML) && relationship.third === null){
+		if(model.notation !== null && model.notation?.notationType.equals(NotationType.UML) && relationship.third === null){
 			val source = idCache.getId(relationship.first.target)
 			val target = idCache.getId(relationship.second.target)
 			val relationshipType = relationship.firstType.value
@@ -225,7 +225,6 @@ class ERDiagramGenerator implements IDiagramGenerator {
 		if (e.extends !== null) {
 			this.extendedEntities.add(e)
 		}
-		
 		val entityId = idCache.uniqueId(e, e.name)
 		val node = new EntityNode [
 			id = entityId
@@ -246,7 +245,7 @@ class ERDiagramGenerator implements IDiagramGenerator {
 				]
 			children = new ArrayList<SModelElement>
 		]
-		if(model.notation?.notationType.equals(NotationType.UML)){
+		if(model.notation !== null && model.notation.notationType.equals(NotationType.UML)){
 			node.isUml = true
 			headerCompartment.children.add((new SLabel [
 					id = idCache.uniqueId(entityId + '.label')
@@ -311,7 +310,7 @@ class ERDiagramGenerator implements IDiagramGenerator {
 				VAlign = 'middle'
 				HGap = 5.0
 			]
-			if (model.notation?.notationType.equals(NotationType.UML) && !a.visibility.equals(VisibilityType.NONE)) {
+			if (model.notation !== null && model.notation?.notationType.equals(NotationType.UML) && !a.visibility.equals(VisibilityType.NONE)) {
 				children = #[(new SLabel [
 					id = attributeId + '.visibility'
 					text = a.visibility.toString
