@@ -237,27 +237,42 @@ class ERDiagramGenerator implements IDiagramGenerator {
 			]
 			children = new ArrayList<SModelElement>
 		]
-
+		val headerCompartment = new SCompartment => [
+			id = idCache.uniqueId(entityId + '.header-comp')
+			type = DiagramTypes.COMP_ENTITY_HEADER
+			layout = 'vbox'
+				layoutOptions = new LayoutOptions [
+					VGap = 1.0
+				]
+			children = new ArrayList<SModelElement>
+		]
+		if(model.notation?.notationType.equals(NotationType.UML)){
+			node.isUml = true
+			headerCompartment.children.add((new SLabel [
+					id = idCache.uniqueId(entityId + '.label')
+					type = DiagramTypes.LABEL_TEXT
+					text = '<<Entity>>'
+				]))
+		}
+		headerCompartment.children.add((new SLabel [
+					id = idCache.uniqueId(entityId + 'UML.label')
+					type = DiagramTypes.ENTITY_LABEL
+					text = e.name
+				]).trace(e, EntityRelationshipPackage.Literals.ENTITY__NAME, -1))
+				
 		// Header with label and collapse/expand button
 		node.children.add(new SCompartment => [
 			id = idCache.uniqueId(entityId + '.header-comp')
 			type = DiagramTypes.COMP_ENTITY_HEADER
 			layout = 'hbox'
-			children = #[
-				(new SLabel [
-					id = idCache.uniqueId(entityId + '.label')
-					type = DiagramTypes.ENTITY_LABEL
-					text = '<<Entity>>'
-				]).trace(e, EntityRelationshipPackage.Literals.ENTITY__NAME, -1),
-				(new SLabel [
-					id = idCache.uniqueId(entityId + 'UML.label')
-					type = DiagramTypes.ENTITY_LABEL
-					text = e.name
-				]).trace(e, EntityRelationshipPackage.Literals.ENTITY__NAME, -1),
-				(new SButton [
-					id = idCache.uniqueId(entityId + '.button')
-					type = DiagramTypes.BUTTON_EXPAND
-				])
+			layoutOptions = new LayoutOptions [
+				VAlign = 'middle'
+				HGap = 1.0
+			]
+			children = #[(headerCompartment),
+						(new SButton [
+							id = idCache.uniqueId(entityId + '.button')
+							type = DiagramTypes.BUTTON_EXPAND])
 			]
 		])
 
@@ -300,7 +315,7 @@ class ERDiagramGenerator implements IDiagramGenerator {
 				children = #[(new SLabel [
 					id = attributeId + '.visibility'
 					text = a.visibility.toString
-					type = labelType
+					type = DiagramTypes.LABEL_TEXT
 				]),
 				(new SLabel [
 					id = attributeId + '.name'

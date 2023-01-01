@@ -40,7 +40,8 @@ export class EntityNodeView extends RectangularNodeView {
         if (!this.isVisible(node, context)) {
             return undefined;
         }
-        const rhombStr = "M 0,38  L " + node.bounds.width + ",38";
+        const hight = node.isUml ? 58 : 38;
+        const rhombStr = "M 0," + hight + "  L " + node.bounds.width + "," + hight;
 
         return <g>
             {(node.weak === true) ? <rect class-border-weak={true} x="-5" y="-5" rx="5" ry="5" width={node.bounds.width + 10} height={node.bounds.height + 10}></rect> : "" }

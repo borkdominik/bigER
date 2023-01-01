@@ -21,6 +21,7 @@ class ERModel extends SGraph {
 class EntityNode extends SNode {
 	boolean expanded
 	boolean weak
+	boolean isUml
 
 	new() { }
 	new((EntityNode) => void initializer) {

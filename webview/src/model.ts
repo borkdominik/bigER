@@ -9,6 +9,7 @@ export class ERModel extends SGraph {
 export class EntityNode extends RectangularNode {
     expanded: boolean;
     weak: boolean;
+    isUml: boolean;
 }
 
 export class RelationshipNode extends DiamondNode {
