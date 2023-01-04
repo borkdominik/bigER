@@ -21,8 +21,6 @@ text {
 
 }
 
-
-
 .sprotty-node {
     stroke-width: 1;
     fill: rgb(219,218,235);
@@ -89,6 +87,9 @@ text {
     fill: black;
 }
 
+.visibility {
+    fill: var(--vscode-editor-selectionHighlightBackground);
+}
 
 .key {
     font-style: italic;

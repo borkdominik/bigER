@@ -63,6 +63,7 @@ const DiagramModule = new ContainerModule((bind, unbind, isBound, rebind) => {
     configureModelElement(context, 'label:bottom', RoleLabel, SLabelView);
     configureModelElement(context, 'label:text', SLabel, SLabelView, { enable: [editLabelFeature] });
     configureModelElement(context, 'label:key', SLabel, SLabelView, { enable: [editLabelFeature] });
+    configureModelElement(context, 'label:visibility', SLabel, SLabelView, { enable: [editLabelFeature] });
     configureModelElement(context, 'label:partial-key', SLabel, SLabelView, { enable: [editLabelFeature] });
     configureModelElement(context, 'label:derived', SLabel, SLabelView, { enable: [editLabelFeature] });
     // Additional Sprotty elements

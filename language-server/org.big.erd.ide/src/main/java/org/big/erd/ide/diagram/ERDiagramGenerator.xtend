@@ -314,7 +314,7 @@ class ERDiagramGenerator implements IDiagramGenerator {
 				children = #[(new SLabel [
 					id = attributeId + '.visibility'
 					text = a.visibility.toString
-					type = DiagramTypes.LABEL_TEXT
+					type = DiagramTypes.LABEL_VISIBILITY
 				]),
 				(new SLabel [
 					id = attributeId + '.name'

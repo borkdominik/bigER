@@ -26,6 +26,7 @@ public final class DiagramTypes {
 	public static final String LABEL_TOP = "label:top";
 	public static final String LABEL_BOTTOM = "label:bottom";
 	public static final String LABEL_KEY = "label:key";
+	public static final String LABEL_VISIBILITY = "label:visibility";
 	public static final String LABEL_PARTIAL_KEY = "label:partial-key";
 	public static final String LABEL_DERIVED = "label:derived";
 	public static final String LABEL_TEXT = "label:text";

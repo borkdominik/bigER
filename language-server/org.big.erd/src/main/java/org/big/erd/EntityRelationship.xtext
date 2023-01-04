@@ -72,5 +72,8 @@ enum VisibilityType:
 	PUBLIC='+'|
 	PRIVATE='-'|
 	PROTECTED='#'|
-	PACKAGE='~'; 
- 
+	PACKAGE='~'|
+	PUBLIC_STRING='public'|
+	PRIVATE_STRING='private'|
+	PROTECTED_STRING='protected'|
+	PACKAGE_STRING='package';
