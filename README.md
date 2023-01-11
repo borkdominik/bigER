@@ -4,11 +4,11 @@
 </p>
 
 <!-- TITLE -->
-<h1 align="center">bigER Modeling Tool</h1>
+<h1 align="center">BIGER Modeling Tool</h1>
 
 <!-- BADGES -->
 <p align="center">
-  <img alt="GitHub Build" src="https://img.shields.io/github/workflow/status/borkdominik/bigER/Build" height="20"/>
+  <img alt="GitHub Build" src="https://img.shields.io/github/actions/workflow/status/borkdominik/bigER/build.yml?branch=main" height="20"/>
   <img alt="Visual Studio Marketplace Installs" src="https://img.shields.io/visual-studio-marketplace/i/BIGModelingTools.erdiagram?color=9cf" height="20"/>
   <img alt="Visual Studio Marketplace Version" src="https://img.shields.io/visual-studio-marketplace/v/BIGModelingTools.erdiagram" height="20"/>
   <img alt="Visual Studio Marketplace Last Updated" src="https://img.shields.io/visual-studio-marketplace/last-updated/BIGModelingTools.erdiagram?color=blue" height="20"/>

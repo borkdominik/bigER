@@ -9,7 +9,7 @@
         <img alt="Visual Studio Marketplace Version" src="https://img.shields.io/visual-studio-marketplace/v/BIGModelingTools.erdiagram" height="20"/>
     </a>
     <a href="https://github.com/borkdominik/bigER">
-        <img alt="GitHub Build" src="https://img.shields.io/github/workflow/status/borkdominik/bigER/Build" height="20"/>
+        <img alt="GitHub Build" src="https://img.shields.io/github/actions/workflow/status/borkdominik/bigER/build.yml?branch=main" height="20"/>
     </a> 
     <a href="https://github.com/borkdominik/bigER">
         <img alt="GitHub Stars" src="https://img.shields.io/github/stars/borkdominik/bigER?style=social" height="20">
