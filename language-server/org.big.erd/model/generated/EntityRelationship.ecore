@@ -26,8 +26,10 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="first" eType="#//RelationEntity"
         containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="firstType" eType="#//RelationshipType"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="second" eType="#//RelationEntity"
         containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="secondType" eType="#//RelationshipType"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="third" eType="#//RelationEntity"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="attributes" upperBound="-1"
@@ -39,6 +41,7 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="role" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Attribute">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="visibility" eType="#//VisibilityType"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="datatype" eType="#//DataType"
         containment="true"/>
@@ -68,5 +71,24 @@
     <eLiterals name="CHEN" value="1" literal="chen"/>
     <eLiterals name="BACHMAN" value="2" literal="bachman"/>
     <eLiterals name="CROWSFOOT" value="3" literal="crowsfoot"/>
+    <eLiterals name="UML" value="4" literal="uml"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="RelationshipType">
+    <eLiterals name="DEFAULT" literal="->"/>
+    <eLiterals name="AGGREGATION_LEFT" value="1" literal="o-"/>
+    <eLiterals name="AGGREGATION_RIGHT" value="2" literal="-o"/>
+    <eLiterals name="COMPOSITION_LEFT" value="3" literal="*-"/>
+    <eLiterals name="COMPOSITION_RIGHT" value="4" literal="-*"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="VisibilityType">
+    <eLiterals name="NONE" literal="none"/>
+    <eLiterals name="PUBLIC" value="1" literal="+"/>
+    <eLiterals name="PRIVATE" value="2" literal="-"/>
+    <eLiterals name="PROTECTED" value="3" literal="#"/>
+    <eLiterals name="PACKAGE" value="4" literal="~"/>
+    <eLiterals name="PUBLIC_STRING" value="5" literal="public"/>
+    <eLiterals name="PRIVATE_STRING" value="6" literal="private"/>
+    <eLiterals name="PROTECTED_STRING" value="7" literal="protected"/>
+    <eLiterals name="PACKAGE_STRING" value="8" literal="package"/>
   </eClassifiers>
 </ecore:EPackage>

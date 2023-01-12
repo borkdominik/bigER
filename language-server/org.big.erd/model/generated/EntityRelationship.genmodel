@@ -26,6 +26,25 @@
       <genEnumLiterals ecoreEnumLiteral="EntityRelationship.ecore#//NotationType/CHEN"/>
       <genEnumLiterals ecoreEnumLiteral="EntityRelationship.ecore#//NotationType/BACHMAN"/>
       <genEnumLiterals ecoreEnumLiteral="EntityRelationship.ecore#//NotationType/CROWSFOOT"/>
+      <genEnumLiterals ecoreEnumLiteral="EntityRelationship.ecore#//NotationType/UML"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="EntityRelationship.ecore#//RelationshipType">
+      <genEnumLiterals ecoreEnumLiteral="EntityRelationship.ecore#//RelationshipType/DEFAULT"/>
+      <genEnumLiterals ecoreEnumLiteral="EntityRelationship.ecore#//RelationshipType/AGGREGATION_LEFT"/>
+      <genEnumLiterals ecoreEnumLiteral="EntityRelationship.ecore#//RelationshipType/AGGREGATION_RIGHT"/>
+      <genEnumLiterals ecoreEnumLiteral="EntityRelationship.ecore#//RelationshipType/COMPOSITION_LEFT"/>
+      <genEnumLiterals ecoreEnumLiteral="EntityRelationship.ecore#//RelationshipType/COMPOSITION_RIGHT"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="EntityRelationship.ecore#//VisibilityType">
+      <genEnumLiterals ecoreEnumLiteral="EntityRelationship.ecore#//VisibilityType/NONE"/>
+      <genEnumLiterals ecoreEnumLiteral="EntityRelationship.ecore#//VisibilityType/PUBLIC"/>
+      <genEnumLiterals ecoreEnumLiteral="EntityRelationship.ecore#//VisibilityType/PRIVATE"/>
+      <genEnumLiterals ecoreEnumLiteral="EntityRelationship.ecore#//VisibilityType/PROTECTED"/>
+      <genEnumLiterals ecoreEnumLiteral="EntityRelationship.ecore#//VisibilityType/PACKAGE"/>
+      <genEnumLiterals ecoreEnumLiteral="EntityRelationship.ecore#//VisibilityType/PUBLIC_STRING"/>
+      <genEnumLiterals ecoreEnumLiteral="EntityRelationship.ecore#//VisibilityType/PRIVATE_STRING"/>
+      <genEnumLiterals ecoreEnumLiteral="EntityRelationship.ecore#//VisibilityType/PROTECTED_STRING"/>
+      <genEnumLiterals ecoreEnumLiteral="EntityRelationship.ecore#//VisibilityType/PACKAGE_STRING"/>
     </genEnums>
     <genClasses ecoreClass="EntityRelationship.ecore#//Model">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute EntityRelationship.ecore#//Model/name"/>
@@ -46,7 +65,9 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute EntityRelationship.ecore#//Relationship/weak"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute EntityRelationship.ecore#//Relationship/name"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference EntityRelationship.ecore#//Relationship/first"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute EntityRelationship.ecore#//Relationship/firstType"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference EntityRelationship.ecore#//Relationship/second"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute EntityRelationship.ecore#//Relationship/secondType"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference EntityRelationship.ecore#//Relationship/third"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference EntityRelationship.ecore#//Relationship/attributes"/>
     </genClasses>
@@ -56,6 +77,7 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute EntityRelationship.ecore#//RelationEntity/role"/>
     </genClasses>
     <genClasses ecoreClass="EntityRelationship.ecore#//Attribute">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute EntityRelationship.ecore#//Attribute/visibility"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute EntityRelationship.ecore#//Attribute/name"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference EntityRelationship.ecore#//Attribute/datatype"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute EntityRelationship.ecore#//Attribute/type"/>
