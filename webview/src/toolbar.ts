@@ -57,7 +57,12 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
                             <span class="codicon codicon-chevron-down"></span>
                         </vscode-button>
                         <div class="dropdown-content">
-                            <vscode-button id="generate-sql-button" appearance="secondary">Generate SQL</vscode-button>
+                            <vscode-button id="generate-sql-button" appearance="secondary">Generic SQL</vscode-button>
+                            <vscode-button id="generate-postgres-button" appearance="secondary">PostgreSQL</vscode-button>
+                            <vscode-button id="generate-oracle-button" appearance="secondary">Oracle SQL</vscode-button>
+                            <vscode-button id="generate-mysql-button" appearance="secondary">MySQL</vscode-button>
+                            <vscode-button id="generate-mssql-button" appearance="secondary">MS SQL</vscode-button>
+                            <vscode-button id="generate-db2-button" appearance="secondary">Db2</vscode-button>
                         </div>
                     </div>
                     <div class="vertical-seperator"></div>
@@ -125,6 +130,21 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
         });
         (document.getElementById('generate-sql-button') as HTMLElement).addEventListener('click', async () => {
             await vscodeApi.postMessage({ generateKind: 'sql' });
+        });
+        (document.getElementById('generate-postgres-button') as HTMLElement).addEventListener('click', async () => {
+            await vscodeApi.postMessage({ generateKind: 'postgres' });
+        });
+        (document.getElementById('generate-oracle-button') as HTMLElement).addEventListener('click', async () => {
+            await vscodeApi.postMessage({ generateKind: 'oracle' });
+        });
+        (document.getElementById('generate-mysql-button') as HTMLElement).addEventListener('click', async () => {
+            await vscodeApi.postMessage({ generateKind: 'mysql' });
+        });
+        (document.getElementById('generate-mssql-button') as HTMLElement).addEventListener('click', async () => {
+            await vscodeApi.postMessage({ generateKind: 'mssql' });
+        });
+        (document.getElementById('generate-db2-button') as HTMLElement).addEventListener('click', async () => {
+            await vscodeApi.postMessage({ generateKind: 'db2' });
         });
         (document.getElementById('fit-button') as HTMLElement).addEventListener('click', async () => {
             this.actionDispatcher.dispatch(FitToScreenAction.create([]));

@@ -11,9 +11,13 @@ import com.google.inject.Inject
 import java.util.HashMap
 import java.util.Map
 import org.big.erd.generator.IErGenerator
-import org.big.erd.generator.SqlGenerator
+import org.big.erd.generator.sql.SqlGenerator
 import org.eclipse.xtext.validation.IResourceValidator
 import org.eclipse.xtext.validation.CheckMode
+import org.big.erd.generator.sql.PostgresGenerator
+import org.big.erd.generator.sql.Db2Generator
+import org.big.erd.generator.sql.MsSqlGenerator
+import org.big.erd.generator.sql.MySqlGenerator
 
 class ErCommandService implements IExecutableCommandService {
 	
@@ -22,13 +26,24 @@ class ErCommandService implements IExecutableCommandService {
 	Map<String, IErGenerator> generators
 	static final String GENERATE_PREFIX = "erdiagram.generate"
 	static final String GENERATE_SQL_COMMAND = GENERATE_PREFIX + ".sql"
+	static final String GENERATE_POSTGRES_COMMAND = GENERATE_PREFIX + ".postgres"
+	static final String GENERATE_ORACLE_COMMAND = GENERATE_PREFIX + ".oracle"
+	static final String GENERATE_MYSQL_COMMAND = GENERATE_PREFIX + ".mysql"
+	static final String GENERATE_MSSQL_COMMAND = GENERATE_PREFIX + ".mssql"
+	static final String GENERATE_DB2_COMMAND = GENERATE_PREFIX + ".db2"
 	
 	
 	override initialize() {
 		generators = new HashMap
 		generators.put(GENERATE_SQL_COMMAND, new SqlGenerator)
+		generators.put(GENERATE_POSTGRES_COMMAND, new PostgresGenerator)
+		generators.put(GENERATE_ORACLE_COMMAND, new PostgresGenerator)
+		generators.put(GENERATE_MYSQL_COMMAND, new MySqlGenerator)
+		generators.put(GENERATE_MSSQL_COMMAND, new MsSqlGenerator)
+		generators.put(GENERATE_DB2_COMMAND, new Db2Generator)
 		return #[ 
-			GENERATE_SQL_COMMAND
+			GENERATE_SQL_COMMAND, GENERATE_POSTGRES_COMMAND, GENERATE_ORACLE_COMMAND, 
+			GENERATE_MYSQL_COMMAND, GENERATE_MSSQL_COMMAND, GENERATE_DB2_COMMAND
 		]
 	}
 	

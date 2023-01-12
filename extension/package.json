@@ -81,6 +81,31 @@
 				"category": "bigER"
 			},
 			{
+				"command": "erdiagram.generate.postgres.proxy",
+				"title": "Generate PostgreSQL",
+				"category": "bigER"
+			},
+			{
+				"command": "erdiagram.generate.oracle.proxy",
+				"title": "Generate Oracle SQL",
+				"category": "bigER"
+			},
+			{
+				"command": "erdiagram.generate.mysql.proxy",
+				"title": "Generate MySQL",
+				"category": "bigER"
+			},
+			{
+				"command": "erdiagram.generate.mssql.proxy",
+				"title": "Generate MS SQL",
+				"category": "bigER"
+			},
+			{
+				"command": "erdiagram.generate.db2.proxy",
+				"title": "Generate Db2",
+				"category": "bigER"
+			},
+			{
 				"command": "erdiagram.diagram.open",
 				"title": "Open ER Diagram",
 				"icon": "$(type-hierarchy-super)",
@@ -121,18 +146,18 @@
 			"editor/title": [
 				{
 					"command": "erdiagram.diagram.open",
-					"when": "editorLangId == 'erdiagram'",
+					"when": "editorLangId == erdiagram",
 					"group": "navigation"
 				}
 			],
 			"editor/context": [
 				{
 					"command": "erdiagram.diagram.open",
-					"when": "editorLangId == 'erdiagram'",
+					"when": "editorLangId == erdiagram",
 					"group": "navigation"
 				},
 				{
-					"command": "erdiagram.generate.sql.proxy",
+					"submenu": "erdiagram.generate",
 					"when": "editorLangId == erdiagram",
 					"group": "1_modification"
 				}
@@ -144,7 +169,7 @@
 					"group": "navigation"
 				},
 				{
-					"command": "erdiagram.generate.sql.proxy",
+					"submenu": "erdiagram.generate",
 					"when": "resourceExtname == '.erd'",
 					"group": "2_workspace"
 				}
@@ -185,6 +210,56 @@
 				},
 				{
 					"command": "erdiagram.model.newSample"
+				},
+				{
+					"command": "erdiagram.generate.sql.proxy",
+					"when": "editorLangId == erdiagram"
+				},
+				{
+					"command": "erdiagram.generate.postgres.proxy",
+					"when": "editorLangId == erdiagram"
+				},
+				{
+					"command": "erdiagram.generate.oracle.proxy",
+					"when": "editorLangId == erdiagram"
+				},
+				{
+					"command": "erdiagram.generate.mysql.proxy",
+					"when": "editorLangId == erdiagram"
+				},
+				{
+					"command": "erdiagram.generate.mssql.proxy",
+					"when": "editorLangId == erdiagram"
+				},
+				{
+					"command": "erdiagram.generate.db2.proxy",
+					"when": "editorLangId == erdiagram"
+				}
+			],
+			"erdiagram.generate": [
+				{
+					"command": "erdiagram.generate.sql.proxy",
+					"group": "1_generate@1"
+				},
+				{
+					"command": "erdiagram.generate.postgres.proxy",
+					"group": "1_generate@2"
+				},
+				{
+					"command": "erdiagram.generate.oracle.proxy",
+					"group": "1_generate@3"
+				},
+				{
+					"command": "erdiagram.generate.mysql.proxy",
+					"group": "1_generate@4"
+				},
+				{
+					"command": "erdiagram.generate.mssql.proxy",
+					"group": "1_generate@5"
+				},
+				{
+					"command": "erdiagram.generate.db2.proxy",
+					"group": "1_generate@6"
 				}
 			]
 		},
@@ -206,6 +281,12 @@
 				"key": "ctrl+f",
 				"mac": "cmd+f",
 				"when": "erdiagram-diagram-focused"
+			}
+		],
+		"submenus": [
+			{
+			  "id": "erdiagram.generate",
+			  "label": "Generate"
 			}
 		]
 	},

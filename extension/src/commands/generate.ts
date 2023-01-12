@@ -1,24 +1,58 @@
 import { window, Uri, commands } from "vscode";
 
-export const sqlKind = "sql";
-export const generateSqlServerCommand = "erdiagram.generate.sql";
+export const generatePrefix = "erdiagram.generate.";
+export const sqlServerCommand = "erdiagram.generate.sql";
+export const postgresServerCommand = "erdiagram.generate.postgres";
+export const oracleServerCommand = "erdiagram.generate.oracle";
+export const mysqlServerCommand = "erdiagram.generate.mysql";
+export const mssqlServerCommand = "erdiagram.generate.mssql";
+export const db2ServerCommand = "erdiagram.generate.db2";
 
+// Handler for generate messages from webview
 export const handleGenerateMessage = async (generateKind: string, fileUri: Uri) => {
-    if (generateKind === sqlKind) {
-        generateSqlHandler(fileUri);
-    } else {
-        window.showErrorMessage("Unknown generateType '" + generateKind + "' in message.");
-    }
+    const generateCommand = generatePrefix + generateKind;
+    sendToServer(generateCommand, fileUri);
 };
 
-export const generateSqlHandler = async (fileUri: Uri) => {
-    const response: string | undefined = await commands.executeCommand(generateSqlServerCommand, fileUri.toString());
-    if (response) {
-        if (response.startsWith('Error')) {
-            window.showErrorMessage(response);
+// Individual handlers for commands (not from webview)
+export const generateSqlHandler = async () => {
+    sendToServer(sqlServerCommand);
+};
+export const generatePostgresHandler = async () => {
+    sendToServer(postgresServerCommand);
+};
+export const generateOracleHandler = async () => {
+    sendToServer(oracleServerCommand);
+};
+export const generateMySqlHandler = async () => {
+    sendToServer(mysqlServerCommand);
+};
+export const generateMsSqlHandler = async () => {
+    sendToServer(mssqlServerCommand);
+};
+export const generateDb2Handler = async () => {
+    sendToServer(db2ServerCommand);
+};
+
+export const sendToServer = async (command: string, fileUri?: Uri) => {
+    if (!fileUri) {
+        const activeEditor = window.activeTextEditor;
+        if (activeEditor?.document?.languageId === 'erdiagram') {
+            fileUri = window.activeTextEditor?.document.uri;
         } else {
-            // TODO: Check if generated file exists in folder and provide button to open file in info message
-            window.showInformationMessage(response);
+            window.showErrorMessage("Error! Invalid file");
+        }
+    }
+
+    if (fileUri?.toString) {
+        const response: string | undefined = await commands.executeCommand(command, fileUri.toString());
+        if (response) {
+            if (response.startsWith('Error')) {
+                window.showErrorMessage(response);
+            } else {
+                // TODO: Check if generated file exists in folder and provide button to open file in info message
+                window.showInformationMessage(response);
+            }
         }
     }
 };
