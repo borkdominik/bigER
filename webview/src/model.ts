@@ -9,6 +9,7 @@ export class ERModel extends SGraph {
 export class EntityNode extends RectangularNode {
     expanded: boolean;
     weak: boolean;
+    isUml: boolean;
 }
 
 export class RelationshipNode extends DiamondNode {
@@ -19,6 +20,7 @@ export class NotationEdge extends LibavoidEdge {
     isSource: boolean;
     notation: string;
     connectivity: string;
+    relationshipType: number;
 }
 
 export class CardinalityLabel extends SLabel {
@@ -30,12 +32,47 @@ export class CardinalityLabel extends SLabel {
     };
 }
 
-// TODO: Fix Role label
+export class LeftCardinalityLabel extends SLabel {
+    override edgePlacement = <EdgePlacement> {
+        position: 0.2,
+        side: 'top',
+        rotate: false,
+        offset: 10
+    };
+}
+
+export class RightCardinalityLabel extends SLabel {
+    override edgePlacement = <EdgePlacement> {
+        position: 0.8,
+        side: 'top',
+        rotate: false,
+        offset: 10
+    };
+}
+
 export class RoleLabel extends SLabel {
     override edgePlacement = <EdgePlacement> {
         position: 0.5,
-        side: 'top',
-        rotate: true,
+        side: 'bottom',
+        rotate: false,
+        offset: 10
+    };
+}
+
+export class LeftRoleLabel extends SLabel {
+    override edgePlacement = <EdgePlacement> {
+        position: 0.2,
+        side: 'bottom',
+        rotate: false,
+        offset: 10
+    };
+}
+
+export class RightRoleLabel extends SLabel {
+    override edgePlacement = <EdgePlacement> {
+        position: 0.8,
+        side: 'bottom',
+        rotate: false,
         offset: 10
     };
 }

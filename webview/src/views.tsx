@@ -5,7 +5,7 @@ import { RenderingContext, svg, RectangularNodeView, SEdge, PolylineEdgeView, //
 import { injectable} from 'inversify';
 import { toDegrees, Point } from 'sprotty-protocol';
 import { EntityNode, ERModel, NotationEdge, PopupButton, RelationshipNode } from "./model";
-import { DiagramTypes } from "./utils";
+import { DiagramTypes, RelationshipTypes } from "./utils";
 
 
 @injectable()
@@ -40,7 +40,8 @@ export class EntityNodeView extends RectangularNodeView {
         if (!this.isVisible(node, context)) {
             return undefined;
         }
-        const rhombStr = "M 0,38  L " + node.bounds.width + ",38";
+        const hight = node.isUml ? 58 : 38;
+        const rhombStr = "M 0," + hight + "  L " + node.bounds.width + "," + hight;
 
         return <g>
             {(node.weak === true) ? <rect class-border-weak={true} x="-5" y="-5" rx="5" ry="5" width={node.bounds.width + 10} height={node.bounds.height + 10}></rect> : "" }
@@ -140,11 +141,32 @@ export class NotationEdgeView extends PolylineEdgeView {
             case DiagramTypes.CROWSFOOT_NOTATION: {
                 return this.createCrowsFootEdge(source, target, secondElem, penultimateElem, edge.connectivity, edge.isSource);
             }
+            case DiagramTypes.UML: {
+                if (edge.relationshipType !== null && edge.relationshipType !== RelationshipTypes.DEFAULT) {
+                    return this.createUmlEdge(source, target, edge.relationshipType, secondElem, penultimateElem, edge.isSource);
+                }
+                return [];
+            }
             default: {
                 // no additional renderings for other notations
                 return [];
             }
         }
+    }
+
+    private createUmlEdge(point:Point, next:Point, relationshipType:number, secondElem: Point, penultimateElem: Point, isSource: boolean):VNode[] {
+        const color = (relationshipType === RelationshipTypes.AGGREGATION_LEFT || relationshipType === RelationshipTypes.AGGREGATION_RIGHT) ? "var(--vscode-editorActiveLineNumber-foreground)" : "var(--vscode-editor-background)";
+        // source and target are required for the rotation
+        let source = point;
+        let target = secondElem;
+        if (relationshipType === RelationshipTypes.AGGREGATION_RIGHT || relationshipType === RelationshipTypes.COMPOSITION_RIGHT) {
+            source = next;
+            target = penultimateElem;
+        }
+        const polygonPoints = (source.x + 2) + " " + source.y + "," + (source.x + 17) + " " + (source.y - 8) + "," + (source.x + 32) + " " + source.y + "," + (source.x + 17) + " " + (source.y + 8);
+        return [<g>
+            <polygon points={polygonPoints} fill={color} transform={`rotate(${this.angle(source, target)} ${source.x} ${source.y})`}/>
+        </g>];
     }
 
     private createCrowsFootEdge(source: Point, target: Point, secondElem: Point, penultimateElem: Point, cardinality: string, isSource: boolean): VNode[] {

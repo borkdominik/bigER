@@ -21,8 +21,6 @@ text {
 
 }
 
-
-
 .sprotty-node {
     stroke-width: 1;
     fill: rgb(219,218,235);
@@ -89,6 +87,9 @@ text {
     fill: black;
 }
 
+.visibility {
+    fill: #569cd6;
+}
 
 .key {
     font-style: italic;
@@ -110,7 +111,24 @@ text {
 .top.sprotty-label {
     fill: var(--vscode-foreground);
 }
+
+.top-left.sprotty-label {
+    fill: var(--vscode-foreground);
+}
+
+.top-right.sprotty-label {
+    fill: var(--vscode-foreground);
+}
+
 .bottom.sprotty-label {
+    fill: var(--vscode-foreground);
+}
+
+.bottom-left.sprotty-label {
+    fill: var(--vscode-foreground);
+}
+
+.bottom-right.sprotty-label {
     fill: var(--vscode-foreground);
 }
 

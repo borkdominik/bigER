@@ -8,6 +8,7 @@ import org.eclipse.sprotty.Action
 import org.eclipse.elk.alg.layered.options.LayeredOptions
 import org.eclipse.elk.core.options.Direction
 import org.apache.log4j.Logger
+import org.big.erd.entityRelationship.NotationType
 
 
 class ERDiagramLayoutEngine extends ElkLayoutEngine {
@@ -23,12 +24,11 @@ class ERDiagramLayoutEngine extends ElkLayoutEngine {
 			configurator.configureByType('graph')
 				.setProperty(CoreOptions.DIRECTION, Direction.RIGHT)
 				.setProperty(CoreOptions.SPACING_NODE_NODE, 50.0)
-				.setProperty(LayeredOptions.SPACING_NODE_NODE_BETWEEN_LAYERS, 50.0)
+				.setProperty(LayeredOptions.SPACING_NODE_NODE_BETWEEN_LAYERS, root.notation.equals(NotationType.UML.toString)? 100.0 : 50.0)
 				.setProperty(CoreOptions.SPACING_PORT_PORT, 50.0)
 
 			layout(root, configurator, cause)
 			LOG.debug("Finished computing macro layout.")
 		}
 	}
-
 }

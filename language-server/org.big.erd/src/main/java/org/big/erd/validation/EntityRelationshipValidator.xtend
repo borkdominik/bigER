@@ -12,7 +12,10 @@ import org.eclipse.xtext.validation.ComposedChecks
 import org.big.erd.entityRelationship.Entity
 import org.big.erd.entityRelationship.AttributeType
 import static org.big.erd.entityRelationship.EntityRelationshipPackage.Literals.*
-
+import org.big.erd.entityRelationship.Relationship
+import org.big.erd.entityRelationship.RelationshipType
+import org.big.erd.entityRelationship.VisibilityType
+import org.big.erd.entityRelationship.Attribute
 
 /**
  * Custom ValidationRules with composed checks 
@@ -70,5 +73,43 @@ class EntityRelationshipValidator extends AbstractEntityRelationshipValidator {
     			INVALID_CARDINALITY
     		)
     	}
+	}
+	
+	@Check
+	def checkAggregation(Relationship relationship) {
+		val model = relationship.eContainer
+		if (model instanceof Model) {
+			val notation = model.notation?.notationType
+			if(notation === null){
+				return
+			}
+			if (notation !== null) {
+				if(notation.equals(NotationType.UML)){
+					if(!relationship.firstType.equals(RelationshipType.DEFAULT) &&
+					   !relationship.secondType.equals(RelationshipType.DEFAULT)){
+						warning('''Aggregation only supported for UML''', relationship, RELATIONSHIP__SECOND_TYPE)
+					}
+				}else{
+					if(!relationship.firstType.equals(RelationshipType.DEFAULT)){
+						warning('''Aggregation only supported for UML''', relationship, RELATIONSHIP__FIRST_TYPE)
+					}
+					if(!relationship.secondType.equals(RelationshipType.DEFAULT)){
+						warning('''Aggregation only supported for UML''', relationship, RELATIONSHIP__SECOND_TYPE)
+					}
+				}
+			}
+		}
+	}
+	
+	@Check
+	def checkVisibility(Attribute attribute) {
+		val model = attribute.eContainer.eContainer
+		if (model instanceof Model) {
+			val notation = model.notation?.notationType
+			if(notation !== null && !notation.equals(NotationType.UML) && !attribute.visibility.equals(VisibilityType.NONE)){
+				warning('''Use visibility operators only for UML''', attribute, ATTRIBUTE__VISIBILITY)
+		
+			}
+		}
 	}
 }

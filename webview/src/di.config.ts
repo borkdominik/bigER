@@ -11,7 +11,8 @@ import {
     SRoutingHandle, SRoutingHandleView, editFeature
 } from 'sprotty';
 import { InheritanceEdgeView, ERModelView, EntityNodeView, RelationshipNodeView, NotationEdgeView } from './views';
-import { EntityNode, ERModel, NotationEdge, RelationshipNode, InheritanceEdge, CardinalityLabel, RoleLabel } from './model';
+import { EntityNode, ERModel, NotationEdge, RelationshipNode, InheritanceEdge, CardinalityLabel, RoleLabel, LeftCardinalityLabel,
+    RightCardinalityLabel, LeftRoleLabel, RightRoleLabel } from './model';
 import { BigerEdgeLayoutPostprocessor } from './layout-postprocessor';
 
 /**
@@ -55,9 +56,14 @@ const DiagramModule = new ContainerModule((bind, unbind, isBound, rebind) => {
     configureModelElement(context, 'label:header', SLabel, SLabelView, { enable: [editLabelFeature] });
     configureModelElement(context, 'label:relationship', SLabel, SLabelView, { enable: [editLabelFeature] });
     configureModelElement(context, 'label:top', CardinalityLabel, SLabelView);
+    configureModelElement(context, 'label:top-left', LeftCardinalityLabel, SLabelView);
+    configureModelElement(context, 'label:top-right', RightCardinalityLabel, SLabelView);
+    configureModelElement(context, 'label:bottom-left', LeftRoleLabel, SLabelView);
+    configureModelElement(context, 'label:bottom-right', RightRoleLabel, SLabelView);
     configureModelElement(context, 'label:bottom', RoleLabel, SLabelView);
     configureModelElement(context, 'label:text', SLabel, SLabelView, { enable: [editLabelFeature] });
     configureModelElement(context, 'label:key', SLabel, SLabelView, { enable: [editLabelFeature] });
+    configureModelElement(context, 'label:visibility', SLabel, SLabelView, { enable: [editLabelFeature] });
     configureModelElement(context, 'label:partial-key', SLabel, SLabelView, { enable: [editLabelFeature] });
     configureModelElement(context, 'label:derived', SLabel, SLabelView, { enable: [editLabelFeature] });
     // Additional Sprotty elements

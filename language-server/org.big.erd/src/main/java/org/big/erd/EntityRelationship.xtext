@@ -18,7 +18,7 @@ Entity:
 
 Relationship:
 	(weak?='weak')? 'relationship' name=ID '{'
-		(first=RelationEntity (('->' second=RelationEntity) ('->' third=RelationEntity)?)?)?
+		(first=RelationEntity ((firstType=RelationshipType second=RelationEntity) (secondType=RelationshipType third=RelationEntity)?)?)?
 		(attributes += Attribute)*
 	'}';
 
@@ -28,7 +28,7 @@ RelationEntity:
 	']')?;
 
 Attribute:
-	name=ID (':' datatype=DataType)? (type=AttributeType)?;
+	(visibility=VisibilityType)? name=ID (':' datatype=DataType)? (type=AttributeType)?;
 
 DataType:
 	type=ID ('(' size=INT ')')?;  
@@ -57,4 +57,23 @@ enum NotationType:
     DEFAULT='default' | 
     CHEN='chen' | 
     BACHMAN='bachman' | 
-    CROWSFOOT='crowsfoot'; 
+    CROWSFOOT='crowsfoot'|
+    UML='uml'; 
+ 
+enum RelationshipType:
+	DEFAULT='->'|
+	AGGREGATION_LEFT='o-'|
+	AGGREGATION_RIGHT='-o'|
+	COMPOSITION_LEFT='*-'|
+	COMPOSITION_RIGHT='-*';
+	
+enum VisibilityType:
+	NONE='none' |
+	PUBLIC='+'|
+	PRIVATE='-'|
+	PROTECTED='#'|
+	PACKAGE='~'|
+	PUBLIC_STRING='public'|
+	PRIVATE_STRING='private'|
+	PROTECTED_STRING='protected'|
+	PACKAGE_STRING='package';

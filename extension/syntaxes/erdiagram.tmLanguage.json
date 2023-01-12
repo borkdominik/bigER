@@ -36,6 +36,9 @@
             "name": "string.quoted.single.erdiagram",
             "begin": "'",
             "end": "'"
+        }, {
+            "name": "storage.type.erdiagram",
+            "match": "\\+|\\#|\\~|\\-|\\b(public|private|protected|package)\\b"
         }
 	],
 	"repository": 
