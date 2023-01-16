@@ -21,8 +21,6 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.generator.IFileSystemAccess2;
 import org.eclipse.xtext.generator.IGeneratorContext;
-import org.eclipse.xtext.util.RuntimeIOException;
-import org.eclipse.xtext.xbase.lib.Exceptions;
 
 /**
  * Generates vendor-agnostic SQL from the ER model.
@@ -37,19 +35,12 @@ public class SqlGenerator implements IErGenerator {
 		final Model diagram = (Model) resource.getContents().get(0);
 		String diagramName = diagram.getName();
 		final String fileName = (diagramName != null ? diagramName : "output") + ".sql";
-		final String fileNameDrop = (diagramName != null ? diagramName : "output") + "-drop.sql";
-		try {
-			StringConcatenation fileContent = generateFileContent(diagram, false);
-			fsa.generateFile(fileName, fileContent);
-			StringConcatenation fileContentDrop = generateFileContent(diagram, true);
-			fsa.generateFile(fileNameDrop, fileContentDrop);
-		} catch (final Throwable t) {
-			if (t instanceof RuntimeIOException) {
-				throw new Error("Could not generate file. Did you open a folder?");
-			} else {
-				throw Exceptions.sneakyThrow(t);
-			}
-		}
+		StringConcatenation fileContent = generateFileContent(diagram, false);
+		fsa.generateFile(fileName, fileContent);
+		// TODO: Integrate generation of drop
+		// final String fileNameDrop = (diagramName != null ? diagramName : "output") + "-drop.sql";
+		// StringConcatenation fileContentDrop = generateFileContent(diagram, true);
+		// fsa.generateFile(fileNameDrop, fileContentDrop);
 	}
 
 	public String generate(final Model diagram) {

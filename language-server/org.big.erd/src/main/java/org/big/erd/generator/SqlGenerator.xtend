@@ -9,6 +9,9 @@ import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.generator.IFileSystemAccess2
 import org.eclipse.xtext.generator.IGeneratorContext
 
+/**
+ * Deprecated (old) SQL Generator
+ */
 class SqlGenerator implements IErGenerator {
 	
 	override void generate(Resource resource, IFileSystemAccess2 fsa, IGeneratorContext context) {

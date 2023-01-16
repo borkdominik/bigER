@@ -26,6 +26,7 @@ import org.eclipse.xtext.xbase.lib.Exceptions;
 /**
  * Generates vendor-agnostic SQL from the ER model.
  * Can be extended to provide vendor-specific dialects.
+ * TODO: Integrate SQL Import
  */
 public class SqlImport implements IErGenerator {
 
