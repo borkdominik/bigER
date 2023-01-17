@@ -85,6 +85,7 @@
     <genClasses ecoreClass="EntityRelationship.ecore#//DataType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute EntityRelationship.ecore#//DataType/type"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute EntityRelationship.ecore#//DataType/size"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute EntityRelationship.ecore#//DataType/d"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

@@ -332,7 +332,9 @@ class ERDiagramGenerator implements IDiagramGenerator {
 
 	def String attributeDatatypeString(Attribute a) {
 		if (a.datatype !== null) {
-			if (a.datatype.size != 0) {
+			if (a.datatype.size !== 0 && a.datatype.d !== 0) {
+				return a.datatype.type + '(' + a.datatype.size + ', ' + a.datatype.d + ')'
+			} else if (a.datatype.size !== 0 && a.datatype.d === 0) {
 				return a.datatype.type + '(' + a.datatype.size + ')'
 			}
 			return a.datatype.type

@@ -31,7 +31,7 @@ Attribute:
 	(visibility=VisibilityType)? name=ID (':' datatype=DataType)? (type=AttributeType)?;
 
 DataType:
-	type=ID ('(' size=INT ')')?;  
+	type=ID ('(' size=INT (',' d=INT)? ')')?;  
 
 @Override	
 terminal INT returns ecore::EInt:
