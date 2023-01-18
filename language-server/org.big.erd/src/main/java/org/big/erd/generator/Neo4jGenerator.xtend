@@ -8,6 +8,7 @@ import org.big.erd.entityRelationship.Relationship
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.generator.IFileSystemAccess2
 import org.eclipse.xtext.generator.IGeneratorContext
+//import static extension org.eclipse.xtext.xbase.lib.IterableExtensions.*
 
 class Neo4jGenerator implements IErGenerator {
 
@@ -19,18 +20,38 @@ class Neo4jGenerator implements IErGenerator {
 	}
 	
 	def String generate(Model model) {
+		val allEntities = model.entities;
+		val allRelationships = model.relationships;
+		/*
+		// x -> c
+		// a extends c
+		// b extends c
+		// after
+		// x -> b
+		// x -> a
+		val allExtendedEntities = newHashSet
+		//allEntities.forEach[it.extends !== null ? allExtendedEntities.add(it.extends) : null]
+		allEntities.forEach[allExtendedEntities.add(it.extends)]
+		for (e : allEntities) {
+			if (e.attributes != null && e.extends != null) {
+				e.attributes.addAll(e.extends.attributes)
+			}
+		}
+		*/
 		return '''
-			«FOR entity : model.entities»
+			// entities
+			«FOR entity : allEntities»
 				«entity.toTable»
 			«ENDFOR»
-
-			«FOR relationship : model.relationships»
+			// relationships
+			«FOR relationship : allRelationships»
 				«relationship.toTable»
 			«ENDFOR»
-
+			// constraints
 			«FOR entity : model.entities»
 				«entity.uniqueKeyConstraint»
 			«ENDFOR»
+
 		'''
 	}
 	
@@ -39,9 +60,16 @@ class Neo4jGenerator implements IErGenerator {
 			CREATE («entity.name»:«entity.name» {name: "«entity.name»"«FOR attribute : entity.allAttributes.reject[it.type === AttributeType.DERIVED] », «entity.name»_«attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR»})«'\n'»
 		'''
 	}
+
+	private def toTableExtend(Entity entity) {
+		return ''' 
+			CREATE («entity.name»:«entity.name» {name: "«entity.name»"«FOR attribute : entity.allAttributes.reject[it.type === AttributeType.DERIVED] », «entity.name»_«attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR»})«'\n'»
+		'''
+	}
+
 	private def uniqueKeyConstraint(Entity entity) {
 		return ''' 
-			CREATE CONSTRAINT IF NOT EXISTS FOR (x:«entity.name») REQUIRE x.«entity.name»_«entity.primaryKey.name» IS UNIQUE«'\n'»;
+			CREATE CONSTRAINT IF NOT EXISTS FOR (x:«entity.name») REQUIRE x.«entity.name»_«entity.primaryKey.name» IS UNIQUE;«'\n'»
 		'''
 	}
 	
@@ -52,6 +80,9 @@ class Neo4jGenerator implements IErGenerator {
 			«IF relationship.third?.target !== null»CREATE («relationship.name»)-[«relationship.name»_«relationship.first.target.name»:«relationship.name»_«relationship.first.target.name» {«FOR attribute : relationship.attributes SEPARATOR ','»«attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR» }]->(«relationship.first.target.name»)«'\n'»«ENDIF»
 			«IF relationship.third?.target !== null»CREATE («relationship.name»)-[«relationship.name»_«relationship.second.target.name»:«relationship.name»_«relationship.second.target.name» {«FOR attribute : relationship.attributes SEPARATOR ','»«attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR» }]->(«relationship.second.target.name»)«'\n'»«ENDIF»
 			«IF relationship.third?.target !== null»CREATE («relationship.name»)-[«relationship.name»_«relationship.third.target.name»:«relationship.name»_«relationship.third.target.name» {«FOR attribute : relationship.attributes SEPARATOR ','»«attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR» }]->(«relationship.third.target.name»)«'\n'»«ENDIF»
+			«IF relationship.third?.target?.extends !== null»CREATE («relationship.third.target.name»)-[«relationship.third.target.name»_IS_A:IS_A]->(«relationship.third.target.extends.name»)«'\n'»«ENDIF»
+			«IF relationship.first?.target?.extends !== null»CREATE («relationship.first.target.name»)-[«relationship.first.target.name»_IS_A:IS_A]->(«relationship.first.target.extends.name»)«'\n'»«ENDIF»
+			«IF relationship.second?.target?.extends !== null»CREATE («relationship.second.target.name»)-[«relationship.second.target.name»_IS_A:IS_A]->(«relationship.second.target.extends.name»)«'\n'»«ENDIF»
 		'''
 	}
 	
