@@ -51,8 +51,8 @@ class CassandraDbGenerator implements IErGenerator {
 				«relationship.first.target.foreignKeyRef»
 				«relationship.second.target.foreignKeyRef»
 				«IF relationship.third?.target !== null», «relationship.third.target.foreignKeyRef»«ENDIF»
-				«FOR attribute : relationship.attributes»
-					«'\t'»«attribute.name» «attribute.datatype.transformDataType»,
+				«FOR attribute : relationship.attributes SEPARATOR ','»
+					«'\t'»«attribute.name» «attribute.datatype.transformDataType»
 				«ENDFOR»
 				«'\t'»PRIMARY KEY («keySource.name», «keyTarget.name»«IF relationship.third?.target !== null», «relationship.third.target.primaryKey.name»«ENDIF»)
 				);«'\n'»«'\n'»
@@ -71,8 +71,7 @@ class CassandraDbGenerator implements IErGenerator {
 					«'\t'»«attribute.name» «attribute.datatype.transformDataType»,
 				«ENDFOR»
 				«'\t'»«strong.primaryKey.name» «strong.primaryKey.datatype.transformDataType»,
-				«'\t'»PRIMARY KEY («weak.partialKey.name», «strong.primaryKey.name»),
-				«'\t'»FOREIGN KEY («strong.primaryKey.name») references «strong.name» ON DELETE CASCASE
+				«'\t'»PRIMARY KEY («weak.partialKey.name», «strong.primaryKey.name»)
 				);«'\n'»«'\n'»
 			'''
 	}
@@ -126,25 +125,36 @@ class CassandraDbGenerator implements IErGenerator {
 		}
 	}
 
-
 	private def getAllAttributes(Entity entity) {
 		val attributes = newHashSet
 		attributes += entity.attributes
 		return attributes
 	}
 	
+
+	// CQL datatypes https://cassandra.apache.org/doc/latest/cassandra/cql/types.html
 	private def transformDataType(DataType dataType) {
 		// default
 		if(dataType === null) {
-			return 'CHAR(20)'
+			return 'TEXT'
 		}
 			
-		val type = dataType.type
-		var size = dataType.size
-		
-		if (size != 0) {
-			return type +  '(' + size + ')';
+		val type = dataType.type.toUpperCase()
+
+		if(type == 'VARCHAR' || type == 'CHAR' || type.startsWith('STRING')) {
+			return 'TEXT';
 		}
+		
+
+		if(type == 'SMALLINT' || type == 'BIGINT') {
+			return 'VARINT';
+		}
+
+		/*
+		if(type.startsWith('DATE')) {
+			return 'TIMESPAN';
+		}
+		*/
 		
 		return type
 	}
@@ -153,7 +163,7 @@ class CassandraDbGenerator implements IErGenerator {
 	private def validate(Resource resource, Model model) {
 		// additional validation check, since generalization is not supported
 		if (!model.entities?.filter[it.extends !== null].isNullOrEmpty) {
-			throw new IllegalArgumentException("SQL Generator does not support generalization, remove the 'extends' keyword")
+			throw new IllegalArgumentException("CassandraDb CQL Generator does not support generalization, remove the 'extends' keyword")
 		}
 	}
 }
