@@ -1,0 +1,88 @@
+// ER Model
+erdiagram SocialMedia
+
+// Options
+notation=default
+
+// Entities
+entity User {
+    user_id: INT key
+    username: VARCHAR(255)
+    email: VARCHAR(255)
+    password: VARCHAR(255)
+}
+entity Admin extends User {
+    admin_id: INT key
+    title: VARCHAR(255)
+}
+entity Moderator extends User {
+    moderator_id: INT key
+    title: VARCHAR(255)
+}
+entity Profile {
+    profile_id: INT key
+    name: VARCHAR(255)
+    bio: VARCHAR(255)
+}
+entity Post {
+    post_id: INT key
+    content: VARCHAR(255)
+    date: DATE
+    likes: INT
+}
+entity Comment {
+    comment_id: INT key
+    content: VARCHAR(255)
+    date: DATE
+    likes: INT
+}
+entity FriendRequest {
+    request_id: INT key
+    status: VARCHAR(255)
+}
+entity Group {
+    group_id: INT key
+    name: VARCHAR(255)
+    description: VARCHAR(255)
+}
+entity Event {
+    event_id: INT key
+    name: VARCHAR(255)
+    date: DATE
+    location: VARCHAR(255)
+}
+entity Notification {
+    notification_id: INT key
+    content: VARCHAR(255)
+    date: DATE
+    type: VARCHAR(255)
+}
+
+// Relationships
+relationship HasProfile {
+    User[1] -> Profile[1]
+}
+relationship Publishes {
+    User[1] -> Post[N]
+}
+relationship Comments {
+    User[1] -> Comment[N]
+}
+relationship Likes {
+    User[N] -> Post[N]
+}
+relationship Friend {
+    User[1] -> FriendRequest[N] -> User[1]
+}
+relationship Member {
+    User[N] -> Group[N]
+}
+relationship Hosts {
+    User[1] -> Event[N]
+}
+relationship Invited {
+    Event[N] -> User[N]
+}
+relationship Receives {
+    User[1] -> Notification[N]
+}
