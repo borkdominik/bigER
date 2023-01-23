@@ -18,6 +18,7 @@ import org.big.erd.generator.sql.PostgresGenerator
 import org.big.erd.generator.sql.Db2Generator
 import org.big.erd.generator.sql.MsSqlGenerator
 import org.big.erd.generator.sql.MySqlGenerator
+import org.big.erd.generator.sql.OracleGenerator
 
 class ErCommandService implements IExecutableCommandService {
 	
@@ -37,7 +38,7 @@ class ErCommandService implements IExecutableCommandService {
 		generators = new HashMap
 		generators.put(GENERATE_SQL_COMMAND, new SqlGenerator)
 		generators.put(GENERATE_POSTGRES_COMMAND, new PostgresGenerator)
-		generators.put(GENERATE_ORACLE_COMMAND, new PostgresGenerator)
+		generators.put(GENERATE_ORACLE_COMMAND, new OracleGenerator)
 		generators.put(GENERATE_MYSQL_COMMAND, new MySqlGenerator)
 		generators.put(GENERATE_MSSQL_COMMAND, new MsSqlGenerator)
 		generators.put(GENERATE_DB2_COMMAND, new Db2Generator)
