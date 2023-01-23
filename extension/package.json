@@ -2,7 +2,7 @@
 	"name": "erdiagram",
 	"displayName": "bigER Modeling Tool",
 	"description": "Entity Relationship Diagrams with a textual editor and SQL code generation.",
-	"version": "0.2.1",
+	"version": "0.3.0",
 	"publisher": "BIGModelingTools",
 	"categories": [
 		"Programming Languages",
