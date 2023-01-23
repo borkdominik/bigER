@@ -50,7 +50,6 @@ After installation, ER models can be created in `.erd` files. Use the `New Sampl
 erdiagram Model
 
 notation=default
-generate=off
 
 entity A {
    id key

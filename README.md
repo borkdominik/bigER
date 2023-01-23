@@ -61,7 +61,7 @@ The Java-based language server is realized with [Xtext](https://www.eclipse.org/
 <!-- USAGE -->
 ## Usage
 
-Download and install the extension from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=BIGModelingTools.erdiagram). Information regarding installation, can be found in the [Extension Marketplace Guide](https://code.visualstudio.com/docs/editor/extension-marketplace) of VS Code.
+Download and install the extension from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=BIGModelingTools.erdiagram), see the [Installation](https://github.com/borkdominik/bigER/wiki/Installation) page in the Wiki for instructions.
 
 **New ER Model**
 
@@ -71,7 +71,6 @@ After installation, ER models can be created in `.erd` files. Use the `New Sampl
 erdiagram Model
 
 notation=default
-generate=off
 
 entity A {
    id key
@@ -133,6 +132,7 @@ Contributions to the project are always welcome! See the [Contribution Guideline
 - [Philipp-Lorenz Glaser](https://github.com/plglaser) (main developer)   
 - [Georg Hammerschmied](https://github.com/SchmiedHammer) (multi-notation support)
 - [Hnatiuk Vladyslav](https://github.com/Aksem) (improved edge router)
+- [Christoph Lauscher](https://github.com/christoph-lauscher) (SQL import/export)
 - [Dominik Bork](https://github.com/borkdominik)
 
 
