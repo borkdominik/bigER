@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.3.0] - *01-2023*
+
+### New
+- *New SQL Generator* (see [SQL Generators](https://github.com/borkdominik/bigER/wiki/SQL-Generators) in the Wiki for more information). Generator can be used through commands, replacing the previous way of the `generate=sql` option. The intention of this change is to explicitly decide when code should be generated, instead of automatically on code changes in the background.
+- Support for various new SQL dialects added: *PostgreSQL*, *Oracle* *SQL*, *MySQL*, *MS SQL*, *Db2*. 
+- File logo for .erd files
+
+### Fixed
+
+- Fix layout bug for edge labels when reopening a model (see [issue #48](https://github.com/borkdominik/bigER/issues/48))
 
 ## v0.2.0 - *10-2022*
 
