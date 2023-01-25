@@ -1,6 +1,6 @@
 import { postConstruct, injectable } from 'inversify';
 import { VscodeDiagramWidget } from 'sprotty-vscode-webview';
-import { DiagramServerProxy } from 'sprotty';
+import { DiagramServerProxy, SetUIExtensionVisibilityAction } from 'sprotty';
 import { CollapseExpandAllAction, FitToScreenAction } from 'sprotty-protocol';
 import { ChangeNotationAction, CreateElementEditAction } from './actions';
 import { DiagramTypes } from './utils';
@@ -17,8 +17,8 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
     @postConstruct()
     override initialize(): void {
         super.initialize();
-        this.addToolbar();
-        this.addEventHandlers();
+        //this.addToolbar();
+        //this.addEventHandlers();
     }
 
     protected override initializeSprotty(): void {
@@ -26,7 +26,8 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
             this.modelSource.clientId = this.diagramIdentifier.clientId;
         }
         const model = this.requestModel();
-        model.then(res => {
+        model.then(() => {
+            this.actionDispatcher.dispatch(SetUIExtensionVisibilityAction.create({extensionId: "toolbar-overlay", visible: true }));
             this.actionDispatcher.dispatch(FitToScreenAction.create([]));
         });
     }

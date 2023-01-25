@@ -14,6 +14,7 @@ import { InheritanceEdgeView, ERModelView, EntityNodeView, RelationshipNodeView,
 import { EntityNode, ERModel, NotationEdge, RelationshipNode, InheritanceEdge, CardinalityLabel, RoleLabel, LeftCardinalityLabel,
     RightCardinalityLabel, LeftRoleLabel, RightRoleLabel } from './model';
 import { BigerEdgeLayoutPostprocessor } from './layout-postprocessor';
+import { ToolBar } from './toolbar-new';
 
 /**
  * Sprotty Dependency Injection container
@@ -21,6 +22,8 @@ import { BigerEdgeLayoutPostprocessor } from './layout-postprocessor';
 const DiagramModule = new ContainerModule((bind, unbind, isBound, rebind) => {
     rebind(TYPES.ILogger).to(ConsoleLogger).inSingletonScope();
     rebind(TYPES.LogLevel).toConstantValue(LogLevel.warn);
+    bind(ToolBar).toSelf().inSingletonScope();
+    bind(TYPES.IUIExtension).toService(ToolBar);
     // Router
     bind(LibavoidRouter).toSelf().inSingletonScope();
     bind(TYPES.IEdgeRouter).toService(LibavoidRouter);
