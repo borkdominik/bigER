@@ -55,7 +55,7 @@ export class RefreshButton implements ToolButton {
         public readonly id = "btn_refresh",
         public readonly label = "Refresh Diagram",
         public readonly icon = "refresh",
-        public readonly action = 
+        public readonly action =
     ) {}
 }
 */

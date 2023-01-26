@@ -17,8 +17,8 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
     @postConstruct()
     override initialize(): void {
         super.initialize();
-        //this.addToolbar();
-        //this.addEventHandlers();
+        // this.addToolbar();
+        // this.addEventHandlers();
     }
 
     protected override initializeSprotty(): void {

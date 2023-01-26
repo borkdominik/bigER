@@ -1,6 +1,5 @@
 import 'reflect-metadata';
 import 'sprotty-vscode-webview/css/sprotty-vscode.css';
-import '../css/menu-bar.css';
 import '../css/toolbar.css';
 import { Container } from 'inversify';
 import { SprottyLspEditStarter } from 'sprotty-vscode-webview/lib/lsp/editing';

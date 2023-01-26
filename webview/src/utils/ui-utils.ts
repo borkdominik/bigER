@@ -5,3 +5,14 @@ export function createElement(tagName: string, cssClasses?: string[]): HTMLEleme
     }
     return element;
 }
+
+export function togglePanel(panelId: string): void {
+    const panel = document.getElementById(panelId);
+    if (panel) {
+        if (panel.style.display === 'none') {
+            panel.style.display = 'flex';
+        } else {
+            panel.style.display = 'none';
+        }
+    }
+}

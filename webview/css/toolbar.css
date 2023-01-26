@@ -10,16 +10,44 @@
     border-bottom: 1px solid var(--vscode-sideBarSectionHeader-border);
     background: var(--vscode-sideBar-background);
 }
+.toolbar-left {
+    display: flex;
+    position: absolute;
+    left: 0px;
+    top: 5px;
+}
+#toolbar-modelName {
+    font-size: 18px;
+    margin: 0 0 0 5px;
+}
+.toolbar-right {
+    display: flex;
+    position: absolute;
+    right: 0px;
+    top: 5px;
+}
 
+/* Button & Icon */
 .overlay-button {
-    opacity: 0.5;
+    opacity: 0.75;
     display: flex;
 }
 .overlay-button:hover {
     opacity: 1;
     cursor: pointer;
 }
+.tool-icon {
+    margin-right: 5px;
+    margin-top: 5px;
+    padding-left: 5px;
+    width: 16px;
+    height: 16px;
+}
+.link-button {
+    color: var(--vscode-button-foreground);
+}
 
+/* Dropdown */
 .toolbar-dropdown {
     position: relative;
     display: inline-block;
@@ -31,56 +59,83 @@
     position: absolute;
     display: none;
     min-width: 140px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    box-shadow: 0px 0px 8px var(--vscode-widget-shadow);
     z-index: 1;
 }
-
-
-.toolbar-left {
-    display: flex;
-    position: absolute;
-    left: 0px;
-    top: 5px;
+.dropdown-item {
+    display: block;
+    border-radius: 0px;
 }
-
-.toolbar-right {
+.dropdown-icon-container {
     display: flex;
-    position: absolute;
-    right: 0px;
-    top: 5px;
+    flex-direction: row;
 }
-
-.overlay-icon {
-    margin-right: 10px;
+.dropdown-icon {
     margin-top: 5px;
-    padding-left: 5px;
     width: 16px;
     height: 16px;
 }
 
-.rotated {
+
+/* Panel */
+.panel-label {
+    margin: 5px 5px 5px 5px;
+}
+#notation-panel {
+    /*display: flex;
+    flex-direction: row;*/
+    padding: 5px 5px;
+    position: absolute;
+    background: var(--vscode-menu-background);
+    box-shadow: 0px 0px 8px var(--vscode-widget-shadow);
+    /*flex-wrap: wrap;*/
+    border: 1px solid var(--vscode-sideBarSectionHeader-border);
+}
+
+#btn_add_relationship-container i {
+    margin-top: 3px;
     transform: rotate(45deg);
 }
 
+/* utility classes */
+.rotated {
+    transform: rotate(45deg);
+}
 .vertical-separator {
     border-left: 1px solid var(--vscode-sideBarSectionHeader-border);
     margin: 0 5px 0 5px;
 }
 
-.overlay-dropdown {
-    position: relative;
-    display: inline-block;
-}
-.overlay-dropdown:hover .dropdown-content {
-    display: block;
-}
-.dropdown-content {
+.tooltip .tooltiptext {
+    visibility: hidden;
+    top: 120%;
+    width: fit-content;
+    background-color: var(--vscode-activityBar-background);
+    color: var(--vscode-activityBar-foreground);
+    text-align: center;
+    padding: 5px 5px;
+    border-radius: 1px;
+    font-size: 12px;
     position: absolute;
-    display: none;
-    min-width: 140px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;
 }
-.dropdown-content vscode-button {
-    display: block;
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}
+.tooltip-help .tooltiptext {
+    visibility: hidden;
+    top: 120%;
+    right: 10%;
+    width: fit-content;
+    background-color: var(--vscode-activityBar-background);
+    color: var(--vscode-activityBar-foreground);
+    text-align: center;
+    padding: 5px 5px;
+    border-radius: 1px;
+    font-size: 12px;
+    position: absolute;
+    z-index: 1;
+}
+.tooltip-help:hover .tooltiptext {
+    visibility: visible;
 }
