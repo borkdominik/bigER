@@ -155,7 +155,7 @@ export class NotationEdgeView extends PolylineEdgeView {
     }
 
     private createUmlEdge(point:Point, next:Point, relationshipType:number, secondElem: Point, penultimateElem: Point, isSource: boolean):VNode[] {
-        const color = (relationshipType === RelationshipTypes.AGGREGATION_LEFT || relationshipType === RelationshipTypes.AGGREGATION_RIGHT) ? "var(--vscode-editorActiveLineNumber-foreground)" : "var(--vscode-editor-background)";
+        const color = (relationshipType === RelationshipTypes.AGGREGATION_LEFT || relationshipType === RelationshipTypes.AGGREGATION_RIGHT) ? "var(--vscode-editor-background)" : "var(--vscode-editorActiveLineNumber-foreground)";
         // source and target are required for the rotation
         let source = point;
         let target = secondElem;
