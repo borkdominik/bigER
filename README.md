@@ -120,7 +120,7 @@ The code is split into a **client side** (extension with webview) and a **server
 <!-- ISSUES -->
 ## Issues
 
-Project issues are managed on GitHub, see [Open Issues](https://github.com/borkdominik/bigER/blob/main/docs/ISSUES.md) for the currently tracked issues. Do not hesitate to report a bug or request a feature through the offered [Issue Templates](https://github.com/borkdominik/bigER/issues/new/choose). For questions, simply use a blank issue.
+Project issues are managed on GitHub, see [Open Issues](https://github.com/borkdominik/bigER/issues) for the currently tracked issues. Do not hesitate to report a bug or request a feature through the offered [Issue Templates](https://github.com/borkdominik/bigER/issues/new/choose). For questions, simply use a blank issue.
 
 
 <!-- CONTRIBUTING -->
