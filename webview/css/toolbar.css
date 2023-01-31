@@ -1,0 +1,138 @@
+.toolbar-overlay {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 35px;
+    display: flex;
+    z-index: 1000;
+    border-top: 1px solid var(--vscode-sideBarSectionHeader-border);
+    border-bottom: 1px solid var(--vscode-sideBarSectionHeader-border);
+    background: var(--vscode-sideBar-background);
+}
+.toolbar-left {
+    display: flex;
+    position: absolute;
+    left: 0px;
+    top: 5px;
+}
+#toolbar-modelName {
+    font-size: 18px;
+    margin: 0 0 0 5px;
+}
+.toolbar-right {
+    display: flex;
+    position: absolute;
+    right: 0px;
+    top: 5px;
+}
+
+/* Button & Icon */
+.overlay-button {
+    opacity: 0.75;
+    display: flex;
+}
+.overlay-button:hover {
+    opacity: 1;
+    cursor: pointer;
+}
+.tool-icon {
+    margin-right: 5px;
+    margin-top: 5px;
+    padding-left: 5px;
+    width: 16px;
+    height: 16px;
+}
+.link-button {
+    color: var(--vscode-button-foreground);
+}
+
+/* Dropdown */
+.toolbar-dropdown {
+    position: relative;
+    display: inline-block;
+}
+.toolbar-dropdown:hover .dropdown-content {
+    display: block;
+}
+.dropdown-content {
+    position: absolute;
+    display: none;
+    min-width: 140px;
+    box-shadow: 0px 0px 8px var(--vscode-widget-shadow);
+    z-index: 1;
+}
+.dropdown-item {
+    display: block;
+    border-radius: 0px;
+}
+.dropdown-icon-container {
+    display: flex;
+    flex-direction: row;
+}
+.dropdown-icon {
+    margin-top: 5px;
+    width: 16px;
+    height: 16px;
+}
+
+
+/* Panel */
+.dropdownSelect {
+    margin-top: 5px;
+}
+
+.panel {
+    padding: 5px 5px;
+    background: var(--vscode-menu-background);
+    box-shadow: 0px 0px 8px var(--vscode-widget-shadow);
+    border: 1px solid var(--vscode-sideBarSectionHeader-border);
+}
+
+#btn_add_relationship-container i {
+    margin-top: 3px;
+    transform: rotate(45deg);
+}
+
+/* utility classes */
+.rotated {
+    transform: rotate(45deg);
+}
+.vertical-separator {
+    border-left: 1px solid var(--vscode-sideBarSectionHeader-border);
+    margin: 0 5px 0 5px;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    top: 120%;
+    width: fit-content;
+    background-color: var(--vscode-activityBar-background);
+    color: var(--vscode-activityBar-foreground);
+    text-align: center;
+    padding: 5px 5px;
+    border-radius: 1px;
+    font-size: 12px;
+    position: absolute;
+    z-index: 1;
+}
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}
+.tooltip-help .tooltiptext {
+    visibility: hidden;
+    top: 120%;
+    right: 10%;
+    width: fit-content;
+    background-color: var(--vscode-activityBar-background);
+    color: var(--vscode-activityBar-foreground);
+    text-align: center;
+    padding: 5px 5px;
+    border-radius: 1px;
+    font-size: 12px;
+    position: absolute;
+    z-index: 1;
+}
+.tooltip-help:hover .tooltiptext {
+    visibility: visible;
+}
