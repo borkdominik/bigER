@@ -1,5 +1,5 @@
 import { Action, CollapseExpandAllAction, FitToScreenAction } from "sprotty-protocol";
-import { CreateElementEditAction } from "./actions";
+import { CreateElementEditAction } from "../actions";
 
 export interface ToolButton {
     id: string;
@@ -8,11 +8,18 @@ export interface ToolButton {
     action: Action;
 }
 
-export interface ToolDropdownButton {
+export interface ToolButtonDropdown {
     id: string;
     label: string;
     icon: string;
-    buttons: Map<string, string>
+    options: Map<string, string>
+}
+
+export interface ToolButtonPanel {
+    id: string;
+    label: string;
+    icon: string;
+    selections: Map<string, string>
 }
 
 export class AddEntityButton implements ToolButton {
@@ -33,12 +40,12 @@ export class AddRelationshipButton implements ToolButton {
     ) {}
 }
 
-export class GenerateButton implements ToolDropdownButton {
+export class GenerateButton implements ToolButtonDropdown {
     constructor(
         public readonly id = "btn_dropdown_generate",
         public readonly label = "Generate",
         public readonly icon = "file-code",
-        public readonly buttons = new Map<string, string>([
+        public readonly options = new Map<string, string>([
             ["sql", "Generic SQL"],
             ["postgres", "PostgreSQL"],
             ["oracle", "Oracle SQL"],
@@ -49,16 +56,19 @@ export class GenerateButton implements ToolDropdownButton {
     ) {}
 }
 
-/* TODO: Refresh Button
-export class RefreshButton implements ToolButton {
+export class NotationButton implements ToolButtonPanel {
     constructor(
-        public readonly id = "btn_refresh",
-        public readonly label = "Refresh Diagram",
-        public readonly icon = "refresh",
-        public readonly action =
+        public readonly id = "btn_panel_notation",
+        public readonly label = "Notation",
+        public readonly icon = "settings",
+        public readonly selections = new Map<string, string>([
+            ["default", "Default"],
+            ["bachman", "Bachman"],
+            ["chen", "Chen"],
+            ["crowsfoot", "Crow's Foot"]
+        ])
     ) {}
 }
-*/
 
 export class FitToScreenButton implements ToolButton {
     constructor(

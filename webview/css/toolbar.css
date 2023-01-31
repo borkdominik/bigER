@@ -78,17 +78,14 @@
 
 
 /* Panel */
-.panel-label {
-    margin: 5px 5px 5px 5px;
+.dropdownSelect {
+    margin-top: 5px;
 }
-#notation-panel {
-    /*display: flex;
-    flex-direction: row;*/
+
+.panel {
     padding: 5px 5px;
-    position: absolute;
     background: var(--vscode-menu-background);
     box-shadow: 0px 0px 8px var(--vscode-widget-shadow);
-    /*flex-wrap: wrap;*/
     border: 1px solid var(--vscode-sideBarSectionHeader-border);
 }
 

@@ -1,9 +1,9 @@
-import { Container, ContainerModule } from 'inversify';
-import { LibavoidRouter, LibavoidDiamondAnchor, LibavoidEllipseAnchor, LibavoidRectangleAnchor, RouteType } from 'sprotty-routing-libavoid';
 import 'sprotty/css/sprotty.css';
 import 'sprotty/css/command-palette.css';
 import '../css/diagram.css';
 import '../css/popup.css';
+import { Container, ContainerModule } from 'inversify';
+import { LibavoidRouter, LibavoidDiamondAnchor, LibavoidEllipseAnchor, LibavoidRectangleAnchor, RouteType } from 'sprotty-routing-libavoid';
 import {
     configureModelElement, HtmlRoot, HtmlRootView, overrideViewerOptions, PreRenderedElement, PreRenderedView,
     TYPES, loadDefaultModules, ConsoleLogger, LogLevel, SCompartmentView, SCompartment, editLabelFeature,
@@ -14,7 +14,7 @@ import { InheritanceEdgeView, ERModelView, EntityNodeView, RelationshipNodeView,
 import { EntityNode, ERModel, NotationEdge, RelationshipNode, InheritanceEdge, CardinalityLabel, RoleLabel, LeftCardinalityLabel,
     RightCardinalityLabel, LeftRoleLabel, RightRoleLabel } from './model';
 import { BigerEdgeLayoutPostprocessor } from './layout-postprocessor';
-import { ToolBar } from './toolbar-new';
+import toolbarModule from './toolbar/di.config';
 
 /**
  * Sprotty Dependency Injection container
@@ -22,8 +22,6 @@ import { ToolBar } from './toolbar-new';
 const DiagramModule = new ContainerModule((bind, unbind, isBound, rebind) => {
     rebind(TYPES.ILogger).to(ConsoleLogger).inSingletonScope();
     rebind(TYPES.LogLevel).toConstantValue(LogLevel.warn);
-    bind(ToolBar).toSelf().inSingletonScope();
-    bind(TYPES.IUIExtension).toService(ToolBar);
     // Router
     bind(LibavoidRouter).toSelf().inSingletonScope();
     bind(TYPES.IEdgeRouter).toService(LibavoidRouter);
@@ -86,6 +84,7 @@ export function createDiagramContainer(widgetId: string): Container {
     // use labelEditUi from VS Code
     loadDefaultModules(container, { exclude: [labelEditUiModule] });
     container.load(DiagramModule);
+    container.load(toolbarModule);
     overrideViewerOptions(container, {
         needsClientLayout: true,
         needsServerLayout: true,

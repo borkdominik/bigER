@@ -7,7 +7,7 @@ import { createDiagramContainer } from './di.config';
 import { SprottyDiagramIdentifier } from 'sprotty-vscode-protocol';
 import { VscodeDiagramServer, VscodeDiagramWidget } from 'sprotty-vscode-webview';
 import { load as loadLibavoidRouter } from 'sprotty-routing-libavoid';
-import { ERDiagramWidget } from './toolbar';
+import { ERDiagramWidget } from './diagram-widget';
 import { configureModelElement, TYPES } from 'sprotty';
 import { BigERDiagramServer } from './diagram-server';
 import { PopupButton } from './model';

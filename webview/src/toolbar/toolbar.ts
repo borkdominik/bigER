@@ -1,9 +1,9 @@
 import { inject, injectable } from "inversify";
 import { AbstractUIExtension, codiconCSSClasses, IActionDispatcher, TYPES } from "sprotty";
 import { vscodeApi } from 'sprotty-vscode-webview/lib/vscode-api';
-import { createElement, togglePanel } from "./utils";
-import { AddEntityButton, AddRelationshipButton, CollapseAllButton, ExpandAllButton, FitToScreenButton, GenerateButton, ToolButton, ToolDropdownButton } from "./buttons";
-import { ChangeNotationAction } from "./actions";
+import { createElement } from "../utils";
+import { AddEntityButton, AddRelationshipButton, CollapseAllButton, ExpandAllButton, FitToScreenButton, GenerateButton, NotationButton, ToolButton, ToolButtonDropdown, ToolButtonPanel } from "./buttons";
+import { ChangeNotationAction } from "../actions";
 
 @injectable()
 export class ToolBar extends AbstractUIExtension {
@@ -31,8 +31,7 @@ export class ToolBar extends AbstractUIExtension {
         leftSide.appendChild(this.createSeparator());
         leftSide.appendChild(this.createDropdownButton(new GenerateButton()));
         leftSide.appendChild(this.createSeparator());
-        // TODO: improve notation panel (similar to dropdown button)
-        leftSide.appendChild(this.createNotationButtonPanel());
+        leftSide.appendChild(this.createPanelButton(new NotationButton()));
         leftSide.appendChild(this.createSeparator());
         // TODO: improve model name (-> model name is currently set in the view)
         leftSide.appendChild(this.createModelName());
@@ -68,7 +67,7 @@ export class ToolBar extends AbstractUIExtension {
         return createElement("div");
     }
 
-    protected createDropdownButton(toolDropdownButton: ToolDropdownButton): HTMLElement {
+    protected createDropdownButton(toolDropdownButton: ToolButtonDropdown): HTMLElement {
         const baseDiv = document.getElementById(this.options.baseDiv);
         if (baseDiv) {
             // dropdown container
@@ -77,10 +76,11 @@ export class ToolBar extends AbstractUIExtension {
             baseDiv.insertBefore(dropdown, baseDiv.firstChild);
             dropdown.appendChild(this.createDropdownIcon(toolDropdownButton.icon));
 
-            // dropdown menu items
             const dropDownContent = createElement("div", ["dropdown-content"]);
             dropdown.appendChild(dropDownContent);
-            toolDropdownButton.buttons.forEach((value: string, key: string) => {
+
+            // add options to drop down content
+            toolDropdownButton.options.forEach((value: string, key: string) => {
                 const button = createElement("div");
                 dropDownContent.appendChild(button);
                 button.innerHTML = `
@@ -94,42 +94,35 @@ export class ToolBar extends AbstractUIExtension {
         return document.createElement("div");
     }
 
-    private createNotationButtonPanel(): HTMLElement {
-        const container = createElement("div");
+    private createPanelButton(panel: ToolButtonPanel): HTMLElement {
+        const baseDiv = document.getElementById(this.options.baseDiv);
+        if (baseDiv) {
+            // container element with button and panel
+            const container = createElement("div", ["toolbar-dropdown", "overlay-button"]);
+            container.id = `${panel.id}-container`;
+            baseDiv.insertBefore(container, baseDiv.firstChild);
+            container.appendChild(this.createDropdownIcon(panel.icon));
 
-        // button to activate notation panel
-        const button = createElement("div", ["overlay-button"]);
-        button.appendChild(this.createDropdownIcon("settings"));
-        container.appendChild(button);
+            // panel with label and selection
+            const panelContent = createElement("div", ["dropdown-content", "panel"]);
+            container.appendChild(panelContent);
 
-        // notation panel
-        const panel = createElement("div");
-        panel.id = "notation-panel";
-        panel.style.display = "none";
-        button.onmouseenter = () => togglePanel(panel.id);
-        panel.onmouseleave = () => togglePanel(panel.id);
+            const label = createElement("label", ["panel-label"]);
+            label.innerText = "Notation:";
+            panelContent.appendChild(label);
 
-        // label
-        const label = createElement("label", ["panel-label"]);
-        label.innerText = "Notation:";
-        panel.appendChild(label);
-
-        // TODO: improve this
-        const dropdownSelect = createElement("vscode-dropdown", ["dropdownSelect"]) as HTMLSelectElement;
-        dropdownSelect.setAttribute("position", "below");
-        dropdownSelect.innerHTML = `
-            <vscode-option value="default">Default</vscode-option>
-            <vscode-option value="bachman">Bachman</vscode-option>
-            <vscode-option value="chen">Chen</vscode-option>
-            <vscode-option value="crowsfoot">Crows Foot</vscode-option>
-        `;
-        dropdownSelect.onchange = () => {
-            const value = dropdownSelect.options[dropdownSelect.selectedIndex].value;
-            this.actionDispatcher.dispatch(ChangeNotationAction.create(value));
-        };
-        panel.appendChild(dropdownSelect);
-        container.appendChild(panel);
-        return container;
+            const dropdownSelect = createElement("vscode-dropdown", ["dropdownSelect"]) as HTMLSelectElement;
+            panel.selections.forEach((value: string, key: string) => {
+                dropdownSelect.innerHTML += `<vscode-option value="${key}">${value}</vscode-option>`;
+            });
+            dropdownSelect.onchange = () => {
+                const value = dropdownSelect.options[dropdownSelect.selectedIndex].value;
+                this.actionDispatcher.dispatch(ChangeNotationAction.create(value));
+            };
+            panelContent.appendChild(dropdownSelect);
+            return container;
+        }
+        return document.createElement("div");
     }
 
     private createModelName(): HTMLElement {
