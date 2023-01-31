@@ -1,4 +1,4 @@
-package org.big.erd.ide.diagram
+package org.big.erd.ide.diagram.actions
 
 import org.eclipse.sprotty.xtext.EditActionTypeAdapterFactory
 import org.eclipse.sprotty.Action

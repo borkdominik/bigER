@@ -1,4 +1,4 @@
-package org.big.erd.ide.diagram
+package org.big.erd.ide.diagram.actions
 
 import com.google.inject.Inject
 import org.eclipse.lsp4j.Range
@@ -17,6 +17,9 @@ import org.big.erd.entityRelationship.Entity
 import org.eclipse.sprotty.xtext.tracing.PositionConverter
 import org.eclipse.sprotty.SModelIndex
 import org.big.erd.entityRelationship.Relationship
+import org.big.erd.ide.diagram.EntityNode
+import org.big.erd.ide.diagram.RelationshipNode
+
 // import org.apache.log4j.Logger
 
 

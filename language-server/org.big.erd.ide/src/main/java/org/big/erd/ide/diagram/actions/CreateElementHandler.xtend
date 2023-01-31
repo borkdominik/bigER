@@ -1,4 +1,4 @@
-package org.big.erd.ide.diagram
+package org.big.erd.ide.diagram.actions
 
 import com.google.inject.Inject
 import org.eclipse.lsp4j.Range
