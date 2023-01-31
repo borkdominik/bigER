@@ -33,13 +33,6 @@ class EntityRelationshipValidator extends AbstractEntityRelationshipValidator {
 	public static final String INVALID_CARDINALITY = "invalidCardinality";
 	
 	@Check
-	def checkModel(Model model) {
-		if (model.notation !== null && model.notation.notationType.equals(NotationType.UML)) {
-			error('''UML Notation is not yet supported''', model, MODEL__NOTATION, UNSUPPORTED_NOTATION)
-		}
-	}
-	
-	@Check
 	def checkKeys(Entity entity) {
 		if (entity.weak) {
 			if (entity.attributes?.filter[it.type === AttributeType.PARTIAL_KEY].isNullOrEmpty) {
