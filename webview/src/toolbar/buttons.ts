@@ -65,7 +65,8 @@ export class NotationButton implements ToolButtonPanel {
             ["default", "Default"],
             ["bachman", "Bachman"],
             ["chen", "Chen"],
-            ["crowsfoot", "Crow's Foot"]
+            ["crowsfoot", "Crow's Foot"],
+            ["uml", "UML"]
         ])
     ) {}
 }
