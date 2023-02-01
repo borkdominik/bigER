@@ -1,0 +1,53 @@
+// ER Model
+erdiagram StargateCommand
+
+// Options
+notation=default
+
+// Entities
+entity SGTeam {
+    id: INT key
+    team_name: VARCHAR(255)
+    leader: VARCHAR(255)
+}
+
+entity Stargate {
+    stargate_id: INT key
+    symbol: VARCHAR(255)
+    galaxy: VARCHAR(255)
+}
+
+entity Alien {
+    alien_id: INT key
+    species: VARCHAR(255)
+    name: VARCHAR(255)
+}
+
+entity Weapon {
+    weapon_id: INT key
+    name: VARCHAR(255)
+    type: VARCHAR(255)
+}
+
+entity Mission {
+    mission_id: INT key
+    name: VARCHAR(255)
+    objective: VARCHAR(255)
+}
+
+// Relationships
+relationship Connects {
+    Stargate[1] -> Mission[N]
+}
+
+relationship Belongs {
+    SGTeam[1] -> Mission[N]
+}
+
+relationship Encounter {
+    Mission[N] -> Alien[N]
+}
+
+relationship Equips {
+    SGTeam[1] -> Weapon[N]
+}
