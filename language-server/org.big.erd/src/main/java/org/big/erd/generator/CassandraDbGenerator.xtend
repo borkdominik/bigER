@@ -35,7 +35,7 @@ class CassandraDbGenerator implements IErGenerator {
 	private def toTable(Entity entity) {
 		return ''' 
 				CREATE TABLE «entity.name»(
-				«FOR attribute : entity.allAttributes.reject[it.type === AttributeType.DERIVED]»
+				«FOR attribute : entity.allAttributes.reject[it.type === AttributeType.DERIVED] SEPARATOR ','»
 					«'\t'»«attribute.name» «attribute.datatype.transformDataType»,
 				«ENDFOR»
 				«'\t'»PRIMARY KEY («entity.primaryKey.name»)
@@ -64,11 +64,11 @@ class CassandraDbGenerator implements IErGenerator {
 		val weak = getWeakEntity(relationship)
 		return ''' 
 				CREATE TABLE «weak.name»(
-				«FOR attribute : weak.allAttributes.reject[it.type === AttributeType.DERIVED]»
-					«'\t'»«attribute.name» «attribute.datatype.transformDataType»,
+				«FOR attribute : weak.allAttributes.reject[it.type === AttributeType.DERIVED] SEPARATOR ','»
+					«'\t'»«attribute.name» «attribute.datatype.transformDataType»
 				«ENDFOR»
-				«FOR attribute : relationship.attributes»
-					«'\t'»«attribute.name» «attribute.datatype.transformDataType»,
+				«FOR attribute : relationship.attributes SEPARATOR ','»
+					«'\t'»«attribute.name» «attribute.datatype.transformDataType»
 				«ENDFOR»
 				«'\t'»«strong.primaryKey.name» «strong.primaryKey.datatype.transformDataType»,
 				«'\t'»PRIMARY KEY («weak.partialKey.name», «strong.primaryKey.name»)
@@ -105,9 +105,10 @@ class CassandraDbGenerator implements IErGenerator {
 		return keyAttributes.get(0)
 	}
 
+	/*
 	private def getAllKeysName(Relationship relationship) {
 		return '''«IF relationship.first?.target !== null»"«relationship.first?.target.primaryKey.name»"«ENDIF»«IF relationship.second?.target !== null», "«relationship.second?.target.primaryKey.name»"«ENDIF»«IF relationship.third?.target !== null», "«relationship.third?.target.primaryKey.name»"«ENDIF»'''
-	}
+	}*/
 
 	private def getStrongEntity(Relationship r) {
 		if (r.first.target.isWeak) {
