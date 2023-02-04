@@ -29,15 +29,26 @@ class Neo4jGenerator implements IErGenerator {
 		// after
 		// x -> b
 		// x -> a
-		val allExtendedEntities = newHashSet
+		*/
+		//val allExtendedEntities = newHashSet
 		//allEntities.forEach[it.extends !== null ? allExtendedEntities.add(it.extends) : null]
-		allEntities.forEach[allExtendedEntities.add(it.extends)]
+		/*
+		val allEntitiesCopy = allEntities.toList
+		allEntitiesCopy.forEach[
+			if(it.extends !== null) {
+				if(it.extends.getAllAttributes.size > 0){
+					it.attributes.addAll(it.extends.getAllAttributes)
+				}
+			}
+		]
+		//println("number of extended entities: " + allExtendedEntities.size)
 		for (e : allEntities) {
-			if (e.attributes != null && e.extends != null) {
-				e.attributes.addAll(e.extends.attributes)
+			if (e.getAllAttributes !== null && e.extends !== null) {
+				e.attributes.addAll(e.extends.getAllAttributes)
 			}
 		}
 		*/
+
 		return '''
 			// entities
 			«FOR entity : allEntities»
@@ -56,9 +67,15 @@ class Neo4jGenerator implements IErGenerator {
 	}
 	
 	private def toTable(Entity entity) {
-		return ''' 
-			CREATE («entity.name»:«entity.name» {name: "«entity.name»"«FOR attribute : entity.allAttributes.reject[it.type === AttributeType.DERIVED] », «entity.name»_«attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR»})«'\n'»
-		'''
+		if(entity.extends !== null){
+			return ''' 
+				CREATE («entity.name»:«entity.name» {name: "«entity.name»"«FOR attribute : entity.allAttributes », «entity.name»_«attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR»«FOR attribute : entity.extends.allAttributes », «entity.extends.name»_«attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR»})«'\n'»
+			'''
+		} else {
+			return ''' 
+				CREATE («entity.name»:«entity.name» {name: "«entity.name»"«FOR attribute : entity.allAttributes », «entity.name»_«attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR»})«'\n'»
+			'''
+		}
 	}
 
 	private def toTableExtend(Entity entity) {
