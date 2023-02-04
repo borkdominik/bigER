@@ -50,6 +50,7 @@ public class SqlImport implements IErGenerator {
 
 	private static final String PRIMARY_KEY_BASE_PATTERN = "PRIMARY KEY(?: CLUSTERED)?\\s*\\((.*?)\\)";
 	private static final String PRIMARY_KEY_PATTERN = ".*" + PRIMARY_KEY_BASE_PATTERN + "(?:WITH.+?\\(.*?\\))?[^,\\)]*?";
+	private static final String UNIQUE_KEY_PATTERN = ".*UNIQUE KEY[^,\\)]*?";
 
 	@SuppressWarnings("unused")
 	// for debugging
@@ -71,7 +72,8 @@ public class SqlImport implements IErGenerator {
 	private static String getCreateTablePattern(boolean replace) {
 		String pattern = "CREATE TABLE(?: IF NOT EXISTS)? (?:.+?\\.)?(\\S+)\\s*\\(((?:\r\n"
 				+ replaceCaptureGroups(ATTRIBUTE_PATTERN, replace) + ")*?)(?:\r\n"
-				+ PRIMARY_KEY_PATTERN + ")?((?:,\r\n"
+				+ PRIMARY_KEY_PATTERN + ")?(?:,\r\n"
+				+ UNIQUE_KEY_PATTERN + ")?((?:,\r\n"
 				+ replaceCaptureGroups(FOREIGN_KEY_PATTERN, replace) + ")*)\r?\n?"
 				+ "\\s*\\)";
 		if (replace) {
