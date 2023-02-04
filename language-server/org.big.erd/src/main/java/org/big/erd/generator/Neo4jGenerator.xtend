@@ -4,6 +4,7 @@ import org.big.erd.entityRelationship.Model
 import org.big.erd.entityRelationship.Entity
 import org.big.erd.entityRelationship.DataType
 import org.big.erd.entityRelationship.AttributeType
+import org.big.erd.entityRelationship.CardinalityType
 import org.big.erd.entityRelationship.Relationship
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.generator.IFileSystemAccess2
@@ -91,6 +92,25 @@ class Neo4jGenerator implements IErGenerator {
 	}
 	
 	private def toTable(Relationship relationship) {
+		var first = relationship.first;
+		var second = relationship.second;
+		var third = relationship.third;
+		if (first.cardinality == CardinalityType.MANY) {
+			first = second
+			second = relationship.first
+		}
+
+		return ''' 
+			«IF third?.target === null»CREATE («first.target.name»)-[«relationship.name»:«relationship.name»{name: "«relationship.name»"«FOR attribute : relationship.attributes», «relationship.name»_«attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR» }]->(«second.target.name»)«'\n'»«ENDIF»
+			«IF third?.target !== null»CREATE («relationship.name»:«relationship.name»{name: "«relationship.name»"«FOR attribute : relationship.attributes», «relationship.name»_«attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR»})«'\n'»«ENDIF»
+			«IF third?.target !== null»CREATE («relationship.name»)-[«relationship.name»_«first.target.name»:«relationship.name»_«first.target.name» {«FOR attribute : relationship.attributes SEPARATOR ','»«attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR» }]->(«first.target.name»)«'\n'»«ENDIF»
+			«IF third?.target !== null»CREATE («relationship.name»)-[«relationship.name»_«second.target.name»:«relationship.name»_«second.target.name» {«FOR attribute : relationship.attributes SEPARATOR ','»«attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR» }]->(«second.target.name»)«'\n'»«ENDIF»
+			«IF third?.target !== null»CREATE («relationship.name»)-[«relationship.name»_«third.target.name»:«relationship.name»_«third.target.name» {«FOR attribute : relationship.attributes SEPARATOR ','»«attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR» }]->(«third.target.name»)«'\n'»«ENDIF»
+			«IF third?.target?.extends !== null»CREATE («third.target.name»)-[«relationship.third.target.name»_IS_A:IS_A]->(«third.target.extends.name»)«'\n'»«ENDIF»
+			«IF first?.target?.extends !== null»CREATE («first.target.name»)-[«relationship.first.target.name»_IS_A:IS_A]->(«first.target.extends.name»)«'\n'»«ENDIF»
+			«IF second?.target?.extends !== null»CREATE («second.target.name»)-[«relationship.second.target.name»_IS_A:IS_A]->(«second.target.extends.name»)«'\n'»«ENDIF»
+		'''
+		/*
 		return ''' 
 			«IF relationship.third?.target === null»CREATE («relationship.first.target.name»)-[«relationship.name»:«relationship.name»{name: "«relationship.name»"«FOR attribute : relationship.attributes», «relationship.name»_«attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR» }]->(«relationship.second.target.name»)«'\n'»«ENDIF»
 			«IF relationship.third?.target !== null»CREATE («relationship.name»:«relationship.name»{name: "«relationship.name»"«FOR attribute : relationship.attributes», «relationship.name»_«attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR»})«'\n'»«ENDIF»
@@ -101,6 +121,7 @@ class Neo4jGenerator implements IErGenerator {
 			«IF relationship.first?.target?.extends !== null»CREATE («relationship.first.target.name»)-[«relationship.first.target.name»_IS_A:IS_A]->(«relationship.first.target.extends.name»)«'\n'»«ENDIF»
 			«IF relationship.second?.target?.extends !== null»CREATE («relationship.second.target.name»)-[«relationship.second.target.name»_IS_A:IS_A]->(«relationship.second.target.extends.name»)«'\n'»«ENDIF»
 		'''
+		*/
 	}
 	
 	private def weakToTable(Relationship relationship) {
