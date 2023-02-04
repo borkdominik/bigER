@@ -205,9 +205,13 @@ public class SqlGenerator implements IErGenerator {
 		return key;
 	}
 
-	protected String transformDataType(Attribute attribute, String mappedType, int size, StringBuilder comment) {
+	protected String transformDataType(Attribute attribute, String mappedType, int size, Integer precision, StringBuilder comment) {
 		if (size > 0) {
-			return mappedType + "(" + size + ")";
+			String strPrecision = "";
+			if (precision != null && precision > 0) {
+				strPrecision = ", " + precision;
+			}
+			return mappedType + "(" + size + strPrecision + ")";
 		}
 		return mappedType;
 	}
@@ -268,9 +272,11 @@ public class SqlGenerator implements IErGenerator {
 				}
 				String originalType = "";
 				int size;
+				Integer precision = null;
 				if (attribute.getDatatype() != null) {
 					originalType = attribute.getDatatype().getType();
 					size = attribute.getDatatype().getSize();
+					precision = attribute.getDatatype().getD();
 				} else {
 					originalType = "VARCHAR";
 					size = 255;
@@ -283,7 +289,7 @@ public class SqlGenerator implements IErGenerator {
 				} else if (!mappedType.equals(originalType)) {
 					addComment(comment, "type mapped from: " + originalType);
 				}
-				String transformedDataType = this.transformDataType(attribute, mappedType, size, comment);
+				String transformedDataType = this.transformDataType(attribute, mappedType, size, precision, comment);
 				if (transformedDataType != null && !transformedDataType.isEmpty()) {
 					tableContent.append(" ");
 					tableContent.append(transformedDataType);

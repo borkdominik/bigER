@@ -24,15 +24,16 @@ import org.eclipse.xtext.util.RuntimeIOException;
 import org.eclipse.xtext.xbase.lib.Exceptions;
 
 /**
- * Generates vendor-agnostic SQL from the ER model.
- * Can be extended to provide vendor-specific dialects.
+ * Generates an ER model from SQL DDL statements.
+ * 
  * TODO: Integrate SQL Import
  */
 public class SqlImport implements IErGenerator {
 
 	private static final boolean REPLACE_NEWLINES = false;
 
-	private static final String SIZE_PATTERN = "\\((\\d+|\\*)";
+	private static final String SIZE_BASE_PATTERN = "\\d+(?:,\\s*\\d+)?";
+	private static final String SIZE_PATTERN = "\\(((?:" + SIZE_BASE_PATTERN + ")|\\*)";
 	private static final int SIZE_VALUE = 1;
 	
 	private static final String ATTRIBUTE_PATTERN = "\\s*([^\\)\\s,]*)(?: (.*\\([\\d\\*]+.*?\\)|[^,\\s]+))?[^,\\)]*,?\\s*(?:--(.*))?";
@@ -49,6 +50,7 @@ public class SqlImport implements IErGenerator {
 
 	private static final String PRIMARY_KEY_BASE_PATTERN = "PRIMARY KEY(?: CLUSTERED)?\\s*\\((.*?)\\)";
 	private static final String PRIMARY_KEY_PATTERN = ".*" + PRIMARY_KEY_BASE_PATTERN + "(?:WITH.+?\\(.*?\\))?[^,\\)]*?";
+	private static final String UNIQUE_KEY_PATTERN = ".*UNIQUE KEY[^,\\)]*?";
 
 	@SuppressWarnings("unused")
 	// for debugging
@@ -70,7 +72,8 @@ public class SqlImport implements IErGenerator {
 	private static String getCreateTablePattern(boolean replace) {
 		String pattern = "CREATE TABLE(?: IF NOT EXISTS)? (?:.+?\\.)?(\\S+)\\s*\\(((?:\r\n"
 				+ replaceCaptureGroups(ATTRIBUTE_PATTERN, replace) + ")*?)(?:\r\n"
-				+ PRIMARY_KEY_PATTERN + ")?((?:,\r\n"
+				+ PRIMARY_KEY_PATTERN + ")?(?:,\r\n"
+				+ UNIQUE_KEY_PATTERN + ")?((?:,\r\n"
 				+ replaceCaptureGroups(FOREIGN_KEY_PATTERN, replace) + ")*)\r?\n?"
 				+ "\\s*\\)";
 		if (replace) {
@@ -243,6 +246,7 @@ public class SqlImport implements IErGenerator {
 
 				if (!foreignKeys.containsKey(attributeName)) {
 					int size = 0;
+					Integer precision = null;
 					if (attributeType != null) {
 						Pattern pSize = Pattern.compile(SIZE_PATTERN);
 						Matcher mSize = pSize.matcher(attributeType);
@@ -251,14 +255,23 @@ public class SqlImport implements IErGenerator {
 							if ("*".equals(sizeValue)) {
 								size = -1;
 							} else {
+								int index = sizeValue.indexOf(',');
+								if (index > 0) {
+									precision = Integer.parseInt(sizeValue.substring(index + 1).trim());
+									sizeValue = sizeValue.substring(0, index);
+								}
 								size = Integer.parseInt(sizeValue);
 							}
 						}
 					}
 					if (size > 0) {
-						attributeType = deQuote(attributeType.substring(0, attributeType.indexOf("(" + size))) + "(" + size + ")";
+						String strPrecision = "";
+						if (precision != null) {
+							strPrecision = ", " + precision;
+						}
+						attributeType = replaceSpaces(deQuote(attributeType.substring(0, attributeType.indexOf("(" + size)))) + "(" + size + strPrecision + ")";
 					} else if (size < 0) {
-						attributeType = deQuote(attributeType.substring(0, attributeType.indexOf("(*")));
+						attributeType = replaceSpaces(deQuote(attributeType.substring(0, attributeType.indexOf("(*"))));
 					}
 					SqlAttribute attribute = new SqlAttribute();
 					attribute.setAttributeName(attributeName);
@@ -349,6 +362,11 @@ public class SqlImport implements IErGenerator {
 		}
 		return fileContent;
 	}
+	
+	// ER model does not support spaces in data types
+	private String replaceSpaces(String value) {
+		return value.replace(" ", "_");
+	}
 
 	private String preprocessSql(String text) {
 		// Oracle: insert line break
@@ -378,7 +396,7 @@ public class SqlImport implements IErGenerator {
 				fileContent.append(deQuote(attribute.getAttributeName()));
 				if (attribute.getAttributeType() != null) {
 					fileContent.append(": ");
-					fileContent.append(deQuote(attribute.getAttributeType().replace(" ", "")));
+					fileContent.append(deQuote(attribute.getAttributeType()));
 				}
 				if (primaryKeyAttributes != null && primaryKeyAttributes.contains(attribute.getAttributeName())) {
 					fileContent.append(" ");
