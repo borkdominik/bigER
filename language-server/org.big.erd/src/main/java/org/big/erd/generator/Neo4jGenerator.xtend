@@ -4,6 +4,7 @@ import org.big.erd.entityRelationship.Model
 import org.big.erd.entityRelationship.Entity
 import org.big.erd.entityRelationship.DataType
 import org.big.erd.entityRelationship.AttributeType
+import org.big.erd.entityRelationship.Attribute
 import org.big.erd.entityRelationship.CardinalityType
 import org.big.erd.entityRelationship.Relationship
 import org.eclipse.emf.ecore.resource.Resource
@@ -21,43 +22,19 @@ class Neo4jGenerator implements IErGenerator {
 	}
 	
 	def String generate(Model model) {
-		val allEntities = model.entities;
-		val allRelationships = model.relationships;
-		/*
-		// x -> c
-		// a extends c
-		// b extends c
-		// after
-		// x -> b
-		// x -> a
-		*/
-		//val allExtendedEntities = newHashSet
-		//allEntities.forEach[it.extends !== null ? allExtendedEntities.add(it.extends) : null]
-		/*
-		val allEntitiesCopy = allEntities.toList
-		allEntitiesCopy.forEach[
-			if(it.extends !== null) {
-				if(it.extends.getAllAttributes.size > 0){
-					it.attributes.addAll(it.extends.getAllAttributes)
-				}
-			}
-		]
-		//println("number of extended entities: " + allExtendedEntities.size)
-		for (e : allEntities) {
-			if (e.getAllAttributes !== null && e.extends !== null) {
-				e.attributes.addAll(e.extends.getAllAttributes)
-			}
-		}
-		*/
 
 		return '''
 			// entities
-			«FOR entity : allEntities»
+			«FOR entity : model.entities»
 				«entity.toTable»
 			«ENDFOR»
 			// relationships
-			«FOR relationship : allRelationships»
+			«FOR relationship : model.relationships»
 				«relationship.toTable»
+			«ENDFOR»
+			// extends relationships (IS_A)
+			«FOR entity : model.entities»
+				«entity.toTableExtends»
 			«ENDFOR»
 			// constraints
 			«FOR entity : model.entities»
@@ -69,8 +46,10 @@ class Neo4jGenerator implements IErGenerator {
 	
 	private def toTable(Entity entity) {
 		if(entity.extends !== null){
+			
+			// CREATE («entity.name»:«entity.name» {name: "«entity.name»"«FOR attribute : entity.allAttributes », «entity.name»_«attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR»«FOR attribute : entity.extends.allAttributes », «entity.extends.name»_«attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR»})«'\n'»
 			return ''' 
-				CREATE («entity.name»:«entity.name» {name: "«entity.name»"«FOR attribute : entity.allAttributes », «entity.name»_«attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR»«FOR attribute : entity.extends.allAttributes », «entity.extends.name»_«attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR»})«'\n'»
+				CREATE («entity.name»:«entity.name» {name: "«entity.name»"«FOR attribute : entity.getAllAttrWithExtends », «entity.name»_«attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR»})«'\n'»
 			'''
 		} else {
 			return ''' 
@@ -79,15 +58,41 @@ class Neo4jGenerator implements IErGenerator {
 		}
 	}
 
+	private def Iterable<Attribute> getAllAttrWithExtends(Entity entity) {
+		//val result = newArrayList(entity.attributes)
+		val attributes = newHashSet
+		attributes += entity.attributes
+		if (entity.extends !== null) {
+			attributes.addAll(getAllAttrWithExtends(entity.extends))
+		}
+		return attributes
+	}
+
+	/*
 	private def toTableExtend(Entity entity) {
 		return ''' 
 			CREATE («entity.name»:«entity.name» {name: "«entity.name»"«FOR attribute : entity.allAttributes.reject[it.type === AttributeType.DERIVED] », «entity.name»_«attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR»})«'\n'»
 		'''
 	}
+	*/
 
 	private def uniqueKeyConstraint(Entity entity) {
 		return ''' 
 			CREATE CONSTRAINT IF NOT EXISTS FOR (x:«entity.name») REQUIRE x.«entity.name»_«entity.primaryKey.name» IS UNIQUE;«'\n'»
+		'''
+	}
+
+	private def toTableExtends(Entity entity){
+		return '''
+			«IF entity?.extends !== null»CREATE («entity?.name»)-[«entity?.name»_IS_A:«entity?.name»_IS_A]->(«entity.extends?.name»)«'\n'»«ENDIF»
+		'''
+	}
+
+	private def toTableExtends(Relationship relationship){
+		return '''
+			«IF relationship.third?.target?.extends !== null»CREATE («relationship.third.target.name»)-[«relationship.third.target.name»_IS_A:IS_A]->(«relationship.third.target.extends.name»)«'\n'»«ENDIF»
+			«IF relationship.first?.target?.extends !== null»CREATE («relationship.first.target.name»)-[«relationship.first.target.name»_IS_A:IS_A]->(«relationship.first.target.extends.name»)«'\n'»«ENDIF»
+			«IF relationship.second?.target?.extends !== null»CREATE («relationship.second.target.name»)-[«relationship.second.target.name»_IS_A:IS_A]->(«relationship.second.target.extends.name»)«'\n'»«ENDIF»
 		'''
 	}
 	
@@ -106,35 +111,8 @@ class Neo4jGenerator implements IErGenerator {
 			«IF third?.target !== null»CREATE («relationship.name»)-[«relationship.name»_«first.target.name»:«relationship.name»_«first.target.name» {«FOR attribute : relationship.attributes SEPARATOR ','»«attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR» }]->(«first.target.name»)«'\n'»«ENDIF»
 			«IF third?.target !== null»CREATE («relationship.name»)-[«relationship.name»_«second.target.name»:«relationship.name»_«second.target.name» {«FOR attribute : relationship.attributes SEPARATOR ','»«attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR» }]->(«second.target.name»)«'\n'»«ENDIF»
 			«IF third?.target !== null»CREATE («relationship.name»)-[«relationship.name»_«third.target.name»:«relationship.name»_«third.target.name» {«FOR attribute : relationship.attributes SEPARATOR ','»«attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR» }]->(«third.target.name»)«'\n'»«ENDIF»
-			«IF third?.target?.extends !== null»CREATE («third.target.name»)-[«relationship.third.target.name»_IS_A:IS_A]->(«third.target.extends.name»)«'\n'»«ENDIF»
-			«IF first?.target?.extends !== null»CREATE («first.target.name»)-[«relationship.first.target.name»_IS_A:IS_A]->(«first.target.extends.name»)«'\n'»«ENDIF»
-			«IF second?.target?.extends !== null»CREATE («second.target.name»)-[«relationship.second.target.name»_IS_A:IS_A]->(«second.target.extends.name»)«'\n'»«ENDIF»
-		'''
-		/*
-		return ''' 
-			«IF relationship.third?.target === null»CREATE («relationship.first.target.name»)-[«relationship.name»:«relationship.name»{name: "«relationship.name»"«FOR attribute : relationship.attributes», «relationship.name»_«attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR» }]->(«relationship.second.target.name»)«'\n'»«ENDIF»
-			«IF relationship.third?.target !== null»CREATE («relationship.name»:«relationship.name»{name: "«relationship.name»"«FOR attribute : relationship.attributes», «relationship.name»_«attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR»})«'\n'»«ENDIF»
-			«IF relationship.third?.target !== null»CREATE («relationship.name»)-[«relationship.name»_«relationship.first.target.name»:«relationship.name»_«relationship.first.target.name» {«FOR attribute : relationship.attributes SEPARATOR ','»«attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR» }]->(«relationship.first.target.name»)«'\n'»«ENDIF»
-			«IF relationship.third?.target !== null»CREATE («relationship.name»)-[«relationship.name»_«relationship.second.target.name»:«relationship.name»_«relationship.second.target.name» {«FOR attribute : relationship.attributes SEPARATOR ','»«attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR» }]->(«relationship.second.target.name»)«'\n'»«ENDIF»
-			«IF relationship.third?.target !== null»CREATE («relationship.name»)-[«relationship.name»_«relationship.third.target.name»:«relationship.name»_«relationship.third.target.name» {«FOR attribute : relationship.attributes SEPARATOR ','»«attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR» }]->(«relationship.third.target.name»)«'\n'»«ENDIF»
-			«IF relationship.third?.target?.extends !== null»CREATE («relationship.third.target.name»)-[«relationship.third.target.name»_IS_A:IS_A]->(«relationship.third.target.extends.name»)«'\n'»«ENDIF»
-			«IF relationship.first?.target?.extends !== null»CREATE («relationship.first.target.name»)-[«relationship.first.target.name»_IS_A:IS_A]->(«relationship.first.target.extends.name»)«'\n'»«ENDIF»
-			«IF relationship.second?.target?.extends !== null»CREATE («relationship.second.target.name»)-[«relationship.second.target.name»_IS_A:IS_A]->(«relationship.second.target.extends.name»)«'\n'»«ENDIF»
-		'''
-		*/
-	}
-	
-	private def weakToTable(Relationship relationship) {
-		return ''' 
-			«IF relationship.third?.target === null»CREATE («relationship.first.target.name»)-[«relationship.name»:«relationship.name»{name: "«relationship.name»"«FOR attribute : relationship.attributes», «relationship.name»_«attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR» }]->(«relationship.second.target.name»)«'\n'»«ENDIF»
-			«IF relationship.third?.target !== null»CREATE («relationship.name»:«relationship.name» {name: "«relationship.name»"«FOR attribute : relationship.attributes», «relationship.name»_«attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR»})«'\n'»«ENDIF»
-			«IF relationship.third?.target !== null»CREATE («relationship.name»)-[«relationship.name»_«relationship.first.target.name»:«relationship.name»_«relationship.first.target.name» {«FOR attribute : relationship.attributes SEPARATOR ','»«attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR» }]->(«relationship.first.target.name»)«'\n'»«ENDIF»
-			«IF relationship.third?.target !== null»CREATE («relationship.name»)-[«relationship.name»_«relationship.second.target.name»:«relationship.name»_«relationship.second.target.name» {«FOR attribute : relationship.attributes SEPARATOR ','»«attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR» }]->(«relationship.second.target.name»)«'\n'»«ENDIF»
-			«IF relationship.third?.target !== null»CREATE («relationship.name»)-[«relationship.name»_«relationship.third.target.name»:«relationship.name»_«relationship.third.target.name» {«FOR attribute : relationship.attributes SEPARATOR ','»«attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR» }]->(«relationship.third.target.name»)«'\n'»«ENDIF»
 		'''
 	}
-	
-	
 
 	private def primaryKey(Entity entity) {
 		val keyAttributes = entity.attributes?.filter[it.type === AttributeType.KEY]
