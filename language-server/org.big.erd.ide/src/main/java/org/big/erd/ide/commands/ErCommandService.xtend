@@ -12,6 +12,9 @@ import java.util.HashMap
 import java.util.Map
 import org.big.erd.generator.IErGenerator
 import org.big.erd.generator.sql.SqlGenerator
+import org.big.erd.generator.MongoDbGenerator
+import org.big.erd.generator.CassandraDbGenerator
+import org.big.erd.generator.Neo4jGenerator
 import org.eclipse.xtext.validation.IResourceValidator
 import org.eclipse.xtext.validation.CheckMode
 import org.big.erd.generator.sql.PostgresGenerator
@@ -27,6 +30,9 @@ class ErCommandService implements IExecutableCommandService {
 	Map<String, IErGenerator> generators
 	static final String GENERATE_PREFIX = "erdiagram.generate"
 	static final String GENERATE_SQL_COMMAND = GENERATE_PREFIX + ".sql"
+	static final String GENERATE_MONGODB_COMMAND = GENERATE_PREFIX + ".mongodb"
+	static final String GENERATE_NEO4J_COMMAND = GENERATE_PREFIX + ".neo4j"
+	static final String GENERATE_CASSANDRADB_COMMAND = GENERATE_PREFIX + ".cassandradb"
 	static final String GENERATE_POSTGRES_COMMAND = GENERATE_PREFIX + ".postgres"
 	static final String GENERATE_ORACLE_COMMAND = GENERATE_PREFIX + ".oracle"
 	static final String GENERATE_MYSQL_COMMAND = GENERATE_PREFIX + ".mysql"
@@ -37,13 +43,17 @@ class ErCommandService implements IExecutableCommandService {
 	override initialize() {
 		generators = new HashMap
 		generators.put(GENERATE_SQL_COMMAND, new SqlGenerator)
+		generators.put(GENERATE_MONGODB_COMMAND, new MongoDbGenerator)
+		generators.put(GENERATE_NEO4J_COMMAND, new Neo4jGenerator)
+		generators.put(GENERATE_CASSANDRADB_COMMAND, new CassandraDbGenerator)
+
 		generators.put(GENERATE_POSTGRES_COMMAND, new PostgresGenerator)
 		generators.put(GENERATE_ORACLE_COMMAND, new OracleGenerator)
 		generators.put(GENERATE_MYSQL_COMMAND, new MySqlGenerator)
 		generators.put(GENERATE_MSSQL_COMMAND, new MsSqlGenerator)
 		generators.put(GENERATE_DB2_COMMAND, new Db2Generator)
 		return #[ 
-			GENERATE_SQL_COMMAND, GENERATE_POSTGRES_COMMAND, GENERATE_ORACLE_COMMAND, 
+			GENERATE_SQL_COMMAND, GENERATE_MONGODB_COMMAND, GENERATE_NEO4J_COMMAND, GENERATE_CASSANDRADB_COMMAND, GENERATE_POSTGRES_COMMAND, GENERATE_ORACLE_COMMAND, 
 			GENERATE_MYSQL_COMMAND, GENERATE_MSSQL_COMMAND, GENERATE_DB2_COMMAND
 		]
 	}

@@ -7,7 +7,7 @@ import { SprottyDiagramIdentifier } from "sprotty-vscode/lib/lsp";
 import { ERDiagramWebview } from './erdiagram-webview';
 import newEmptyModel from './commands/new-empty-model';
 import newSampleModel from './commands/new-sample-model';
-import { generateDb2Handler, generateMsSqlHandler, generateMySqlHandler, generateOracleHandler, generatePostgresHandler, generateSqlHandler } from './commands/generate';
+import { generateCassandraDbHandler, generateMongoDbHandler, generateNeo4jHandler, generateDb2Handler, generateMsSqlHandler, generateMySqlHandler, generateOracleHandler, generatePostgresHandler, generateSqlHandler } from './commands/generate';
 
 export class ERDiagramLspVscodeExtension extends SprottyLspEditVscodeExtension {
 
@@ -24,6 +24,9 @@ export class ERDiagramLspVscodeExtension extends SprottyLspEditVscodeExtension {
                 newSampleModel();
             }));
         this.context.subscriptions.push(vscode.commands.registerCommand("erdiagram.generate.sql.proxy", generateSqlHandler));
+        this.context.subscriptions.push(vscode.commands.registerCommand("erdiagram.generate.mongodb.proxy", generateMongoDbHandler));
+        this.context.subscriptions.push(vscode.commands.registerCommand("erdiagram.generate.neo4j.proxy", generateNeo4jHandler));
+        this.context.subscriptions.push(vscode.commands.registerCommand("erdiagram.generate.cassandradb.proxy", generateCassandraDbHandler));
         this.context.subscriptions.push(vscode.commands.registerCommand("erdiagram.generate.postgres.proxy", generatePostgresHandler));
         this.context.subscriptions.push(vscode.commands.registerCommand("erdiagram.generate.oracle.proxy", generateOracleHandler));
         this.context.subscriptions.push(vscode.commands.registerCommand("erdiagram.generate.mysql.proxy", generateMySqlHandler));

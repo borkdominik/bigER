@@ -1,0 +1,42 @@
+// ER Model
+erdiagram OnlineShop
+
+// Options
+notation=default
+
+// Entities
+entity Person {
+    person_id: INT key
+    name: VARCHAR(255)
+}
+entity Customer extends Person {
+    customer_id: INT key
+    email: VARCHAR(255)
+}
+entity Employee extends Person {
+    employee_id: INT key
+    salary: DECIMAL
+}
+entity Product {
+    product_id: INT key
+    name: VARCHAR(255)
+    price: DECIMAL
+}
+entity Order {
+    order_id: INT key
+    date: DATE
+    status: VARCHAR(255)
+}
+
+// Relationships
+relationship Placed {
+    Customer[1] -> Order[N]
+    payment_method: VARCHAR(255)
+}
+relationship Handled {
+    Employee[1] -> Order[N]
+}
+relationship Contains {
+    Order[1] -> Product[N]
+    quantity: INT
+}

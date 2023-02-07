@@ -5,6 +5,9 @@ export const sqlServerCommand = "erdiagram.generate.sql";
 export const postgresServerCommand = "erdiagram.generate.postgres";
 export const oracleServerCommand = "erdiagram.generate.oracle";
 export const mysqlServerCommand = "erdiagram.generate.mysql";
+export const mongoDbServerCommand = "erdiagram.generate.mongodb";
+export const neo4jServerCommand = "erdiagram.generate.neo4j";
+export const cassandraDbServerCommand = "erdiagram.generate.cassandradb";
 export const mssqlServerCommand = "erdiagram.generate.mssql";
 export const db2ServerCommand = "erdiagram.generate.db2";
 
@@ -33,6 +36,16 @@ export const generateMsSqlHandler = async () => {
 export const generateDb2Handler = async () => {
     sendToServer(db2ServerCommand);
 };
+export const generateMongoDbHandler = async () => {
+    sendToServer(mongoDbServerCommand);
+};
+export const generateNeo4jHandler = async () => {
+    sendToServer(neo4jServerCommand);
+};
+export const generateCassandraDbHandler = async () => {
+    sendToServer(cassandraDbServerCommand);
+};
+
 
 export const sendToServer = async (command: string, fileUri?: Uri) => {
     if (!fileUri) {
