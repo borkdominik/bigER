@@ -1,7 +1,7 @@
 import { inject, injectable } from "inversify";
 import { AbstractUIExtension, codiconCSSClasses, IActionDispatcher, TYPES } from "sprotty";
 import { vscodeApi } from 'sprotty-vscode-webview/lib/vscode-api';
-import { createElement } from "../utils";
+import { createElement, UITypes } from "../utils";
 import { AddEntityButton, AddRelationshipButton, CollapseAllButton, ExpandAllButton, FitToScreenButton, GenerateButton, NotationButton, ToolButton, ToolButtonDropdown, ToolButtonPanel } from "./buttons";
 import { ChangeNotationAction } from "../actions";
 
@@ -112,6 +112,7 @@ export class ToolBar extends AbstractUIExtension {
             panelContent.appendChild(label);
 
             const dropdownSelect = createElement("vscode-dropdown", ["dropdownSelect"]) as HTMLSelectElement;
+            dropdownSelect.id = UITypes.NOTATION_SELECT;
             panel.selections.forEach((value: string, key: string) => {
                 dropdownSelect.innerHTML += `<vscode-option value="${key}">${value}</vscode-option>`;
             });
@@ -127,7 +128,7 @@ export class ToolBar extends AbstractUIExtension {
 
     private createModelName(): HTMLElement {
         const nameElement = createElement("p");
-        nameElement.id = "toolbar-modelName";
+        nameElement.id = UITypes.MODEL_NAME;
         return nameElement;
     }
 
@@ -145,7 +146,7 @@ export class ToolBar extends AbstractUIExtension {
 
             const link = createElement("vscode-link");
             link.appendChild(insertedDiv);
-            link.setAttribute("href", "https://github.com/borkdominik/bigER/wiki/Language");
+            link.setAttribute("href", UITypes.HELP_LINK);
             return link;
         }
         return createElement("div");
