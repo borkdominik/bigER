@@ -37,10 +37,14 @@ public class SqlGenerator implements IErGenerator {
 		final String fileName = (diagramName != null ? diagramName : "output") + ".sql";
 		StringConcatenation fileContent = generateFileContent(diagram, false);
 		fsa.generateFile(fileName, fileContent);
-		// TODO: Integrate generation of drop
-		// final String fileNameDrop = (diagramName != null ? diagramName : "output") + "-drop.sql";
-		// StringConcatenation fileContentDrop = generateFileContent(diagram, true);
-		// fsa.generateFile(fileNameDrop, fileContentDrop);
+	}
+	
+	public void generateDrop(final Resource resource, final IFileSystemAccess2 fsa, final IGeneratorContext context) {
+		final Model diagram = (Model) resource.getContents().get(0);
+		String diagramName = diagram.getName();
+		final String fileNameDrop = (diagramName != null ? diagramName : "output") + "-drop.sql";
+		StringConcatenation fileContentDrop = generateFileContent(diagram, true);
+		fsa.generateFile(fileNameDrop, fileContentDrop);
 	}
 
 	public String generate(final Model diagram) {

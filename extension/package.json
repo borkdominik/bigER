@@ -142,6 +142,16 @@
 				"category": "bigER"
 			}
 		],
+		"configuration": {
+			"title": "bigER",
+			"properties": {
+				"erdiagram.generateDrop": {
+					"type": "boolean",
+          			"default": false,
+          			"description": "Generate a file with DROP TABLE statements when generating SQL."
+				}
+			}
+		},
 		"menus": {
 			"editor/title": [
 				{
