@@ -16,6 +16,7 @@ class CustomActionTypeAdapterFactory extends EditActionTypeAdapterFactory {
 		addActionKind(ChangeNotationAction.KIND, ChangeNotationAction)
 		addActionKind(CreateElementEditAction.KIND, CreateElementEditAction)
 		addActionKind(AddAttributeAction.KIND, AddAttributeAction)
+		addActionKind(ChangeLayoutDirectionAction.KIND, ChangeLayoutDirectionAction)
 	}
 }
 
@@ -66,6 +67,22 @@ class AddAttributeAction implements Action {
 	new() { }
 
 	new(Consumer<AddAttributeAction> initializer) {
+		initializer.accept(this)
+	}
+}
+
+@Accessors
+@EqualsHashCode
+@ToString(skipNulls=true)
+class ChangeLayoutDirectionAction implements Action {
+
+	public static val KIND = 'changeLayoutDirection'
+	String kind = KIND
+	String direction
+
+	new() { }
+
+	new(Consumer<ChangeLayoutDirectionAction> initializer) {
 		initializer.accept(this)
 	}
 }

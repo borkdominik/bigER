@@ -2,8 +2,7 @@ import { inject, injectable } from "inversify";
 import { AbstractUIExtension, codiconCSSClasses, IActionDispatcher, TYPES } from "sprotty";
 import { vscodeApi } from 'sprotty-vscode-webview/lib/vscode-api';
 import { createElement, UITypes } from "../utils";
-import { AddEntityButton, AddRelationshipButton, CollapseAllButton, ExpandAllButton, FitToScreenButton, GenerateButton, NotationButton, ToolButton, ToolButtonDropdown, ToolButtonPanel } from "./buttons";
-import { ChangeNotationAction } from "../actions";
+import { AddEntityButton, AddRelationshipButton, CollapseAllButton, ExpandAllButton, FitToScreenButton, GenerateButton, LayoutButton, NotationButton, ToolButton, ToolButtonDropdown, ToolButtonPanel } from "./buttons";
 
 @injectable()
 export class ToolBar extends AbstractUIExtension {
@@ -31,7 +30,7 @@ export class ToolBar extends AbstractUIExtension {
         leftSide.appendChild(this.createSeparator());
         leftSide.appendChild(this.createDropdownButton(new GenerateButton()));
         leftSide.appendChild(this.createSeparator());
-        leftSide.appendChild(this.createPanelButton(new NotationButton()));
+        leftSide.appendChild(this.createSettingsPanel([new NotationButton(), new LayoutButton()]))
         leftSide.appendChild(this.createSeparator());
         // TODO: improve model name (-> model name is currently set in the view)
         leftSide.appendChild(this.createModelName());
@@ -94,6 +93,36 @@ export class ToolBar extends AbstractUIExtension {
         return document.createElement("div");
     }
 
+    private createSettingsPanel(settings: ToolButtonPanel[]): HTMLElement {
+        const baseDiv = document.getElementById(this.options.baseDiv);
+        if (baseDiv) {
+            const container = createElement("div", ["toolbar-dropdown", "overlay-button"]);
+            baseDiv.insertBefore(container, baseDiv.firstChild);
+            container.appendChild(this.createDropdownIcon("settings"));
+            // panel with label and selection
+            const panelContent = createElement("div", ["dropdown-content", "panel"]);
+            container.appendChild(panelContent);
+            settings.forEach((s) => {
+                const label = createElement("label", ["panel-label"]);
+                label.innerText = s.label;
+                panelContent.appendChild(label);
+                const dropdownSelect = createElement("vscode-dropdown", ["dropdownSelect"]) as HTMLSelectElement;
+                dropdownSelect.id = s.selectionId;
+                s.selections.forEach((value: string, key: string) => {
+                dropdownSelect.innerHTML += `<vscode-option value="${key}">${value}</vscode-option>`;
+                dropdownSelect.onchange = () => {
+                    const value = dropdownSelect.options[dropdownSelect.selectedIndex].value;
+                    this.actionDispatcher.dispatch(s.action(value));
+                };
+                panelContent.appendChild(dropdownSelect);
+                });
+            });
+            return container;
+        }
+        return document.createElement("div");
+    }
+
+    /*
     private createPanelButton(panel: ToolButtonPanel): HTMLElement {
         const baseDiv = document.getElementById(this.options.baseDiv);
         if (baseDiv) {
@@ -118,13 +147,13 @@ export class ToolBar extends AbstractUIExtension {
             });
             dropdownSelect.onchange = () => {
                 const value = dropdownSelect.options[dropdownSelect.selectedIndex].value;
-                this.actionDispatcher.dispatch(ChangeNotationAction.create(value));
+                this.actionDispatcher.dispatch(panel.action(value));
             };
             panelContent.appendChild(dropdownSelect);
             return container;
         }
         return document.createElement("div");
-    }
+    }*/
 
     private createModelName(): HTMLElement {
         const nameElement = createElement("p");

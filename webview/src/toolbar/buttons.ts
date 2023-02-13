@@ -1,5 +1,6 @@
 import { Action, CollapseExpandAllAction, FitToScreenAction } from "sprotty-protocol";
-import { CreateElementEditAction } from "../actions";
+import { ChangeLayoutDirectionAction, ChangeNotationAction, CreateElementEditAction } from "../actions";
+import { UITypes } from "../utils";
 
 export interface ToolButton {
     id: string;
@@ -12,14 +13,16 @@ export interface ToolButtonDropdown {
     id: string;
     label: string;
     icon: string;
-    options: Map<string, string>
+    options: Map<string, string>;
 }
 
 export interface ToolButtonPanel {
     id: string;
+    selectionId: string;
     label: string;
     icon: string;
-    selections: Map<string, string>
+    selections: Map<string, string>;
+    action: (val: string) => Action;
 }
 
 export class AddEntityButton implements ToolButton {
@@ -59,6 +62,7 @@ export class GenerateButton implements ToolButtonDropdown {
 export class NotationButton implements ToolButtonPanel {
     constructor(
         public readonly id = "btn_panel_notation",
+        public readonly selectionId = UITypes.NOTATION_SELECT,
         public readonly label = "Notation",
         public readonly icon = "settings",
         public readonly selections = new Map<string, string>([
@@ -67,7 +71,24 @@ export class NotationButton implements ToolButtonPanel {
             ["chen", "Chen"],
             ["crowsfoot", "Crow's Foot"],
             ["uml", "UML"]
-        ])
+        ]),
+        public readonly action = (val: string) => ChangeNotationAction.create(val)
+    ) {}
+}
+
+export class LayoutButton implements ToolButtonPanel {
+    constructor(
+        public readonly id = "btn_panel_layout",
+        public readonly selectionId = UITypes.LAYOUT_SELECT,
+        public readonly label = "Layout Direction",
+        public readonly icon = "settings",
+        public readonly selections = new Map<string, string>([
+            ["right", "Right"],
+            ["left", "Left"],
+            ["down", "Down"],
+            ["up", "Up"]
+        ]),
+        public readonly action = (val: string) => ChangeLayoutDirectionAction.create(val)
     ) {}
 }
 
@@ -76,6 +97,15 @@ export class FitToScreenButton implements ToolButton {
         public readonly id = "btn_fit_to_screen",
         public readonly label = "Fit to Screen",
         public readonly icon = "screen-full",
+        public readonly action = FitToScreenAction.create([])
+    ) {}
+}
+
+export class RotateLayoutButton implements ToolButton {
+    constructor(
+        public readonly id = "btn_rotate_layout",
+        public readonly label = "Rotate Layout",
+        public readonly icon = "debug-step-over",
         public readonly action = FitToScreenAction.create([])
     ) {}
 }

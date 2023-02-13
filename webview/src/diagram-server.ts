@@ -2,7 +2,7 @@ import { injectable } from "inversify";
 import { ActionHandlerRegistry } from "sprotty";
 import { Action, isAction } from 'sprotty-protocol';
 import { VscodeLspEditDiagramServer } from "sprotty-vscode-webview/lib/lsp/editing";
-import { AddAttributeAction, ChangeNotationAction, CreateElementEditAction } from "./actions";
+import { AddAttributeAction, ChangeLayoutDirectionAction, ChangeNotationAction, CreateElementEditAction } from "./actions";
 
 @injectable()
 export class BigERDiagramServer extends VscodeLspEditDiagramServer {
@@ -12,6 +12,7 @@ export class BigERDiagramServer extends VscodeLspEditDiagramServer {
         registry.register(ChangeNotationAction.KIND, this);
         registry.register(CreateElementEditAction.KIND, this);
         registry.register(AddAttributeAction.KIND, this);
+        registry.register(ChangeLayoutDirectionAction.KIND, this);
     }
 
     /**
@@ -24,6 +25,8 @@ export class BigERDiagramServer extends VscodeLspEditDiagramServer {
         } else if (isAction(CreateElementEditAction.KIND)) {
             return true;
         } else if (isAction(AddAttributeAction.KIND)) {
+            return true;
+        } else if (isAction(ChangeLayoutDirectionAction.KIND)) {
             return true;
         } else {
             return super.handleLocally(action);

@@ -1,6 +1,7 @@
 export namespace UITypes {
     export const MODEL_NAME = "toolbar-modelName";
     export const NOTATION_SELECT = "notation-select";
+    export const LAYOUT_SELECT = "layout-select";
     export const HELP_LINK = "https://github.com/borkdominik/bigER/wiki/Language";
 }
 

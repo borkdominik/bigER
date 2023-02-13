@@ -38,6 +38,21 @@ export namespace ChangeNotationAction {
     }
 }
 
+export interface ChangeLayoutDirectionAction {
+    kind: typeof ChangeLayoutDirectionAction.KIND
+    direction: string
+}
+export namespace ChangeLayoutDirectionAction {
+    export const KIND = 'changeLayoutDirection';
+
+    export function create(direction: string): ChangeLayoutDirectionAction {
+        return {
+            kind: KIND,
+            direction
+        };
+    }
+}
+
 export interface AddAttributeAction {
     kind: typeof AddAttributeAction.KIND
     elementId: string
