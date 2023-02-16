@@ -4,7 +4,8 @@ notation=default
 
 entity Entity1 { id key }
 entity Entity2 { id key }
-entity Entity3 { id key }
+entity Entity3 { id key 	attr1
+}
 entity Entity4 { id key }
 entity Entity5 { id key }
 entity Entity6 { id key }
