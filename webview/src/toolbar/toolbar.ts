@@ -2,7 +2,7 @@ import { inject, injectable } from "inversify";
 import { AbstractUIExtension, codiconCSSClasses, IActionDispatcher, TYPES } from "sprotty";
 import { vscodeApi } from 'sprotty-vscode-webview/lib/vscode-api';
 import { createElement, UITypes } from "../utils";
-import { AddEntityButton, AddRelationshipButton, CollapseAllButton, ExpandAllButton, FitToScreenButton, GenerateButton, NotationButton, ToolButton, ToolButtonDropdown, ToolButtonPanel } from "./buttons";
+import { AddEntityButton, AddRelationshipButton, CollapseAllButton, ExpandAllButton, FitToScreenButton, GenerateButton, NotationButton, RefreshButton, ToolButton, ToolButtonDropdown, ToolButtonPanel } from "./buttons";
 import { ChangeNotationAction } from "../actions";
 
 @injectable()
@@ -41,6 +41,7 @@ export class ToolBar extends AbstractUIExtension {
     protected createRightSide(): HTMLElement {
         const rightSide = createElement("div", ["toolbar-right"]);
         rightSide.appendChild(this.createSeparator());
+        rightSide.appendChild(this.createToolButton(new RefreshButton()));
         rightSide.appendChild(this.createToolButton(new FitToScreenButton()));
         rightSide.appendChild(this.createToolButton(new CollapseAllButton()));
         rightSide.appendChild(this.createToolButton(new ExpandAllButton()));

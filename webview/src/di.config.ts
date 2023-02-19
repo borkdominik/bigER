@@ -8,13 +8,14 @@ import {
     configureModelElement, HtmlRoot, HtmlRootView, overrideViewerOptions, PreRenderedElement, PreRenderedView,
     TYPES, loadDefaultModules, ConsoleLogger, LogLevel, SCompartmentView, SCompartment, editLabelFeature,
     labelEditUiModule, SModelRoot, SLabel, ExpandButtonHandler, SButton, expandFeature, SLabelView, ExpandButtonView,
-    SRoutingHandle, SRoutingHandleView, editFeature
+    SRoutingHandle, SRoutingHandleView, editFeature, configureActionHandler
 } from 'sprotty';
 import { InheritanceEdgeView, ERModelView, EntityNodeView, RelationshipNodeView, NotationEdgeView } from './views';
 import { EntityNode, ERModel, NotationEdge, RelationshipNode, InheritanceEdge, CardinalityLabel, RoleLabel, LeftCardinalityLabel,
     RightCardinalityLabel, LeftRoleLabel, RightRoleLabel } from './model';
 import { BigerEdgeLayoutPostprocessor } from './layout-postprocessor';
 import toolbarModule from './toolbar/di.config';
+import { RefreshAction, RefreshActionHandler } from './refresh';
 
 /**
  * Sprotty Dependency Injection container
@@ -74,6 +75,8 @@ const DiagramModule = new ContainerModule((bind, unbind, isBound, rebind) => {
     configureModelElement(context, ExpandButtonHandler.TYPE, SButton, ExpandButtonView);
     configureModelElement(context, 'routing-point', SRoutingHandle, SRoutingHandleView);
     configureModelElement(context, 'volatile-routing-point', SRoutingHandle, SRoutingHandleView);
+    // Action Handlers
+    configureActionHandler(context, RefreshAction.KIND, RefreshActionHandler);
 });
 
 /**
