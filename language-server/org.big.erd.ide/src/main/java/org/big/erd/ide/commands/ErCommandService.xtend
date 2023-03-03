@@ -12,9 +12,9 @@ import java.util.HashMap
 import java.util.Map
 import org.big.erd.generator.IErGenerator
 import org.big.erd.generator.sql.SqlGenerator
-import org.big.erd.generator.MongoDbGenerator
-import org.big.erd.generator.CassandraDbGenerator
-import org.big.erd.generator.Neo4jGenerator
+import org.big.erd.generator.nosql.MongoDbGenerator
+import org.big.erd.generator.nosql.CassandraDbGenerator
+import org.big.erd.generator.nosql.Neo4jGenerator
 import org.eclipse.xtext.validation.IResourceValidator
 import org.eclipse.xtext.validation.CheckMode
 import org.big.erd.generator.sql.PostgresGenerator

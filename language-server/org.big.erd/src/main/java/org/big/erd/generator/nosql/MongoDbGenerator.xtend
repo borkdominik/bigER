@@ -1,4 +1,4 @@
-package org.big.erd.generator
+package org.big.erd.generator.nosql
 
 import org.big.erd.entityRelationship.Model
 import org.big.erd.entityRelationship.Entity
@@ -8,6 +8,7 @@ import org.big.erd.entityRelationship.Relationship
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.generator.IFileSystemAccess2
 import org.eclipse.xtext.generator.IGeneratorContext
+import org.big.erd.generator.IErGenerator
 
 class MongoDbGenerator implements IErGenerator {
 	
