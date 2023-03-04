@@ -3,6 +3,7 @@ package org.big.erd.generator.nosql
 import org.big.erd.entityRelationship.Model
 import org.big.erd.entityRelationship.Entity
 import org.big.erd.entityRelationship.DataType
+import org.big.erd.entityRelationship.Attribute
 import org.big.erd.entityRelationship.AttributeType
 import org.big.erd.entityRelationship.Relationship
 import org.eclipse.emf.ecore.resource.Resource
@@ -34,9 +35,12 @@ class CassandraDbGenerator implements IErGenerator {
 	}
 	
 	private def toTable(Entity entity) {
+		// SEPARATOR ',' AFTER ','
+		// «'\t'»«attribute.name» «attribute.datatype.transformDataType»,
+		// «FOR attribute : entity.allAttributes.reject[it.type === AttributeType.DERIVED]» 
 		return ''' 
 				CREATE TABLE «entity.name»(
-				«FOR attribute : entity.allAttributes.reject[it.type === AttributeType.DERIVED] SEPARATOR ','»
+				«FOR attribute : entity.getAllAttrWithExtends.reject[it.type === AttributeType.DERIVED]» 
 					«'\t'»«attribute.name» «attribute.datatype.transformDataType»,
 				«ENDFOR»
 				«'\t'»PRIMARY KEY («entity.primaryKey.name»)
@@ -52,8 +56,8 @@ class CassandraDbGenerator implements IErGenerator {
 				«relationship.first.target.foreignKeyRef»
 				«relationship.second.target.foreignKeyRef»
 				«IF relationship.third?.target !== null», «relationship.third.target.foreignKeyRef»«ENDIF»
-				«FOR attribute : relationship.attributes SEPARATOR ','»
-					«'\t'»«attribute.name» «attribute.datatype.transformDataType»
+				«FOR attribute : relationship.attributes»
+					«'\t'»«attribute.name» «attribute.datatype.transformDataType»,
 				«ENDFOR»
 				«'\t'»PRIMARY KEY («keySource.name», «keyTarget.name»«IF relationship.third?.target !== null», «relationship.third.target.primaryKey.name»«ENDIF»)
 				);«'\n'»«'\n'»
@@ -65,11 +69,11 @@ class CassandraDbGenerator implements IErGenerator {
 		val weak = getWeakEntity(relationship)
 		return ''' 
 				CREATE TABLE «weak.name»(
-				«FOR attribute : weak.allAttributes.reject[it.type === AttributeType.DERIVED] SEPARATOR ','»
-					«'\t'»«attribute.name» «attribute.datatype.transformDataType»
+				«FOR attribute : weak.allAttributes.reject[it.type === AttributeType.DERIVED]»
+					«'\t'»«attribute.name» «attribute.datatype.transformDataType»,
 				«ENDFOR»
-				«FOR attribute : relationship.attributes SEPARATOR ','»
-					«'\t'»«attribute.name» «attribute.datatype.transformDataType»
+				«FOR attribute : relationship.attributes»
+					«'\t'»«attribute.name» «attribute.datatype.transformDataType»,
 				«ENDFOR»
 				«'\t'»«strong.primaryKey.name» «strong.primaryKey.datatype.transformDataType»,
 				«'\t'»PRIMARY KEY («weak.partialKey.name», «strong.primaryKey.name»)
@@ -77,7 +81,15 @@ class CassandraDbGenerator implements IErGenerator {
 			'''
 	}
 	
-	
+	private def Iterable<Attribute> getAllAttrWithExtends(Entity entity) {
+		//val result = newArrayList(entity.attributes)
+		val attributes = newHashSet
+		attributes += entity.attributes
+		if (entity.extends !== null) {
+			attributes.addAll(getAllAttrWithExtends(entity.extends))
+		}
+		return attributes
+	}
 
 	private def foreignKeyRef(Entity entity) {
 		val key = entity.attributes.filter[a | a.type === AttributeType.KEY]
@@ -85,9 +97,7 @@ class CassandraDbGenerator implements IErGenerator {
 			val attr = entity.attributes.get(0)
 			return '''«'\t'»«attr.name» «attr.datatype.transformDataType» references «entity.name»(«attr.name»),'''
 		}
-		return '''
-			«'\t'»«key.get(0).name» «key.get(0).datatype.transformDataType» references «entity.name»(«key.get(0).name»),
-		'''
+		return '''«'\t'»«key.get(0).name» «key.get(0).datatype.transformDataType» references «entity.name»(«key.get(0).name»),'''
 	}
 
 	private def primaryKey(Entity entity) {
@@ -164,8 +174,10 @@ class CassandraDbGenerator implements IErGenerator {
 	
 	private def validate(Resource resource, Model model) {
 		// additional validation check, since generalization is not supported
+		/*
 		if (!model.entities?.filter[it.extends !== null].isNullOrEmpty) {
 			throw new IllegalArgumentException("CassandraDb CQL Generator does not support generalization, remove the 'extends' keyword")
 		}
+		*/
 	}
 }

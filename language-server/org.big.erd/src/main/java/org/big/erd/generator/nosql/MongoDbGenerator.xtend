@@ -3,6 +3,7 @@ package org.big.erd.generator.nosql
 import org.big.erd.entityRelationship.Model
 import org.big.erd.entityRelationship.Entity
 import org.big.erd.entityRelationship.DataType
+import org.big.erd.entityRelationship.Attribute
 import org.big.erd.entityRelationship.AttributeType
 import org.big.erd.entityRelationship.Relationship
 import org.eclipse.emf.ecore.resource.Resource
@@ -43,7 +44,7 @@ class MongoDbGenerator implements IErGenerator {
 							title: "«entity.name» Object Validation",
 							required: ["«entity.primaryKey.name»"],
 							properties: {
-								«FOR attribute : entity.allAttributes.reject[it.type === AttributeType.DERIVED]»
+								«FOR attribute : entity.getAllAttrWithExtends.reject[it.type === AttributeType.DERIVED]»
 								«attribute.name»: {
 									bsonType: "«attribute.datatype.transformDataType»",
 								},
@@ -104,7 +105,15 @@ class MongoDbGenerator implements IErGenerator {
 			'''
 	}
 	
-	
+	private def Iterable<Attribute> getAllAttrWithExtends(Entity entity) {
+		//val result = newArrayList(entity.attributes)
+		val attributes = newHashSet
+		attributes += entity.attributes
+		if (entity.extends !== null) {
+			attributes.addAll(getAllAttrWithExtends(entity.extends))
+		}
+		return attributes
+	}
 
 	private def primaryKey(Entity entity) {
 		val keyAttributes = entity.attributes?.filter[it.type === AttributeType.KEY]
@@ -146,8 +155,10 @@ class MongoDbGenerator implements IErGenerator {
 	
 	private def validate(Resource resource, Model model) {
 		// additional validation check, since generalization is not supported
+		/*
 		if (!model.entities?.filter[it.extends !== null].isNullOrEmpty) {
 			throw new IllegalArgumentException("SQL Generator does not support generalization, remove the 'extends' keyword")
 		}
+		*/
 	}
 }
