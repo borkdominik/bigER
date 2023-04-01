@@ -37,10 +37,14 @@ public class SqlGenerator implements IErGenerator {
 		final String fileName = (diagramName != null ? diagramName : "output") + ".sql";
 		StringConcatenation fileContent = generateFileContent(diagram, false);
 		fsa.generateFile(fileName, fileContent);
-		// TODO: Integrate generation of drop
-		// final String fileNameDrop = (diagramName != null ? diagramName : "output") + "-drop.sql";
-		// StringConcatenation fileContentDrop = generateFileContent(diagram, true);
-		// fsa.generateFile(fileNameDrop, fileContentDrop);
+	}
+	
+	public void generateDrop(final Resource resource, final IFileSystemAccess2 fsa, final IGeneratorContext context) {
+		final Model diagram = (Model) resource.getContents().get(0);
+		String diagramName = diagram.getName();
+		final String fileNameDrop = (diagramName != null ? diagramName : "output") + "-drop.sql";
+		StringConcatenation fileContentDrop = generateFileContent(diagram, true);
+		fsa.generateFile(fileNameDrop, fileContentDrop);
 	}
 
 	public String generate(final Model diagram) {
@@ -205,9 +209,13 @@ public class SqlGenerator implements IErGenerator {
 		return key;
 	}
 
-	protected String transformDataType(Attribute attribute, String mappedType, int size, StringBuilder comment) {
+	protected String transformDataType(Attribute attribute, String mappedType, int size, Integer precision, StringBuilder comment) {
 		if (size > 0) {
-			return mappedType + "(" + size + ")";
+			String strPrecision = "";
+			if (precision != null && precision > 0) {
+				strPrecision = ", " + precision;
+			}
+			return mappedType + "(" + size + strPrecision + ")";
 		}
 		return mappedType;
 	}
@@ -268,9 +276,11 @@ public class SqlGenerator implements IErGenerator {
 				}
 				String originalType = "";
 				int size;
+				Integer precision = null;
 				if (attribute.getDatatype() != null) {
 					originalType = attribute.getDatatype().getType();
 					size = attribute.getDatatype().getSize();
+					precision = attribute.getDatatype().getD();
 				} else {
 					originalType = "VARCHAR";
 					size = 255;
@@ -283,7 +293,7 @@ public class SqlGenerator implements IErGenerator {
 				} else if (!mappedType.equals(originalType)) {
 					addComment(comment, "type mapped from: " + originalType);
 				}
-				String transformedDataType = this.transformDataType(attribute, mappedType, size, comment);
+				String transformedDataType = this.transformDataType(attribute, mappedType, size, precision, comment);
 				if (transformedDataType != null && !transformedDataType.isEmpty()) {
 					tableContent.append(" ");
 					tableContent.append(transformedDataType);

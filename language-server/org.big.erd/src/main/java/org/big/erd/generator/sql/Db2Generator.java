@@ -119,8 +119,8 @@ public class Db2Generator extends SqlGenerator {
 	}
 	
 	@Override
-	protected String transformDataType(Attribute attribute, String mappedType, int size, StringBuilder comment) {
-		String transformedType = super.transformDataType(attribute, mappedType, size, comment);
+	protected String transformDataType(Attribute attribute, String mappedType, int size, Integer precision, StringBuilder comment) {
+		String transformedType = super.transformDataType(attribute, mappedType, size, precision, comment);
 		if (attribute.getType() == AttributeType.KEY || attribute.getType() == AttributeType.PARTIAL_KEY) {
 			transformedType = transformedType + " NOT NULL";
 			addComment(comment, "added NULL constraint");

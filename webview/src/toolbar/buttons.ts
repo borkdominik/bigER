@@ -1,5 +1,6 @@
 import { Action, CollapseExpandAllAction, FitToScreenAction } from "sprotty-protocol";
 import { CreateElementEditAction } from "../actions";
+import { RefreshAction } from "../refresh";
 
 export interface ToolButton {
     id: string;
@@ -68,6 +69,15 @@ export class NotationButton implements ToolButtonPanel {
             ["crowsfoot", "Crow's Foot"],
             ["uml", "UML"]
         ])
+    ) {}
+}
+
+export class RefreshButton implements ToolButton {
+    constructor(
+        public readonly id = "btn_refresh",
+        public readonly label = "Refresh Diagram",
+        public readonly icon = "refresh",
+        public readonly action = RefreshAction.create()
     ) {}
 }
 

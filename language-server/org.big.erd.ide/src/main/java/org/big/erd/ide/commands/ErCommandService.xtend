@@ -59,6 +59,7 @@ class ErCommandService implements IExecutableCommandService {
 	}
 	
 	override execute(ExecuteCommandParams params, ILanguageServerAccess access, CancelIndicator cancelIndicator) {
+		// handle erdiagram.generate.* commands 
 		if (params.command.startsWith(GENERATE_PREFIX)) {
 			val fsa = ErUtils.getJavaIoFileSystemAccess()
 			fsa.setOutputPath("generated")
@@ -86,6 +87,11 @@ class ErCommandService implements IExecutableCommandService {
 							
 							// execute the generator
 							generator.generate(resource, fsa, new GeneratorContext())
+							// optionally generate drop tables
+							val genDrop = params.arguments.get(1) as JsonPrimitive;
+							if (genDrop !== null && genDrop.asString.equals("true") && generator instanceof SqlGenerator) {
+								(generator as SqlGenerator).generateDrop(resource, fsa, new GeneratorContext());
+							}
 							return "Successfully generated code!"
 						} catch (Exception ex) {
 							return "Error! Exception while executing generator: \n" + ex.message

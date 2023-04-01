@@ -5,7 +5,7 @@ import { RenderingContext, svg, RectangularNodeView, SEdge, PolylineEdgeView, //
 import { injectable} from 'inversify';
 import { toDegrees, Point } from 'sprotty-protocol';
 import { EntityNode, ERModel, NotationEdge, PopupButton, RelationshipNode } from "./model";
-import { DiagramTypes, RelationshipTypes } from "./utils";
+import { DiagramTypes, RelationshipTypes, UITypes } from "./utils";
 
 
 @injectable()
@@ -15,12 +15,12 @@ export class ERModelView<IRenderingArgs> extends SGraphView<IRenderingArgs> {
 
     override render(model: Readonly<ERModel>, context: RenderingContext, args?: IRenderingArgs): VNode {
         // set model name in toolbar
-        const menuModelName = document.getElementById('toolbar-modelName');
+        const menuModelName = document.getElementById(UITypes.MODEL_NAME);
         if (menuModelName) {
             menuModelName.innerText = model.name;
         }
         // set notation option panel
-        const notationSelect = document.getElementById('select-notation') as HTMLSelectElement;
+        const notationSelect = document.getElementById(UITypes.NOTATION_SELECT) as HTMLSelectElement;
         if (notationSelect) {
             notationSelect.value = model.notation;
         }
