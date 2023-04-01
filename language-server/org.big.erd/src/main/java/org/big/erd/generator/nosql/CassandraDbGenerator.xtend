@@ -22,6 +22,8 @@ class CassandraDbGenerator implements IErGenerator {
 	
 	def String generate(Model model) {
 		'''
+			CREATE KEYSPACE «model.name» WITH REPLICATION = {'class': 'SimpleStrategy', 'replication_factor': 2};
+			USE «model.name»;
 			«FOR entity : model.entities.reject[it.isWeak]»
 				«entity.toTable»
 			«ENDFOR»
@@ -35,9 +37,6 @@ class CassandraDbGenerator implements IErGenerator {
 	}
 	
 	private def toTable(Entity entity) {
-		// SEPARATOR ',' AFTER ','
-		// «'\t'»«attribute.name» «attribute.datatype.transformDataType»,
-		// «FOR attribute : entity.allAttributes.reject[it.type === AttributeType.DERIVED]» 
 		return ''' 
 				CREATE TABLE «entity.name»(
 				«FOR attribute : entity.getAllAttrWithExtends.reject[it.type === AttributeType.DERIVED]» 
@@ -82,7 +81,6 @@ class CassandraDbGenerator implements IErGenerator {
 	}
 	
 	private def Iterable<Attribute> getAllAttrWithExtends(Entity entity) {
-		//val result = newArrayList(entity.attributes)
 		val attributes = newHashSet
 		attributes += entity.attributes
 		if (entity.extends !== null) {
@@ -115,11 +113,6 @@ class CassandraDbGenerator implements IErGenerator {
 			return entity.attributes.get(0)
 		return keyAttributes.get(0)
 	}
-
-	/*
-	private def getAllKeysName(Relationship relationship) {
-		return '''«IF relationship.first?.target !== null»"«relationship.first?.target.primaryKey.name»"«ENDIF»«IF relationship.second?.target !== null», "«relationship.second?.target.primaryKey.name»"«ENDIF»«IF relationship.third?.target !== null», "«relationship.third?.target.primaryKey.name»"«ENDIF»'''
-	}*/
 
 	private def getStrongEntity(Relationship r) {
 		if (r.first.target.isWeak) {

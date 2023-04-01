@@ -47,8 +47,6 @@ class Neo4jGenerator implements IErGenerator {
 	
 	private def toTable(Entity entity) {
 		if(entity.extends !== null){
-			
-			// CREATE («entity.name»:«entity.name» {name: "«entity.name»"«FOR attribute : entity.allAttributes », «entity.name»_«attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR»«FOR attribute : entity.extends.allAttributes », «entity.extends.name»_«attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR»})«'\n'»
 			return ''' 
 				CREATE («entity.name»:«entity.name» {name: "«entity.name»"«FOR attribute : entity.getAllAttrWithExtends », «entity.name»_«attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR»})«'\n'»
 			'''

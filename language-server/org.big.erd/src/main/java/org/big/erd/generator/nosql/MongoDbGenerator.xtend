@@ -21,8 +21,9 @@ class MongoDbGenerator implements IErGenerator {
 	}
 	
 	def String generate(Model model) {
+		// db = connect("localhost:27020/«model.name»");
 		'''
-			db = connect("localhost:27020/myDatabase");
+			use(«model.name»);
 			«FOR entity : model.entities.reject[it.isWeak]»
 				«entity.toTable»
 			«ENDFOR»
@@ -44,10 +45,10 @@ class MongoDbGenerator implements IErGenerator {
 							title: "«entity.name» Object Validation",
 							required: ["«entity.primaryKey.name»"],
 							properties: {
-								«FOR attribute : entity.getAllAttrWithExtends.reject[it.type === AttributeType.DERIVED]»
+								«FOR attribute : entity.getAllAttrWithExtends.reject[it.type === AttributeType.DERIVED] SEPARATOR ','»
 								«attribute.name»: {
-									bsonType: "«attribute.datatype.transformDataType»",
-								},
+									bsonType: "«attribute.datatype.transformDataType»"
+								}
 								«ENDFOR»
 							}
 						}
@@ -139,16 +140,15 @@ class MongoDbGenerator implements IErGenerator {
 	private def transformDataType(DataType dataType) {
 		// default
 		if(dataType === null) {
-			return 'CHAR(20)'
+			return 'string'
 		}
 			
-		val type = dataType.type
-		var size = dataType.size
-		
-		if (size != 0) {
-			return type +  '(' + size + ')';
+		val type = dataType.type.toLowerCase()
+
+		if(type.contains('char') || type.contains('string')) {
+			return 'string';
 		}
-		
+
 		return type
 	}
 
