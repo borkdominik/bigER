@@ -20,10 +20,11 @@ export class ERDiagramWidget extends VscodeDiagramWidget {
             this.modelSource.clientId = this.diagramIdentifier.clientId;
         }
         const model = this.requestModel();
-        // make toolbar visible and fit diagram to screen after model request
         model.then(() => {
-            this.actionDispatcher.dispatch(SetUIExtensionVisibilityAction.create({extensionId: "toolbar-overlay", visible: true }));
+            // fit diagram to screen after model is loaded
             this.actionDispatcher.dispatch(FitToScreenAction.create([]));
         });
+        // make toolbar visible
+        this.actionDispatcher.dispatch(SetUIExtensionVisibilityAction.create({extensionId: "toolbar-overlay", visible: true }));
     }
 }

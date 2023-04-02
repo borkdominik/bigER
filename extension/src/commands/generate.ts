@@ -1,4 +1,4 @@
-import { window, Uri, commands } from "vscode";
+import { window, Uri, commands, workspace } from "vscode";
 
 export const generatePrefix = "erdiagram.generate.";
 export const sqlServerCommand = "erdiagram.generate.sql";
@@ -58,7 +58,8 @@ export const sendToServer = async (command: string, fileUri?: Uri) => {
     }
 
     if (fileUri?.toString) {
-        const response: string | undefined = await commands.executeCommand(command, fileUri.toString());
+        const generateDrop: any = workspace.getConfiguration().get('erdiagram.generateDrop');
+        const response: string | undefined = await commands.executeCommand(command, fileUri.toString(), generateDrop);
         if (response) {
             if (response.startsWith('Error')) {
                 window.showErrorMessage(response);
