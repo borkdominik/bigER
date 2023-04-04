@@ -21,7 +21,8 @@ test.describe('E2E Test: Diagram', () => {
     });
 
     test('should open diagram', async () => {
-        await diagram.openDiagram();
+        await page.keyboard.press("Control+O");
+        diagram = new DiagramView(page);
         await expect(diagram.modelName).toHaveText("Model");
         await expect(diagram.modelElements).toHaveCount(1);
     });
@@ -30,19 +31,20 @@ test.describe('E2E Test: Diagram', () => {
         await diagram.addEntity();
         await diagram.centerDiagram();
         await expect(diagram.modelElements).toHaveCount(2);
+        await expect(diagram.diagram.getByText("Entity1")).toBeVisible();
     });
 
     test('should rename element', async () => {
-        await diagram.renameEntity("E1", "TestName");
+        await diagram.renameEntity("Entity1", "TestName");
         await diagram.centerDiagram();
         await expect(diagram.modelElements).toHaveCount(2);
-        await expect(diagram.diagram.getByText("E1")).not.toBeVisible();
+        await expect(diagram.diagram.getByText("Entity1")).not.toBeVisible();
         await expect(diagram.diagram.getByText("TestName")).toBeVisible();
     });
 
     test('should delete element', async () => {
+        await diagram.deleteEntity("TestName");
         await diagram.centerDiagram();
-        await diagram.deleteEntity("Entity1");
         await expect(diagram.modelElements).toHaveCount(1);
     });
 });

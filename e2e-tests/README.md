@@ -24,7 +24,7 @@ After the container is started, VS Code should be available in the browser at `h
 
 ### Tests
 
-Tests are located in `src/tests/` and can be executed right in VS Code with the [Playwright Test for VSCode](https://marketplace.visualstudio.com/items?itemName=ms-playwright.playwright) extension. Currently, the following test cases are implemented:
+Tests are located in `src/tests/` and can be executed right in VS Code with the [Playwright Test for VSCode](https://marketplace.visualstudio.com/items?itemName=ms-playwright.playwright) extension. Use `yarn run ui-tests` to run the tests in the command line. Currently, the following test cases are implemented:
 - `vscode.spec.ts` - tests whether a test sample file exists in the workspace and that the bigER extension has been installed properly
 - `diagram.spec.ts` - tests add/edit/delete of entities in the diagram
 - `generate.spec.ts` - tests the code generator 

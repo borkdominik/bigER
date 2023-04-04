@@ -25,6 +25,7 @@ export class DiagramView {
 
     async openDiagram() {
         await this.page.keyboard.press("Control+O");
+        await delay(1000);
     }
 
     async centerDiagram() {
