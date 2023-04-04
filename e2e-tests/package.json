@@ -1,0 +1,36 @@
+{
+    "name": "biger-e2e-tests",
+    "version": "0.1.0",
+    "description": "E2E tests for bigER",
+    "license": "MIT",
+    "scripts": {
+      "prepare": "yarn clean && yarn build",
+      "clean": "rimraf lib *.tsbuildinfo",
+      "build": "tsc --incremental && npx playwright install chromium",
+      "watch": "tsc --watch",
+      "ui-tests": "yarn && playwright test --config=./configs/playwright.config.ts",
+      "ui-tests-ci": "yarn && playwright test --config=./configs/playwright.ci.config.ts",
+      "ui-tests-headful": "yarn && playwright test --config=./configs/playwright.headful.config.ts",
+      "ui-tests-report-generate": "allure generate ./allure-results --clean -o allure-results/allure-report",
+      "ui-tests-report": "yarn ui-tests-report-generate && allure open allure-results/allure-report"
+    },
+    "files": [
+      "lib",
+      "src"
+    ],
+    "dependencies": {
+      "@playwright/test": "1.30.0",
+      "fs-extra": "^9.0.8",
+      "rimraf": "latest",
+      "typescript": "~4.6.2"
+    },
+    "devDependencies": {
+      "@types/fs-extra": "^9.0.8",
+      "allure-commandline": "^2.13.8",
+      "allure-playwright": "^2.0.0-beta.19"
+    },
+    "publishConfig": {
+      "access": "public"
+    },
+    "main": "lib/index"
+  }
