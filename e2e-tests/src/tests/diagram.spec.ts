@@ -1,39 +1,48 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, Page } from '@playwright/test';
 import { DiagramView } from 'src/diagram-view';
+import { TEST_WORKSPACE_URL } from 'src/utils';
 
-test('Diagram Test', async ({ page }) => {
-  // open workspace
-  await page.goto('http://localhost:3000/?folder=/home/workspace/workspace');
-
-  // open erd file
-  await page.locator('.explorer-item').click();
-  await expect(page.locator('.mtk5')).toHaveText('erdiagram');
+test.describe.configure({ mode: 'serial' });
+test.describe('E2E Test: Diagram', () => {
   
-  // open diagram
-  await page.locator('.editor-actions > div:nth-child(1) > div:nth-child(1) > ul:nth-child(1) > li:nth-child(1)').click();
-  
-  // Diagram Page Object
-  const diagram = new DiagramView(page);
-  
-  // 1. check toolbar model name
-  await expect(diagram.toolbarModelName).toHaveText("Model");
-  // expect 1 entity in diagram
-  await expect(diagram.modelElements).toHaveCount(1);
+    let page: Page;
+    let diagram: DiagramView;
 
-  // 2. Rename Element
-  await diagram.renameEntityByName("E1", "NewName");
+    test.beforeAll(async ({ browser }) => {
+        page = await browser.newPage();
+        await page.goto(TEST_WORKSPACE_URL);
+        const sampleFile = page.locator('div.monaco-tl-contents').getByTitle('~/workspace/test.erd');
+        await sampleFile.click();
+        diagram = new DiagramView(page);
+    });
 
+    test.afterAll(async () => {
+        await page.close();
+    });
 
-  // 3. Create Element
-  await diagram.addEntity();
-  await expect(diagram.modelElements).toHaveCount(2);
+    test('should open diagram', async () => {
+        await diagram.openDiagram();
+        await expect(diagram.modelName).toHaveText("Model");
+        await expect(diagram.modelElements).toHaveCount(1);
+    });
 
-  await diagram.centerDiagram();
+    test('should create element', async () => {
+        await diagram.addEntity();
+        await diagram.centerDiagram();
+        await expect(diagram.modelElements).toHaveCount(2);
+    });
 
-  // 4. Delete Element
-  await diagram.deleteEntityByName("Entity1");
-  await expect(diagram.modelElements).toHaveCount(1);
+    test('should rename element', async () => {
+        await diagram.renameEntity("E1", "TestName");
+        await diagram.centerDiagram();
+        await expect(diagram.modelElements).toHaveCount(2);
+        await expect(diagram.diagram.getByText("E1")).not.toBeVisible();
+        await expect(diagram.diagram.getByText("TestName")).toBeVisible();
+    });
 
-  //await diagram.generateSql();
-  
+    test('should delete element', async () => {
+        await diagram.centerDiagram();
+        await diagram.deleteEntity("Entity1");
+        await expect(diagram.modelElements).toHaveCount(1);
+    });
 });

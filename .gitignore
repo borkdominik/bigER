@@ -35,3 +35,5 @@ org.eclipse.xtext.java.Java.prefs
 target
 .metadata
 *.vsix
+playwright-report
+.openvscode-server
