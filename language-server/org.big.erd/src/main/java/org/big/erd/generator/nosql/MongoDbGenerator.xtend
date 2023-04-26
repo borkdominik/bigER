@@ -24,7 +24,7 @@ class MongoDbGenerator implements IErGenerator {
 		// db = connect("localhost:27020/«model.name»");
 		'''
 			use(«model.name»);
-			«FOR entity : model.entities.reject[it.isWeak]»
+			«FOR entity : model.entities»
 				«entity.toTable»
 			«ENDFOR»
 			«FOR relationship : model.relationships.reject[!it.isWeak]»
@@ -69,6 +69,11 @@ class MongoDbGenerator implements IErGenerator {
 							title: "«relationship.name» (relationship) Object Validation",
 							required: [«relationship.getAllKeysName»],
 							properties: {
+								«FOR attribute : relationship.getAllKeysNameArray»
+								«attribute.name»: {
+									bsonType: "«attribute.datatype.transformDataType»",
+								},
+								«ENDFOR»
 								«FOR attribute : relationship.attributes»
 								«attribute.name»: {
 									bsonType: "«attribute.datatype.transformDataType»",
@@ -91,8 +96,13 @@ class MongoDbGenerator implements IErGenerator {
 						$jsonSchema: {
 							bsonType: "object",
 							title: "«relationship.name» (relationship) Object Validation",
-							required: ["«relationship.first.target.name»", "«relationship.second.target.name»"],
+							required: ["«relationship.first.target.primaryKey.name»", "«relationship.second.target.primaryKey.name»"],
 							properties: {
+								«FOR attribute : relationship.getAllKeysNameArray»
+								«attribute.name»: {
+									bsonType: "«attribute.datatype.transformDataType»",
+								},
+								«ENDFOR»
 								«FOR attribute : relationship.attributes»
 								«attribute.name»: {
 									bsonType: "«attribute.datatype.transformDataType»",
@@ -130,6 +140,13 @@ class MongoDbGenerator implements IErGenerator {
 		return '''«IF relationship.first?.target !== null»"«relationship.first?.target.primaryKey.name»"«ENDIF»«IF relationship.second?.target !== null», "«relationship.second?.target.primaryKey.name»"«ENDIF»«IF relationship.third?.target !== null», "«relationship.third?.target.primaryKey.name»"«ENDIF»'''
 	}
 
+	private def getAllKeysNameArray(Relationship relationship) {
+		val keys = newHashSet
+		if (relationship.first?.target !== null) { keys += relationship.first?.target?.primaryKey }
+		if (relationship.second?.target !== null) { keys += relationship.second?.target?.primaryKey }
+		if (relationship.third?.target !== null) { keys += relationship.third?.target?.primaryKey }
+		return keys
+	}
 
 	private def getAllAttributes(Entity entity) {
 		val attributes = newHashSet
