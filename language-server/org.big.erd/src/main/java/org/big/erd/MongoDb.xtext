@@ -1,0 +1,49 @@
+grammar org.big.erd.EntityRelationship with org.eclipse.xtext.common.Terminals
+
+import "http://www.eclipse.org/emf/2002/Ecore" as ecore
+generate entityRelationship "http://www.big.org/erd/EntityRelationship"
+
+grammar org.example.MongoDBScript with org.eclipse.xtext.common.Terminals
+
+generate mongoDBScript "http://www.example.org/MongoDBScript"
+
+Model:
+    (collections += Collection)*;
+
+Collection:
+    'db.createCollection("' name=ID '",' '{'
+    'validator: {' validator=Validator '}'
+    '}';
+
+Validator:
+    '$jsonSchema:' '{' schema=Schema '}';
+
+Schema:
+    'bsonType: "object",'
+    'title: "' title=STRING '",' '{'
+    'required: [' required+=STRING* '],'
+    'properties: {' '{'
+    properties+=Property* '}'
+    '}' '}';
+
+Property:
+    name=ID ':' '{'
+    'bsonType: "' bsonType=BsonType '",'
+    ('title: "' title=STRING '",')?
+    ('description: "' description=STRING '",')?
+    ('minimum: ' minimum=INT ',')?
+    ('maximum: ' maximum=INT ',')?
+    ('enum: [' enumValues+=STRING* '],')?
+    '}' (',' | '}');
+
+enum BsonType:
+    OBJECT = 'object' |
+    ARRAY = 'array' |
+    STRING = 'string' |
+    NUMBER = 'number' |
+    DECIMAL = 'decimal' |
+    INT = 'int' |
+    LONG = 'long' |
+    DATE = 'date' |
+    BOOLEAN = 'boolean' |
+    NULL = 'null' ;
