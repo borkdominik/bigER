@@ -24,7 +24,10 @@ class CassandraDbGenerator implements IErGenerator {
 		'''
 			CREATE KEYSPACE «model.name» WITH REPLICATION = {'class': 'SimpleStrategy', 'replication_factor': 2};
 			USE «model.name»;
-			«FOR entity : model.entities»
+			«FOR entity : model.entities.reject[it.extends !== null]»
+				«entity.toTable»
+			«ENDFOR»
+			«FOR entity : model.entities.reject[it.extends === null]»
 				«entity.toTable»
 			«ENDFOR»
 			«FOR relationship : model.relationships.reject[!it.isWeak]»
@@ -80,15 +83,27 @@ class CassandraDbGenerator implements IErGenerator {
 			'''
 	}
 	
+	private def Iterable<Attribute> getAllAttrWithExtendsWithNamePrefix(Entity entity) {
+		val attributes = newHashSet
+		for (attr : entity.attributes) {
+			if (!attr.name.startsWith(entity.name)) {
+				attr.name = entity.name + '_' + attr.name
+			}
+			attributes += attr
+		}
+		if (entity.extends !== null) {
+			attributes.addAll(getAllAttrWithExtendsWithNamePrefix(entity.extends))
+		}
+		return attributes
+	}
 	private def Iterable<Attribute> getAllAttrWithExtends(Entity entity) {
 		val attributes = newHashSet
 		attributes += entity.attributes
 		if (entity.extends !== null) {
-			attributes.addAll(getAllAttrWithExtends(entity.extends))
+			attributes.addAll(getAllAttrWithExtendsWithNamePrefix(entity.extends))
 		}
 		return attributes
 	}
-
 	private def foreignKeyRef(Entity entity) {
 		val key = entity.attributes.filter[a | a.type === AttributeType.KEY]
 		if (key.nullOrEmpty) {

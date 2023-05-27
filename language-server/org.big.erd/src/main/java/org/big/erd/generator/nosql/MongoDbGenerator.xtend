@@ -116,12 +116,27 @@ class MongoDbGenerator implements IErGenerator {
 			'''
 	}
 	
+	private def Iterable<Attribute> getAllAttrWithExtendsWithNamePrefix(Entity entity) {
+		val attributes = newHashSet
+		//attributes += entity.attributes
+		for (attr : entity.attributes) {
+			if (!attr.name.startsWith(entity.name)) {
+				attr.name = entity.name + '_' + attr.name
+			}
+			//val newattr = new Attribute()
+			//newattr.name = entity.name + '_' + attr.name
+			attributes += attr
+		}
+		if (entity.extends !== null) {
+			attributes.addAll(getAllAttrWithExtendsWithNamePrefix(entity.extends))
+		}
+		return attributes
+	}
 	private def Iterable<Attribute> getAllAttrWithExtends(Entity entity) {
-		//val result = newArrayList(entity.attributes)
 		val attributes = newHashSet
 		attributes += entity.attributes
 		if (entity.extends !== null) {
-			attributes.addAll(getAllAttrWithExtends(entity.extends))
+			attributes.addAll(getAllAttrWithExtendsWithNamePrefix(entity.extends))
 		}
 		return attributes
 	}
@@ -148,11 +163,6 @@ class MongoDbGenerator implements IErGenerator {
 		return keys
 	}
 
-	private def getAllAttributes(Entity entity) {
-		val attributes = newHashSet
-		attributes += entity.attributes
-		return attributes
-	}
 	
 	private def transformDataType(DataType dataType) {
 		// default

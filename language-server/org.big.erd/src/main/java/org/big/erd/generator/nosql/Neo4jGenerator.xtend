@@ -46,34 +46,42 @@ class Neo4jGenerator implements IErGenerator {
 	}
 	
 	private def toTable(Entity entity) {
-		if(entity.extends !== null){
-			return ''' 
-				CREATE («entity.name»:«entity.name» {name: "«entity.name»"«FOR attribute : entity.getAllAttrWithExtends », «entity.name»_«attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR»})«'\n'»
+		return ''' 
+				CREATE («entity.name»:«entity.name» {name: "«entity.name»"«FOR attribute : entity.getAllAttrWithExtendsWithNamePrefix », «attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR»})«'\n'»
 			'''
+		/*
+		if(entity.extends !== null){
+			
 		} else {
 			return ''' 
 				CREATE («entity.name»:«entity.name» {name: "«entity.name»"«FOR attribute : entity.allAttributes », «entity.name»_«attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR»})«'\n'»
 			'''
 		}
+		*/
 	}
 
-	private def Iterable<Attribute> getAllAttrWithExtends(Entity entity) {
-		//val result = newArrayList(entity.attributes)
+	private def Iterable<Attribute> getAllAttrWithExtendsWithNamePrefix(Entity entity) {
 		val attributes = newHashSet
-		attributes += entity.attributes
+		for (attr : entity.attributes) {
+			if (!attr.name.startsWith(entity.name)) {
+				attr.name = entity.name + '_' + attr.name
+			}
+			attributes += attr
+		}
 		if (entity.extends !== null) {
-			attributes.addAll(getAllAttrWithExtends(entity.extends))
+			attributes.addAll(getAllAttrWithExtendsWithNamePrefix(entity.extends))
 		}
 		return attributes
 	}
 
-	/*
-	private def toTableExtend(Entity entity) {
-		return ''' 
-			CREATE («entity.name»:«entity.name» {name: "«entity.name»"«FOR attribute : entity.allAttributes.reject[it.type === AttributeType.DERIVED] », «entity.name»_«attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR»})«'\n'»
-		'''
+	private def Iterable<Attribute> getAllAttrWithExtends(Entity entity) {
+		val attributes = newHashSet
+		attributes += entity.attributes
+		if (entity.extends !== null) {
+			attributes.addAll(getAllAttrWithExtendsWithNamePrefix(entity.extends))
+		}
+		return attributes
 	}
-	*/
 
 	private def uniqueKeyConstraint(Entity entity) {
 		return ''' 
@@ -84,14 +92,6 @@ class Neo4jGenerator implements IErGenerator {
 	private def toTableExtends(Entity entity){
 		return '''
 			«IF entity?.extends !== null»CREATE («entity?.name»)-[«entity?.name»_IS_A:«entity?.name»_IS_A]->(«entity.extends?.name»)«'\n'»«ENDIF»
-		'''
-	}
-
-	private def toTableExtends(Relationship relationship){
-		return '''
-			«IF relationship.third?.target?.extends !== null»CREATE («relationship.third.target.name»)-[«relationship.third.target.name»_IS_A:IS_A]->(«relationship.third.target.extends.name»)«'\n'»«ENDIF»
-			«IF relationship.first?.target?.extends !== null»CREATE («relationship.first.target.name»)-[«relationship.first.target.name»_IS_A:IS_A]->(«relationship.first.target.extends.name»)«'\n'»«ENDIF»
-			«IF relationship.second?.target?.extends !== null»CREATE («relationship.second.target.name»)-[«relationship.second.target.name»_IS_A:IS_A]->(«relationship.second.target.extends.name»)«'\n'»«ENDIF»
 		'''
 	}
 	
