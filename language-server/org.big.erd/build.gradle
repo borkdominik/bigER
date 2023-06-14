@@ -27,11 +27,8 @@ task generateXtextLanguage(type: JavaExec) {
 	classpath = configurations.mwe2
 	inputs.file "src/main/java/org/big/erd/GenerateEntityRelationship.mwe2"
 	inputs.file "src/main/java/org/big/erd/EntityRelationship.xtext"
-	inputs.file "src/main/java/org/big/erd/MongoDb.xtext"
-	inputs.file "src/main/java/org/big/erd/GenerateMongoDb.mwe2"
 	outputs.dir "src/main/xtext-gen"
 	args += "src/main/java/org/big/erd/GenerateEntityRelationship.mwe2"
-	args += "src/main/java/org/big/erd/GenerateMongoDb.mwe2"
 	args += "-p"
 	args += "rootPath=/${projectDir}/.."
 }
