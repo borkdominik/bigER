@@ -35,14 +35,3 @@ org.eclipse.xtext.java.Java.prefs
 target
 .metadata
 *.vsix
-
-
-language-server/.project
-language-server/org.big.erd.ide/.classpath
-language-server/org.big.erd.ide/.project
-language-server/org.big.erd.ide/.settings/org.eclipse.jdt.core.prefs
-language-server/org.big.erd/.classpath
-language-server/org.big.erd/.project
-language-server/org.big.erd/.settings/org.eclipse.jdt.core.prefs
-
-examples/generated/
