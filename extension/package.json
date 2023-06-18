@@ -185,21 +185,6 @@
 					"submenu": "erdiagram.generate",
 					"when": "editorLangId == erdiagram",
 					"group": "1_modification"
-				},
-				{
-					"command": "erdiagram.generate.mongodb.proxy",
-					"when": "editorLangId == erdiagram",
-					"group": "1_modification"
-				},
-				{
-					"command": "erdiagram.generate.neo4j.proxy",
-					"when": "editorLangId == erdiagram",
-					"group": "1_modification"
-				},
-				{
-					"command": "erdiagram.generate.cassandradb.proxy",
-					"when": "editorLangId == erdiagram",
-					"group": "1_modification"
 				}
 			],
 			"explorer/context": [
@@ -212,21 +197,6 @@
 					"submenu": "erdiagram.generate",
 					"when": "resourceExtname == '.erd'",
 					"group": "2_workspace"
-				},
-				{
-					"command": "erdiagram.generate.mongodb.proxy",
-					"when": "resourceExtname == '.erd'",
-					"group": "2_workspace"
-				},
-				{
-					"command": "erdiagram.generate.neo4j.proxy",
-					"when": "editorLangId == erdiagram",
-					"group": "1_modification"
-				},
-				{
-					"command": "erdiagram.generate.cassandradb.proxy",
-					"when": "editorLangId == erdiagram",
-					"group": "1_modification"
 				}
 			],
 			"file/newFile": [
@@ -289,6 +259,18 @@
 				{
 					"command": "erdiagram.generate.db2.proxy",
 					"when": "editorLangId == erdiagram"
+				},
+				{
+					"command": "erdiagram.generate.cassandradb.proxy",
+					"when": "editorLangId == erdiagram"
+				},
+				{
+					"command": "erdiagram.generate.neo4j.proxy",
+					"when": "editorLangId == erdiagram"
+				},
+				{
+					"command": "erdiagram.generate.mongodb.proxy",
+					"when": "editorLangId == erdiagram"
 				}
 			],
 			"erdiagram.generate": [
@@ -315,6 +297,18 @@
 				{
 					"command": "erdiagram.generate.db2.proxy",
 					"group": "1_generate@6"
+				},
+				{
+					"command": "erdiagram.generate.cassandradb.proxy",
+					"group": "1_generate@7"
+				},
+				{
+					"command": "erdiagram.generate.neo4j.proxy",
+					"group": "1_generate@8"
+				},
+				{
+					"command": "erdiagram.generate.mongodb.proxy",
+					"group": "1_generate@9"
 				}
 			]
 		},
