@@ -52,7 +52,10 @@ export class GenerateButton implements ToolButtonDropdown {
             ["oracle", "Oracle SQL"],
             ["mysql", "MySQL"],
             ["mssql", "MS SQL"],
-            ["db2", "Db2"]
+            ["db2", "Db2"],
+            ["cassandradb", "Cassandra"],
+            ["neo4j", "Neo4j"],
+            ["mongodb", "MongoDB"]
         ])
     ) {}
 }
