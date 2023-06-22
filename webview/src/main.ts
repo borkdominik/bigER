@@ -14,7 +14,6 @@ import { PopupButton } from './model';
 import { PopupButtonView } from './views';
 import { PopupButtonListener } from './popup';
 
-
 export class ERDiagramSprottyStarter extends SprottyLspEditStarter {
 
     createContainer(diagramIdentifier: SprottyDiagramIdentifier) {
