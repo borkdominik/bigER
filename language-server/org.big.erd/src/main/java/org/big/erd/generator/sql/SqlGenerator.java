@@ -226,6 +226,11 @@ public class SqlGenerator implements IErGenerator {
 	protected String mapDataType(String type) {
 		return type;
 	}
+	
+	// ER model does not support spaces in data types
+	private String replaceUnderscores(String value) {
+		return value.replace("_", " ");
+	}
 
 	private Entity getStrongEntity(final Relationship r) {
 		if (r.getFirst().getTarget().isWeak()) {
@@ -289,6 +294,7 @@ public class SqlGenerator implements IErGenerator {
 					size = 255;
 					addComment(comment, "added default type");
 				}
+				originalType = replaceUnderscores(originalType);
 				String mappedType = this.mapDataType(originalType);
 				if (mappedType == null) {
 					mappedType = originalType;
