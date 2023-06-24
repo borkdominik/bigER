@@ -2,7 +2,7 @@ package org.big.erd.generator.sql;
 
 public class CrowsFootSqlImport extends SqlImport {
 
-	protected String getCardinality(boolean isMandatory, boolean isSingle) {
+	protected String getCardinality(boolean isMandatory, boolean isSingle, int countMultiple) {
 		if (!isMandatory) {
 			if (isSingle) {
 				return "?";

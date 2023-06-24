@@ -136,6 +136,7 @@ public class SqlImport implements IErGenerator {
 				importNotation(file, strContent, "uml", new UmlSqlImport());
 				importNotation(file, strContent, "min_max", new MinMaxSqlImport());
 				importNotation(file, strContent, "crows_foot", new CrowsFootSqlImport());
+				importNotation(file, strContent, "chen", new ChenSqlImport());
 			}
 		} else if (file.isDirectory()) {
 			for (File f : file.listFiles()) {
@@ -369,6 +370,7 @@ public class SqlImport implements IErGenerator {
 			fileContent.newLineIfNotEmpty();
 			
 			boolean first = true;
+			int countMultiple = 0;
 			for (String attribute : foreignKeys.keySet()) {
 				String table = foreignKeys.get(attribute);
 				List<SqlAttribute> attributesRefTable = globalAttributes.get(table);
@@ -389,17 +391,21 @@ public class SqlImport implements IErGenerator {
 					fileContent.append(capitalize(deQuote(table)));
 					SqlAttribute sqlAttribute = attributeMap.get(attribute);
 					boolean isMandantory = sqlAttribute != null && sqlAttribute.isMandatory();
+					boolean isSingle = weak && first;
 					fileContent.append("[");
-					fileContent.append(getCardinality(weak || isMandantory, weak && first));
+					fileContent.append(getCardinality(weak || isMandantory, isSingle, countMultiple));
 					fileContent.append("]");
 					first = false;
+					if (!isSingle) {
+						countMultiple++;
+					}
 				}
 			}
 			if (weak) {
 				fileContent.append(" -> ");
 				fileContent.append(capitalize(deQuote(tableName)));
 				fileContent.append("[");
-				fileContent.append(getCardinality(false, false));
+				fileContent.append(getCardinality(false, false, countMultiple));
 				fileContent.append("]");
 			} else {
 				fileContent.append("\t");
@@ -417,7 +423,7 @@ public class SqlImport implements IErGenerator {
 		return fileContent;
 	}
 
-	protected String getCardinality(boolean isMandatory, boolean isSingle) {
+	protected String getCardinality(boolean isMandatory, boolean isSingle, int countMultiple) {
 		return isSingle ? "1" : "N";
 	}
 	

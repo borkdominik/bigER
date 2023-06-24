@@ -1,9 +1,9 @@
 package org.big.erd.generator.sql;
 
-public class MinMaxSqlImport extends SqlImport {
+public class ChenSqlImport extends SqlImport {
 
 	protected String getCardinality(boolean isMandatory, boolean isSingle, int countMultiple) {
-		return (isMandatory ? "1" : "0") + "," + (isSingle ? "1" : "*");
+		return isSingle ? "1" : ("" + (char)(Integer.max('A', 'N' - countMultiple)));
 	}
 
 }
