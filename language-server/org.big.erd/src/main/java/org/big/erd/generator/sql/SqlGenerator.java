@@ -218,7 +218,7 @@ public class SqlGenerator implements IErGenerator {
 			mappedType = mappedType + "(" + size + strPrecision + ")";
 		}
 		if (attribute.getType() != AttributeType.OPTIONAL) {
-			mappedType = mappedType + " NOT NULL";
+			mappedType = mappedType + " " + GeneratorUtils.NOT_NULL;
 		}
 		return mappedType;
 	}

@@ -8,7 +8,7 @@ public class SqlAttribute {
 	private String attributeComment;
 	
 	public boolean isMandatory() {
-		return attributeKeywords.toUpperCase().contains("NOT NULL");
+		return attributeKeywords.toUpperCase().contains(GeneratorUtils.NOT_NULL);
 	}
 	
 	public String getAttributeName() {
