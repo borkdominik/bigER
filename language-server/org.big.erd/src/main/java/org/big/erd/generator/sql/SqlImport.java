@@ -135,6 +135,7 @@ public class SqlImport implements IErGenerator {
 				importNotation(file, strContent, "default_notation", new SqlImport());
 				importNotation(file, strContent, "uml", new UmlSqlImport());
 				importNotation(file, strContent, "min_max", new MinMaxSqlImport());
+				importNotation(file, strContent, "crows_foot", new CrowsFootSqlImport());
 			}
 		} else if (file.isDirectory()) {
 			for (File f : file.listFiles()) {
@@ -389,8 +390,7 @@ public class SqlImport implements IErGenerator {
 					SqlAttribute sqlAttribute = attributeMap.get(attribute);
 					boolean isMandantory = sqlAttribute != null && sqlAttribute.isMandatory();
 					fileContent.append("[");
-					fileContent.append(getMinimumCardinality(weak || isMandantory));
-					fileContent.append(getMaximumCardinality(weak && first));
+					fileContent.append(getCardinality(weak || isMandantory, weak && first));
 					fileContent.append("]");
 					first = false;
 				}
@@ -399,8 +399,7 @@ public class SqlImport implements IErGenerator {
 				fileContent.append(" -> ");
 				fileContent.append(capitalize(deQuote(tableName)));
 				fileContent.append("[");
-				fileContent.append(getMinimumCardinality(false));
-				fileContent.append(getMaximumCardinality(false));
+				fileContent.append(getCardinality(false, false));
 				fileContent.append("]");
 			} else {
 				fileContent.append("\t");
@@ -418,11 +417,7 @@ public class SqlImport implements IErGenerator {
 		return fileContent;
 	}
 
-	protected String getMinimumCardinality(boolean isMandatory) {
-		return "";
-	}
-
-	protected String getMaximumCardinality(boolean isSingle) {
+	protected String getCardinality(boolean isMandatory, boolean isSingle) {
 		return isSingle ? "1" : "N";
 	}
 	
