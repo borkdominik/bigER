@@ -137,6 +137,7 @@ public class SqlImport implements IErGenerator {
 				importNotation(file, strContent, "min_max", new MinMaxSqlImport());
 				importNotation(file, strContent, "crows_foot", new CrowsFootSqlImport());
 				importNotation(file, strContent, "chen", new ChenSqlImport());
+				importNotation(file, strContent, "bachman", new BachmanSqlImport());
 			}
 		} else if (file.isDirectory()) {
 			for (File f : file.listFiles()) {
