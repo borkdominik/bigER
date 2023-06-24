@@ -215,7 +215,10 @@ public class SqlGenerator implements IErGenerator {
 			if (precision != null && precision > 0) {
 				strPrecision = ", " + precision;
 			}
-			return mappedType + "(" + size + strPrecision + ")";
+			mappedType = mappedType + "(" + size + strPrecision + ")";
+		}
+		if (attribute.getType() != AttributeType.OPTIONAL) {
+			mappedType = mappedType + " NOT NULL";
 		}
 		return mappedType;
 	}
