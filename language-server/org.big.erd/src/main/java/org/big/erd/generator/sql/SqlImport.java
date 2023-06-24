@@ -134,6 +134,7 @@ public class SqlImport implements IErGenerator {
 				String strContent = new String(content);
 				importNotation(file, strContent, "default_notation", new SqlImport());
 				importNotation(file, strContent, "uml", new UmlSqlImport());
+				importNotation(file, strContent, "min_max", new MinMaxSqlImport());
 			}
 		} else if (file.isDirectory()) {
 			for (File f : file.listFiles()) {

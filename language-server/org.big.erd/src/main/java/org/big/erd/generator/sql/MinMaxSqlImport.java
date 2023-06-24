@@ -1,9 +1,9 @@
 package org.big.erd.generator.sql;
 
-public class UmlSqlImport extends SqlImport {
+public class MinMaxSqlImport extends SqlImport {
 
 	protected String getMinimumCardinality(boolean isMandatory) {
-		return isMandatory ? "1.." : "0..";
+		return isMandatory ? "1," : "0,";
 	}
 
 	protected String getMaximumCardinality(boolean isSingle) {
