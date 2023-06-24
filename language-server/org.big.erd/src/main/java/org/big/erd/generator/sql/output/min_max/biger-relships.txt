@@ -1,4 +1,8 @@
+// ER Model
 erdiagram test
+// Options
+notation=minmax
+// Entities
 entity Entity1 {
 	id: VARCHAR(255) key	// added default type; added NULL constraint
 }
@@ -23,6 +27,7 @@ entity Entity7 {
 entity Entity8 {
 	id: VARCHAR(255) key	// added default type; added NULL constraint
 }
+// Relationships
 relationship Rel1 {
 	Entity1[1,*] -> Entity2[1,*]	// example cardinalities
 }

@@ -1,7 +1,12 @@
+// ER Model
 erdiagram test
+// Options
+notation=default
+// Entities
 weak entity Room {
 	room_nr: integer partial-key
 }
+// Relationships
 relationship Exam {
 	Course[N] -> Student[N] -> Instructor[N]	// example cardinalities
 	points: double optional

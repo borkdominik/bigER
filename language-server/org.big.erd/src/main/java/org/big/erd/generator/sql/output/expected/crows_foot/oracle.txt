@@ -1,4 +1,8 @@
+// ER Model
 erdiagram test
+// Options
+notation=crowsfoot
+// Entities
 entity BUILDING {
 	BUILDING_ID: CHAR(8) key
 	ADDRESS: VARCHAR2(255) optional
@@ -29,6 +33,7 @@ entity STUDENT {
 	BIRTHDAY: DATE optional
 	AGE: NUMBER optional
 }
+// Relationships
 relationship EXAM {
 	STUDENT[0+] -> COURSE[0+] -> INSTRUCTOR[0+]	// example cardinalities
 	POINTS: BINARY_DOUBLE optional

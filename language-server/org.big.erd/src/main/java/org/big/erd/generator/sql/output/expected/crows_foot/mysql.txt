@@ -1,4 +1,8 @@
+// ER Model
 erdiagram test
+// Options
+notation=crowsfoot
+// Entities
 entity Abo {
 	id_abo: int(11) key
 	id_abo_group: int(11) optional
@@ -434,6 +438,7 @@ entity User {
 	txt_name_first: varchar(100)
 	txt_name_last: varchar(100)
 }
+// Relationships
 relationship Exam {
 	Student[1+] -> Course[1+] -> Instructor[1+]	// example cardinalities
 	points: double optional

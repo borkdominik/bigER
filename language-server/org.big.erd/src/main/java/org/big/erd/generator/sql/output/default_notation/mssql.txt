@@ -1,4 +1,8 @@
+// ER Model
 erdiagram test
+// Options
+notation=default
+// Entities
 entity Building {
 	building_id: char(8) key
 	address: varchar(255) optional
@@ -29,6 +33,7 @@ entity Student {
 	birthday: date optional
 	age: smallint optional
 }
+// Relationships
 relationship Exam {
 	Course[N] -> Student[N] -> Instructor[N]	// example cardinalities
 	points: decimal(18, 0) optional

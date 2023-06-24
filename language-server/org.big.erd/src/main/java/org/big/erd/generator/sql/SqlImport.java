@@ -174,8 +174,15 @@ public class SqlImport implements IErGenerator {
 		String preprocessedSql = preprocessSql(text);
 		
 		StringConcatenation fileContent = new StringConcatenation();
+		fileContent.append("// ER Model");
+		fileContent.newLineIfNotEmpty();
 		fileContent.append("erdiagram ");
 		fileContent.append(diagramName);
+		fileContent.newLineIfNotEmpty();
+		fileContent.append("// Options");
+		fileContent.newLineIfNotEmpty();
+		fileContent.append("notation=");
+		fileContent.append(getNotation());
 		fileContent.newLineIfNotEmpty();
 
 		Map<String, String> presetPrimaryKeys = new LinkedHashMap<>();
@@ -205,6 +212,9 @@ public class SqlImport implements IErGenerator {
 				}
 			}
 		}
+		
+		fileContent.append("// Entities");
+		fileContent.newLineIfNotEmpty();
 		
 		// process tables
 		Pattern p = Pattern.compile(CREATE_TABLE_PATTERN, Pattern.CASE_INSENSITIVE);
@@ -341,6 +351,9 @@ public class SqlImport implements IErGenerator {
 			globalWeakMap.put(tableName, weak && isEntity);
 		}
 		
+		fileContent.append("// Relationships");
+		fileContent.newLineIfNotEmpty();
+		
 		// generate relationships
 		Set<String> usedNames = new HashSet<>();
 		for (String tableName : globalForeignKeys.keySet()) {
@@ -428,6 +441,10 @@ public class SqlImport implements IErGenerator {
 			fileContent.newLineIfNotEmpty();
 		}
 		return fileContent;
+	}
+
+	protected String getNotation() {
+		return "default";
 	}
 
 	protected String getCardinality(boolean isMandatory, boolean isSingle, int countMultiple) {

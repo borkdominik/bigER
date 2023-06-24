@@ -1,4 +1,8 @@
+// ER Model
 erdiagram test
+// Options
+notation=default
+// Entities
 entity Customer {
 	id: BIGINT key	// type mapped from: int; added NULL constraint
 	name: VARCHAR optional	// type mapped from: string
@@ -7,6 +11,7 @@ entity Order {
 	order_number: BIGINT key	// type mapped from: int; added NULL constraint
 	price: double optional
 }
+// Relationships
 relationship Places {
 	Customer[N] -> Order[N]	// example cardinalities
 }

@@ -1,4 +1,8 @@
+// ER Model
 erdiagram test
+// Options
+notation=crowsfoot
+// Entities
 entity Student {
 	id: INT key
 	name: VARCHAR(255) optional
@@ -29,6 +33,7 @@ weak entity Room {
 weak entity Lecture {
 	title: VARCHAR(255) partial-key
 }
+// Relationships
 weak relationship BuildingRoom {
 	Building[1] -> Room[0+]
 }
