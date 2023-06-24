@@ -122,31 +122,35 @@ public class SqlImport implements IErGenerator {
 		}
 	}
 	
-	public static void main(String[] args) throws IOException {
-		File root = new File("D:\\Src\\bigER\\bigER\\language-server\\org.big.erd\\src\\main\\java\\org\\big\\erd\\generator\\sql\\input");
-		handleFile(root);
+	public static boolean handleFile() throws IOException {
+		File root = new File("src\\main\\java\\org\\big\\erd\\generator\\sql\\input");
+		return handleFile(root);
 	}
 	
-	private static void handleFile(File file) throws IOException {
+	private static boolean handleFile(File file) throws IOException {
+		boolean success = true;
 		if (file.isFile()) {
 			try (FileInputStream fis = new FileInputStream(file)) {
 				byte[] content = fis.readAllBytes();
 				String strContent = new String(content);
-				importNotation(file, strContent, "default_notation", new SqlImport());
-				importNotation(file, strContent, "uml", new UmlSqlImport());
-				importNotation(file, strContent, "min_max", new MinMaxSqlImport());
-				importNotation(file, strContent, "crows_foot", new CrowsFootSqlImport());
-				importNotation(file, strContent, "chen", new ChenSqlImport());
-				importNotation(file, strContent, "bachman", new BachmanSqlImport());
+				success &= importNotation(file, strContent, "default_notation", new SqlImport());
+				success &= importNotation(file, strContent, "uml", new UmlSqlImport());
+				success &= importNotation(file, strContent, "min_max", new MinMaxSqlImport());
+				success &= importNotation(file, strContent, "crows_foot", new CrowsFootSqlImport());
+				success &= importNotation(file, strContent, "chen", new ChenSqlImport());
+				success &= importNotation(file, strContent, "bachman", new BachmanSqlImport());
 			}
 		} else if (file.isDirectory()) {
 			for (File f : file.listFiles()) {
-				handleFile(f);
+				success &= handleFile(f);
 			}
+		} else {
+			throw new FileNotFoundException(file.getAbsolutePath());
 		}
+		return success;
 	}
 
-	private static void importNotation(File file, String strContent, String importKey, SqlImport importObject) throws IOException, FileNotFoundException {
+	private static boolean importNotation(File file, String strContent, String importKey, SqlImport importObject) throws IOException, FileNotFoundException {
 		StringConcatenation fileContent = importObject.generateFileContent("test", strContent);
 		String outputContent = fileContent.toString();
 		File output = new File(new File(new File(file.getParentFile().getParentFile(), "output"), importKey), file.getName());
@@ -159,9 +163,11 @@ public class SqlImport implements IErGenerator {
 				byte[] contentExpected = fisExpected.readAllBytes();
 				if (!new String(contentExpected).equals(outputContent)) {
 					System.out.println("unexpected output in file: " + output.getAbsolutePath());
+					return false;
 				}
 			}
 		}
+		return true;
 	}
 
 	private StringConcatenation generateFileContent(String diagramName, String text) {

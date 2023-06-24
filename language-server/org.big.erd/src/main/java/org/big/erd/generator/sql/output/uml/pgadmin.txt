@@ -1,0 +1,11 @@
+erdiagram test
+weak entity Room {
+	room_nr: integer partial-key
+}
+relationship Exam {
+	Course[1..*] -> Student[1..*] -> Instructor[1..*]	// example cardinalities
+	points: double optional
+}
+weak relationship BuildingRoom {
+	Building[1..1] -> Room[0..*]
+}

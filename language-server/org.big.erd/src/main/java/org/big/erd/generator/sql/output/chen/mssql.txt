@@ -1,0 +1,50 @@
+erdiagram test
+entity Building {
+	building_id: char(8) key
+	address: varchar(255) optional
+}
+entity Course {
+	course_nr: int key
+	course_name: varchar(100) optional
+	credits: smallint optional
+}
+entity Department {
+	dept_nr: int key
+	name: varchar(100) optional
+	abbreviation: char(5) optional
+}
+entity Instructor {
+	instructor_id: int key
+	name: varchar(255) optional
+}
+weak entity Lecture {
+	title: varchar(255) partial-key
+}
+weak entity Room {
+	room_nr: int partial-key
+}
+entity Student {
+	id: int key
+	name: varchar(255) optional
+	birthday: date optional
+	age: smallint optional
+}
+relationship Exam {
+	Course[N] -> Student[M] -> Instructor[L]	// example cardinalities
+	points: decimal(18, 0) optional
+}
+weak relationship CourseLecture {
+	Course[1] -> Lecture[N]
+}
+relationship Location {
+	Building[N] -> Department[M]	// example cardinalities
+}
+relationship Office {
+	Room[N] -> Instructor[M]	// example cardinalities
+}
+weak relationship BuildingRoom {
+	Building[1] -> Room[N]
+}
+relationship Work {
+	Department[N] -> Instructor[M]	// example cardinalities
+}

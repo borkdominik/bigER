@@ -1,0 +1,570 @@
+CREATE TABLE `abo` (
+  `id_abo` int(11) NOT NULL AUTO_INCREMENT,
+  `id_abo_group` int(11) DEFAULT NULL,
+  `id_abo_thread` int(11) DEFAULT NULL,
+  `id_abo_user` int(11) DEFAULT NULL,
+  `id_user` int(11) NOT NULL,
+  `tim_timestamp` timestamp NOT NULL,
+  PRIMARY KEY (`id_abo`)
+) ENGINE=InnoDB AUTO_INCREMENT=80 DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `Building` (
+  `building_id` char(8) NOT NULL,
+  `address` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`building_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `chat` (
+  `id_chat` int(11) NOT NULL AUTO_INCREMENT,
+  `id_user` int(11) NOT NULL,
+  `id_user_receiver` int(11) NOT NULL,
+  `tim_timestamp` timestamp NOT NULL,
+  `txt_text` text,
+  `id_image_group` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id_chat`)
+) ENGINE=InnoDB AUTO_INCREMENT=242 DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `chat_seen` (
+  `id_chat_seen` int(11) NOT NULL AUTO_INCREMENT,
+  `id_user` int(11) NOT NULL,
+  `id_user_receiver` int(11) NOT NULL,
+  `tim_timestamp` timestamp NOT NULL,
+  PRIMARY KEY (`id_chat_seen`)
+) ENGINE=InnoDB AUTO_INCREMENT=552 DEFAULT CHARSET=latin1;
+
+CREATE TABLE `comment` (
+  `id_comment` int(11) NOT NULL AUTO_INCREMENT,
+  `id_parent_comment` int(11) DEFAULT NULL,
+  `id_user` int(11) NOT NULL,
+  `tim_timestamp` timestamp NOT NULL,
+  `txt_text` text,
+  `yn_privileged` int(11) DEFAULT NULL,
+  `id_image_group` int(11) DEFAULT NULL,
+  `id_current_comment` int(11) DEFAULT NULL,
+  `yn_deleted` int(11) DEFAULT NULL,
+  `id_reference` int(11) DEFAULT NULL,
+  `txt_ref_table` varchar(100) DEFAULT NULL,
+  `frc_latitude` double DEFAULT NULL,
+  `frc_longitude` double DEFAULT NULL,
+  `tim_create` timestamp NOT NULL,
+  `tim_update` timestamp NOT NULL,
+  PRIMARY KEY (`id_comment`)
+) ENGINE=InnoDB AUTO_INCREMENT=1389 DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `comment_group` (
+  `dom_privacy` varchar(15) NOT NULL,
+  `id_group` int(11) NOT NULL AUTO_INCREMENT,
+  `id_image` int(11) DEFAULT NULL,
+  `id_image_group` int(11) DEFAULT NULL,
+  `id_parent_comment` int(11) NOT NULL,
+  `id_user` int(11) NOT NULL,
+  `tim_create` timestamp NOT NULL,
+  `tim_timestamp` timestamp NOT NULL,
+  `txt_title` varchar(100) NOT NULL,
+  `id_user_update` int(11) NOT NULL,
+  `tim_update` timestamp NOT NULL,
+  `yn_click_collect` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id_group`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `Department` (
+  `dept_nr` int(11) NOT NULL,
+  `name` varchar(100) DEFAULT NULL,
+  `abbreviation` char(5) DEFAULT NULL,
+  PRIMARY KEY (`dept_nr`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `Course` (
+  `course_nr` int(11) NOT NULL,
+  `course_name` varchar(100) DEFAULT NULL,
+  `credits` smallint(6) DEFAULT NULL,
+  PRIMARY KEY (`course_nr`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `device` (
+  `id_user` int(11) NOT NULL,
+  `txt_last_device_token` varchar(300) NOT NULL,
+  `txt_platform` varchar(30) NOT NULL,
+  `txt_uuid` varchar(100) NOT NULL,
+  `tim_timestamp` timestamp NOT NULL,
+  `txt_app_version` varchar(20) DEFAULT NULL,
+  `txt_device_name` varchar(200) DEFAULT NULL,
+  `txt_os_version` varchar(200) DEFAULT NULL,
+  `tim_create` timestamp NOT NULL,
+  PRIMARY KEY (`txt_uuid`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE `event` (
+  `frc_latitude` double DEFAULT NULL,
+  `frc_longitude` double DEFAULT NULL,
+  `id_event` int(11) NOT NULL AUTO_INCREMENT,
+  `id_user` int(11) NOT NULL,
+  `tim_end` timestamp NOT NULL,
+  `tim_start` timestamp NOT NULL,
+  `tim_timestamp` timestamp NOT NULL,
+  `txt_location` varchar(100) DEFAULT NULL,
+  `txt_title` varchar(100) NOT NULL,
+  `id_image` int(11) DEFAULT NULL,
+  `id_image_group` int(11) DEFAULT NULL,
+  `id_parent_comment` int(11) NOT NULL,
+  `tim_create` timestamp NOT NULL,
+  `id_user_update` int(11) NOT NULL,
+  PRIMARY KEY (`id_event`)
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `Exam` (
+  `id` int(11) NOT NULL,
+  `course_nr` int(11) NOT NULL,
+  `instructor_id` int(11) NOT NULL,
+  `points` double DEFAULT NULL,
+  PRIMARY KEY (`id`,`course_nr`,`instructor_id`),
+  CONSTRAINT `Exam_ibfk_1` FOREIGN KEY (`id`) REFERENCES `Student` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `Exam_ibfk_2` FOREIGN KEY (`course_nr`) REFERENCES `Course` (`course_nr`) ON DELETE CASCADE,
+  CONSTRAINT `Exam_ibfk_3` FOREIGN KEY (`instructor_id`) REFERENCES `Instructor` (`instructor_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `filter` (
+  `id_filter` int(11) NOT NULL AUTO_INCREMENT,
+  `id_filter_parent` int(11) DEFAULT NULL,
+  `txt_icon_url` varchar(300) DEFAULT NULL,
+  `txt_name` varchar(100) NOT NULL,
+  `yn_passion` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id_filter`)
+) ENGINE=InnoDB AUTO_INCREMENT=64 DEFAULT CHARSET=latin1;
+
+CREATE TABLE `filtered` (
+  `id_filter` int(11) NOT NULL,
+  `id_filtered` int(11) NOT NULL AUTO_INCREMENT,
+  `id_thread` int(11) DEFAULT NULL,
+  `id_user` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id_filtered`)
+) ENGINE=InnoDB AUTO_INCREMENT=238 DEFAULT CHARSET=latin1;
+
+CREATE TABLE `flag` (
+  `id_flag` int(11) NOT NULL AUTO_INCREMENT,
+  `id_flag_comment` int(11) DEFAULT NULL,
+  `id_flag_group` int(11) DEFAULT NULL,
+  `id_flag_thread` int(11) DEFAULT NULL,
+  `id_flag_user` int(11) DEFAULT NULL,
+  `id_user` int(11) NOT NULL,
+  `tim_timestamp` timestamp NOT NULL,
+  `txt_text` text NOT NULL,
+  `id_image_group` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id_flag`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `global_settings` (
+  `tim_last_newsletter_sent` timestamp NULL DEFAULT NULL,
+  `txt_system` varchar(30) NOT NULL,
+  PRIMARY KEY (`txt_system`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `group_member` (
+  `id_group` int(11) NOT NULL,
+  `id_group_member` int(11) NOT NULL AUTO_INCREMENT,
+  `id_user` int(11) NOT NULL,
+  `tim_timestamp` timestamp NOT NULL,
+  `yn_admin` int(11) DEFAULT NULL,
+  `yn_verified` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id_group_member`)
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `image` (
+  `dom_privacy` varchar(15) DEFAULT NULL,
+  `id_image` int(11) NOT NULL AUTO_INCREMENT,
+  `id_user` int(11) NOT NULL,
+  `tim_timestamp` timestamp NOT NULL,
+  `txt_image_url` varchar(1000) NOT NULL,
+  `yn_deleted` int(11) DEFAULT NULL,
+  `id_parent_comment` int(11) NOT NULL,
+  `tim_create` timestamp NOT NULL,
+  PRIMARY KEY (`id_image`)
+) ENGINE=InnoDB AUTO_INCREMENT=310 DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `image_group` (
+  `dom_privacy` varchar(15) DEFAULT NULL,
+  `id_image` int(11) DEFAULT NULL,
+  `id_image_group` int(11) NOT NULL AUTO_INCREMENT,
+  `tim_timestamp` timestamp NOT NULL,
+  `txt_title` varchar(100) DEFAULT NULL,
+  `yn_user_defined` int(11) DEFAULT NULL,
+  `id_user` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id_image_group`)
+) ENGINE=InnoDB AUTO_INCREMENT=139 DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `image_group_member` (
+  `id_image` int(11) NOT NULL,
+  `id_image_group` int(11) NOT NULL,
+  `id_image_group_member` int(11) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id_image_group_member`)
+) ENGINE=InnoDB AUTO_INCREMENT=262 DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `Lecture` (
+  `title` varchar(255) NOT NULL,
+  `course_nr` int(11) NOT NULL,
+  PRIMARY KEY (`title`,`course_nr`),
+  CONSTRAINT `Lecture_ibfk_1` FOREIGN KEY (`course_nr`) REFERENCES `Course` (`course_nr`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `Instructor` (
+  `instructor_id` int(11) NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`instructor_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `likes` (
+  `id_like` int(11) NOT NULL AUTO_INCREMENT,
+  `id_liked_comment` int(11) DEFAULT NULL,
+  `id_liked_thread` int(11) DEFAULT NULL,
+  `id_user` int(11) NOT NULL,
+  `tim_timestamp` timestamp NOT NULL,
+  PRIMARY KEY (`id_like`)
+) ENGINE=InnoDB AUTO_INCREMENT=118 DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `link` (
+  `id_link` int(11) NOT NULL AUTO_INCREMENT,
+  `id_linked_comment` int(11) DEFAULT NULL,
+  `id_linked_user` int(11) NOT NULL,
+  `id_user` int(11) NOT NULL,
+  `tim_timestamp` timestamp NOT NULL,
+  `yn_deleted` int(11) DEFAULT NULL,
+  `yn_verified` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id_link`)
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `Location` (
+  `building_id` char(8) NOT NULL,
+  `dept_nr` int(11) NOT NULL,
+  PRIMARY KEY (`building_id`,`dept_nr`),
+  CONSTRAINT `Location_ibfk_1` FOREIGN KEY (`building_id`) REFERENCES `Building` (`building_id`) ON DELETE CASCADE,
+  CONSTRAINT `Location_ibfk_2` FOREIGN KEY (`dept_nr`) REFERENCES `Department` (`dept_nr`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `log` (
+  `cod_level` varchar(10) CHARACTER SET latin1 DEFAULT NULL,
+  `id_log` int(11) NOT NULL AUTO_INCREMENT,
+  `id_user` int(11) DEFAULT NULL,
+  `tim_timestamp` timestamp NOT NULL,
+  `txt_text` text NOT NULL,
+  `txt_platform` varchar(30) DEFAULT NULL,
+  `txt_app_version` varchar(20) DEFAULT NULL,
+  `txt_device_name` varchar(200) DEFAULT NULL,
+  `txt_os_version` varchar(200) DEFAULT NULL,
+  `txt_user_agent` varchar(500) DEFAULT NULL,
+  PRIMARY KEY (`id_log`)
+) ENGINE=InnoDB AUTO_INCREMENT=32405 DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `music` (
+  `dom_source` varchar(15) DEFAULT NULL,
+  `id_music` int(11) NOT NULL AUTO_INCREMENT,
+  `id_user` int(11) NOT NULL,
+  `tim_timestamp` timestamp NOT NULL,
+  `txt_content_url` varchar(300) DEFAULT NULL,
+  `txt_title` varchar(100) NOT NULL,
+  `id_image` int(11) DEFAULT NULL,
+  `id_image_group` int(11) DEFAULT NULL,
+  `id_parent_comment` int(11) NOT NULL,
+  `tim_create` timestamp NOT NULL,
+  `id_user_update` int(11) NOT NULL,
+  PRIMARY KEY (`id_music`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `news` (
+  `dom_type` varchar(15) NOT NULL,
+  `id_news` int(11) NOT NULL AUTO_INCREMENT,
+  `id_comment` int(11) DEFAULT NULL,
+  `id_user` int(11) NOT NULL,
+  `id_user_participant` int(11) DEFAULT NULL,
+  `tim_timestamp` timestamp NOT NULL,
+  `yn_seen` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id_news`)
+) ENGINE=InnoDB AUTO_INCREMENT=383 DEFAULT CHARSET=latin1;
+
+CREATE TABLE `Office` (
+  `room_nr` int(11) NOT NULL,
+  `building_id` char(8) NOT NULL,
+  `instructor_id` int(11) NOT NULL,
+  PRIMARY KEY (`room_nr`,`building_id`,`instructor_id`),
+  CONSTRAINT `Office_ibfk_1` FOREIGN KEY (`room_nr`, `building_id`) REFERENCES `Room` (`room_nr`, `building_id`) ON DELETE CASCADE,
+  CONSTRAINT `Office_ibfk_2` FOREIGN KEY (`instructor_id`) REFERENCES `Instructor` (`instructor_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `passion` (
+  `id_passion` int(11) NOT NULL AUTO_INCREMENT,
+  `txt_icon_url` varchar(300) DEFAULT NULL,
+  `txt_name` varchar(100) NOT NULL,
+  PRIMARY KEY (`id_passion`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `passioned` (
+  `id_passion` int(11) NOT NULL,
+  `id_passionate` int(11) DEFAULT NULL,
+  `id_passioned` int(11) NOT NULL AUTO_INCREMENT,
+  `id_user` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id_passioned`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `referral` (
+  `id_referral` int(11) NOT NULL AUTO_INCREMENT,
+  `id_user` int(11) NOT NULL,
+  `id_user_referral` int(11) DEFAULT NULL,
+  `tim_timestamp` timestamp NOT NULL,
+  `txt_email_referral` varchar(100) DEFAULT NULL,
+  `txt_text` text,
+  PRIMARY KEY (`id_referral`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `Student` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `birthday` date DEFAULT NULL,
+  `age` smallint(6) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `Room` (
+  `room_nr` int(11) NOT NULL,
+  `building_id` char(8) NOT NULL,
+  PRIMARY KEY (`room_nr`,`building_id`),
+  CONSTRAINT `Room_ibfk_1` FOREIGN KEY (`building_id`) REFERENCES `Building` (`building_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `suppress` (
+  `id_comment` int(11) NOT NULL,
+  `id_suppress` int(11) NOT NULL AUTO_INCREMENT,
+  `id_user` int(11) NOT NULL,
+  PRIMARY KEY (`id_suppress`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `that_chat` (
+  `id_chat` int(11) NOT NULL AUTO_INCREMENT,
+  `id_user` int(11) NOT NULL,
+  `id_user_receiver` int(11) NOT NULL,
+  `tim_timestamp` timestamp NOT NULL,
+  `txt_image_url` varchar(300) DEFAULT NULL,
+  `txt_text` text NOT NULL,
+  PRIMARY KEY (`id_chat`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `that_chat_seen` (
+  `id_chat_seen` int(11) NOT NULL AUTO_INCREMENT,
+  `id_user` int(11) NOT NULL,
+  `id_user_receiver` int(11) NOT NULL,
+  `tim_timestamp` timestamp NOT NULL,
+  PRIMARY KEY (`id_chat_seen`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `that_comment` (
+  `id_comment` int(11) NOT NULL AUTO_INCREMENT,
+  `id_parent_comment` int(11) DEFAULT NULL,
+  `id_parent_thread` int(11) DEFAULT NULL,
+  `id_parent_user` int(11) DEFAULT NULL,
+  `id_user` int(11) NOT NULL,
+  `tim_timestamp` timestamp NOT NULL,
+  `txt_image_url` varchar(300) DEFAULT NULL,
+  `txt_text` text,
+  PRIMARY KEY (`id_comment`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `that_device` (
+  `id_user` int(11) NOT NULL,
+  `tim_timestamp` timestamp NOT NULL,
+  `txt_app_version` varchar(20) DEFAULT NULL,
+  `txt_device_name` varchar(200) DEFAULT NULL,
+  `txt_last_device_token` varchar(300) NOT NULL,
+  `txt_os_version` varchar(200) DEFAULT NULL,
+  `txt_platform` varchar(30) NOT NULL,
+  `txt_uuid` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `that_event` (
+  `frc_latitude` double DEFAULT NULL,
+  `frc_longitude` double DEFAULT NULL,
+  `id_event` int(11) NOT NULL AUTO_INCREMENT,
+  `id_user` int(11) NOT NULL,
+  `tim_end` timestamp NOT NULL,
+  `tim_start` timestamp NOT NULL,
+  `tim_timestamp` timestamp NOT NULL,
+  `txt_image_url` varchar(300) DEFAULT NULL,
+  `txt_location` varchar(100) DEFAULT NULL,
+  `txt_text` varchar(1000) DEFAULT NULL,
+  `txt_title` varchar(100) NOT NULL,
+  PRIMARY KEY (`id_event`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `that_filter` (
+  `id_filter` int(11) NOT NULL AUTO_INCREMENT,
+  `id_filter_parent` int(11) DEFAULT NULL,
+  `txt_icon_url` varchar(300) DEFAULT NULL,
+  `txt_name` varchar(100) NOT NULL,
+  PRIMARY KEY (`id_filter`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `that_filtered` (
+  `id_filter` int(11) NOT NULL,
+  `id_filtered` int(11) NOT NULL AUTO_INCREMENT,
+  `id_thread` int(11) DEFAULT NULL,
+  `id_user` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id_filtered`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `that_global_settings` (
+  `tim_last_newsletter_sent` timestamp NULL DEFAULT NULL,
+  `txt_system` varchar(30) NOT NULL,
+  PRIMARY KEY (`txt_system`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `that_log` (
+  `cod_level` varchar(10) DEFAULT NULL,
+  `id_log` int(11) NOT NULL AUTO_INCREMENT,
+  `id_user` int(11) DEFAULT NULL,
+  `tim_timestamp` timestamp NOT NULL,
+  `txt_app_version` varchar(20) DEFAULT NULL,
+  `txt_device_name` varchar(200) DEFAULT NULL,
+  `txt_os_version` varchar(200) DEFAULT NULL,
+  `txt_platform` varchar(30) DEFAULT NULL,
+  `txt_text` text,
+  PRIMARY KEY (`id_log`)
+) ENGINE=InnoDB AUTO_INCREMENT=1573 DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `that_news` (
+  `dom_type` varchar(15) NOT NULL,
+  `id_news` int(11) NOT NULL AUTO_INCREMENT,
+  `id_comment` int(11) DEFAULT NULL,
+  `id_user` int(11) NOT NULL,
+  `id_user_participant` int(11) DEFAULT NULL,
+  `tim_timestamp` timestamp NOT NULL,
+  `yn_seen` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id_news`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `that_referral` (
+  `id_referral` int(11) NOT NULL AUTO_INCREMENT,
+  `id_user` int(11) NOT NULL,
+  `id_user_referral` int(11) DEFAULT NULL,
+  `tim_timestamp` timestamp NOT NULL,
+  `txt_email_referral` varchar(100) DEFAULT NULL,
+  `txt_text` text,
+  PRIMARY KEY (`id_referral`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `that_thread` (
+  `frc_latitude` double DEFAULT NULL,
+  `frc_longitude` double DEFAULT NULL,
+  `id_thread` int(11) NOT NULL AUTO_INCREMENT,
+  `id_user` int(11) NOT NULL,
+  `tim_timestamp` timestamp NOT NULL,
+  `txt_image_url` varchar(300) DEFAULT NULL,
+  `txt_title` varchar(100) NOT NULL,
+  PRIMARY KEY (`id_thread`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `that_user` (
+  `dom_forum_layout` varchar(15) DEFAULT NULL,
+  `dat_birth` date DEFAULT NULL,
+  `id_user` int(11) NOT NULL AUTO_INCREMENT,
+  `tim_last_news_check` timestamp NULL DEFAULT NULL,
+  `tim_last_online` timestamp NULL DEFAULT NULL,
+  `tim_timestamp` timestamp NOT NULL,
+  `txt_application` text,
+  `txt_email` varchar(100) NOT NULL,
+  `txt_gender` varchar(30) DEFAULT NULL,
+  `txt_image_url` varchar(300) NOT NULL,
+  `txt_name` varchar(100) NOT NULL,
+  `txt_name_full` varchar(100) NOT NULL,
+  `txt_native_user_id` varchar(100) NOT NULL,
+  `yn_activated` int(11) DEFAULT NULL,
+  `yn_activation_request` int(11) DEFAULT NULL,
+  `yn_admin` int(11) DEFAULT NULL,
+  `yn_filter_active` int(11) DEFAULT NULL,
+  `yn_invited` int(11) DEFAULT NULL,
+  `yn_map_filter_active` int(11) DEFAULT NULL,
+  `yn_newsletter` int(11) DEFAULT NULL,
+  `yn_notify_activation` int(11) DEFAULT NULL,
+  `yn_notify_referral` int(11) DEFAULT NULL,
+  `yn_online` int(11) DEFAULT NULL,
+  `yn_verified` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id_user`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `thread` (
+  `id_thread` int(11) NOT NULL AUTO_INCREMENT,
+  `id_user` int(11) NOT NULL,
+  `tim_timestamp` timestamp NOT NULL,
+  `txt_title` varchar(100) NOT NULL,
+  `frc_latitude` double DEFAULT NULL,
+  `frc_longitude` double DEFAULT NULL,
+  `id_image` int(11) DEFAULT NULL,
+  `id_image_group` int(11) DEFAULT NULL,
+  `id_parent_comment` int(11) NOT NULL,
+  `txt_shop` varchar(40) DEFAULT NULL,
+  `tim_create` timestamp NOT NULL,
+  `id_user_update` int(11) NOT NULL,
+  PRIMARY KEY (`id_thread`)
+) ENGINE=InnoDB AUTO_INCREMENT=81 DEFAULT CHARSET=latin1;
+
+CREATE TABLE `transaction` (
+  `frc_coins` double NOT NULL,
+  `id_user` int(11) NOT NULL,
+  `id_user_receiver` int(11) NOT NULL,
+  `id_thread` int(11) DEFAULT NULL,
+  `id_transaction` int(11) NOT NULL AUTO_INCREMENT,
+  `tim_timestamp` timestamp NOT NULL,
+  `txt_text` text,
+  PRIMARY KEY (`id_transaction`)
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `url_metadata` (
+  `id_comment` int(11) NOT NULL,
+  `id_metadata` int(11) NOT NULL AUTO_INCREMENT,
+  `txt_audio_url` varchar(1000) DEFAULT NULL,
+  `txt_image_url` varchar(1000) DEFAULT NULL,
+  `txt_site_name` varchar(1000) DEFAULT NULL,
+  `txt_text` varchar(1000) DEFAULT NULL,
+  `txt_title` varchar(1000) DEFAULT NULL,
+  `txt_url` varchar(1000) DEFAULT NULL,
+  PRIMARY KEY (`id_metadata`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `user` (
+  `id_user` int(11) NOT NULL AUTO_INCREMENT,
+  `tim_last_news_check` timestamp NULL DEFAULT NULL,
+  `tim_timestamp` timestamp NULL DEFAULT NULL,
+  `txt_email` varchar(100) CHARACTER SET latin1 NOT NULL,
+  `txt_gender` varchar(30) CHARACTER SET latin1 DEFAULT NULL,
+  `txt_name` varchar(100) NOT NULL,
+  `txt_native_user_id` varchar(100) CHARACTER SET latin1 NOT NULL,
+  `dom_forum_layout` varchar(15) CHARACTER SET latin1 DEFAULT NULL,
+  `yn_activated` int(11) DEFAULT NULL,
+  `yn_activation_request` int(11) DEFAULT NULL,
+  `yn_admin` int(11) DEFAULT NULL,
+  `yn_filter_active` int(11) DEFAULT NULL,
+  `yn_newsletter` int(11) DEFAULT NULL,
+  `yn_verified` int(11) DEFAULT NULL,
+  `txt_application` text,
+  `tim_last_online` timestamp NULL DEFAULT NULL,
+  `yn_invited` int(11) DEFAULT NULL,
+  `yn_map_filter_active` int(11) DEFAULT NULL,
+  `yn_notify_activation` int(11) DEFAULT NULL,
+  `yn_notify_referral` int(11) DEFAULT NULL,
+  `yn_online` int(11) DEFAULT NULL,
+  `dat_birth` date DEFAULT NULL,
+  `id_image` int(11) DEFAULT NULL,
+  `id_parent_comment` int(11) NOT NULL,
+  `yn_verify_link` int(11) DEFAULT NULL,
+  `tim_create` timestamp NOT NULL,
+  `tim_update` timestamp NOT NULL,
+  `frc_coins` double NOT NULL,
+  `txt_name_first` varchar(100) NOT NULL,
+  `txt_name_last` varchar(100) NOT NULL,
+  PRIMARY KEY (`id_user`),
+  UNIQUE KEY `txt_native_user_id` (`txt_native_user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `Work` (
+  `instructor_id` int(11) NOT NULL,
+  `dept_nr` int(11) NOT NULL,
+  PRIMARY KEY (`instructor_id`,`dept_nr`),
+  CONSTRAINT `Work_ibfk_1` FOREIGN KEY (`instructor_id`) REFERENCES `Instructor` (`instructor_id`) ON DELETE CASCADE,
+  CONSTRAINT `Work_ibfk_2` FOREIGN KEY (`dept_nr`) REFERENCES `Department` (`dept_nr`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

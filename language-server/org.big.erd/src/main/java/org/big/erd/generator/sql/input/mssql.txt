@@ -1,0 +1,213 @@
+USE [master]
+GO
+/****** Object:  User [##MS_PolicyEventProcessingLogin##]    Script Date: 08.12.2022 17:01:25 ******/
+CREATE USER [##MS_PolicyEventProcessingLogin##] FOR LOGIN [##MS_PolicyEventProcessingLogin##] WITH DEFAULT_SCHEMA=[dbo]
+GO
+/****** Object:  User [##MS_AgentSigningCertificate##]    Script Date: 08.12.2022 17:01:25 ******/
+CREATE USER [##MS_AgentSigningCertificate##] FOR LOGIN [##MS_AgentSigningCertificate##]
+GO
+/****** Object:  Table [dbo].[Building]    Script Date: 08.12.2022 17:01:25 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Building](
+	[building_id] [char](8) NOT NULL,
+	[address] [varchar](255) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[building_id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Course]    Script Date: 08.12.2022 17:01:25 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Course](
+	[course_nr] [int] NOT NULL,
+	[course_name] [varchar](100) NULL,
+	[credits] [smallint] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[course_nr] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Department]    Script Date: 08.12.2022 17:01:25 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Department](
+	[dept_nr] [int] NOT NULL,
+	[name] [varchar](100) NULL,
+	[abbreviation] [char](5) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[dept_nr] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Exam]    Script Date: 08.12.2022 17:01:25 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Exam](
+	[id] [int] NOT NULL,
+	[course_nr] [int] NOT NULL,
+	[instructor_id] [int] NOT NULL,
+	[points] [decimal](18, 0) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[id] ASC,
+	[course_nr] ASC,
+	[instructor_id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Instructor]    Script Date: 08.12.2022 17:01:25 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Instructor](
+	[instructor_id] [int] NOT NULL,
+	[name] [varchar](255) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[instructor_id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Lecture]    Script Date: 08.12.2022 17:01:25 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Lecture](
+	[title] [varchar](255) NOT NULL,
+	[course_nr] [int] NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[title] ASC,
+	[course_nr] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Location]    Script Date: 08.12.2022 17:01:25 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Location](
+	[building_id] [char](8) NOT NULL,
+	[dept_nr] [int] NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[building_id] ASC,
+	[dept_nr] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Office]    Script Date: 08.12.2022 17:01:25 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Office](
+	[room_nr] [int] NOT NULL,
+	[building_id] [char](8) NOT NULL,
+	[instructor_id] [int] NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[room_nr] ASC,
+	[building_id] ASC,
+	[instructor_id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Room]    Script Date: 08.12.2022 17:01:25 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Room](
+	[room_nr] [int] NOT NULL,
+	[building_id] [char](8) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[room_nr] ASC,
+	[building_id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Student]    Script Date: 08.12.2022 17:01:25 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Student](
+	[id] [int] NOT NULL,
+	[name] [varchar](255) NULL,
+	[birthday] [date] NULL,
+	[age] [smallint] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Work]    Script Date: 08.12.2022 17:01:25 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Work](
+	[instructor_id] [int] NOT NULL,
+	[dept_nr] [int] NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[instructor_id] ASC,
+	[dept_nr] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[Exam]  WITH CHECK ADD FOREIGN KEY([course_nr])
+REFERENCES [dbo].[Course] ([course_nr])
+GO
+ALTER TABLE [dbo].[Exam]  WITH CHECK ADD FOREIGN KEY([id])
+REFERENCES [dbo].[Student] ([id])
+GO
+ALTER TABLE [dbo].[Exam]  WITH CHECK ADD FOREIGN KEY([instructor_id])
+REFERENCES [dbo].[Instructor] ([instructor_id])
+GO
+ALTER TABLE [dbo].[Lecture]  WITH CHECK ADD FOREIGN KEY([course_nr])
+REFERENCES [dbo].[Course] ([course_nr])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[Location]  WITH CHECK ADD FOREIGN KEY([building_id])
+REFERENCES [dbo].[Building] ([building_id])
+GO
+ALTER TABLE [dbo].[Location]  WITH CHECK ADD FOREIGN KEY([dept_nr])
+REFERENCES [dbo].[Department] ([dept_nr])
+GO
+ALTER TABLE [dbo].[Office]  WITH CHECK ADD FOREIGN KEY([room_nr], [building_id])
+REFERENCES [dbo].[Room] ([room_nr], [building_id])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[Office]  WITH CHECK ADD FOREIGN KEY([instructor_id])
+REFERENCES [dbo].[Instructor] ([instructor_id])
+GO
+ALTER TABLE [dbo].[Room]  WITH CHECK ADD FOREIGN KEY([building_id])
+REFERENCES [dbo].[Building] ([building_id])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[Work]  WITH CHECK ADD FOREIGN KEY([dept_nr])
+REFERENCES [dbo].[Department] ([dept_nr])
+GO
+ALTER TABLE [dbo].[Work]  WITH CHECK ADD FOREIGN KEY([instructor_id])
+REFERENCES [dbo].[Instructor] ([instructor_id])
+GO

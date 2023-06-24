@@ -1,0 +1,50 @@
+erdiagram test
+entity STUDENT {
+	ID: BIGINT key
+	NAME: VARCHAR(255) optional
+	BIRTHDAY: DATE optional
+	AGE: SMALLINT optional
+}
+entity COURSE {
+	COURSE_NR: BIGINT key
+	COURSE_NAME: VARCHAR(100) optional
+	CREDITS: SMALLINT optional
+}
+entity INSTRUCTOR {
+	INSTRUCTOR_ID: BIGINT key
+	NAME: VARCHAR(255) optional
+}
+entity DEPARTMENT {
+	DEPT_NR: BIGINT key
+	NAME: VARCHAR(100) optional
+	ABBREVIATION: CHAR(5) optional
+}
+entity BUILDING {
+	BUILDING_ID: CHAR(8) key
+	ADDRESS: VARCHAR(255) optional
+}
+weak entity ROOM {
+	ROOM_NR: BIGINT partial-key
+}
+weak entity LECTURE {
+	TITLE: VARCHAR(255) partial-key
+}
+weak relationship BUILDINGROOM {
+	BUILDING[1,1] -> ROOM[0,*]
+}
+weak relationship COURSELECTURE {
+	COURSE[1,1] -> LECTURE[0,*]
+}
+relationship EXAM {
+	STUDENT[1,*] -> COURSE[1,*] -> INSTRUCTOR[1,*]	// example cardinalities
+	POINTS: DOUBLE optional
+}
+relationship OFFICE {
+	ROOM[1,*] -> INSTRUCTOR[1,*]	// example cardinalities
+}
+relationship WORK {
+	INSTRUCTOR[1,*] -> DEPARTMENT[1,*]	// example cardinalities
+}
+relationship LOCATION {
+	BUILDING[1,*] -> DEPARTMENT[1,*]	// example cardinalities
+}
