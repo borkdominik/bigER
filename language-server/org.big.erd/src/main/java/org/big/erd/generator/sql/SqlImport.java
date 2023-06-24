@@ -262,50 +262,52 @@ public class SqlImport implements IErGenerator {
 				String attributeKeywords = mAtt.group(ATTRIBUTE_KEYWORDS);
 				String attributeComment = mAtt.group(ATTRIBUTE_COMMENT);
 
-				int size = 0;
-				Integer precision = null;
-				if (attributeType != null) {
-					Pattern pSize = Pattern.compile(SIZE_PATTERN);
-					Matcher mSize = pSize.matcher(attributeType);
-					if (mSize.find()) {
-						String sizeValue = mSize.group(SIZE_VALUE);
-						if ("*".equals(sizeValue)) {
-							size = -1;
-						} else {
-							int index = sizeValue.indexOf(',');
-							if (index > 0) {
-								precision = Integer.parseInt(sizeValue.substring(index + 1).trim());
-								sizeValue = sizeValue.substring(0, index);
+				if (!attributeName.isBlank()) {
+					int size = 0;
+					Integer precision = null;
+					if (attributeType != null) {
+						Pattern pSize = Pattern.compile(SIZE_PATTERN);
+						Matcher mSize = pSize.matcher(attributeType);
+						if (mSize.find()) {
+							String sizeValue = mSize.group(SIZE_VALUE);
+							if ("*".equals(sizeValue)) {
+								size = -1;
+							} else {
+								int index = sizeValue.indexOf(',');
+								if (index > 0) {
+									precision = Integer.parseInt(sizeValue.substring(index + 1).trim());
+									sizeValue = sizeValue.substring(0, index);
+								}
+								size = Integer.parseInt(sizeValue);
 							}
-							size = Integer.parseInt(sizeValue);
 						}
 					}
-				}
-				if (size > 0) {
-					String strPrecision = "";
-					if (precision != null) {
-						strPrecision = ", " + precision;
+					if (size > 0) {
+						String strPrecision = "";
+						if (precision != null) {
+							strPrecision = ", " + precision;
+						}
+						attributeType = replaceSpaces(deQuote(attributeType.substring(0, attributeType.indexOf("(" + size)))) + "(" + size + strPrecision + ")";
+					} else if (size < 0) {
+						attributeType = replaceSpaces(deQuote(attributeType.substring(0, attributeType.indexOf("(*"))));
 					}
-					attributeType = replaceSpaces(deQuote(attributeType.substring(0, attributeType.indexOf("(" + size)))) + "(" + size + strPrecision + ")";
-				} else if (size < 0) {
-					attributeType = replaceSpaces(deQuote(attributeType.substring(0, attributeType.indexOf("(*"))));
-				}
-				SqlAttribute attribute = new SqlAttribute();
-				attribute.setAttributeName(attributeName);
-				attribute.setAttributeType(attributeType);
-				attribute.setAttributeKeywords(attributeKeywords);
-				attribute.setAttributeComment(attributeComment);
-
-				attributesAll.add(attribute);
-
-				if (!foreignKeys.containsKey(attributeName)) {
-					attributes.add(attribute);
-					
-					if (primaryKeyAttributes.contains(attributeName) || foreignKeys.isEmpty()) {
-						isEntity = true;
+					SqlAttribute attribute = new SqlAttribute();
+					attribute.setAttributeName(attributeName);
+					attribute.setAttributeType(attributeType);
+					attribute.setAttributeKeywords(attributeKeywords);
+					attribute.setAttributeComment(attributeComment);
+	
+					attributesAll.add(attribute);
+	
+					if (!foreignKeys.containsKey(attributeName)) {
+						attributes.add(attribute);
+						
+						if (primaryKeyAttributes.contains(attributeName) || foreignKeys.isEmpty()) {
+							isEntity = true;
+						}
+					} else if (primaryKeyAttributes.contains(attributeName)) {
+						weak = true;
 					}
-				} else if (primaryKeyAttributes.contains(attributeName)) {
-					weak = true;
 				}
 			}
 			
@@ -464,6 +466,8 @@ public class SqlImport implements IErGenerator {
 						fileContent.append("partial-");
 					}
 					fileContent.append("key");
+				} else if (!attribute.isMandatory()) {
+					fileContent.append(" optional");
 				}
 				if (attribute.getAttributeComment() != null) {
 					fileContent.append("\t");
