@@ -147,7 +147,7 @@ public class SqlImport implements IErGenerator {
 		StringConcatenation fileContent = importObject.generateFileContent("test", strContent);
 		String outputContent = fileContent.toString();
 		File output = new File(new File(new File(file.getParentFile().getParentFile(), "output"), importKey), file.getName());
-		if (output.isFile()) {
+		if (output.getParentFile().isDirectory()) {
 			try (FileOutputStream fos = new FileOutputStream(output)) {
 				fos.write(outputContent.getBytes());
 			}
