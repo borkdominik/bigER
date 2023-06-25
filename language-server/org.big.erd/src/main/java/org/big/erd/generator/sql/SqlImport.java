@@ -122,7 +122,7 @@ public class SqlImport implements IErGenerator {
 		}
 	}
 	
-	public static boolean handleFile() throws IOException {
+	public boolean handleFiles() throws IOException {
 		File root = new File("src\\main\\java\\org\\big\\erd\\generator\\sql\\input");
 		return handleFile(root);
 	}
