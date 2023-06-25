@@ -123,7 +123,7 @@ public class SqlImport implements IErGenerator {
 		}
 	}
 	
-	public static boolean handleFiles() throws IOException {
+	public boolean handleFiles() throws IOException {
 		boolean success = true;
 		String[] fileNames = new String[] {"biger", "biger-basic", "biger-relships", "db2look", "mssql", "mysql", "oracle", "pgadmin", "pgdump"};
 		for (String fileName : fileNames) {
