@@ -1,0 +1,354 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 15.1
+-- Dumped by pg_dump version 15.1
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- Name: adminpack; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS adminpack WITH SCHEMA pg_catalog;
+
+
+--
+-- Name: EXTENSION adminpack; Type: COMMENT; Schema: -; Owner:
+--
+
+COMMENT ON EXTENSION adminpack IS 'administrative functions for PostgreSQL';
+
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- Name: building; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.building (
+    building_id character(8) NOT NULL,
+    address character varying(255)
+);
+
+
+ALTER TABLE public.building OWNER TO postgres;
+
+--
+-- Name: course; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.course (
+    course_nr integer NOT NULL,
+    course_name character varying(100),
+    credits smallint
+);
+
+
+ALTER TABLE public.course OWNER TO postgres;
+
+--
+-- Name: department; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.department (
+    dept_nr integer NOT NULL,
+    name character varying(100),
+    abbreviation character(5)
+);
+
+
+ALTER TABLE public.department OWNER TO postgres;
+
+--
+-- Name: exam; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.exam (
+    id integer NOT NULL,
+    course_nr integer NOT NULL,
+    instructor_id integer NOT NULL,
+    points double precision
+);
+
+
+ALTER TABLE public.exam OWNER TO postgres;
+
+--
+-- Name: instructor; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.instructor (
+    instructor_id integer NOT NULL,
+    name character varying(255)
+);
+
+
+ALTER TABLE public.instructor OWNER TO postgres;
+
+--
+-- Name: lecture; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.lecture (
+    title character varying(255) NOT NULL,
+    course_nr integer NOT NULL
+);
+
+
+ALTER TABLE public.lecture OWNER TO postgres;
+
+--
+-- Name: location; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.location (
+    building_id character(8) NOT NULL,
+    dept_nr integer NOT NULL
+);
+
+
+ALTER TABLE public.location OWNER TO postgres;
+
+--
+-- Name: office; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.office (
+    building_id character(8) NOT NULL,
+    room_nr integer NOT NULL,
+    instructor_id integer NOT NULL
+);
+
+
+ALTER TABLE public.office OWNER TO postgres;
+
+--
+-- Name: room; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.room (
+    room_nr integer NOT NULL,
+    building_id character(8) NOT NULL
+);
+
+
+ALTER TABLE public.room OWNER TO postgres;
+
+--
+-- Name: student; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.student (
+    id integer NOT NULL,
+    name character varying(255),
+    birthday date,
+    age smallint
+);
+
+
+ALTER TABLE public.student OWNER TO postgres;
+
+--
+-- Name: work; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.work (
+    instructor_id integer NOT NULL,
+    dept_nr integer NOT NULL
+);
+
+
+ALTER TABLE public.work OWNER TO postgres;
+
+--
+-- Name: building building_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.building
+    ADD CONSTRAINT building_pkey PRIMARY KEY (building_id);
+
+
+--
+-- Name: course course_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.course
+    ADD CONSTRAINT course_pkey PRIMARY KEY (course_nr);
+
+
+--
+-- Name: department department_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.department
+    ADD CONSTRAINT department_pkey PRIMARY KEY (dept_nr);
+
+
+--
+-- Name: exam exam_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.exam
+    ADD CONSTRAINT exam_pkey PRIMARY KEY (id, course_nr, instructor_id);
+
+
+--
+-- Name: instructor instructor_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.instructor
+    ADD CONSTRAINT instructor_pkey PRIMARY KEY (instructor_id);
+
+
+--
+-- Name: lecture lecture_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.lecture
+    ADD CONSTRAINT lecture_pkey PRIMARY KEY (title, course_nr);
+
+
+--
+-- Name: location location_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.location
+    ADD CONSTRAINT location_pkey PRIMARY KEY (building_id, dept_nr);
+
+
+--
+-- Name: office office_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.office
+    ADD CONSTRAINT office_pkey PRIMARY KEY (room_nr, instructor_id, building_id);
+
+
+--
+-- Name: room room_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.room
+    ADD CONSTRAINT room_pkey PRIMARY KEY (room_nr, building_id);
+
+
+--
+-- Name: student student_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.student
+    ADD CONSTRAINT student_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: work work_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.work
+    ADD CONSTRAINT work_pkey PRIMARY KEY (instructor_id, dept_nr);
+
+
+--
+-- Name: exam exam_course_nr_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.exam
+    ADD CONSTRAINT exam_course_nr_fkey FOREIGN KEY (course_nr) REFERENCES public.course(course_nr);
+
+
+--
+-- Name: exam exam_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.exam
+    ADD CONSTRAINT exam_id_fkey FOREIGN KEY (id) REFERENCES public.student(id);
+
+
+--
+-- Name: exam exam_instructor_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.exam
+    ADD CONSTRAINT exam_instructor_id_fkey FOREIGN KEY (instructor_id) REFERENCES public.instructor(instructor_id);
+
+
+--
+-- Name: lecture lecture_course_nr_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.lecture
+    ADD CONSTRAINT lecture_course_nr_fkey FOREIGN KEY (course_nr) REFERENCES public.course(course_nr) ON DELETE CASCADE;
+
+
+--
+-- Name: location location_building_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.location
+    ADD CONSTRAINT location_building_id_fkey FOREIGN KEY (building_id) REFERENCES public.building(building_id);
+
+
+--
+-- Name: location location_dept_nr_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.location
+    ADD CONSTRAINT location_dept_nr_fkey FOREIGN KEY (dept_nr) REFERENCES public.department(dept_nr);
+
+
+--
+-- Name: office office_building_id_room_nr_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.office
+    ADD CONSTRAINT office_building_id_room_nr_fkey FOREIGN KEY (building_id, room_nr) REFERENCES public.room(building_id, room_nr) ON DELETE CASCADE;
+
+
+--
+-- Name: office office_instructor_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.office
+    ADD CONSTRAINT office_instructor_id_fkey FOREIGN KEY (instructor_id) REFERENCES public.instructor(instructor_id);
+
+
+--
+-- Name: room room_building_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.room
+    ADD CONSTRAINT room_building_id_fkey FOREIGN KEY (building_id) REFERENCES public.building(building_id) ON DELETE CASCADE;
+
+
+--
+-- Name: work work_dept_nr_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.work
+    ADD CONSTRAINT work_dept_nr_fkey FOREIGN KEY (dept_nr) REFERENCES public.department(dept_nr);
+
+
+--
+-- Name: work work_instructor_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.work
+    ADD CONSTRAINT work_instructor_id_fkey FOREIGN KEY (instructor_id) REFERENCES public.instructor(instructor_id);
+
+
+--
+-- PostgreSQL database dump complete
+--

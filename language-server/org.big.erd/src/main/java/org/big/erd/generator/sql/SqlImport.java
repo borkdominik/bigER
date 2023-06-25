@@ -2,9 +2,11 @@ package org.big.erd.generator.sql;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -36,10 +38,11 @@ public class SqlImport implements IErGenerator {
 	private static final String SIZE_PATTERN = "\\(((?:" + SIZE_BASE_PATTERN + ")|\\*)";
 	private static final int SIZE_VALUE = 1;
 	
-	private static final String ATTRIBUTE_PATTERN = "\\s*([^\\)\\s,]*)(?: (.*\\([\\d\\*]+.*?\\)|[^,\\s]+))?[^,\\)]*,?\\s*(?:--(.*))?";
+	private static final String ATTRIBUTE_PATTERN = "\\s*([^\\)\\s,]*)(?: (.*\\([\\d\\*]+.*?\\)|[^,\\s]+))?([^,\\)]*),?\\s*(?:--(.*))?";
 	private static final int ATTRIBUTE_NAME = 1;
 	private static final int ATTRIBUTE_TYPE = 2;
-	private static final int ATTRIBUTE_COMMENT = 3;
+	private static final int ATTRIBUTE_KEYWORDS = 3;
+	private static final int ATTRIBUTE_COMMENT = 4;
 	
 	private static final String FOREIGN_KEY_BASE_PATTERN = "FOREIGN KEY\\s*\\((.*?)\\)\\s*REFERENCES (?:.+?\\.)?(\\S+)\\s*\\((.*?)\\)";
 	private static final String FOREIGN_KEY_PATTERN = ".*?" + FOREIGN_KEY_BASE_PATTERN + "([^,]*?)";
@@ -119,50 +122,75 @@ public class SqlImport implements IErGenerator {
 		}
 	}
 	
-	public static void main(String[] args) throws IOException {
-		File root = new File("D:\\Src\\bigER\\bigER\\language-server\\org.big.erd\\src\\main\\java\\org\\big\\erd\\generator\\sql\\input");
-		handleFile(root);
+	public static boolean handleFile() throws IOException {
+		File root = new File("src\\main\\java\\org\\big\\erd\\generator\\sql\\input");
+		return handleFile(root);
 	}
 	
-	private static void handleFile(File file) throws IOException {
+	private static boolean handleFile(File file) throws IOException {
+		boolean success = true;
 		if (file.isFile()) {
 			try (FileInputStream fis = new FileInputStream(file)) {
 				byte[] content = fis.readAllBytes();
-				StringConcatenation fileContent = new SqlImport().generateFileContent("test", new String(content));
-				String outputContent = fileContent.toString();
-				File output = new File(new File(file.getParentFile().getParentFile(), "output"), file.getName());
-				try (FileOutputStream fos = new FileOutputStream(output)) {
-					fos.write(outputContent.getBytes());
-				}
-				File expected = new File(new File(output.getParentFile(), "expected"), file.getName());
-				if (expected.isFile()) {
-					try (FileInputStream fisExpected = new FileInputStream(expected)) {
-						byte[] contentExpected = fisExpected.readAllBytes();
-						if (!new String(contentExpected).equals(outputContent)) {
-							System.out.println("unexpected output in file: " + output.getAbsolutePath());
-						}
-					}
-				}
+				String strContent = new String(content);
+				success &= importNotation(file, strContent, "default_notation", new SqlImport());
+				success &= importNotation(file, strContent, "uml", new UmlSqlImport());
+				success &= importNotation(file, strContent, "min_max", new MinMaxSqlImport());
+				success &= importNotation(file, strContent, "crows_foot", new CrowsFootSqlImport());
+				success &= importNotation(file, strContent, "chen", new ChenSqlImport());
+				success &= importNotation(file, strContent, "bachman", new BachmanSqlImport());
 			}
 		} else if (file.isDirectory()) {
 			for (File f : file.listFiles()) {
-				handleFile(f);
+				success &= handleFile(f);
+			}
+		} else {
+			throw new FileNotFoundException(file.getAbsolutePath());
+		}
+		return success;
+	}
+
+	private static boolean importNotation(File file, String strContent, String importKey, SqlImport importObject) throws IOException, FileNotFoundException {
+		StringConcatenation fileContent = importObject.generateFileContent("test", strContent);
+		String outputContent = fileContent.toString();
+		File output = new File(new File(new File(file.getParentFile().getParentFile(), "output"), importKey), file.getName());
+		try (FileOutputStream fos = new FileOutputStream(output)) {
+			fos.write(outputContent.getBytes());
+		}
+		File expected = new File(new File(new File(new File(file.getParentFile().getParentFile(), "output"), "expected"), importKey), file.getName());
+		if (expected.isFile()) {
+			try (FileInputStream fisExpected = new FileInputStream(expected)) {
+				byte[] contentExpected = fisExpected.readAllBytes();
+				if (!new String(contentExpected).equals(outputContent)) {
+					System.out.println("unexpected output in file: " + output.getAbsolutePath());
+					return false;
+				}
 			}
 		}
+		return true;
 	}
 
 	private StringConcatenation generateFileContent(String diagramName, String text) {
 		String preprocessedSql = preprocessSql(text);
 		
 		StringConcatenation fileContent = new StringConcatenation();
+		fileContent.append("// ER Model");
+		fileContent.newLineIfNotEmpty();
 		fileContent.append("erdiagram ");
 		fileContent.append(diagramName);
+		fileContent.newLineIfNotEmpty();
+		fileContent.append("// Options");
+		fileContent.newLineIfNotEmpty();
+		fileContent.append("notation=");
+		fileContent.append(getNotation());
 		fileContent.newLineIfNotEmpty();
 
 		Map<String, String> presetPrimaryKeys = new LinkedHashMap<>();
 		Map<String, String> presetForeignKeys = new LinkedHashMap<>();
 		Map<String, Map<String, String>> globalForeignKeys = new LinkedHashMap<>();
+		Map<String, Map<String, String>> globalForeignKeysRefTable = new LinkedHashMap<>();
 		Map<String, List<SqlAttribute>> globalAttributes = new LinkedHashMap<>();
+		Map<String, List<SqlAttribute>> globalAttributesAll = new LinkedHashMap<>();
 		Map<String, Boolean> globalWeakMap = new LinkedHashMap<>();
 		
 		// collect primary and foreign keys
@@ -185,6 +213,9 @@ public class SqlImport implements IErGenerator {
 			}
 		}
 		
+		fileContent.append("// Entities");
+		fileContent.newLineIfNotEmpty();
+		
 		// process tables
 		Pattern p = Pattern.compile(CREATE_TABLE_PATTERN, Pattern.CASE_INSENSITIVE);
 		Matcher m = p.matcher(preprocessedSql);
@@ -196,6 +227,7 @@ public class SqlImport implements IErGenerator {
 
 			// process foreign keys
 			Map<String, String> foreignKeys = new LinkedHashMap<>();
+			Map<String, String> foreignKeysRefTable = new LinkedHashMap<>();
 			if (tableForeignKeys == null || tableForeignKeys.isEmpty()) {
 				tableForeignKeys = presetForeignKeys.get(tableName);
 			}
@@ -209,10 +241,14 @@ public class SqlImport implements IErGenerator {
 					String foreignKeyRefAttributes = mFor.group(FOREIGN_KEY_REF_ATTRIBUTES);
 					List<String> foreignKeyRefAttributeList = splitAndTrim(foreignKeyRefAttributes);
 					String foreignKeyKeywords = mFor.group(FOREIGN_KEY_KEYWORDS);
-					for (String id : foreignKeyAttributeList) {
+					for (int i = 0; i < foreignKeyAttributeList.size(); i++) {
+						String id = foreignKeyAttributeList.get(i);
+						String idRefTable = foreignKeyRefAttributeList.get(i);
 						foreignKeys.put(id, foreignKeyRefTable);
+						foreignKeysRefTable.put(id, idRefTable);
 					}
 					globalForeignKeys.put(tableName, foreignKeys);
+					globalForeignKeysRefTable.put(tableName, foreignKeysRefTable);
 				}
 			}
 
@@ -235,6 +271,7 @@ public class SqlImport implements IErGenerator {
 
 			// process attributes
 			List<SqlAttribute> attributes = new ArrayList<>();
+			List<SqlAttribute> attributesAll = new ArrayList<>();
 			Pattern pAtt = Pattern.compile(ATTRIBUTE_PATTERN, Pattern.CASE_INSENSITIVE);
 			Matcher mAtt = pAtt.matcher(tableAttributes);
 			boolean weak = false;
@@ -242,9 +279,10 @@ public class SqlImport implements IErGenerator {
 			while (mAtt.find()) {
 				String attributeName = mAtt.group(ATTRIBUTE_NAME);
 				String attributeType = mAtt.group(ATTRIBUTE_TYPE);
+				String attributeKeywords = mAtt.group(ATTRIBUTE_KEYWORDS);
 				String attributeComment = mAtt.group(ATTRIBUTE_COMMENT);
 
-				if (!foreignKeys.containsKey(attributeName)) {
+				if (!attributeName.isBlank()) {
 					int size = 0;
 					Integer precision = null;
 					if (attributeType != null) {
@@ -276,15 +314,20 @@ public class SqlImport implements IErGenerator {
 					SqlAttribute attribute = new SqlAttribute();
 					attribute.setAttributeName(attributeName);
 					attribute.setAttributeType(attributeType);
+					attribute.setAttributeKeywords(attributeKeywords);
 					attribute.setAttributeComment(attributeComment);
-					
-					attributes.add(attribute);
-					
-					if (primaryKeyAttributes.contains(attributeName) || foreignKeys.isEmpty()) {
-						isEntity = true;
+	
+					attributesAll.add(attribute);
+	
+					if (!foreignKeys.containsKey(attributeName)) {
+						attributes.add(attribute);
+						
+						if (primaryKeyAttributes.contains(attributeName) || foreignKeys.isEmpty()) {
+							isEntity = true;
+						}
+					} else if (primaryKeyAttributes.contains(attributeName)) {
+						weak = true;
 					}
-				} else if (primaryKeyAttributes.contains(attributeName)) {
-					weak = true;
 				}
 			}
 			
@@ -302,19 +345,31 @@ public class SqlImport implements IErGenerator {
 				
 				fileContent.append("}");
 				fileContent.newLineIfNotEmpty();
-			} else {
-				globalAttributes.put(tableName, attributes);
 			}
+			globalAttributes.put(tableName, attributes);
+			globalAttributesAll.put(tableName, attributesAll);
 			globalWeakMap.put(tableName, weak && isEntity);
 		}
+		
+		fileContent.append("// Relationships");
+		fileContent.newLineIfNotEmpty();
 		
 		// generate relationships
 		Set<String> usedNames = new HashSet<>();
 		for (String tableName : globalForeignKeys.keySet()) {
 			Map<String, String> foreignKeys = globalForeignKeys.get(tableName);
+			Map<String, String> foreignKeysRefTable = globalForeignKeysRefTable.get(tableName);
 			List<SqlAttribute> attributes = globalAttributes.get(tableName);
+			List<SqlAttribute> attributesAll = globalAttributesAll.get(tableName);
 			boolean weak = globalWeakMap.get(tableName);
 			Set<String> refTables = new LinkedHashSet<>(foreignKeys.values());
+			
+			Map<String, SqlAttribute> attributeMap = new HashMap<>();
+			if (attributesAll != null) {
+				for (SqlAttribute attribute : attributesAll) {
+					attributeMap.put(attribute.getAttributeName(), attribute);
+				}
+			}
 
 			if (weak) {
 				refTables.add(tableName);
@@ -335,32 +390,65 @@ public class SqlImport implements IErGenerator {
 			fileContent.newLineIfNotEmpty();
 			
 			boolean first = true;
-			for (String table : refTables) {
-				if (!first) {
-					fileContent.append(" -> ");
-				} else {
-					fileContent.append("\t");
+			int countMultiple = 0;
+			for (String attribute : foreignKeys.keySet()) {
+				String table = foreignKeys.get(attribute);
+				List<SqlAttribute> attributesRefTable = globalAttributes.get(table);
+				Map<String, SqlAttribute> attributeMapRefTable = new HashMap<>();
+				if (attributesRefTable != null) {
+					for (SqlAttribute attributeRefTable : attributesRefTable) {
+						attributeMapRefTable.put(attributeRefTable.getAttributeName(), attributeRefTable);
+					}
 				}
-				fileContent.append(capitalize(deQuote(table)));
-				if (weak && first) {
-					fileContent.append("[1]");
-				} else {
-					fileContent.append("[N]");
+				SqlAttribute sqlAttributeRefTable = attributeMapRefTable.get(foreignKeysRefTable.get(attribute));
+				boolean isFirstDegreeRelship = attributesRefTable == null || sqlAttributeRefTable != null;
+				if (isFirstDegreeRelship) {
+					if (!first) {
+						fileContent.append(" -> ");
+					} else {
+						fileContent.append("\t");
+					}
+					fileContent.append(capitalize(deQuote(table)));
+					SqlAttribute sqlAttribute = attributeMap.get(attribute);
+					boolean isMandantory = sqlAttribute != null && sqlAttribute.isMandatory();
+					boolean isSingle = weak && first;
+					fileContent.append("[");
+					fileContent.append(getCardinality(weak || isMandantory, isSingle, countMultiple));
+					fileContent.append("]");
+					first = false;
+					if (!isSingle) {
+						countMultiple++;
+					}
 				}
-				first = false;
 			}
-			if (!weak) {
+			if (weak) {
+				fileContent.append(" -> ");
+				fileContent.append(capitalize(deQuote(tableName)));
+				fileContent.append("[");
+				fileContent.append(getCardinality(false, false, countMultiple));
+				fileContent.append("]");
+			} else {
 				fileContent.append("\t");
-				fileContent.append("// default cardinalities");
+				fileContent.append("// example cardinalities");
 			}
 			fileContent.newLineIfNotEmpty();
 
-			addAttributes(fileContent, attributes, null, false);
+			if (!weak) {
+				addAttributes(fileContent, attributes, null, false);
+			}
 			
 			fileContent.append("}");
 			fileContent.newLineIfNotEmpty();
 		}
 		return fileContent;
+	}
+
+	protected String getNotation() {
+		return "default";
+	}
+
+	protected String getCardinality(boolean isMandatory, boolean isSingle, int countMultiple) {
+		return isSingle ? "1" : "N";
 	}
 	
 	// ER model does not support spaces in data types
@@ -404,6 +492,8 @@ public class SqlImport implements IErGenerator {
 						fileContent.append("partial-");
 					}
 					fileContent.append("key");
+				} else if (!attribute.isMandatory()) {
+					fileContent.append(" optional");
 				}
 				if (attribute.getAttributeComment() != null) {
 					fileContent.append("\t");

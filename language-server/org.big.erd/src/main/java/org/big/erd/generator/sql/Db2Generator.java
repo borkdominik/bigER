@@ -5,9 +5,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.big.erd.entityRelationship.Attribute;
-import org.big.erd.entityRelationship.AttributeType;
-
 /**
  * Generates SQL for DB2 from the ER model.
  */
@@ -116,15 +113,5 @@ public class Db2Generator extends SqlGenerator {
 		}
 		
 		return null;
-	}
-	
-	@Override
-	protected String transformDataType(Attribute attribute, String mappedType, int size, Integer precision, StringBuilder comment) {
-		String transformedType = super.transformDataType(attribute, mappedType, size, precision, comment);
-		if (attribute.getType() == AttributeType.KEY || attribute.getType() == AttributeType.PARTIAL_KEY) {
-			transformedType = transformedType + " NOT NULL";
-			addComment(comment, "added NULL constraint");
-		}
-		return transformedType;
 	}
 }
