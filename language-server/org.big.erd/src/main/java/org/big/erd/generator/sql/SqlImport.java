@@ -130,14 +130,18 @@ public class SqlImport implements IErGenerator {
 			fileName = fileName + ".txt";
 			File file = new File("src\\main\\java\\org\\big\\erd\\generator\\sql\\input", fileName);
 			try (InputStream fis = SqlImport.class.getResourceAsStream("input/" + fileName)) {
-				byte[] content = fis.readAllBytes();
-				String strContent = new String(content);
-				success &= importNotation(file, strContent, "default_notation", new SqlImport());
-				success &= importNotation(file, strContent, "uml", new UmlSqlImport());
-				success &= importNotation(file, strContent, "min_max", new MinMaxSqlImport());
-				success &= importNotation(file, strContent, "crows_foot", new CrowsFootSqlImport());
-				success &= importNotation(file, strContent, "chen", new ChenSqlImport());
-				success &= importNotation(file, strContent, "bachman", new BachmanSqlImport());
+				if (fis != null) {
+					byte[] content = fis.readAllBytes();
+					String strContent = new String(content);
+					success &= importNotation(file, strContent, "default_notation", new SqlImport());
+					success &= importNotation(file, strContent, "uml", new UmlSqlImport());
+					success &= importNotation(file, strContent, "min_max", new MinMaxSqlImport());
+					success &= importNotation(file, strContent, "crows_foot", new CrowsFootSqlImport());
+					success &= importNotation(file, strContent, "chen", new ChenSqlImport());
+					success &= importNotation(file, strContent, "bachman", new BachmanSqlImport());
+				} else {
+					System.out.println("could not open file: " + "input/" + fileName);
+				}
 			}
 		}
 		return success;
