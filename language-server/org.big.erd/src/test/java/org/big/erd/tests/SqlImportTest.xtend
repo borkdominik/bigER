@@ -1,22 +1,32 @@
 package org.big.erd.tests
 
+import com.google.inject.Inject
+import org.big.erd.entityRelationship.Model
 import org.big.erd.generator.sql.SqlImport
-import org.junit.jupiter.api.Test
-import static org.junit.Assert.assertTrue
+import org.eclipse.xtext.testing.InjectWith
+import org.eclipse.xtext.testing.extensions.InjectionExtension
+import org.eclipse.xtext.testing.util.ParseHelper
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.^extension.ExtendWith
 
+import static org.junit.Assert.assertTrue
+
+@ExtendWith(InjectionExtension)
+@InjectWith(EntityRelationshipInjectorProvider)
 class SqlImportTest {
 	
-	SqlImport generator
+	@Inject ParseHelper<Model> parseHelper
+	SqlImport importer
 	
 	@BeforeEach
 	def void setup() {
-		generator = new SqlImport()
+		importer = new SqlImport()
 	}
 	
 	@Test
 	def void testImport() {
-		assertTrue(generator.handleFiles());
+		assertTrue(importer.handleFiles());
 	}
      
 }
