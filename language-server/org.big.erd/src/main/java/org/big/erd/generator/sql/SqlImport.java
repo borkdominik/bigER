@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -123,14 +124,12 @@ public class SqlImport implements IErGenerator {
 	}
 	
 	public boolean handleFiles() throws IOException {
-		File root = new File("src\\main\\java\\org\\big\\erd\\generator\\sql\\input");
-		return handleFile(root);
-	}
-	
-	private static boolean handleFile(File file) throws IOException {
 		boolean success = true;
-		if (file.isFile()) {
-			try (FileInputStream fis = new FileInputStream(file)) {
+		String[] fileNames = new String[] {"biger", "biger-basic", "biger-relships", "db2look", "mssql", "mysql", "oracle", "pgadmin", "pgdump"};
+		for (String fileName : fileNames) {
+			fileName = fileName + ".txt";
+			File file = new File("src\\main\\java\\org\\big\\erd\\generator\\sql\\input", fileName);
+			try (InputStream fis = SqlImport.class.getResourceAsStream("input/" + fileName)) {
 				byte[] content = fis.readAllBytes();
 				String strContent = new String(content);
 				success &= importNotation(file, strContent, "default_notation", new SqlImport());
@@ -140,12 +139,6 @@ public class SqlImport implements IErGenerator {
 				success &= importNotation(file, strContent, "chen", new ChenSqlImport());
 				success &= importNotation(file, strContent, "bachman", new BachmanSqlImport());
 			}
-		} else if (file.isDirectory()) {
-			for (File f : file.listFiles()) {
-				success &= handleFile(f);
-			}
-		} else {
-			throw new FileNotFoundException(file.getAbsolutePath());
 		}
 		return success;
 	}
@@ -154,17 +147,16 @@ public class SqlImport implements IErGenerator {
 		StringConcatenation fileContent = importObject.generateFileContent("test", strContent);
 		String outputContent = fileContent.toString();
 		File output = new File(new File(new File(file.getParentFile().getParentFile(), "output"), importKey), file.getName());
-		try (FileOutputStream fos = new FileOutputStream(output)) {
-			fos.write(outputContent.getBytes());
+		if (output.isFile()) {
+			try (FileOutputStream fos = new FileOutputStream(output)) {
+				fos.write(outputContent.getBytes());
+			}
 		}
-		File expected = new File(new File(new File(new File(file.getParentFile().getParentFile(), "output"), "expected"), importKey), file.getName());
-		if (expected.isFile()) {
-			try (FileInputStream fisExpected = new FileInputStream(expected)) {
-				byte[] contentExpected = fisExpected.readAllBytes();
-				if (!new String(contentExpected).equals(outputContent)) {
-					System.out.println("unexpected output in file: " + output.getAbsolutePath());
-					return false;
-				}
+		try (InputStream fisExpected = SqlImport.class.getResourceAsStream("output/expected/" + importKey + "/" + file.getName())) {
+			byte[] contentExpected = fisExpected.readAllBytes();
+			if (!new String(contentExpected).equals(outputContent)) {
+				System.out.println("unexpected output in file: " + output.getAbsolutePath());
+				return false;
 			}
 		}
 		return true;
