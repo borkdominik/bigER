@@ -43,7 +43,7 @@ class MongoDbGenerator implements IErGenerator {
 						$jsonSchema: {
 							bsonType: "object",
 							title: "«entity.name» Object Validation",
-							required: ["«entity.primaryKey.name»"],
+							required: ["«entity.primaryKeys.map[key | key.name].join(', ')»"],
 							properties: {
 								«FOR attribute : entity.getAllAttrWithExtends.reject[it.type === AttributeType.DERIVED] SEPARATOR ','»
 								«attribute.name»: {
@@ -96,7 +96,7 @@ class MongoDbGenerator implements IErGenerator {
 						$jsonSchema: {
 							bsonType: "object",
 							title: "«relationship.name» (relationship) Object Validation",
-							required: ["«relationship.first.target.primaryKey.name»", "«relationship.second.target.primaryKey.name»"],
+							required: ["«relationship.first?.target.primaryKeys.map[key | key.name].join(', ')»", "«relationship.second?.target.primaryKeys.map[key | key.name].join(', ')»"],
 							properties: {
 								«FOR attribute : relationship.getAllKeysNameArray»
 								«attribute.name»: {
@@ -141,25 +141,25 @@ class MongoDbGenerator implements IErGenerator {
 		return attributes
 	}
 
-	private def primaryKey(Entity entity) {
+	private def Iterable<Attribute> primaryKeys(Entity entity) {
 		val keyAttributes = entity.attributes?.filter[it.type === AttributeType.KEY]
 		// TODO: Fix this
 		if (keyAttributes.nullOrEmpty) {
-			return entity.attributes.get(0)
+			return entity.attributes
 		}
 			
-		return keyAttributes.get(0)
+		return keyAttributes
 	}
 
 	private def getAllKeysName(Relationship relationship) {
-		return '''«IF relationship.first?.target !== null»"«relationship.first?.target.primaryKey.name»"«ENDIF»«IF relationship.second?.target !== null», "«relationship.second?.target.primaryKey.name»"«ENDIF»«IF relationship.third?.target !== null», "«relationship.third?.target.primaryKey.name»"«ENDIF»'''
+		return '''«IF relationship.first?.target !== null»"«relationship.first?.target.primaryKeys.map[key | key.name].join(', ')»"«ENDIF»«IF relationship.second?.target !== null», "«relationship.second?.target.primaryKeys.map[key | key.name].join(', ')»"«ENDIF»«IF relationship.third?.target !== null», "«relationship.third?.target.primaryKeys.map[key | key.name].join(', ')»"«ENDIF»'''
 	}
 
 	private def getAllKeysNameArray(Relationship relationship) {
 		val keys = newHashSet
-		if (relationship.first?.target !== null) { keys += relationship.first?.target?.primaryKey }
-		if (relationship.second?.target !== null) { keys += relationship.second?.target?.primaryKey }
-		if (relationship.third?.target !== null) { keys += relationship.third?.target?.primaryKey }
+		if (relationship.first?.target !== null) { keys += relationship.first?.target?.primaryKeys }
+		if (relationship.second?.target !== null) { keys += relationship.second?.target?.primaryKeys }
+		if (relationship.third?.target !== null) { keys += relationship.third?.target?.primaryKeys }
 		return keys
 	}
 
