@@ -49,15 +49,6 @@ class Neo4jGenerator implements IErGenerator {
 		return ''' 
 				CREATE («entity.name»:«entity.name» {name: "«entity.name»"«FOR attribute : entity.getAllAttrWithExtendsWithNamePrefix », «attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR»})«'\n'»
 			'''
-		/*
-		if(entity.extends !== null){
-			
-		} else {
-			return ''' 
-				CREATE («entity.name»:«entity.name» {name: "«entity.name»"«FOR attribute : entity.allAttributes », «entity.name»_«attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR»})«'\n'»
-			'''
-		}
-		*/
 	}
 
 	private def Iterable<Attribute> getAllAttrWithExtendsWithNamePrefix(Entity entity) {

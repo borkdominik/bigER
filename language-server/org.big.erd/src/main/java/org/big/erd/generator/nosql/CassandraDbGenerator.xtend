@@ -109,16 +109,12 @@ class CassandraDbGenerator implements IErGenerator {
 	private def foreignKeyRef(Entity entity) {
 		val keys = entity.attributes.filter[a | a.type === AttributeType.KEY]
 		if (keys.nullOrEmpty) {
-			//val attr = entity.attributes.get(0)
-			//return '''«'\t'»«attr.name» «attr.datatype.transformDataType» references «entity.name»(«attr.name»),'''
-			//return '''«'\t'»«attr.name» «attr.datatype.transformDataType»'''
 			val attrStrings = entity.attributes.map[ attr |
 				'''«'\t'»«attr.name» «attr.datatype.transformDataType»'''
 			]
 			return attrStrings.join(',\n')
 
 		}
-		//return '''«'\t'»«key.get(0).name» «key.get(0).datatype.transformDataType» references «entity.name»(«key.get(0).name»),'''
 		val attrStrings = keys.map[ key |
 				'''«'\t'»«key.name» «key.datatype.transformDataType»'''
 			]
@@ -200,12 +196,6 @@ class CassandraDbGenerator implements IErGenerator {
 		if(type == 'SMALLINT' || type == 'BIGINT') {
 			return 'VARINT';
 		}
-
-		/*
-		if(type.startsWith('DATE')) {
-			return 'TIMESPAN';
-		}
-		*/
 		
 		return type
 	}

@@ -21,7 +21,6 @@ class MongoDbGenerator implements IErGenerator {
 	}
 	
 	def String generate(Model model) {
-		// db = connect("localhost:27020/«model.name»");
 		'''
 			use(«model.name»);
 			«FOR entity : model.entities»
@@ -59,8 +58,6 @@ class MongoDbGenerator implements IErGenerator {
 	}
 	
 	private def toTable(Relationship relationship) {
-		//val keySource = relationship.first.target?.primaryKey
-		//val keyTarget = relationship.second.target?.primaryKey
 		return ''' 
 				db.createCollection("«relationship.name»", {
 					validator: {
@@ -88,8 +85,6 @@ class MongoDbGenerator implements IErGenerator {
 	}
 	
 	private def weakToTable(Relationship relationship) {
-		//val strong = getStrongEntity(relationship)
-		//val weak = getWeakEntity(relationship)
 		return ''' 
 				db.createCollection("«relationship.name»", {
 					validator: {
@@ -118,13 +113,10 @@ class MongoDbGenerator implements IErGenerator {
 	
 	private def Iterable<Attribute> getAllAttrWithExtendsWithNamePrefix(Entity entity) {
 		val attributes = newHashSet
-		//attributes += entity.attributes
 		for (attr : entity.attributes) {
 			if (!attr.name.startsWith(entity.name)) {
 				attr.name = entity.name + '_' + attr.name
 			}
-			//val newattr = new Attribute()
-			//newattr.name = entity.name + '_' + attr.name
 			attributes += attr
 		}
 		if (entity.extends !== null) {
