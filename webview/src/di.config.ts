@@ -4,12 +4,10 @@ import '../css/diagram.css';
 import '../css/popup.css';
 import { Container, ContainerModule } from 'inversify';
 import { LibavoidRouter, LibavoidDiamondAnchor, LibavoidEllipseAnchor, LibavoidRectangleAnchor, RouteType } from 'sprotty-routing-libavoid';
-import {
-    configureModelElement, HtmlRoot, HtmlRootView, overrideViewerOptions, PreRenderedElement, PreRenderedView,
+import { configureModelElement, HtmlRoot, HtmlRootView, overrideViewerOptions, PreRenderedElement, PreRenderedView,
     TYPES, loadDefaultModules, ConsoleLogger, LogLevel, SCompartmentView, SCompartment, editLabelFeature,
     labelEditUiModule, SModelRoot, SLabel, ExpandButtonHandler, SButton, expandFeature, SLabelView, ExpandButtonView,
-    SRoutingHandle, SRoutingHandleView, editFeature, configureActionHandler
-} from 'sprotty';
+    SRoutingHandle, SRoutingHandleView, editFeature, configureActionHandler } from 'sprotty';
 import { InheritanceEdgeView, ERModelView, EntityNodeView, RelationshipNodeView, NotationEdgeView } from './views';
 import { EntityNode, ERModel, NotationEdge, RelationshipNode, InheritanceEdge, CardinalityLabel, RoleLabel, LeftCardinalityLabel,
     RightCardinalityLabel, LeftRoleLabel, RightRoleLabel } from './model';
@@ -96,21 +94,23 @@ export function createDiagramContainer(widgetId: string): Container {
         popupOpenDelay: 0
     });
 
-    // Router options
+    // Edge router
     const router = container.get(LibavoidRouter);
+    configureRouter(router);
+
+    return container;
+}
+
+function configureRouter(router: LibavoidRouter): void {
     router.setOptions({
         routingType: RouteType.Orthogonal,
         segmentPenalty: 50,
-        // at least height of label to avoid labels overlap if
-        // there two neighbour edges have labels on the position
+        // at least height of label to avoid labels overlap if there are two neighbour edges that have labels on the position
         idealNudgingDistance: 24,
-        // 25 - height of label text + label offset. Such shape buffer distance is required to
-        // avoid label over shape
+        // 25: height of label text + label offset. Such shape buffer distance is required to avoid label over shape
         shapeBufferDistance: 25,
         nudgeOrthogonalSegmentsConnectedToShapes: true,
         // allow or disallow moving edge end from center
         nudgeOrthogonalTouchingColinearSegments: false,
     });
-
-    return container;
 }
