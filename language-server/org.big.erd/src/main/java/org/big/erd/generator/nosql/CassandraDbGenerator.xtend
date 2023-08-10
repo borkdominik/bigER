@@ -45,14 +45,14 @@ class CassandraDbGenerator implements IErGenerator {
 				«FOR attribute : entity.getAllAttrWithExtends.reject[it.type === AttributeType.DERIVED]» 
 					«'\t'»«attribute.name» «attribute.datatype.transformDataType»,
 				«ENDFOR»
-				«'\t'»PRIMARY KEY («entity.primaryKey.name»)
+				«'\t'»PRIMARY KEY («entity.getPrimaryKeysName»)
 				);«'\n'»«'\n'»
 			'''
 	}
 	
 	private def toTable(Relationship relationship) {
-		val keySource = relationship.first.target?.primaryKey
-		val keyTarget = relationship.second.target?.primaryKey
+		val keySource = relationship.first.target?.getPrimaryKeysName
+		val keyTarget = relationship.second.target?.getPrimaryKeysName
 		return ''' 
 				CREATE TABLE «relationship.name»(
 				«relationship.first.target.foreignKeyRef»,
@@ -61,7 +61,7 @@ class CassandraDbGenerator implements IErGenerator {
 				«FOR attribute : relationship.attributes»
 					«'\t'»«attribute.name» «attribute.datatype.transformDataType»,
 				«ENDFOR»
-				«'\t'»PRIMARY KEY («keySource.name», «keyTarget.name»«IF relationship.third?.target !== null», «relationship.third.target.primaryKey.name»«ENDIF»)
+				«'\t'»PRIMARY KEY («keySource», «keyTarget»«IF relationship.third?.target !== null», «relationship.third.target.getPrimaryKeysName»«ENDIF»)
 				) WITH comment='relationship';«'\n'»«'\n'»
 			'''
 	}
@@ -77,8 +77,10 @@ class CassandraDbGenerator implements IErGenerator {
 				«FOR attribute : relationship.attributes»
 					«'\t'»«attribute.name» «attribute.datatype.transformDataType»,
 				«ENDFOR»
-				«'\t'»«strong.primaryKey.name» «strong.primaryKey.datatype.transformDataType»,
-				«'\t'»PRIMARY KEY («weak.partialKey.name», «strong.primaryKey.name»)
+				«FOR key : strong.primaryKeys»
+					«'\t'»«key.name» «key.datatype.transformDataType»,
+				«ENDFOR»
+				«'\t'»PRIMARY KEY («weak.getPartialKeysName», «strong.getPrimaryKeysName»)
 				) WITH comment='relationship';«'\n'»«'\n'»
 			'''
 	}
@@ -105,30 +107,53 @@ class CassandraDbGenerator implements IErGenerator {
 		return attributes
 	}
 	private def foreignKeyRef(Entity entity) {
-		val key = entity.attributes.filter[a | a.type === AttributeType.KEY]
-		if (key.nullOrEmpty) {
-			val attr = entity.attributes.get(0)
-			//return '''«'\t'»«attr.name» «attr.datatype.transformDataType» references «entity.name»(«attr.name»),'''
-			return '''«'\t'»«attr.name» «attr.datatype.transformDataType»'''
+		val keys = entity.attributes.filter[a | a.type === AttributeType.KEY]
+		if (keys.nullOrEmpty) {
+			val attrStrings = entity.attributes.map[ attr |
+				'''«'\t'»«attr.name» «attr.datatype.transformDataType»'''
+			]
+			return attrStrings.join(',\n')
+
 		}
-		//return '''«'\t'»«key.get(0).name» «key.get(0).datatype.transformDataType» references «entity.name»(«key.get(0).name»),'''
-		return '''«'\t'»«key.get(0).name» «key.get(0).datatype.transformDataType»'''
+		val attrStrings = keys.map[ key |
+				'''«'\t'»«key.name» «key.datatype.transformDataType»'''
+			]
+		return attrStrings.join(',\n')
+		//return '''«'\t'»«key.get(0).name» «key.get(0).datatype.transformDataType»'''
 	}
 
-	private def primaryKey(Entity entity) {
+	private def Iterable<Attribute> primaryKeys(Entity entity) {
 		val keyAttributes = entity.attributes?.filter[it.type === AttributeType.KEY]
 		if (keyAttributes.nullOrEmpty) {
-			return entity.attributes.get(0)
+			return entity.attributes
 		}
 			
-		return keyAttributes.get(0)
+		return keyAttributes
+	}
+
+	private def getPrimaryKeysName(Entity entity) {
+		val keyAttributes = entity.attributes?.filter[it.type === AttributeType.KEY]
+		if (keyAttributes.nullOrEmpty) {
+			return entity.primaryKeys.map[key | key.name].join(', ')
+		}
+			
+		return keyAttributes.map[key | key.name].join(', ')
 	}
 	
-	private def partialKey(Entity entity) {
+	private def Iterable<Attribute> partialKeys(Entity entity) {
 		val keyAttributes = entity.attributes?.filter[a | a.type === AttributeType.PARTIAL_KEY]
 		if (keyAttributes.nullOrEmpty)
-			return entity.attributes.get(0)
-		return keyAttributes.get(0)
+			return entity.attributes
+		return keyAttributes
+	}
+
+	private def getPartialKeysName(Entity entity) {
+		val keyAttributes = entity.attributes?.filter[it.type === AttributeType.KEY]
+		if (keyAttributes.nullOrEmpty) {
+			return entity.partialKeys.map[key | key.name].join(', ')
+		}
+			
+		return keyAttributes.map[key | key.name].join(', ')
 	}
 
 	private def getStrongEntity(Relationship r) {
@@ -171,12 +196,6 @@ class CassandraDbGenerator implements IErGenerator {
 		if(type == 'SMALLINT' || type == 'BIGINT') {
 			return 'VARINT';
 		}
-
-		/*
-		if(type.startsWith('DATE')) {
-			return 'TIMESPAN';
-		}
-		*/
 		
 		return type
 	}

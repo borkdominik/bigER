@@ -49,15 +49,6 @@ class Neo4jGenerator implements IErGenerator {
 		return ''' 
 				CREATE («entity.name»:«entity.name» {name: "«entity.name»"«FOR attribute : entity.getAllAttrWithExtendsWithNamePrefix », «attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR»})«'\n'»
 			'''
-		/*
-		if(entity.extends !== null){
-			
-		} else {
-			return ''' 
-				CREATE («entity.name»:«entity.name» {name: "«entity.name»"«FOR attribute : entity.allAttributes », «entity.name»_«attribute.name»: "«attribute.datatype.transformDataType»"«ENDFOR»})«'\n'»
-			'''
-		}
-		*/
 	}
 
 	private def Iterable<Attribute> getAllAttrWithExtendsWithNamePrefix(Entity entity) {
@@ -84,9 +75,15 @@ class Neo4jGenerator implements IErGenerator {
 	}
 
 	private def uniqueKeyConstraint(Entity entity) {
-		return ''' 
-			CREATE CONSTRAINT IF NOT EXISTS FOR (x:«entity.name») REQUIRE x.«entity.name»_«entity.primaryKey.name» IS UNIQUE;«'\n'»
-		'''
+		val keys = entity.primaryKeys
+		if (keys.length > 1)
+			return ''' 
+				CREATE CONSTRAINT IF NOT EXISTS FOR (x:«entity.name») REQUIRE (x.«keys.map[key | key.name].join(', ')») IS UNIQUE;«'\n'»
+			'''
+		else
+			return ''' 
+				CREATE CONSTRAINT IF NOT EXISTS FOR (x:«entity.name») REQUIRE x.«entity.primaryKey.name» IS UNIQUE;«'\n'»
+			'''
 	}
 
 	private def toTableExtends(Entity entity){
@@ -123,10 +120,18 @@ class Neo4jGenerator implements IErGenerator {
 		return keyAttributes.get(0)
 	}
 
+	private def Iterable<Attribute> primaryKeys(Entity entity) {
+		val keyAttributes = entity.attributes?.filter[it.type === AttributeType.KEY]
+		if (keyAttributes.nullOrEmpty) {
+			return entity.attributes
+		}
+			
+		return keyAttributes
+	}
+
 	private def getAllKeysName(Relationship relationship) {
 		return '''«IF relationship.first?.target !== null»"«relationship.first?.target.primaryKey.name»"«ENDIF»«IF relationship.second?.target !== null», "«relationship.second?.target.primaryKey.name»"«ENDIF»«IF relationship.third?.target !== null», "«relationship.third?.target.primaryKey.name»"«ENDIF»'''
 	}
-
 
 	private def getAllAttributes(Entity entity) {
 		val attributes = newHashSet
