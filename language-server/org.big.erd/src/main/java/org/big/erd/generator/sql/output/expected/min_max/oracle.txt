@@ -1,0 +1,55 @@
+// ER Model
+erdiagram test
+// Options
+notation=minmax
+// Entities
+entity BUILDING {
+	BUILDING_ID: CHAR(8) key
+	ADDRESS: VARCHAR2(255) optional
+}
+entity COURSE {
+	COURSE_NR: NUMBER key
+	COURSE_NAME: VARCHAR2(100) optional
+	CREDITS: NUMBER optional
+}
+entity DEPARTMENT {
+	DEPT_NR: NUMBER key
+	NAME: VARCHAR2(100) optional
+	ABBREVIATION: CHAR(5) optional
+}
+entity INSTRUCTOR {
+	INSTRUCTOR_ID: NUMBER key
+	NAME: VARCHAR2(255) optional
+}
+weak entity LECTURE {
+	TITLE: VARCHAR2(255) partial-key
+}
+weak entity ROOM {
+	ROOM_NR: NUMBER partial-key
+}
+entity STUDENT {
+	ID: NUMBER key
+	NAME: VARCHAR2(255) optional
+	BIRTHDAY: DATE optional
+	AGE: NUMBER optional
+}
+// Relationships
+relationship EXAM {
+	STUDENT[0,*] -> COURSE[0,*] -> INSTRUCTOR[0,*]	// example cardinalities
+	POINTS: BINARY_DOUBLE optional
+}
+weak relationship COURSELECTURE {
+	COURSE[1,1] -> LECTURE[0,*]
+}
+relationship LOCATION {
+	BUILDING[0,*] -> DEPARTMENT[0,*]	// example cardinalities
+}
+relationship OFFICE {
+	ROOM[0,*] -> INSTRUCTOR[0,*]	// example cardinalities
+}
+weak relationship BUILDINGROOM {
+	BUILDING[1,1] -> ROOM[0,*]
+}
+relationship WORK {
+	INSTRUCTOR[0,*] -> DEPARTMENT[0,*]	// example cardinalities
+}

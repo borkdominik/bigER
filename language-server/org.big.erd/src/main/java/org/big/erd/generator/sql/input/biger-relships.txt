@@ -1,0 +1,60 @@
+CREATE TABLE Entity1 (
+	id VARCHAR(255) NOT NULL,	-- added default type; added NULL constraint
+	PRIMARY KEY (id)
+);
+CREATE TABLE Entity2 (
+	id VARCHAR(255) NOT NULL,	-- added default type; added NULL constraint
+	PRIMARY KEY (id)
+);
+CREATE TABLE Entity3 (
+	id VARCHAR(255) NOT NULL,	-- added default type; added NULL constraint
+	PRIMARY KEY (id)
+);
+CREATE TABLE Entity4 (
+	id VARCHAR(255) NOT NULL,	-- added default type; added NULL constraint
+	PRIMARY KEY (id)
+);
+CREATE TABLE Entity5 (
+	id VARCHAR(255) NOT NULL,	-- added default type; added NULL constraint
+	PRIMARY KEY (id)
+);
+CREATE TABLE Entity6 (
+	id VARCHAR(255) NOT NULL,	-- added default type; added NULL constraint
+	PRIMARY KEY (id)
+);
+CREATE TABLE Entity7 (
+	id VARCHAR(255) NOT NULL,	-- added default type; added NULL constraint
+	PRIMARY KEY (id)
+);
+CREATE TABLE Entity8 (
+	id VARCHAR(255) NOT NULL,	-- added default type; added NULL constraint
+	PRIMARY KEY (id)
+);
+CREATE TABLE Rel1 (
+	id VARCHAR(255) NOT NULL,	-- added default type; added NULL constraint
+	id2 VARCHAR(255) NOT NULL,	-- renamed from: id; added default type; added NULL constraint
+	PRIMARY KEY (id, id2),
+	FOREIGN KEY (id) REFERENCES Entity1 (id) ON DELETE CASCADE,
+	FOREIGN KEY (id2) REFERENCES Entity2 (id) ON DELETE CASCADE
+);
+CREATE TABLE Rel2 (
+	id VARCHAR(255) NOT NULL,	-- added default type; added NULL constraint
+	id2 VARCHAR(255) NOT NULL,	-- renamed from: id; added default type; added NULL constraint
+	PRIMARY KEY (id, id2),
+	FOREIGN KEY (id) REFERENCES Entity3 (id) ON DELETE CASCADE,
+	FOREIGN KEY (id2) REFERENCES Entity4 (id) ON DELETE CASCADE
+);
+CREATE TABLE Rel3 (
+	id VARCHAR(255) NOT NULL,	-- added default type; added NULL constraint
+	id2 VARCHAR(255) NOT NULL,	-- renamed from: id; added default type; added NULL constraint
+	PRIMARY KEY (id, id2),
+	FOREIGN KEY (id) REFERENCES Entity5 (id) ON DELETE CASCADE,
+	FOREIGN KEY (id2) REFERENCES Entity6 (id) ON DELETE CASCADE
+);
+CREATE TABLE Rel4 (
+	id VARCHAR(255) NOT NULL,	-- added default type; added NULL constraint
+	id2 VARCHAR(255) NOT NULL,	-- renamed from: id; added default type; added NULL constraint
+	PRIMARY KEY (id, id2),
+	FOREIGN KEY (id) REFERENCES Entity7 (id) ON DELETE CASCADE,
+	FOREIGN KEY (id2) REFERENCES Entity8 (id) ON DELETE CASCADE
+);

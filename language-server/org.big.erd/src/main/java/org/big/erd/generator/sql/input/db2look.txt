@@ -1,0 +1,407 @@
+-- Diese CLP-Datei wurde mit DB2LOOK Version "11.5" erstellt. 
+-- Zeitmarke: 10.12.2022 16:09:58
+-- Datenbankname: BIGER          
+-- Datenbankmanagerversion: DB2/NT64 Version 11.5.8.0     
+-- Codepage der Datenbank: 1208
+-- Sortierfolge f�r Datenbank lautet: SYSTEM_1252
+-- Alternative Sortierfolge (alt_collate): null
+-- VARCHAR2-Kompatibilit�t (varchar2_compat): OFF
+
+
+CONNECT TO BIGER;
+
+------------------------------------------------
+-- DDL-Anweisungen f�r Schemata
+------------------------------------------------
+
+-- Wenn die folgende DDL ausgef�hrt wird, wird explizit ein Schema in der
+-- neuen Datenbank erstellt, das einem implizit erstellten Schema
+-- in der urspr�nglichen Datenbank entspricht.
+
+CREATE SCHEMA "DB2ADMIN";
+
+
+
+------------------------------------------------
+-- DDL-Anweisungen f�r Tabelle "DB2ADMIN"."STUDENT"
+------------------------------------------------
+ 
+
+CREATE TABLE "DB2ADMIN"."STUDENT"  (
+		  "ID" BIGINT NOT NULL , 
+		  "NAME" VARCHAR(255 OCTETS) , 
+		  "BIRTHDAY" DATE , 
+		  "AGE" SMALLINT )   
+		 IN "USERSPACE1"  
+		 ORGANIZE BY ROW; 
+
+
+-- DDL-Anweisungen f�r Prim�rschl�ssel f�r Tabelle "DB2ADMIN"."STUDENT"
+
+ALTER TABLE "DB2ADMIN"."STUDENT" 
+	ADD PRIMARY KEY
+		("ID")
+	ENFORCED;
+
+
+
+------------------------------------------------
+-- DDL-Anweisungen f�r Tabelle "DB2ADMIN"."COURSE"
+------------------------------------------------
+ 
+
+CREATE TABLE "DB2ADMIN"."COURSE"  (
+		  "COURSE_NR" BIGINT NOT NULL , 
+		  "COURSE_NAME" VARCHAR(100 OCTETS) , 
+		  "CREDITS" SMALLINT )   
+		 IN "USERSPACE1"  
+		 ORGANIZE BY ROW; 
+
+
+-- DDL-Anweisungen f�r Prim�rschl�ssel f�r Tabelle "DB2ADMIN"."COURSE"
+
+ALTER TABLE "DB2ADMIN"."COURSE" 
+	ADD PRIMARY KEY
+		("COURSE_NR")
+	ENFORCED;
+
+
+
+------------------------------------------------
+-- DDL-Anweisungen f�r Tabelle "DB2ADMIN"."INSTRUCTOR"
+------------------------------------------------
+ 
+
+CREATE TABLE "DB2ADMIN"."INSTRUCTOR"  (
+		  "INSTRUCTOR_ID" BIGINT NOT NULL , 
+		  "NAME" VARCHAR(255 OCTETS) )   
+		 IN "USERSPACE1"  
+		 ORGANIZE BY ROW; 
+
+
+-- DDL-Anweisungen f�r Prim�rschl�ssel f�r Tabelle "DB2ADMIN"."INSTRUCTOR"
+
+ALTER TABLE "DB2ADMIN"."INSTRUCTOR" 
+	ADD PRIMARY KEY
+		("INSTRUCTOR_ID")
+	ENFORCED;
+
+
+
+------------------------------------------------
+-- DDL-Anweisungen f�r Tabelle "DB2ADMIN"."DEPARTMENT"
+------------------------------------------------
+ 
+
+CREATE TABLE "DB2ADMIN"."DEPARTMENT"  (
+		  "DEPT_NR" BIGINT NOT NULL , 
+		  "NAME" VARCHAR(100 OCTETS) , 
+		  "ABBREVIATION" CHAR(5 OCTETS) )   
+		 IN "USERSPACE1"  
+		 ORGANIZE BY ROW; 
+
+
+-- DDL-Anweisungen f�r Prim�rschl�ssel f�r Tabelle "DB2ADMIN"."DEPARTMENT"
+
+ALTER TABLE "DB2ADMIN"."DEPARTMENT" 
+	ADD PRIMARY KEY
+		("DEPT_NR")
+	ENFORCED;
+
+
+
+------------------------------------------------
+-- DDL-Anweisungen f�r Tabelle "DB2ADMIN"."BUILDING"
+------------------------------------------------
+ 
+
+CREATE TABLE "DB2ADMIN"."BUILDING"  (
+		  "BUILDING_ID" CHAR(8 OCTETS) NOT NULL , 
+		  "ADDRESS" VARCHAR(255 OCTETS) )   
+		 IN "USERSPACE1"  
+		 ORGANIZE BY ROW; 
+
+
+-- DDL-Anweisungen f�r Prim�rschl�ssel f�r Tabelle "DB2ADMIN"."BUILDING"
+
+ALTER TABLE "DB2ADMIN"."BUILDING" 
+	ADD PRIMARY KEY
+		("BUILDING_ID")
+	ENFORCED;
+
+
+
+------------------------------------------------
+-- DDL-Anweisungen f�r Tabelle "DB2ADMIN"."ROOM"
+------------------------------------------------
+ 
+
+CREATE TABLE "DB2ADMIN"."ROOM"  (
+		  "ROOM_NR" BIGINT NOT NULL , 
+		  "BUILDING_ID" CHAR(8 OCTETS) NOT NULL )   
+		 IN "USERSPACE1"  
+		 ORGANIZE BY ROW; 
+
+
+-- DDL-Anweisungen f�r Prim�rschl�ssel f�r Tabelle "DB2ADMIN"."ROOM"
+
+ALTER TABLE "DB2ADMIN"."ROOM" 
+	ADD PRIMARY KEY
+		("ROOM_NR",
+		 "BUILDING_ID")
+	ENFORCED;
+
+
+
+------------------------------------------------
+-- DDL-Anweisungen f�r Tabelle "DB2ADMIN"."LECTURE"
+------------------------------------------------
+ 
+
+CREATE TABLE "DB2ADMIN"."LECTURE"  (
+		  "TITLE" VARCHAR(255 OCTETS) NOT NULL , 
+		  "COURSE_NR" BIGINT NOT NULL )   
+		 IN "USERSPACE1"  
+		 ORGANIZE BY ROW; 
+
+
+-- DDL-Anweisungen f�r Prim�rschl�ssel f�r Tabelle "DB2ADMIN"."LECTURE"
+
+ALTER TABLE "DB2ADMIN"."LECTURE" 
+	ADD PRIMARY KEY
+		("TITLE",
+		 "COURSE_NR")
+	ENFORCED;
+
+
+
+------------------------------------------------
+-- DDL-Anweisungen f�r Tabelle "DB2ADMIN"."EXAM"
+------------------------------------------------
+ 
+
+CREATE TABLE "DB2ADMIN"."EXAM"  (
+		  "ID" BIGINT NOT NULL , 
+		  "COURSE_NR" BIGINT NOT NULL , 
+		  "INSTRUCTOR_ID" BIGINT NOT NULL , 
+		  "POINTS" DOUBLE )   
+		 IN "USERSPACE1"  
+		 ORGANIZE BY ROW; 
+
+
+-- DDL-Anweisungen f�r Prim�rschl�ssel f�r Tabelle "DB2ADMIN"."EXAM"
+
+ALTER TABLE "DB2ADMIN"."EXAM" 
+	ADD PRIMARY KEY
+		("ID",
+		 "COURSE_NR",
+		 "INSTRUCTOR_ID")
+	ENFORCED;
+
+
+
+------------------------------------------------
+-- DDL-Anweisungen f�r Tabelle "DB2ADMIN"."OFFICE"
+------------------------------------------------
+ 
+
+CREATE TABLE "DB2ADMIN"."OFFICE"  (
+		  "ROOM_NR" BIGINT NOT NULL , 
+		  "BUILDING_ID" CHAR(8 OCTETS) NOT NULL , 
+		  "INSTRUCTOR_ID" BIGINT NOT NULL )   
+		 IN "USERSPACE1"  
+		 ORGANIZE BY ROW; 
+
+
+-- DDL-Anweisungen f�r Prim�rschl�ssel f�r Tabelle "DB2ADMIN"."OFFICE"
+
+ALTER TABLE "DB2ADMIN"."OFFICE" 
+	ADD PRIMARY KEY
+		("ROOM_NR",
+		 "BUILDING_ID",
+		 "INSTRUCTOR_ID")
+	ENFORCED;
+
+
+
+------------------------------------------------
+-- DDL-Anweisungen f�r Tabelle "DB2ADMIN"."WORK"
+------------------------------------------------
+ 
+
+CREATE TABLE "DB2ADMIN"."WORK"  (
+		  "INSTRUCTOR_ID" BIGINT NOT NULL , 
+		  "DEPT_NR" BIGINT NOT NULL )   
+		 IN "USERSPACE1"  
+		 ORGANIZE BY ROW; 
+
+
+-- DDL-Anweisungen f�r Prim�rschl�ssel f�r Tabelle "DB2ADMIN"."WORK"
+
+ALTER TABLE "DB2ADMIN"."WORK" 
+	ADD PRIMARY KEY
+		("INSTRUCTOR_ID",
+		 "DEPT_NR")
+	ENFORCED;
+
+
+
+------------------------------------------------
+-- DDL-Anweisungen f�r Tabelle "DB2ADMIN"."LOCATION"
+------------------------------------------------
+ 
+
+CREATE TABLE "DB2ADMIN"."LOCATION"  (
+		  "BUILDING_ID" CHAR(8 OCTETS) NOT NULL , 
+		  "DEPT_NR" BIGINT NOT NULL )   
+		 IN "USERSPACE1"  
+		 ORGANIZE BY ROW; 
+
+
+-- DDL-Anweisungen f�r Prim�rschl�ssel f�r Tabelle "DB2ADMIN"."LOCATION"
+
+ALTER TABLE "DB2ADMIN"."LOCATION" 
+	ADD PRIMARY KEY
+		("BUILDING_ID",
+		 "DEPT_NR")
+	ENFORCED;
+
+
+
+-- DDL-Anweisungen f�r Fremdschl�ssel f�r Tabelle "DB2ADMIN"."ROOM"
+
+ALTER TABLE "DB2ADMIN"."ROOM" 
+	ADD CONSTRAINT "SQL221210155240620" FOREIGN KEY
+		("BUILDING_ID")
+	REFERENCES "DB2ADMIN"."BUILDING"
+		("BUILDING_ID")
+	ON DELETE CASCADE
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION;
+
+-- DDL-Anweisungen f�r Fremdschl�ssel f�r Tabelle "DB2ADMIN"."LECTURE"
+
+ALTER TABLE "DB2ADMIN"."LECTURE" 
+	ADD CONSTRAINT "SQL221210155240660" FOREIGN KEY
+		("COURSE_NR")
+	REFERENCES "DB2ADMIN"."COURSE"
+		("COURSE_NR")
+	ON DELETE CASCADE
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION;
+
+-- DDL-Anweisungen f�r Fremdschl�ssel f�r Tabelle "DB2ADMIN"."EXAM"
+
+ALTER TABLE "DB2ADMIN"."EXAM" 
+	ADD CONSTRAINT "SQL221210155240730" FOREIGN KEY
+		("ID")
+	REFERENCES "DB2ADMIN"."STUDENT"
+		("ID")
+	ON DELETE CASCADE
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION;
+
+ALTER TABLE "DB2ADMIN"."EXAM" 
+	ADD CONSTRAINT "SQL221210155240740" FOREIGN KEY
+		("COURSE_NR")
+	REFERENCES "DB2ADMIN"."COURSE"
+		("COURSE_NR")
+	ON DELETE CASCADE
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION;
+
+ALTER TABLE "DB2ADMIN"."EXAM" 
+	ADD CONSTRAINT "SQL221210155240750" FOREIGN KEY
+		("INSTRUCTOR_ID")
+	REFERENCES "DB2ADMIN"."INSTRUCTOR"
+		("INSTRUCTOR_ID")
+	ON DELETE CASCADE
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION;
+
+-- DDL-Anweisungen f�r Fremdschl�ssel f�r Tabelle "DB2ADMIN"."OFFICE"
+
+ALTER TABLE "DB2ADMIN"."OFFICE" 
+	ADD CONSTRAINT "SQL221210155240800" FOREIGN KEY
+		("ROOM_NR",
+		 "BUILDING_ID")
+	REFERENCES "DB2ADMIN"."ROOM"
+		("ROOM_NR",
+		 "BUILDING_ID")
+	ON DELETE CASCADE
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION;
+
+ALTER TABLE "DB2ADMIN"."OFFICE" 
+	ADD CONSTRAINT "SQL221210155240810" FOREIGN KEY
+		("INSTRUCTOR_ID")
+	REFERENCES "DB2ADMIN"."INSTRUCTOR"
+		("INSTRUCTOR_ID")
+	ON DELETE CASCADE
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION;
+
+-- DDL-Anweisungen f�r Fremdschl�ssel f�r Tabelle "DB2ADMIN"."WORK"
+
+ALTER TABLE "DB2ADMIN"."WORK" 
+	ADD CONSTRAINT "SQL221210155240850" FOREIGN KEY
+		("INSTRUCTOR_ID")
+	REFERENCES "DB2ADMIN"."INSTRUCTOR"
+		("INSTRUCTOR_ID")
+	ON DELETE CASCADE
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION;
+
+ALTER TABLE "DB2ADMIN"."WORK" 
+	ADD CONSTRAINT "SQL221210155240860" FOREIGN KEY
+		("DEPT_NR")
+	REFERENCES "DB2ADMIN"."DEPARTMENT"
+		("DEPT_NR")
+	ON DELETE CASCADE
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION;
+
+-- DDL-Anweisungen f�r Fremdschl�ssel f�r Tabelle "DB2ADMIN"."LOCATION"
+
+ALTER TABLE "DB2ADMIN"."LOCATION" 
+	ADD CONSTRAINT "SQL221210155240900" FOREIGN KEY
+		("BUILDING_ID")
+	REFERENCES "DB2ADMIN"."BUILDING"
+		("BUILDING_ID")
+	ON DELETE CASCADE
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION;
+
+ALTER TABLE "DB2ADMIN"."LOCATION" 
+	ADD CONSTRAINT "SQL221210155240910" FOREIGN KEY
+		("DEPT_NR")
+	REFERENCES "DB2ADMIN"."DEPARTMENT"
+		("DEPT_NR")
+	ON DELETE CASCADE
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION;
+
+
+
+
+
+
+
+
+COMMIT WORK;
+
+CONNECT RESET;
+
+TERMINATE;
+

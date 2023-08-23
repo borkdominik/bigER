@@ -1,0 +1,55 @@
+// ER Model
+erdiagram test
+// Options
+notation=bachman
+// Entities
+entity Student {
+	id: INT key
+	name: VARCHAR(255) optional
+	birthday: DATE optional
+	age: SMALLINT optional
+}
+entity Course {
+	course_nr: INT key
+	course_name: VARCHAR(100) optional
+	credits: SMALLINT optional
+}
+entity Instructor {
+	instructor_id: INT key
+	name: VARCHAR(255) optional
+}
+entity Department {
+	dept_nr: INT key
+	name: VARCHAR(100) optional
+	abbreviation: CHAR(5) optional
+}
+entity Building {
+	building_id: CHAR(8) key
+	address: VARCHAR(255) optional
+}
+weak entity Room {
+	room_nr: INT partial-key
+}
+weak entity Lecture {
+	title: VARCHAR(255) partial-key
+}
+// Relationships
+weak relationship BuildingRoom {
+	Building[1] -> Room[0+]
+}
+weak relationship CourseLecture {
+	Course[1] -> Lecture[0+]
+}
+relationship Exam {
+	Student[0+] -> Course[0+] -> Instructor[0+]	// example cardinalities
+	points: DOUBLE optional
+}
+relationship Office {
+	Room[0+] -> Instructor[0+]	// example cardinalities
+}
+relationship Work {
+	Instructor[0+] -> Department[0+]	// example cardinalities
+}
+relationship Location {
+	Building[0+] -> Department[0+]	// example cardinalities
+}

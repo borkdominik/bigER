@@ -215,13 +215,21 @@ public class SqlGenerator implements IErGenerator {
 			if (precision != null && precision > 0) {
 				strPrecision = ", " + precision;
 			}
-			return mappedType + "(" + size + strPrecision + ")";
+			mappedType = mappedType + "(" + size + strPrecision + ")";
+		}
+		if (attribute.getType() != AttributeType.OPTIONAL) {
+			mappedType = mappedType + " " + GeneratorUtils.NOT_NULL;
 		}
 		return mappedType;
 	}
 
 	protected String mapDataType(String type) {
 		return type;
+	}
+	
+	// ER model does not support spaces in data types
+	private String replaceUnderscores(String value) {
+		return value.replace("_", " ");
 	}
 
 	private Entity getStrongEntity(final Relationship r) {
@@ -286,6 +294,7 @@ public class SqlGenerator implements IErGenerator {
 					size = 255;
 					addComment(comment, "added default type");
 				}
+				originalType = replaceUnderscores(originalType);
 				String mappedType = this.mapDataType(originalType);
 				if (mappedType == null) {
 					mappedType = originalType;

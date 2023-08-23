@@ -1,0 +1,49 @@
+-- Table: public.exam
+
+-- DROP TABLE IF EXISTS public.exam;
+
+CREATE TABLE IF NOT EXISTS public.exam
+(
+    id integer NOT NULL,
+    course_nr integer NOT NULL,
+    instructor_id integer NOT NULL,
+    points double precision,
+    CONSTRAINT exam_pkey PRIMARY KEY (id, course_nr, instructor_id),
+    CONSTRAINT exam_course_nr_fkey FOREIGN KEY (course_nr)
+        REFERENCES public.course (course_nr) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT exam_id_fkey FOREIGN KEY (id)
+        REFERENCES public.student (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT exam_instructor_id_fkey FOREIGN KEY (instructor_id)
+        REFERENCES public.instructor (instructor_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.exam
+    OWNER to postgres;
+    
+-- Table: public.room
+
+-- DROP TABLE IF EXISTS public.room;
+
+CREATE TABLE IF NOT EXISTS public.room
+(
+    room_nr integer NOT NULL,
+    building_id character(8) COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT room_pkey PRIMARY KEY (room_nr, building_id),
+    CONSTRAINT room_building_id_fkey FOREIGN KEY (building_id)
+        REFERENCES public.building (building_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.room
+    OWNER to postgres;
