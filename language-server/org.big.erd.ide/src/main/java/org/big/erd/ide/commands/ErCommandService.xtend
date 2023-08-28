@@ -22,12 +22,14 @@ import org.big.erd.generator.sql.Db2Generator
 import org.big.erd.generator.sql.MsSqlGenerator
 import org.big.erd.generator.sql.MySqlGenerator
 import org.big.erd.generator.sql.OracleGenerator
+import org.big.erd.generator.sql.SqlImport
 
 class ErCommandService implements IExecutableCommandService {
 	
 	@Inject IResourceValidator resourceValidator
 	
 	Map<String, IErGenerator> generators
+	static final String IMPORT_SQL_COMMAND = "erdiagram.import.sql"
 	static final String GENERATE_PREFIX = "erdiagram.generate"
 	static final String GENERATE_SQL_COMMAND = GENERATE_PREFIX + ".sql"
 	static final String GENERATE_MONGODB_COMMAND = GENERATE_PREFIX + ".mongodb"
@@ -53,12 +55,38 @@ class ErCommandService implements IExecutableCommandService {
 		generators.put(GENERATE_MSSQL_COMMAND, new MsSqlGenerator)
 		generators.put(GENERATE_DB2_COMMAND, new Db2Generator)
 		return #[ 
+			IMPORT_SQL_COMMAND,
 			GENERATE_SQL_COMMAND, GENERATE_MONGODB_COMMAND, GENERATE_NEO4J_COMMAND, GENERATE_CASSANDRADB_COMMAND, GENERATE_POSTGRES_COMMAND, GENERATE_ORACLE_COMMAND, 
 			GENERATE_MYSQL_COMMAND, GENERATE_MSSQL_COMMAND, GENERATE_DB2_COMMAND
 		]
 	}
 	
 	override execute(ExecuteCommandParams params, ILanguageServerAccess access, CancelIndicator cancelIndicator) {
+		if (params.command.equals(IMPORT_SQL_COMMAND)) {
+			val fsa = ErUtils.getJavaIoFileSystemAccess()
+			fsa.setOutputPath("imported")
+			val uri = params.arguments.head as JsonPrimitive
+			
+			if (uri !== null) {
+				val sqlImport = new SqlImport
+				
+				return access.doRead(uri.asString) [
+						try {
+							
+							
+							// execute the generator
+							sqlImport.generate(resource, fsa, new GeneratorContext())
+							// optionally generate drop tables
+							return "Successfully imported code!"
+						} catch (Exception ex) {
+							return "Error! Exception while executing generator: \n" + ex.message
+						}
+					].get
+			} else {
+				return "Error! Missing resource URI"
+			}
+		}
+		
 		// handle erdiagram.generate.* commands 
 		if (params.command.startsWith(GENERATE_PREFIX)) {
 			val fsa = ErUtils.getJavaIoFileSystemAccess()

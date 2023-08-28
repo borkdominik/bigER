@@ -39,7 +39,8 @@
 		"onLanguage:erdiagram",
 		"onCommand:erdiagram.diagram.open",
 		"onCommand:erdiagram.model.newEmpty",
-		"onCommand:erdiagram.model.newSample"
+		"onCommand:erdiagram.model.newSample",
+		"onCommand:erdiagram.import.sql.proxy"
 	],
 	"files": [
 		"dist",
@@ -75,6 +76,11 @@
 			}
 		],
 		"commands": [
+			{
+				"command": "erdiagram.import.sql.proxy",
+				"title": "Import SQL",
+				"category": "bigER"
+			},
 			{
 				"command": "erdiagram.generate.sql.proxy",
 				"title": "Generate SQL",
@@ -259,6 +265,9 @@
 				{
 					"command": "erdiagram.diagram.export",
 					"when": "erdiagram-diagram-focused"
+				},
+				{
+					"command": "erdiagram.import.sql.proxy"
 				},
 				{
 					"command": "erdiagram.model.newEmpty"
