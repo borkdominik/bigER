@@ -13,16 +13,16 @@ import org.big.erd.generator.IErGenerator
 
 class MongoDbGenerator implements IErGenerator {
 	
-	override void generate(Resource resource, IFileSystemAccess2 fsa, IGeneratorContext context) {
+	override generate(Resource resource, IFileSystemAccess2 fsa, IGeneratorContext context) {
 		val model = resource.contents.get(0) as Model
-		validate(resource, model)
-		val fileName = (model.name ?: 'output') + ".js"
+		val fileName = (model.name ?: "output") + ".js"
 		fsa.generateFile(fileName, generate(model))
 	}
 	
-	def String generate(Model model) {
+	def generate(Model model) {
 		'''
-			use(«model.name»);
+			use("«model.name»");
+			«'\n'»
 			«FOR entity : model.entities»
 				«entity.toTable»
 			«ENDFOR»
@@ -41,8 +41,8 @@ class MongoDbGenerator implements IErGenerator {
 					validator: {
 						$jsonSchema: {
 							bsonType: "object",
-							title: "«entity.name» Object Validation",
-							required: ["«entity.primaryKeys.map[key | key.name].join(', ')»"],
+							title: "«entity.name» (Entity) Object Validation",
+							required: [ "«entity.primaryKeys.map[key | key.name].join(', ')»" ],
 							properties: {
 								«FOR attribute : entity.getAllAttrWithExtends.reject[it.type === AttributeType.DERIVED] SEPARATOR ','»
 								«attribute.name»: {
@@ -53,7 +53,6 @@ class MongoDbGenerator implements IErGenerator {
 						}
 					}
 				});
-				«'\n'»«'\n'»
 			'''
 	}
 	
@@ -63,8 +62,8 @@ class MongoDbGenerator implements IErGenerator {
 					validator: {
 						$jsonSchema: {
 							bsonType: "object",
-							title: "«relationship.name» (relationship) Object Validation",
-							required: [«relationship.getAllKeysName»],
+							title: "«relationship.name» (Relationship) Object Validation",
+							required: [ «relationship.getAllKeysName» ],
 							properties: {
 								«FOR attribute : relationship.getAllKeysNameArray»
 								«attribute.name»: {
@@ -80,7 +79,6 @@ class MongoDbGenerator implements IErGenerator {
 						}
 					}
 				});
-				«'\n'»«'\n'»
 			'''
 	}
 	
@@ -90,8 +88,8 @@ class MongoDbGenerator implements IErGenerator {
 					validator: {
 						$jsonSchema: {
 							bsonType: "object",
-							title: "«relationship.name» (relationship) Object Validation",
-							required: ["«relationship.first?.target.primaryKeys.map[key | key.name].join(', ')»", "«relationship.second?.target.primaryKeys.map[key | key.name].join(', ')»"],
+							title: "«relationship.name» (Relationship) Object Validation",
+							required: [ "«relationship.first?.target.primaryKeys.map[key | key.name].join(', ')»", "«relationship.second?.target.primaryKeys.map[key | key.name].join(', ')»" ],
 							properties: {
 								«FOR attribute : relationship.getAllKeysNameArray»
 								«attribute.name»: {
@@ -107,7 +105,6 @@ class MongoDbGenerator implements IErGenerator {
 						}
 					}
 				});
-				«'\n'»«'\n'»
 			'''
 	}
 	
@@ -158,26 +155,16 @@ class MongoDbGenerator implements IErGenerator {
 	
 	private def transformDataType(DataType dataType) {
 		// default
-		if(dataType === null) {
+		if (dataType === null) {
 			return 'string'
 		}
 			
 		val type = dataType.type.toLowerCase()
 
-		if(type.contains('char') || type.contains('string')) {
+		if (type.contains('char') || type.contains('string')) {
 			return 'string';
 		}
 
 		return type
-	}
-
-	
-	private def validate(Resource resource, Model model) {
-		// additional validation check, since generalization is not supported
-		/*
-		if (!model.entities?.filter[it.extends !== null].isNullOrEmpty) {
-			throw new IllegalArgumentException("SQL Generator does not support generalization, remove the 'extends' keyword")
-		}
-		*/
 	}
 }
