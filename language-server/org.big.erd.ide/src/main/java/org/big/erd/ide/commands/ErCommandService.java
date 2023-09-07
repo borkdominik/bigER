@@ -1,6 +1,5 @@
 package org.big.erd.ide.commands;
 
-import java.net.URI;
 import java.util.List;
 import java.util.function.Function;
 import org.big.erd.generator.IErGenerator;
@@ -8,6 +7,8 @@ import org.big.erd.generator.sql.SqlGenerator;
 import org.big.erd.generator.sql.SqlImport;
 import org.big.erd.util.ErUtils;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.Resource.Diagnostic;
 import org.eclipse.lsp4j.ExecuteCommandParams;
 import org.eclipse.xtext.generator.GeneratorContext;
@@ -43,13 +44,12 @@ public class ErCommandService implements IExecutableCommandService {
 		if (params.getCommand().equals(IMPORT_SQL_COMMAND)) {
 			JsonPrimitive erdFileUri = ((JsonPrimitive) params.getArguments().get(0));
 			JsonPrimitive sqlFileUri = ((JsonPrimitive) params.getArguments().get(1));
-			//InMemoryFileSystemAccess fsa = ErUtils.getInMemoryFileSystemAccess();
-			
 			JavaIoFileSystemAccess fsa = ErUtils.getJavaIoFileSystemAccess();
-			// fsa.setOutputPath("./");
 			
-			//JavaIoFileSystemAccess fsa = ErUtils.getJavaIoFileSystemAccess();
-			fsa.setOutputPath("output");
+			// String text = fsa.readTextFile(sqlFileUri.getAsString()).toString();
+			// LOG.info("TEXT: " + text);
+			// fsa.setOutputPath("output");
+			
 			LOG.info("ERD File URI: " + erdFileUri);
 			LOG.info("SQL File URI: " + sqlFileUri);
 			
@@ -87,13 +87,16 @@ public class ErCommandService implements IExecutableCommandService {
 		return "Error! Unknown Command";
 	}
 	
-	private Function<ILanguageServerAccess.Context, String> getImportFunction(String sqlFileUri, IFileSystemAccess2 fsa, ExecuteCommandParams params) {
+	private Function<ILanguageServerAccess.Context, String> getImportFunction(String sqlFileUri, JavaIoFileSystemAccess fsa, ExecuteCommandParams params) {
 		return (ILanguageServerAccess.Context it) -> {
-			// LOG.info("URI: " + it.getResource().getURI().trimSegments(1).path());
-			//fsa.setOutputPath(it.getResource().getURI().trimSegments(1).path());
+			String outputPath = it.getResource().getURI().trimSegments(1).path();
+			fsa.setOutputPath(outputPath);
 			
+			String erdFileName = it.getResource().getURI().lastSegment();
+			String sqlFileName = URI.createFileURI(sqlFileUri).lastSegment();
 			SqlImport sqlImport = new SqlImport();
-			sqlImport.importFile(it.getResource(), sqlFileUri, fsa, new GeneratorContext());
+			
+			sqlImport.importFile(erdFileName, sqlFileName, it.getResource(), fsa, new GeneratorContext());
 			return "Successfully imported code!";
 		};
 	}

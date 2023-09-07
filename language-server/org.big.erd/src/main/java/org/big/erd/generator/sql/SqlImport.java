@@ -6,6 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -17,12 +19,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
-
-import org.apache.log4j.Logger;
 import org.big.erd.entityRelationship.Model;
-import org.big.erd.generator.IErGenerator;
 import org.big.erd.importer.IErImporter;
-import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.generator.IFileSystemAccess2;
@@ -110,18 +108,16 @@ public class SqlImport implements IErImporter {
 		return pattern;
 	}
 	
-	
-	public void importFile(Resource resource, String sqlFileUri, IFileSystemAccess2 fsa, IGeneratorContext context) {
-		
-		
-		URI sqlFile = fsa.getURI(sqlFileUri);
-		LOG.info("SQL FILE URI: " + sqlFile.toString());
+	@Override
+	public void importFile(String erdFile, String sqlFile, Resource resource, IFileSystemAccess2 fsa, IGeneratorContext context) {
 		try {
-			String text = fsa.readTextFile("basic.sql").toString();
-			LOG.info(text);
+			String text = fsa.readTextFile(sqlFile).toString();
+			LOG.info(String.format("SQL file content from '%s': %n%s", sqlFile, text));
+			
 			StringConcatenation fileContent = generateFileContent("ImportedModel", text);
-			LOG.info(fileContent);
-			fsa.generateFile("output.erd", fileContent);
+			LOG.info(String.format("Imported ER Model: %n%s", fileContent));
+			
+			fsa.generateFile(erdFile, fileContent);
 		} catch (final Throwable t) {
 			if (t instanceof RuntimeIOException) {
 				throw new Error("Could not generate file. Did you open a folder?", t);
@@ -129,26 +125,6 @@ public class SqlImport implements IErImporter {
 				throw Exceptions.sneakyThrow(t);
 			}
 		}
-		
-		// String text = fsa.readTextFile("test.txt").toString();
-		/*File file = new File(sqlFileUri);
-		if (!file.exists()) {
-			LOG.error("File does not exist!");
-			return;
-		} else if (!file.canRead()) {
-			LOG.error("Cannot read file!");
-			return;
-		}*/
-		
-		
-		// LOG.info(text);
-		
-		/*StringConcatenation fileContent = generateFileContent("Imported_Model", text);
-		LOG.info(fileContent);
-		
-		fsa.generateFile("test2.erd", fileContent);*/
-		
-		//fsa.generateFile(genFile, fileContent);
 	}
 
 	//@Override
