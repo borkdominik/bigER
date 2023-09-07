@@ -16,9 +16,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.apache.log4j.Logger;
 
+import org.apache.log4j.Logger;
 import org.big.erd.entityRelationship.Model;
 import org.big.erd.generator.IErGenerator;
+import org.big.erd.importer.IErImporter;
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.generator.IFileSystemAccess2;
@@ -31,7 +35,9 @@ import org.eclipse.xtext.xbase.lib.Exceptions;
  * 
  * TODO: Integrate SQL Import
  */
-public class SqlImport implements IErGenerator {
+public class SqlImport implements IErImporter {
+	
+	private static Logger LOG = Logger.getLogger(SqlImport.class);
 
 	private static final boolean REPLACE_NEWLINES = false;
 
@@ -103,8 +109,49 @@ public class SqlImport implements IErGenerator {
 		}
 		return pattern;
 	}
+	
+	
+	public void importFile(Resource resource, String sqlFileUri, IFileSystemAccess2 fsa, IGeneratorContext context) {
+		
+		
+		URI sqlFile = fsa.getURI(sqlFileUri);
+		LOG.info("SQL FILE URI: " + sqlFile.toString());
+		try {
+			String text = fsa.readTextFile("basic.sql").toString();
+			LOG.info(text);
+			StringConcatenation fileContent = generateFileContent("ImportedModel", text);
+			LOG.info(fileContent);
+			fsa.generateFile("output.erd", fileContent);
+		} catch (final Throwable t) {
+			if (t instanceof RuntimeIOException) {
+				throw new Error("Could not generate file. Did you open a folder?", t);
+			} else {
+				throw Exceptions.sneakyThrow(t);
+			}
+		}
+		
+		// String text = fsa.readTextFile("test.txt").toString();
+		/*File file = new File(sqlFileUri);
+		if (!file.exists()) {
+			LOG.error("File does not exist!");
+			return;
+		} else if (!file.canRead()) {
+			LOG.error("Cannot read file!");
+			return;
+		}*/
+		
+		
+		// LOG.info(text);
+		
+		/*StringConcatenation fileContent = generateFileContent("Imported_Model", text);
+		LOG.info(fileContent);
+		
+		fsa.generateFile("test2.erd", fileContent);*/
+		
+		//fsa.generateFile(genFile, fileContent);
+	}
 
-	@Override
+	//@Override
 	public void generate(final Resource resource, final IFileSystemAccess2 fsa, final IGeneratorContext context) {
 		final Model diagram = (Model) resource.getContents().get(0);
 		String diagramName = diagram.getName();
@@ -168,6 +215,7 @@ public class SqlImport implements IErGenerator {
 
 	private StringConcatenation generateFileContent(String diagramName, String text) {
 		String preprocessedSql = preprocessSql(text);
+		
 		
 		StringConcatenation fileContent = new StringConcatenation();
 		fileContent.append("// ER Model");

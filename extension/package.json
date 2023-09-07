@@ -76,6 +76,11 @@
 		],
 		"commands": [
 			{
+				"command": "erdiagram.import.sql.proxy",
+				"title": "Import SQL",
+				"category": "bigER"
+			},
+			{
 				"command": "erdiagram.generate.sql.proxy",
 				"title": "Generate SQL",
 				"category": "bigER"
@@ -240,6 +245,10 @@
 				}
 			],
 			"commandPalette": [
+				{
+					"command": "erdiagram.import.sql.proxy",
+					"when": "editorLangId == erdiagram"
+				},
 				{
 					"command": "erdiagram.diagram.open",
 					"when": "editorLangId == erdiagram"

@@ -8,6 +8,7 @@ import { ERDiagramWebview } from './erdiagram-webview';
 import newEmptyModel from './commands/new-empty-model';
 import newSampleModel from './commands/new-sample-model';
 import { generateCassandraDbHandler, generateMongoDbHandler, generateNeo4jHandler, generateDb2Handler, generateMsSqlHandler, generateMySqlHandler, generateOracleHandler, generatePostgresHandler, generateSqlHandler } from './commands/generate';
+import { importSqlHandler } from './commands/import';
 
 export class ERDiagramLspVscodeExtension extends SprottyLspEditVscodeExtension {
 
@@ -23,6 +24,7 @@ export class ERDiagramLspVscodeExtension extends SprottyLspEditVscodeExtension {
         this.context.subscriptions.push(vscode.commands.registerCommand("erdiagram.model.newSample", (...commandArgs: any[]) => {
                 newSampleModel();
             }));
+        this.context.subscriptions.push(vscode.commands.registerCommand("erdiagram.import.sql.proxy", importSqlHandler));
         this.context.subscriptions.push(vscode.commands.registerCommand("erdiagram.generate.sql.proxy", generateSqlHandler));
         this.context.subscriptions.push(vscode.commands.registerCommand("erdiagram.generate.mongodb.proxy", generateMongoDbHandler));
         this.context.subscriptions.push(vscode.commands.registerCommand("erdiagram.generate.neo4j.proxy", generateNeo4jHandler));
