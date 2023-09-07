@@ -185,21 +185,6 @@
 					"submenu": "erdiagram.generate",
 					"when": "editorLangId == erdiagram",
 					"group": "1_modification"
-				},
-				{
-					"command": "erdiagram.generate.mongodb.proxy",
-					"when": "editorLangId == erdiagram",
-					"group": "1_modification"
-				},
-				{
-					"command": "erdiagram.generate.neo4j.proxy",
-					"when": "editorLangId == erdiagram",
-					"group": "1_modification"
-				},
-				{
-					"command": "erdiagram.generate.cassandradb.proxy",
-					"when": "editorLangId == erdiagram",
-					"group": "1_modification"
 				}
 			],
 			"explorer/context": [
@@ -212,21 +197,6 @@
 					"submenu": "erdiagram.generate",
 					"when": "resourceExtname == '.erd'",
 					"group": "2_workspace"
-				},
-				{
-					"command": "erdiagram.generate.mongodb.proxy",
-					"when": "resourceExtname == '.erd'",
-					"group": "2_workspace"
-				},
-				{
-					"command": "erdiagram.generate.neo4j.proxy",
-					"when": "editorLangId == erdiagram",
-					"group": "1_modification"
-				},
-				{
-					"command": "erdiagram.generate.cassandradb.proxy",
-					"when": "editorLangId == erdiagram",
-					"group": "1_modification"
 				}
 			],
 			"file/newFile": [
