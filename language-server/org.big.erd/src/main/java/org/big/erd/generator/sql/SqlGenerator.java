@@ -1,5 +1,10 @@
 package org.big.erd.generator.sql;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -9,6 +14,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 
 import org.big.erd.entityRelationship.Attribute;
 import org.big.erd.entityRelationship.AttributeType;
@@ -29,6 +35,56 @@ import org.eclipse.xtext.generator.IGeneratorContext;
 public class SqlGenerator implements IErGenerator {
 	
 	private Map<String, Map<String, Attribute>> effectivePrimaryKeys = new HashMap<>();
+	
+	public static boolean handleFiles(Function<CharSequence, Model> parseFunction) throws IOException {
+		boolean success = true;
+		String[] fileNames = new String[] {"biger", "biger-basic", "biger-relships"};
+		for (String fileName : fileNames) {
+			fileName = fileName + ".txt";
+			File file = new File("src\\test\\resources\\org\\big\\erd\\generator\\sql\\export\\input", fileName);
+			try (InputStream fis = SqlGenerator.class.getResourceAsStream("export/input/" + fileName)) {
+				if (fis != null) {
+					byte[] content = fis.readAllBytes();
+					String strContent = new String(content);
+					Model model = parseFunction.apply(strContent);
+					success &= exportVendor(file, model, "default_generator", false, new SqlGenerator());
+					success &= exportVendor(file, model, "db2", false, new Db2Generator());
+					success &= exportVendor(file, model, "mssql", false, new MsSqlGenerator());
+					success &= exportVendor(file, model, "mysql", false, new MySqlGenerator());
+					success &= exportVendor(file, model, "oracle", false, new OracleGenerator());
+					success &= exportVendor(file, model, "postgres", false, new PostgresGenerator());
+					success &= exportVendor(file, model, "default_generator_drop", true, new SqlGenerator());
+					success &= exportVendor(file, model, "db2_drop", true, new Db2Generator());
+					success &= exportVendor(file, model, "mssql_drop", true, new MsSqlGenerator());
+					success &= exportVendor(file, model, "mysql_drop", true, new MySqlGenerator());
+					success &= exportVendor(file, model, "oracle_drop", true, new OracleGenerator());
+					success &= exportVendor(file, model, "postgres_drop", true, new PostgresGenerator());
+				} else {
+					System.out.println("could not open file: " + "export/input/" + fileName);
+				}
+			}
+		}
+		return success;
+	}
+
+	private static boolean exportVendor(File file, Model model, String exportKey, boolean drop, SqlGenerator exportObject) throws IOException, FileNotFoundException {
+		StringConcatenation fileContent = exportObject.generateFileContent(model, drop);
+		String outputContent = fileContent.toString();
+		File output = new File(new File(new File(file.getParentFile().getParentFile(), "output"), exportKey), file.getName());
+		if (output.getParentFile().isDirectory()) {
+			try (FileOutputStream fos = new FileOutputStream(output)) {
+				fos.write(outputContent.getBytes());
+			}
+		}
+		try (InputStream fisExpected = SqlImport.class.getResourceAsStream("export/output/expected/" + exportKey + "/" + file.getName())) {
+			byte[] contentExpected = fisExpected.readAllBytes();
+			if (!new String(contentExpected).equals(outputContent)) {
+				System.out.println("unexpected output in file: " + output.getAbsolutePath());
+				return false;
+			}
+		}
+		return true;
+	}
 
 	@Override
 	public void generate(final Resource resource, final IFileSystemAccess2 fsa, final IGeneratorContext context) {
@@ -107,30 +163,30 @@ public class SqlGenerator implements IErGenerator {
 	}
 
 	private String toTable(final Relationship relationship, boolean drop) {
-		Entity firstEntity = relationship.getFirst().getTarget();
-		Map<String, Attribute> firstKey = null;
-		if (firstEntity != null) {
-			firstKey = this.effectivePrimaryKey(firstEntity);
-		}
-		Entity secondEntity = relationship.getSecond().getTarget();
-		Map<String, Attribute> secondKey = null;
-		if (secondEntity != null) {
-			secondKey = this.effectivePrimaryKey(secondEntity);
-		}
-		RelationEntity third = relationship.getThird();
-		Entity thirdEntity = null;
-		if (third != null) {
-			thirdEntity = third.getTarget();
-		}
-		Map<String, Attribute> thirdKey = null;
-		if (thirdEntity != null) {
-			thirdKey = this.effectivePrimaryKey(thirdEntity);
-		}
-		
 		StringConcatenation tableContent = new StringConcatenation();
 		startTable(tableContent, relationship.getName(), drop);
 
 		if (!drop) {
+			Entity firstEntity = relationship.getFirst().getTarget();
+			Map<String, Attribute> firstKey = null;
+			if (firstEntity != null) {
+				firstKey = this.effectivePrimaryKey(firstEntity);
+			}
+			Entity secondEntity = relationship.getSecond().getTarget();
+			Map<String, Attribute> secondKey = null;
+			if (secondEntity != null) {
+				secondKey = this.effectivePrimaryKey(secondEntity);
+			}
+			RelationEntity third = relationship.getThird();
+			Entity thirdEntity = null;
+			if (third != null) {
+				thirdEntity = third.getTarget();
+			}
+			Map<String, Attribute> thirdKey = null;
+			if (thirdEntity != null) {
+				thirdKey = this.effectivePrimaryKey(thirdEntity);
+			}
+			
 			// attributes
 			Set<String> usedNames = new HashSet<>();
 			Map<String, Attribute> attributeMap = deduplicateAttributes(relationship.getAttributes(), usedNames);

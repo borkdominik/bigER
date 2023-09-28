@@ -1,0 +1,3 @@
+DROP TABLE Places;
+DROP TABLE Order;
+DROP TABLE Customer;
