@@ -60,7 +60,7 @@ public class SqlGenerator implements IErGenerator {
 					success &= exportVendor(file, model, "oracle_drop", true, new OracleGenerator());
 					success &= exportVendor(file, model, "postgres_drop", true, new PostgresGenerator());
 				} else {
-					System.out.println("could not open file: " + "export/input/" + fileName);
+					System.err.println("could not open file: " + "export/input/" + fileName);
 				}
 			}
 		}
@@ -79,7 +79,7 @@ public class SqlGenerator implements IErGenerator {
 		try (InputStream fisExpected = SqlImport.class.getResourceAsStream("export/output/expected/" + exportKey + "/" + file.getName())) {
 			byte[] contentExpected = fisExpected.readAllBytes();
 			if (!new String(contentExpected).equals(outputContent)) {
-				System.out.println("unexpected output in file: " + output.getAbsolutePath());
+				System.err.println("unexpected output in file: " + output.getAbsolutePath());
 				return false;
 			}
 		}

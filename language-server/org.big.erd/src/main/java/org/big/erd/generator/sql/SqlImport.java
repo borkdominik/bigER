@@ -139,7 +139,7 @@ public class SqlImport implements IErGenerator {
 					success &= importNotation(file, strContent, "chen", new ChenSqlImport());
 					success &= importNotation(file, strContent, "bachman", new BachmanSqlImport());
 				} else {
-					System.out.println("could not open file: " + "import/input/" + fileName);
+					System.err.println("could not open file: " + "import/input/" + fileName);
 				}
 			}
 		}
@@ -158,7 +158,7 @@ public class SqlImport implements IErGenerator {
 		try (InputStream fisExpected = SqlImport.class.getResourceAsStream("import/output/expected/" + importKey + "/" + file.getName())) {
 			byte[] contentExpected = fisExpected.readAllBytes();
 			if (!new String(contentExpected).equals(outputContent)) {
-				System.out.println("unexpected output in file: " + output.getAbsolutePath());
+				System.err.println("unexpected output in file: " + output.getAbsolutePath());
 				return false;
 			}
 		}
