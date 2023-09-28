@@ -35,21 +35,21 @@ entity STUDENT {
 }
 // Relationships
 relationship EXAM {
-	STUDENT[N] -> COURSE[M] -> INSTRUCTOR[L]	// example cardinalities
+	STUDENT[N] -> COURSE[N] -> INSTRUCTOR[N]	// example cardinalities
 	POINTS: BINARY_DOUBLE optional
 }
 weak relationship COURSELECTURE {
 	COURSE[1] -> LECTURE[N]
 }
 relationship LOCATION {
-	BUILDING[N] -> DEPARTMENT[M]	// example cardinalities
+	BUILDING[N] -> DEPARTMENT[N]	// example cardinalities
 }
 relationship OFFICE {
-	ROOM[N] -> INSTRUCTOR[M]	// example cardinalities
+	ROOM[N] -> INSTRUCTOR[N]	// example cardinalities
 }
 weak relationship BUILDINGROOM {
 	BUILDING[1] -> ROOM[N]
 }
 relationship WORK {
-	INSTRUCTOR[N] -> DEPARTMENT[M]	// example cardinalities
+	INSTRUCTOR[N] -> DEPARTMENT[N]	// example cardinalities
 }

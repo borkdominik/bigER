@@ -8,7 +8,7 @@ weak entity Room {
 }
 // Relationships
 relationship Exam {
-	Course[N] -> Student[M] -> Instructor[L]	// example cardinalities
+	Course[N] -> Student[N] -> Instructor[N]	// example cardinalities
 	points: double optional
 }
 weak relationship BuildingRoom {

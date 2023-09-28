@@ -29,14 +29,14 @@ entity Entity8 {
 }
 // Relationships
 relationship Rel1 {
-	Entity1[N] -> Entity2[M]	// example cardinalities
+	Entity1[N] -> Entity2[N]	// example cardinalities
 }
 relationship Rel2 {
-	Entity3[N] -> Entity4[M]	// example cardinalities
+	Entity3[N] -> Entity4[N]	// example cardinalities
 }
 relationship Rel3 {
-	Entity5[N] -> Entity6[M]	// example cardinalities
+	Entity5[N] -> Entity6[N]	// example cardinalities
 }
 relationship Rel4 {
-	Entity7[N] -> Entity8[M]	// example cardinalities
+	Entity7[N] -> Entity8[N]	// example cardinalities
 }

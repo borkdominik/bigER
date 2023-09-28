@@ -41,15 +41,15 @@ weak relationship CourseLecture {
 	Course[1] -> Lecture[N]
 }
 relationship Exam {
-	Student[N] -> Course[M] -> Instructor[L]	// example cardinalities
+	Student[N] -> Course[N] -> Instructor[N]	// example cardinalities
 	points: DOUBLE optional
 }
 relationship Office {
-	Room[N] -> Instructor[M]	// example cardinalities
+	Room[N] -> Instructor[N]	// example cardinalities
 }
 relationship Work {
-	Instructor[N] -> Department[M]	// example cardinalities
+	Instructor[N] -> Department[N]	// example cardinalities
 }
 relationship Location {
-	Building[N] -> Department[M]	// example cardinalities
+	Building[N] -> Department[N]	// example cardinalities
 }

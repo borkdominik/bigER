@@ -13,5 +13,5 @@ entity Order {
 }
 // Relationships
 relationship Places {
-	Customer[N] -> Order[M]	// example cardinalities
+	Customer[N] -> Order[N]	// example cardinalities
 }
