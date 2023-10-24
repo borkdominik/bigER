@@ -2,13 +2,24 @@
 
 All notable changes to this project will be documented in this file. The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.5.0] - *10-2023*
+
+### New
+
+- NoSQL Export supporting [MongoDB](https://github.com/borkdominik/bigER/wiki/MongoDB-Export), [Neo4j](https://github.com/borkdominik/bigER/wiki/Neo4j-Export), and [Cassandra](https://github.com/borkdominik/bigER/wiki/Cassandra-Export)
+- Two new examples: [`onlineshop.erd`](https://github.com/borkdominik/bigER/blob/main/examples/onlineshop.erd) and [`socialmedia.erd`](https://github.com/borkdominik/bigER/blob/main/examples/socialmedia.erd)
+
+### Changed
+
+- Various minor changes to SQL export (still work in progress, see commit [#0772570](https://github.com/borkdominik/bigER/commit/0772570e640b04f7303918f0f8a9d00dfa1636a6) for detailed changes)
+
 ## [0.4.0] - *02-2023*
 
 ### New
 
 - UML Notation (see [Notations](https://github.com/borkdominik/bigER/wiki/Notations))
-- Configuration: Generate `DROP TABLE` statements when generating SQL (disabled by default).
-- Support for datatypes with two arguments: e.g. `FLOAT(5, 5)`.
+- Configuration: Generate `DROP TABLE` statements when generating SQL (disabled by default)
+- Support for datatypes with two arguments: e.g. `FLOAT(5, 5)`
 
 ### Changed
 
