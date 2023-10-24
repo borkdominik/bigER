@@ -1,5 +1,6 @@
 package org.big.erd.generator.nosql
 
+import org.big.erd.generator.IErGenerator
 import org.big.erd.entityRelationship.Model
 import org.big.erd.entityRelationship.Entity
 import org.big.erd.entityRelationship.DataType
@@ -10,20 +11,16 @@ import org.big.erd.entityRelationship.Relationship
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.generator.IFileSystemAccess2
 import org.eclipse.xtext.generator.IGeneratorContext
-import org.big.erd.generator.IErGenerator
-//import static extension org.eclipse.xtext.xbase.lib.IterableExtensions.*
 
 class Neo4jGenerator implements IErGenerator {
 
 	override void generate(Resource resource, IFileSystemAccess2 fsa, IGeneratorContext context) {
 		val model = resource.contents.get(0) as Model
-		validate(resource, model)
-		val fileName = (model.name ?: 'output') + ".cypher"
+		val fileName = (model.name ?: "output") + ".cypher"
 		fsa.generateFile(fileName, generate(model))
 	}
 	
 	def String generate(Model model) {
-
 		return '''
 			// entities
 			«FOR entity : model.entities»
@@ -155,13 +152,4 @@ class Neo4jGenerator implements IErGenerator {
 		return type
 	}
 
-	
-	private def validate(Resource resource, Model model) {
-		// additional validation check, since generalization is not supported
-		/*
-		if (!model.entities?.filter[it.extends !== null].isNullOrEmpty) {
-			throw new IllegalArgumentException("SQL Generator does not support generalization, remove the 'extends' keyword")
-		}
-		*/
-	}
 }
