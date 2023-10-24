@@ -43,6 +43,7 @@
 4. [Issues](#issues)
 5. [Contributing](#contributing)
 6. [License](#license)
+7. [Other Tools](#other-tools)
 
 <br />	
 
@@ -148,3 +149,9 @@ If you like our work, please feel free to [buy us a coffee](https://www.buymeaco
 ## License 
 
 The project is distributed under the MIT License. See [License](https://github.com/borkdominik/bigER/blob/main/LICENSE) for more details.
+
+## Other Tools
+
+Check out our other modeling tools!
+
+<a href="https://marketplace.visualstudio.com/items?itemName=BIGModelingTools.umldiagram"><img src="https://bigmodelingtools.gallerycdn.vsassets.io/extensions/bigmodelingtools/umldiagram/0.4.0/1696184688299/Microsoft.VisualStudio.Services.Icons.Default" alt="bigUML Logo" height="120" width="120" /></a>

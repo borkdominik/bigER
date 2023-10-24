@@ -79,3 +79,9 @@ If you like our work, please feel free to [buy us a coffee](https://www.buymeaco
 <a href="https://www.buymeacoffee.com/bigERtool" target="_blank">
   <img src="https://www.buymeacoffee.com/assets/img/custom_images/yellow_img.png" alt="Logo" >
 </a>
+
+## Other Tools
+
+Check out our other modeling tools!
+
+<a href="https://marketplace.visualstudio.com/items?itemName=BIGModelingTools.umldiagram"><img src="https://bigmodelingtools.gallerycdn.vsassets.io/extensions/bigmodelingtools/umldiagram/0.4.0/1696184688299/Microsoft.VisualStudio.Services.Icons.Default" alt="bigUML Logo" height="120" width="120" /></a>
