@@ -134,6 +134,7 @@ Contributions to the project are always welcome! See the [Contribution Guideline
 - [Georg Hammerschmied](https://github.com/SchmiedHammer) (multi-notation support)
 - [Hnatiuk Vladyslav](https://github.com/Aksem) (improved edge router)
 - [Christoph Lauscher](https://github.com/christoph-lauscher) (SQL import/export)
+- [Marinko Todorovic](https://github.com/marinkotodorovic) (NoSQL import/export)
 - [Dominik Bork](https://github.com/borkdominik)
 
 
