@@ -1,0 +1,29 @@
+erdiagram Model
+
+notation=default
+
+entity Entity1 { id key }
+entity Entity2 { id key }
+entity Entity3 { id key }
+entity Entity4 { id key }
+entity Entity5 { id key }
+entity Entity6 { id key }
+entity Entity7 { id key }
+entity Entity8 { id key }
+
+relationship Rel1 {
+    // zero-or-one -> one-and-only-one
+    Entity1[0..1] -> Entity2[1..1]
+}
+relationship Rel2 {
+    // [1..1] is the same as [1] (one)
+    Entity3[1..1] -> Entity4[1]
+}
+relationship Rel3 {
+    // zero-or-more -> one-or-more
+    Entity5[0..N] -> Entity6[1..N]
+}
+relationship Rel4 {
+    // [1..N] is the same as [N] (many)
+    Entity7[1..N] -> Entity8[N]
+}

@@ -1,0 +1,58 @@
+// ER Model
+erdiagram University
+
+// Options
+notation=default
+
+// Entities
+entity Student {
+    id: INT key
+    name: VARCHAR(255)
+    birthday: DATE
+    age: SMALLINT 
+}
+entity Course {
+    course_nr: INT key
+    course_name: VARCHAR(100)
+    credits: SMALLINT
+}
+weak entity Lecture {
+    title: VARCHAR(255) partial-key
+}
+entity Instructor {
+    instructor_id: INT key
+    name: VARCHAR(255)
+}
+entity Department {
+    dept_nr: INT key
+    name: VARCHAR(100)
+    abbreviation: CHAR(5) 
+}
+weak entity Room {
+    room_nr: INT partial-key
+}
+entity Building {
+    building_id: CHAR(8) key
+    address: VARCHAR(255)
+}
+
+// Relationships
+relationship Exam {
+    Student[1]  -> Course[N] -> Instructor[N]
+    points: DOUBLE
+}
+weak relationship has {
+    Room[N] -> Building[1]
+}
+relationship Office {   
+    Room[1] -> Instructor[1]
+}
+relationship Work {
+    Instructor[N] -> Department[1]
+}
+weak relationship include {
+    Course[1] -> Lecture[N]
+}
+relationship Location {
+    Building[N] -> Department[1]
+}

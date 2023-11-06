@@ -1,7 +1,6 @@
 package org.big.erd.generator.sql;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -128,8 +127,8 @@ public class SqlImport implements IErGenerator {
 		String[] fileNames = new String[] {"biger", "biger-basic", "biger-relships", "db2look", "mssql", "mysql", "oracle", "pgadmin", "pgdump"};
 		for (String fileName : fileNames) {
 			fileName = fileName + ".txt";
-			File file = new File("src\\main\\java\\org\\big\\erd\\generator\\sql\\input", fileName);
-			try (InputStream fis = SqlImport.class.getResourceAsStream("input/" + fileName)) {
+			File file = new File("src\\test\\resources\\org\\big\\erd\\generator\\sql\\import\\input", fileName);
+			try (InputStream fis = SqlImport.class.getResourceAsStream("import/input/" + fileName)) {
 				if (fis != null) {
 					byte[] content = fis.readAllBytes();
 					String strContent = new String(content);
@@ -140,7 +139,7 @@ public class SqlImport implements IErGenerator {
 					success &= importNotation(file, strContent, "chen", new ChenSqlImport());
 					success &= importNotation(file, strContent, "bachman", new BachmanSqlImport());
 				} else {
-					System.out.println("could not open file: " + "input/" + fileName);
+					System.err.println("could not open file: " + "import/input/" + fileName);
 				}
 			}
 		}
@@ -156,10 +155,10 @@ public class SqlImport implements IErGenerator {
 				fos.write(outputContent.getBytes());
 			}
 		}
-		try (InputStream fisExpected = SqlImport.class.getResourceAsStream("output/expected/" + importKey + "/" + file.getName())) {
+		try (InputStream fisExpected = SqlImport.class.getResourceAsStream("import/output/expected/" + importKey + "/" + file.getName())) {
 			byte[] contentExpected = fisExpected.readAllBytes();
 			if (!new String(contentExpected).equals(outputContent)) {
-				System.out.println("unexpected output in file: " + output.getAbsolutePath());
+				System.err.println("unexpected output in file: " + output.getAbsolutePath());
 				return false;
 			}
 		}
