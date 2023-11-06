@@ -1,0 +1,73 @@
+CREATE TABLE Student (
+	id INT NOT NULL,
+	name VARCHAR(255) NOT NULL,
+	birthday DATE NOT NULL,
+	age SMALLINT NOT NULL,
+	PRIMARY KEY (id)
+);
+CREATE TABLE Course (
+	course_nr INT NOT NULL,
+	course_name VARCHAR(100) NOT NULL,
+	credits SMALLINT NOT NULL,
+	PRIMARY KEY (course_nr)
+);
+CREATE TABLE Instructor (
+	instructor_id INT NOT NULL,
+	name VARCHAR(255) NOT NULL,
+	PRIMARY KEY (instructor_id)
+);
+CREATE TABLE Department (
+	dept_nr INT NOT NULL,
+	name VARCHAR(100) NOT NULL,
+	abbreviation CHAR(5) NOT NULL,
+	PRIMARY KEY (dept_nr)
+);
+CREATE TABLE Building (
+	building_id CHAR(8) NOT NULL,
+	address VARCHAR(255) NOT NULL,
+	PRIMARY KEY (building_id)
+);
+CREATE TABLE Room (
+	room_nr INT NOT NULL,
+	building_id CHAR(8) NOT NULL,
+	PRIMARY KEY (room_nr, building_id),
+	FOREIGN KEY (building_id) REFERENCES Building (building_id) ON DELETE CASCADE
+);
+CREATE TABLE Lecture (
+	title VARCHAR(255) NOT NULL,
+	course_nr INT NOT NULL,
+	PRIMARY KEY (title, course_nr),
+	FOREIGN KEY (course_nr) REFERENCES Course (course_nr) ON DELETE CASCADE
+);
+CREATE TABLE Exam (
+	id INT NOT NULL,
+	course_nr INT NOT NULL,
+	instructor_id INT NOT NULL,
+	points DOUBLE NOT NULL,
+	PRIMARY KEY (id, course_nr, instructor_id),
+	FOREIGN KEY (id) REFERENCES Student (id) ON DELETE CASCADE,
+	FOREIGN KEY (course_nr) REFERENCES Course (course_nr) ON DELETE CASCADE,
+	FOREIGN KEY (instructor_id) REFERENCES Instructor (instructor_id) ON DELETE CASCADE
+);
+CREATE TABLE Office (
+	room_nr INT NOT NULL,
+	building_id CHAR(8) NOT NULL,
+	instructor_id INT NOT NULL,
+	PRIMARY KEY (room_nr, building_id, instructor_id),
+	FOREIGN KEY (room_nr, building_id) REFERENCES Room (room_nr, building_id) ON DELETE CASCADE,
+	FOREIGN KEY (instructor_id) REFERENCES Instructor (instructor_id) ON DELETE CASCADE
+);
+CREATE TABLE Work (
+	instructor_id INT NOT NULL,
+	dept_nr INT NOT NULL,
+	PRIMARY KEY (instructor_id, dept_nr),
+	FOREIGN KEY (instructor_id) REFERENCES Instructor (instructor_id) ON DELETE CASCADE,
+	FOREIGN KEY (dept_nr) REFERENCES Department (dept_nr) ON DELETE CASCADE
+);
+CREATE TABLE Location (
+	building_id CHAR(8) NOT NULL,
+	dept_nr INT NOT NULL,
+	PRIMARY KEY (building_id, dept_nr),
+	FOREIGN KEY (building_id) REFERENCES Building (building_id) ON DELETE CASCADE,
+	FOREIGN KEY (dept_nr) REFERENCES Department (dept_nr) ON DELETE CASCADE
+);

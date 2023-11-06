@@ -1,0 +1,11 @@
+DROP TABLE Location;
+DROP TABLE Work;
+DROP TABLE Office;
+DROP TABLE Exam;
+DROP TABLE Lecture;
+DROP TABLE Room;
+DROP TABLE Building;
+DROP TABLE Department;
+DROP TABLE Instructor;
+DROP TABLE Course;
+DROP TABLE Student;

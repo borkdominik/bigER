@@ -1,0 +1,17 @@
+CREATE TABLE Customer (
+	id int NOT NULL,
+	name VARCHAR NOT NULL,	-- type mapped from: string
+	PRIMARY KEY (id)
+);
+CREATE TABLE Order (
+	order_number int NOT NULL,
+	price DOUBLE PRECISION NOT NULL,	-- type mapped from: double
+	PRIMARY KEY (order_number)
+);
+CREATE TABLE Places (
+	id int NOT NULL,
+	order_number int NOT NULL,
+	PRIMARY KEY (id, order_number),
+	FOREIGN KEY (id) REFERENCES Customer (id) ON DELETE CASCADE,
+	FOREIGN KEY (order_number) REFERENCES Order (order_number) ON DELETE CASCADE
+);

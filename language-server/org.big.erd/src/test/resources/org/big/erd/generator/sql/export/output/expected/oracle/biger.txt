@@ -1,0 +1,73 @@
+CREATE TABLE Student (
+	id INTEGER NOT NULL,	-- type mapped from: INT
+	name VARCHAR(255) NOT NULL,
+	birthday DATE NOT NULL,
+	age INTEGER NOT NULL,	-- type mapped from: SMALLINT
+	PRIMARY KEY (id)
+);
+CREATE TABLE Course (
+	course_nr INTEGER NOT NULL,	-- type mapped from: INT
+	course_name VARCHAR(100) NOT NULL,
+	credits INTEGER NOT NULL,	-- type mapped from: SMALLINT
+	PRIMARY KEY (course_nr)
+);
+CREATE TABLE Instructor (
+	instructor_id INTEGER NOT NULL,	-- type mapped from: INT
+	name VARCHAR(255) NOT NULL,
+	PRIMARY KEY (instructor_id)
+);
+CREATE TABLE Department (
+	dept_nr INTEGER NOT NULL,	-- type mapped from: INT
+	name VARCHAR(100) NOT NULL,
+	abbreviation CHAR(5) NOT NULL,
+	PRIMARY KEY (dept_nr)
+);
+CREATE TABLE Building (
+	building_id CHAR(8) NOT NULL,
+	address VARCHAR(255) NOT NULL,
+	PRIMARY KEY (building_id)
+);
+CREATE TABLE Room (
+	room_nr INTEGER NOT NULL,	-- type mapped from: INT
+	building_id CHAR(8) NOT NULL,
+	PRIMARY KEY (room_nr, building_id),
+	FOREIGN KEY (building_id) REFERENCES Building (building_id) ON DELETE CASCADE
+);
+CREATE TABLE Lecture (
+	title VARCHAR(255) NOT NULL,
+	course_nr INTEGER NOT NULL,	-- type mapped from: INT
+	PRIMARY KEY (title, course_nr),
+	FOREIGN KEY (course_nr) REFERENCES Course (course_nr) ON DELETE CASCADE
+);
+CREATE TABLE Exam (
+	id INTEGER NOT NULL,	-- type mapped from: INT
+	course_nr INTEGER NOT NULL,	-- type mapped from: INT
+	instructor_id INTEGER NOT NULL,	-- type mapped from: INT
+	points BINARY_DOUBLE NOT NULL,	-- type mapped from: DOUBLE
+	PRIMARY KEY (id, course_nr, instructor_id),
+	FOREIGN KEY (id) REFERENCES Student (id) ON DELETE CASCADE,
+	FOREIGN KEY (course_nr) REFERENCES Course (course_nr) ON DELETE CASCADE,
+	FOREIGN KEY (instructor_id) REFERENCES Instructor (instructor_id) ON DELETE CASCADE
+);
+CREATE TABLE Office (
+	room_nr INTEGER NOT NULL,	-- type mapped from: INT
+	building_id CHAR(8) NOT NULL,
+	instructor_id INTEGER NOT NULL,	-- type mapped from: INT
+	PRIMARY KEY (room_nr, building_id, instructor_id),
+	FOREIGN KEY (room_nr, building_id) REFERENCES Room (room_nr, building_id) ON DELETE CASCADE,
+	FOREIGN KEY (instructor_id) REFERENCES Instructor (instructor_id) ON DELETE CASCADE
+);
+CREATE TABLE Work (
+	instructor_id INTEGER NOT NULL,	-- type mapped from: INT
+	dept_nr INTEGER NOT NULL,	-- type mapped from: INT
+	PRIMARY KEY (instructor_id, dept_nr),
+	FOREIGN KEY (instructor_id) REFERENCES Instructor (instructor_id) ON DELETE CASCADE,
+	FOREIGN KEY (dept_nr) REFERENCES Department (dept_nr) ON DELETE CASCADE
+);
+CREATE TABLE Location (
+	building_id CHAR(8) NOT NULL,
+	dept_nr INTEGER NOT NULL,	-- type mapped from: INT
+	PRIMARY KEY (building_id, dept_nr),
+	FOREIGN KEY (building_id) REFERENCES Building (building_id) ON DELETE CASCADE,
+	FOREIGN KEY (dept_nr) REFERENCES Department (dept_nr) ON DELETE CASCADE
+);
