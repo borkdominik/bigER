@@ -41,7 +41,7 @@ public class MySqlGenerator extends SqlGenerator {
 	
 	public static final List<String> BLOB_TYPES = Arrays.asList("BLOB");
 	
-	public static final List<String> CLOB_TYPES = Arrays.asList("CLOB");
+	public static final List<String> CLOB_TYPES = Arrays.asList("TEXT");
 	
 	public static final List<String> ALL_BINARY_TYPES = 
 			Stream.concat(BLOB_TYPES.stream(), CLOB_TYPES.stream())
